@@ -1,6 +1,7 @@
 import { Outlet, Link, createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
 
 import appCss from "../styles.css?url";
+import { absoluteUrl, siteConfig } from "@/lib/site";
 
 function NotFoundComponent() {
   return (
@@ -24,35 +25,44 @@ function NotFoundComponent() {
   );
 }
 
-const SOCIAL_IMAGE = "https://www.maintenancemarshall.co.za/assets/logo-BMmUvPyL.png";
-
 export const Route = createRootRoute({
-  head: () => ({
-    meta: [
-      { charSet: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { name: "google-site-verification", content: "9ptdX6MHhpK25xbIHLMeVG7iSoMbLHXTVYynNZcH3zs" },
-      { title: "Maintenance Marshall — Property Maintenance Gauteng" },
-      { name: "description", content: "Maintenance Marshall provides multi-skilled property maintenance and technical services across Gauteng — electrical, plumbing, water systems, security, waterproofing, ceilings and more." },
-      { name: "author", content: "Maintenance Marshall" },
-      { property: "og:title", content: "Maintenance Marshall — Property Maintenance Gauteng" },
-      { property: "og:description", content: "Multi-skilled property maintenance and technical services across Gauteng. One call. Total resolution." },
-      { property: "og:type", content: "website" },
-      { property: "og:site_name", content: "Maintenance Marshall" },
-      { property: "og:url", content: "https://www.maintenancemarshall.co.za" },
-      { property: "og:image", content: SOCIAL_IMAGE },
-      { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "Maintenance Marshall — Property Maintenance Gauteng" },
-      { name: "twitter:description", content: "Multi-skilled property maintenance and technical services across Gauteng. One call. Total resolution." },
-      { name: "twitter:image", content: SOCIAL_IMAGE },
-    ],
-    links: [
-      {
-        rel: "stylesheet",
-        href: appCss,
-      },
-    ],
-  }),
+  head: () => {
+    const canonicalUrl = absoluteUrl();
+    const socialImageUrl = siteConfig.assets.socialImage
+      ? absoluteUrl(siteConfig.assets.socialImage)
+      : null;
+
+    return {
+      meta: [
+        { charSet: "utf-8" },
+        { name: "viewport", content: "width=device-width, initial-scale=1" },
+        {
+          name: "google-site-verification",
+          content: "9ptdX6MHhpK25xbIHLMeVG7iSoMbLHXTVYynNZcH3zs",
+        },
+        { title: siteConfig.defaultTitle },
+        { name: "description", content: siteConfig.defaultDescription },
+        { name: "author", content: siteConfig.name },
+        { property: "og:title", content: siteConfig.defaultTitle },
+        { property: "og:description", content: siteConfig.defaultDescription },
+        { property: "og:type", content: "website" },
+        { property: "og:site_name", content: siteConfig.name },
+        ...(canonicalUrl ? [{ property: "og:url", content: canonicalUrl }] : []),
+        ...(socialImageUrl ? [{ property: "og:image", content: socialImageUrl }] : []),
+        { name: "twitter:card", content: "summary_large_image" },
+        { name: "twitter:title", content: siteConfig.defaultTitle },
+        { name: "twitter:description", content: siteConfig.defaultDescription },
+        ...(socialImageUrl ? [{ name: "twitter:image", content: socialImageUrl }] : []),
+      ],
+      links: [
+        {
+          rel: "stylesheet",
+          href: appCss,
+        },
+        ...(siteConfig.assets.favicon ? [{ rel: "icon", href: siteConfig.assets.favicon }] : []),
+      ],
+    };
+  },
   shellComponent: RootShell,
   component: RootComponent,
   notFoundComponent: NotFoundComponent,

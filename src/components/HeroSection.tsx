@@ -1,7 +1,6 @@
 import { motion } from "framer-motion";
 import { ArrowRight, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import heroBg from "@/assets/hero-bg.jpg";
 
 export function HeroSection() {
   return (
@@ -62,7 +61,7 @@ export function HeroSection() {
           <div className="absolute -right-4 -top-4 h-full w-full rounded-[2rem] border border-[#C9A45B]/50 sm:-right-6 sm:-top-6" />
           <div className="relative overflow-hidden rounded-[2rem] bg-[#EDE2CF] shadow-[0_24px_60px_rgba(59,15,26,0.16)]">
             <img
-              src={heroBg}
+              src="/brand/social/social-share-1200x630.png"
               alt="Bright, beautifully maintained living room prepared for a family to enjoy"
               width={1920}
               height={1080}

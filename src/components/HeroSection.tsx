@@ -42,7 +42,8 @@ export function HeroSection() {
           </h1>
 
           <p className="text-lg md:text-2xl text-[#F5F1E8]/85 max-w-2xl mb-12 leading-relaxed">
-            Thoughtful residential cleaning for homes that deserve warmth, respect and exceptional attention to detail. We care for every space as though it were our own.
+            Thoughtful residential cleaning for homes that deserve warmth, respect and exceptional
+            attention to detail. We care for every space as though it were our own.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4">
@@ -65,7 +66,9 @@ export function HeroSection() {
             ].map((stat) => (
               <div key={stat.value}>
                 <div className="text-xl font-semibold text-[#C9A45B]">{stat.value}</div>
-                <div className="text-xs text-[#F5F1E8]/70 uppercase tracking-wider mt-1">{stat.label}</div>
+                <div className="text-xs text-[#F5F1E8]/70 uppercase tracking-wider mt-1">
+                  {stat.label}
+                </div>
               </div>
             ))}
           </div>

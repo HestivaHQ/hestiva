@@ -1,7 +1,7 @@
 import { Outlet, Link, createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
 
 import appCss from "../styles.css?url";
-import { absoluteUrl, siteConfig } from "@/lib/site";
+import { absoluteUrl, BRAND_ASSETS, siteConfig } from "@/lib/site";
 
 function NotFoundComponent() {
   return (
@@ -48,18 +48,23 @@ export const Route = createRootRoute({
         { property: "og:type", content: "website" },
         { property: "og:site_name", content: siteConfig.name },
         ...(canonicalUrl ? [{ property: "og:url", content: canonicalUrl }] : []),
-        ...(socialImageUrl ? [{ property: "og:image", content: socialImageUrl }] : []),
+        ...(socialImageUrl
+          ? [
+              { property: "og:image", content: socialImageUrl },
+              { property: "og:image:width", content: "1200" },
+              { property: "og:image:height", content: "630" },
+            ]
+          : []),
         { name: "twitter:card", content: "summary_large_image" },
         { name: "twitter:title", content: siteConfig.defaultTitle },
         { name: "twitter:description", content: siteConfig.defaultDescription },
         ...(socialImageUrl ? [{ name: "twitter:image", content: socialImageUrl }] : []),
       ],
       links: [
-        {
-          rel: "stylesheet",
-          href: appCss,
-        },
-        ...(siteConfig.assets.favicon ? [{ rel: "icon", href: siteConfig.assets.favicon }] : []),
+        { rel: "stylesheet", href: appCss },
+        { rel: "icon", type: "image/png", sizes: "16x16", href: BRAND_ASSETS.favicon16 },
+        { rel: "icon", type: "image/png", sizes: "32x32", href: BRAND_ASSETS.favicon32 },
+        { rel: "apple-touch-icon", sizes: "180x180", href: BRAND_ASSETS.appleTouchIcon },
       ],
     };
   },

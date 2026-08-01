@@ -1,22 +1,20 @@
-import logo from "@/assets/logo.png";
+import { BRAND_ASSETS, SITE_NAME, TAGLINE } from "@/lib/site";
 
 export function Footer() {
   return (
-    <footer className="border-t border-border py-8 bg-secondary">
-      <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-4">
-        <div className="flex items-center gap-2">
-          <img src={logo} alt="Maintenance Marshall logo" className="h-8 w-auto" />
-          <div className="flex flex-col">
-            <span className="text-sm font-semibold text-foreground">
-              Maintenance Marshall (Pty) Ltd
-            </span>
-            <span className="text-xs text-muted-foreground">
-              Reg No: 2026/349640/07
-            </span>
-          </div>
+    <footer className="border-t border-border bg-secondary py-10">
+      <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-6 px-6 md:flex-row">
+        <div className="flex items-center gap-3">
+          <img
+            src={BRAND_ASSETS.logoBlack}
+            alt={`${SITE_NAME} logo`}
+            className="h-12 w-auto max-w-[170px] object-contain"
+          />
+          <span className="sr-only">{TAGLINE}</span>
         </div>
-        <p className="text-xs text-muted-foreground">
-          © {new Date().getFullYear()} Maintenance Marshall. All rights reserved. Kempton Park, South Africa.
+
+        <p className="text-center text-xs text-muted-foreground md:text-right">
+          © {new Date().getFullYear()} {SITE_NAME}. All rights reserved.
         </p>
       </div>
     </footer>

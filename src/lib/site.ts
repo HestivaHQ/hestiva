@@ -12,8 +12,16 @@ export type OptionalBusinessDetails = {
 
 export type BrandAssets = {
   logo: string | null;
-  favicon: string | null;
+  logoGold: string | null;
+  logoWhite: string | null;
+  logoBlack: string | null;
+  favicon16: string | null;
+  favicon32: string | null;
+  appleTouchIcon: string | null;
+  appIcon: string | null;
   socialImage: string | null;
+  profileBadge: string | null;
+  monogram: string | null;
 };
 
 export type SiteConfig = {
@@ -26,30 +34,69 @@ export type SiteConfig = {
   assets: BrandAssets;
 };
 
+export const SITE_NAME = "Hestiva";
+export const COMPANY_NAME = "Hestiva";
+export const SITE_URL = "https://www.hestiva.co.za";
+export const TAGLINE = "Grace in Every Detail";
+export const DEFAULT_SERVICE_AREA = "Randburg to Centurion";
+
+export const BRAND_ASSETS = {
+  logoPrimary: "/brand/logo/hestiva-burgundy.png",
+  logoGold: "/brand/logo/hestiva-gold.png",
+  logoWhite: "/brand/logo/hestiva-white.png",
+  logoBlack: "/brand/logo/hestiva-black.png",
+  favicon16: "/brand/favicon/favicon-16.png",
+  favicon32: "/brand/favicon/favicon-32.png",
+  appleTouchIcon: "/brand/favicon/favicon-180.png",
+  appIcon: "/brand/favicon/favicon-512.png",
+  socialImage: "/brand/social/social-share-1200x630.png",
+  profileBadge: "/brand/badge/profile-badge.png",
+  monogram: "/brand/monogram/monogram.png",
+} as const;
+
 export const siteConfig: SiteConfig = {
-  name: "Hestiva",
-  tagline: "Grace in Every Detail.",
+  name: SITE_NAME,
+  tagline: `${TAGLINE}.`,
   businessType: "Residential Cleaning Company",
-  defaultTitle: "Hestiva | Residential Cleaning",
+  defaultTitle: `${SITE_NAME} | Residential Cleaning`,
   defaultDescription:
-    "Hestiva is a residential cleaning company focused on calm, attentive care for the home.",
+    "Professional home cleaning for apartments, townhouses and homes across Randburg, Midrand, Centurion and selected surrounding areas.",
   business: {
-    domain: null,
+    domain: SITE_URL,
     email: null,
     phone: null,
     whatsApp: null,
-    serviceAreas: [],
+    serviceAreas: [
+      "Randburg",
+      "Bryanston",
+      "Fourways",
+      "North Riding",
+      "Midrand",
+      "Waterfall",
+      "Kyalami",
+      "Centurion",
+    ],
     legalName: null,
     registrationNumber: null,
     address: null,
     operatingHours: null,
   },
   assets: {
-    logo: null,
-    favicon: null,
-    socialImage: null,
+    logo: BRAND_ASSETS.logoPrimary,
+    logoGold: BRAND_ASSETS.logoGold,
+    logoWhite: BRAND_ASSETS.logoWhite,
+    logoBlack: BRAND_ASSETS.logoBlack,
+    favicon16: BRAND_ASSETS.favicon16,
+    favicon32: BRAND_ASSETS.favicon32,
+    appleTouchIcon: BRAND_ASSETS.appleTouchIcon,
+    appIcon: BRAND_ASSETS.appIcon,
+    socialImage: BRAND_ASSETS.socialImage,
+    profileBadge: BRAND_ASSETS.profileBadge,
+    monogram: BRAND_ASSETS.monogram,
   },
 };
+
+export const SOCIAL_IMAGE = `${SITE_URL}${BRAND_ASSETS.socialImage}`;
 
 export function absoluteUrl(path = "/"): string | null {
   const domain = siteConfig.business.domain;

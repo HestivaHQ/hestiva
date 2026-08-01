@@ -1,5 +1,6 @@
 import { Outlet, Link, createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
 
+import { BRAND_ASSETS, SITE_NAME, SITE_URL, SOCIAL_IMAGE, TAGLINE } from "@/lib/site";
 import appCss from "../styles.css?url";
 
 function NotFoundComponent() {
@@ -24,33 +25,36 @@ function NotFoundComponent() {
   );
 }
 
-const SOCIAL_IMAGE = "https://www.maintenancemarshall.co.za/assets/logo-BMmUvPyL.png";
+const title = `${SITE_NAME} — Professional Residential Cleaning`;
+const description =
+  "Professional home cleaning for apartments, townhouses and homes across Randburg, Midrand, Centurion and selected surrounding areas.";
 
 export const Route = createRootRoute({
   head: () => ({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { name: "google-site-verification", content: "9ptdX6MHhpK25xbIHLMeVG7iSoMbLHXTVYynNZcH3zs" },
-      { title: "Maintenance Marshall — Property Maintenance Gauteng" },
-      { name: "description", content: "Maintenance Marshall provides multi-skilled property maintenance and technical services across Gauteng — electrical, plumbing, water systems, security, waterproofing, ceilings and more." },
-      { name: "author", content: "Maintenance Marshall" },
-      { property: "og:title", content: "Maintenance Marshall — Property Maintenance Gauteng" },
-      { property: "og:description", content: "Multi-skilled property maintenance and technical services across Gauteng. One call. Total resolution." },
+      { title },
+      { name: "description", content: description },
+      { name: "author", content: SITE_NAME },
+      { property: "og:title", content: title },
+      { property: "og:description", content: `${TAGLINE}. ${description}` },
       { property: "og:type", content: "website" },
-      { property: "og:site_name", content: "Maintenance Marshall" },
-      { property: "og:url", content: "https://www.maintenancemarshall.co.za" },
+      { property: "og:site_name", content: SITE_NAME },
+      { property: "og:url", content: SITE_URL },
       { property: "og:image", content: SOCIAL_IMAGE },
+      { property: "og:image:width", content: "1200" },
+      { property: "og:image:height", content: "630" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "Maintenance Marshall — Property Maintenance Gauteng" },
-      { name: "twitter:description", content: "Multi-skilled property maintenance and technical services across Gauteng. One call. Total resolution." },
+      { name: "twitter:title", content: title },
+      { name: "twitter:description", content: `${TAGLINE}. ${description}` },
       { name: "twitter:image", content: SOCIAL_IMAGE },
     ],
     links: [
-      {
-        rel: "stylesheet",
-        href: appCss,
-      },
+      { rel: "stylesheet", href: appCss },
+      { rel: "icon", type: "image/png", sizes: "16x16", href: BRAND_ASSETS.favicon16 },
+      { rel: "icon", type: "image/png", sizes: "32x32", href: BRAND_ASSETS.favicon32 },
+      { rel: "apple-touch-icon", sizes: "180x180", href: BRAND_ASSETS.appleTouchIcon },
     ],
   }),
   shellComponent: RootShell,

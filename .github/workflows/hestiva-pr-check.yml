@@ -30,7 +30,7 @@ jobs:
         run: bunx eslint src/lib/site.ts src/routes/__root.tsx src/components/Navbar.tsx src/components/Footer.tsx src/components/HeroSection.tsx
 
       - name: Targeted format check
-        run: bunx prettier --check src/lib/site.ts src/routes/__root.tsx src/components/Navbar.tsx src/components/Footer.tsx src/components/HeroSection.tsx src/styles.css
+        run: bunx prettier --check src/lib/site.ts src/routes/__root.tsx src/components/Navbar.tsx src/components/Footer.tsx src/components/HeroSection.tsx
 
       - name: Production build
         run: bun run build

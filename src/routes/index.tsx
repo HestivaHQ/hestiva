@@ -1,31 +1,30 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Navbar } from "@/components/Navbar";
-import { HeroSection } from "@/components/HeroSection";
-import { ServicesSection } from "@/components/ServicesSection";
-import { WhyUsSection } from "@/components/WhyUsSection";
 import { AboutSection } from "@/components/AboutSection";
 import { ContactSection } from "@/components/ContactSection";
 import { Footer } from "@/components/Footer";
-
-const SITE_URL = "https://www.maintenancemarshall.co.za";
+import { HeroSection } from "@/components/HeroSection";
+import { Navbar } from "@/components/Navbar";
+import { ServicesSection } from "@/components/ServicesSection";
+import { WhyUsSection } from "@/components/WhyUsSection";
+import { BRAND_ASSETS, SITE_NAME, SITE_URL, TAGLINE } from "@/lib/site";
 
 export const Route = createFileRoute("/")({
   component: Index,
   head: () => ({
     meta: [
-      { title: "Maintenance Marshall | Property Maintenance Gauteng" },
+      { title: `${SITE_NAME} | Premium Residential Cleaning` },
       {
         name: "description",
         content:
-          "Multi-skilled property maintenance and technical services in Gauteng. Electrical, plumbing, water systems, security, waterproofing, ceilings and general maintenance. One call. Total resolution.",
+          "Thoughtful residential cleaning and home care with warmth, respect and exceptional attention to detail.",
       },
-      { property: "og:title", content: "Maintenance Marshall | Property Maintenance Gauteng" },
+      { property: "og:title", content: `${SITE_NAME} | ${TAGLINE}` },
       {
         property: "og:description",
-        content:
-          "Precision-driven property maintenance across Gauteng. Electrical, plumbing, water systems, security, waterproofing, ceilings and general maintenance.",
+        content: "Premium residential cleaning shaped around your home and your routine.",
       },
       { property: "og:url", content: `${SITE_URL}/` },
+      { property: "og:image", content: `${SITE_URL}${BRAND_ASSETS.socialImage}` },
     ],
     links: [{ rel: "canonical", href: `${SITE_URL}/` }],
     scripts: [
@@ -34,19 +33,11 @@ export const Route = createFileRoute("/")({
         children: JSON.stringify({
           "@context": "https://schema.org",
           "@type": "LocalBusiness",
-          name: "Maintenance Marshall (Pty) Ltd",
-          image: `${SITE_URL}/assets/logo-BMmUvPyL.png`,
-          telephone: "+27767816550",
-          email: "quotes@maintenancemarshall.co.za",
+          name: SITE_NAME,
+          image: `${SITE_URL}${BRAND_ASSETS.socialImage}`,
           url: `${SITE_URL}/`,
-          address: {
-            "@type": "PostalAddress",
-            addressLocality: "Kempton Park",
-            addressRegion: "Gauteng",
-            addressCountry: "ZA",
-          },
-          areaServed: { "@type": "AdministrativeArea", name: "Gauteng" },
-          serviceArea: { "@type": "AdministrativeArea", name: "Gauteng" },
+          areaServed: "Gauteng",
+          description: "Premium residential cleaning and home care.",
         }),
       },
     ],
@@ -57,11 +48,13 @@ function Index() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Navbar />
-      <HeroSection />
-      <ServicesSection />
-      <WhyUsSection />
-      <AboutSection />
-      <ContactSection />
+      <main>
+        <HeroSection />
+        <ServicesSection />
+        <WhyUsSection />
+        <AboutSection />
+        <ContactSection />
+      </main>
       <Footer />
     </div>
   );

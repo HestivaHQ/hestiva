@@ -1,77 +1,65 @@
 import { motion } from "framer-motion";
-import { ArrowRight, Sparkles } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { ArrowRight } from "lucide-react";
 import heroBg from "@/assets/hero-bg.jpg";
 
 export function HeroSection() {
   return (
-    <section className="relative min-h-screen flex items-center overflow-hidden">
-      <div className="absolute inset-0">
-        <img
-          src={heroBg}
-          alt="Beautifully cared-for home interior"
-          width={1920}
-          height={1080}
-          fetchPriority="high"
-          decoding="async"
-          className="w-full h-full object-cover"
-        />
-        <div className="absolute inset-0 bg-[#3B0F1A]/80" />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#3B0F1A] via-[#3B0F1A]/85 to-transparent" />
-      </div>
-
-      <div className="relative max-w-7xl mx-auto px-6 pt-24 pb-16">
+    <section className="mt-20 overflow-hidden bg-[#F5F1E8]" aria-labelledby="hero-heading">
+      <div className="mx-auto grid min-h-[calc(100svh-5rem)] max-w-[1600px] lg:grid-cols-[0.9fr_1.1fr]">
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 18 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-          className="max-w-3xl"
+          transition={{ duration: 0.7, ease: "easeOut" }}
+          className="flex items-center px-6 py-16 sm:px-10 sm:py-20 lg:px-16 lg:py-24 xl:px-24"
         >
-          <div className="flex items-center gap-2 mb-6">
-            <Sparkles className="w-4 h-4 text-[#C9A45B]" />
-            <span className="text-xs uppercase tracking-[0.3em] text-[#C9A45B] font-semibold">
-              Grace in Every Detail
-            </span>
-          </div>
+          <div className="max-w-xl">
+            <p className="mb-6 text-xs font-semibold uppercase tracking-[0.3em] text-[#9B7535]">
+              Thoughtful residential cleaning
+            </p>
+            <h1
+              id="hero-heading"
+              className="text-5xl font-semibold leading-[1.02] tracking-[-0.035em] text-[#3B0F1A] sm:text-6xl xl:text-7xl"
+            >
+              Grace in Every Detail.
+            </h1>
+            <p className="mt-7 max-w-lg text-lg leading-relaxed text-[#3B0F1A]/70 sm:text-xl">
+              Professional residential cleaning that gives busy households more time to enjoy the
+              moments that matter.
+            </p>
 
-          <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-semibold leading-[0.95] tracking-[0.06em] mb-8 text-[#F5F1E8]">
-            HESTIVA
-            <span className="block mt-4 text-2xl sm:text-3xl md:text-4xl tracking-[0.18em] text-[#C9A45B]">
-              Residential Cleaning & Home Care
-            </span>
-          </h1>
-
-          <p className="text-lg md:text-2xl text-[#F5F1E8]/85 max-w-2xl mb-12 leading-relaxed">
-            Thoughtful residential cleaning for homes that deserve warmth, respect and exceptional
-            attention to detail. We care for every space as though it were our own.
-          </p>
-
-          <div className="flex flex-col sm:flex-row gap-4">
-            <Button variant="hero" size="lg" asChild>
-              <a href="#contact">
-                Request a Quote
-                <ArrowRight className="w-4 h-4" />
+            <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:items-center">
+              <a
+                href="#contact"
+                className="inline-flex min-h-12 items-center justify-center gap-2 rounded-lg bg-[#3B0F1A] px-6 py-3 text-sm font-semibold text-[#F5F1E8] transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#531626] hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A45B] focus-visible:ring-offset-2 focus-visible:ring-offset-[#F5F1E8]"
+              >
+                Request Your Quote
+                <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </a>
-            </Button>
-            <Button variant="heroOutline" size="lg" asChild>
-              <a href="#services">Explore Our Services</a>
-            </Button>
+              <a
+                href="#services"
+                className="inline-flex min-h-12 items-center justify-center rounded-lg border border-[#3B0F1A]/25 px-6 py-3 text-sm font-semibold text-[#3B0F1A] transition-colors duration-300 hover:border-[#C9A45B] hover:bg-[#C9A45B]/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A45B] focus-visible:ring-offset-2 focus-visible:ring-offset-[#F5F1E8]"
+              >
+                Explore Services
+              </a>
+            </div>
           </div>
+        </motion.div>
 
-          <div className="mt-12 grid grid-cols-1 sm:grid-cols-3 gap-6 border-t border-[#C9A45B]/30 pt-8">
-            {[
-              { value: "Care", label: "Your home treated with respect" },
-              { value: "Trust", label: "Reliable and accountable service" },
-              { value: "Excellence", label: "High standards in every detail" },
-            ].map((stat) => (
-              <div key={stat.value}>
-                <div className="text-xl font-semibold text-[#C9A45B]">{stat.value}</div>
-                <div className="text-xs text-[#F5F1E8]/70 uppercase tracking-wider mt-1">
-                  {stat.label}
-                </div>
-              </div>
-            ))}
-          </div>
+        <motion.div
+          initial={{ opacity: 0, scale: 1.015 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.9, ease: "easeOut" }}
+          className="relative min-h-[22rem] sm:min-h-[30rem] lg:min-h-full"
+        >
+          <img
+            src={heroBg}
+            alt="A bright, beautifully cared-for home interior"
+            width={1920}
+            height={1080}
+            fetchPriority="high"
+            decoding="async"
+            className="absolute inset-0 h-full w-full object-cover"
+          />
         </motion.div>
       </div>
     </section>

@@ -5,7 +5,7 @@ import heroBg from "@/assets/hero-bg.jpg";
 
 export function HeroSection() {
   return (
-    <section className="relative min-h-screen flex items-center overflow-hidden">
+    <section className="relative mt-20 flex min-h-[calc(100vh-5rem)] items-center overflow-hidden">
       <div className="absolute inset-0">
         <img
           src={heroBg}
@@ -30,7 +30,7 @@ export function HeroSection() {
           <div className="flex items-center gap-2 mb-6">
             <Sparkles className="w-4 h-4 text-[#C9A45B]" />
             <span className="text-xs uppercase tracking-[0.3em] text-[#C9A45B] font-semibold">
-              Grace in Every Detail
+              Grace in Every Detail.
             </span>
           </div>
 
@@ -54,7 +54,7 @@ export function HeroSection() {
               </a>
             </Button>
             <Button variant="heroOutline" size="lg" asChild>
-              <a href="#services">Explore Our Services</a>
+              <a href="#services">Explore Services</a>
             </Button>
           </div>
 

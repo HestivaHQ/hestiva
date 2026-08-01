@@ -1,73 +1,169 @@
 import { motion } from "framer-motion";
-import { Wrench, UserCheck, Target, TrendingDown } from "lucide-react";
+import {
+  CalendarCheck,
+  CheckCircle2,
+  HeartHandshake,
+  KeyRound,
+  ShieldCheck,
+  Sparkles,
+} from "lucide-react";
 
-const advantages = [
+const benefits = [
   {
-    icon: Wrench,
-    title: "Multi-Skilled",
-    description: "One contractor handling electrical, plumbing, water systems, property maintenance, and security.",
+    icon: Sparkles,
+    title: "Exceptional detail",
+    text: "A considered clean with consistent standards in every room.",
   },
   {
-    icon: UserCheck,
-    title: "Full Accountability",
-    description: "One company takes complete responsibility for the outcome. No finger-pointing between trades.",
+    icon: HeartHandshake,
+    title: "Care and respect",
+    text: "Your home, belongings and preferences are treated thoughtfully.",
   },
   {
-    icon: Target,
-    title: "Technical Depth",
-    description: "We understand systems, not just surface-level fixes. Problems solved correctly the first time.",
+    icon: CalendarCheck,
+    title: "Dependable service",
+    text: "Clear communication and visits arranged around your routine.",
   },
-  {
-    icon: TrendingDown,
-    title: "Lean & Fast",
-    description: "Low overhead means faster response times and competitive pricing without compromising quality.",
-  },
+];
+
+const steps = [
+  ["01", "Tell us about your home", "Share your space, priorities and preferred schedule."],
+  ["02", "Receive your tailored plan", "We recommend the right service and confirm every detail."],
+  [
+    "03",
+    "Return to a beautifully cared-for home",
+    "Our team completes your clean with calm, attentive care.",
+  ],
 ];
 
 export function WhyUsSection() {
   return (
-    <section id="why-us" className="py-24">
-      <div className="max-w-7xl mx-auto px-6">
-        <div className="grid lg:grid-cols-2 gap-16 items-center">
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-          >
-            <span className="text-xs uppercase tracking-[0.3em] text-primary font-semibold">Why Choose Us</span>
-            <h2 className="text-4xl md:text-5xl font-extrabold mt-3 text-foreground leading-tight">
-              Built to Solve the <span className="text-gradient-amber">Real Problem</span>
+    <>
+      <section id="why-us" className="py-24" aria-labelledby="why-heading">
+        <div className="mx-auto max-w-7xl px-6">
+          <div className="mx-auto max-w-2xl text-center">
+            <span className="text-xs font-semibold uppercase tracking-[0.3em] text-primary">
+              Why Hestiva
+            </span>
+            <h2
+              id="why-heading"
+              className="mt-3 text-4xl font-semibold text-foreground md:text-5xl"
+            >
+              A higher standard of home cleaning
             </h2>
-            <p className="text-muted-foreground mt-4 leading-relaxed">
-              The maintenance industry suffers from fragmentation, inconsistency, and lack of accountability. 
-              Instead of dealing with multiple contractors, Maintenance Marshall provides a single, reliable, 
-              and technically capable solution.
-            </p>
-            <div className="mt-8 p-4 border border-primary/20 rounded-lg bg-primary/5">
-              <p className="text-sm text-foreground italic">
-                "If it can be fixed, installed, repaired, or restored — we handle it. Correctly. Permanently."
-              </p>
-            </div>
-          </motion.div>
-
-          <div className="grid sm:grid-cols-2 gap-5">
-            {advantages.map((adv, i) => (
-              <motion.div
-                key={adv.title}
-                initial={{ opacity: 0, y: 20 }}
+          </div>
+          <div className="mt-14 grid gap-6 md:grid-cols-3">
+            {benefits.map((benefit, index) => (
+              <motion.article
+                key={benefit.title}
+                initial={{ opacity: 0, y: 18 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
-                className="p-5 rounded-lg border border-border bg-card hover:border-primary/30 transition-colors"
+                transition={{ delay: index * 0.1 }}
+                className="rounded-xl border border-border bg-card p-7 text-center"
               >
-                <adv.icon className="w-6 h-6 text-primary mb-3" />
-                <h3 className="font-bold text-foreground mb-1">{adv.title}</h3>
-                <p className="text-sm text-muted-foreground">{adv.description}</p>
-              </motion.div>
+                <benefit.icon className="mx-auto h-7 w-7 text-primary" aria-hidden="true" />
+                <h3 className="mt-5 text-xl font-semibold text-foreground">{benefit.title}</h3>
+                <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{benefit.text}</p>
+              </motion.article>
             ))}
           </div>
         </div>
-      </div>
-    </section>
+      </section>
+
+      <section className="bg-secondary py-24" aria-labelledby="process-heading">
+        <div className="mx-auto max-w-7xl px-6">
+          <div className="text-center">
+            <span className="text-xs font-semibold uppercase tracking-[0.3em] text-primary">
+              How It Works
+            </span>
+            <h2
+              id="process-heading"
+              className="mt-3 text-4xl font-semibold text-foreground md:text-5xl"
+            >
+              Effortless from the first hello
+            </h2>
+          </div>
+          <ol className="mt-14 grid gap-8 md:grid-cols-3">
+            {steps.map(([number, title, text]) => (
+              <li key={number} className="relative border-t border-primary/30 pt-7">
+                <span className="text-sm font-semibold tracking-[0.2em] text-primary">
+                  {number}
+                </span>
+                <h3 className="mt-3 text-xl font-semibold text-foreground">{title}</h3>
+                <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{text}</p>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
+
+      <section className="py-24" aria-labelledby="safety-heading">
+        <div className="mx-auto grid max-w-7xl gap-12 px-6 lg:grid-cols-2 lg:items-center">
+          <div>
+            <span className="text-xs font-semibold uppercase tracking-[0.3em] text-primary">
+              Trust &amp; Safety
+            </span>
+            <h2
+              id="safety-heading"
+              className="mt-3 text-4xl font-semibold text-foreground md:text-5xl"
+            >
+              Peace of mind, built into every visit
+            </h2>
+            <p className="mt-5 leading-relaxed text-muted-foreground">
+              We understand the trust involved in welcoming someone into your home. Thoughtful
+              protocols, respectful conduct and careful quality checks guide every Hestiva visit.
+            </p>
+          </div>
+          <div className="rounded-2xl border border-primary/20 bg-primary/5 p-8">
+            {[
+              "Carefully selected cleaning professionals",
+              "Clear arrival and service communication",
+              "Respectful key and access handling",
+              "Quality standards checked on every visit",
+            ].map((item, index) => (
+              <div key={item} className="flex gap-4 py-4 first:pt-0 last:pb-0">
+                {index === 2 ? (
+                  <KeyRound className="h-5 w-5 shrink-0 text-primary" />
+                ) : index === 0 ? (
+                  <ShieldCheck className="h-5 w-5 shrink-0 text-primary" />
+                ) : (
+                  <CheckCircle2 className="h-5 w-5 shrink-0 text-primary" />
+                )}
+                <span className="text-sm text-foreground">{item}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-[#3B0F1A] py-24 text-[#F5F1E8]" aria-labelledby="testimonials-heading">
+        <div className="mx-auto max-w-7xl px-6 text-center">
+          <span className="text-xs font-semibold uppercase tracking-[0.3em] text-[#C9A45B]">
+            Testimonials
+          </span>
+          <h2 id="testimonials-heading" className="mt-3 text-4xl font-semibold md:text-5xl">
+            Homes cared for beautifully
+          </h2>
+          <div className="mt-14 grid gap-6 md:grid-cols-3">
+            {[
+              "The attention to detail made our whole home feel renewed.",
+              "Professional, thoughtful and wonderfully consistent every time.",
+              "Hestiva makes coming home feel like a genuine luxury.",
+            ].map((quote) => (
+              <figure
+                key={quote}
+                className="rounded-xl border border-[#C9A45B]/25 bg-white/5 p-7 text-left"
+              >
+                <blockquote className="leading-relaxed text-[#F5F1E8]/85">“{quote}”</blockquote>
+                <figcaption className="mt-5 text-xs font-semibold uppercase tracking-[0.2em] text-[#C9A45B]">
+                  Hestiva client
+                </figcaption>
+              </figure>
+            ))}
+          </div>
+        </div>
+      </section>
+    </>
   );
 }

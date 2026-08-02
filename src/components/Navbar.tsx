@@ -56,7 +56,7 @@ export function Navbar() {
             </a>
           ))}
           <a
-            href="/#contact"
+            href="/quote"
             className="rounded-lg bg-[#C9A45B] px-5 py-3 text-xs font-semibold uppercase tracking-[0.14em] text-[#3B0F1A] shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#D8B970] hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F5F1E8] focus-visible:ring-offset-2 focus-visible:ring-offset-[#3B0F1A]"
           >
             Get a Quote
@@ -95,7 +95,7 @@ export function Navbar() {
                 </a>
               ))}
               <a
-                href="/#contact"
+                href="/quote"
                 onClick={() => setOpen(false)}
                 className="mt-1 rounded-lg bg-[#C9A45B] px-5 py-3 text-center text-sm font-semibold uppercase tracking-[0.14em] text-[#3B0F1A] transition-colors duration-300 hover:bg-[#D8B970] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F5F1E8]"
               >

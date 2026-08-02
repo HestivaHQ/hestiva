@@ -99,7 +99,7 @@ function ContactPage() {
               toward a cleaner, calmer home.
             </p>
             <div className="mt-10 flex flex-col gap-4 sm:flex-row">
-              <a href="#enquiry-form" className={primaryButton}>
+              <a href="/quote" className={primaryButton}>
                 Request a Quote
                 <ArrowRight aria-hidden="true" className="h-4 w-4" />
               </a>

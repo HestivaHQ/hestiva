@@ -20,7 +20,7 @@ export function ContactSection() {
           </p>
           <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
             <a
-              href="mailto:hello@hestiva.co.za?subject=Hestiva%20quote%20request"
+              href="/quote"
               className="inline-flex items-center justify-center gap-2 rounded-lg bg-[#C9A45B] px-6 py-3 font-semibold text-[#3B0F1A] transition-colors hover:bg-[#D8B970] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F5F1E8]"
             >
               Request a Quote <ArrowRight className="h-4 w-4" aria-hidden="true" />

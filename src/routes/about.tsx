@@ -137,7 +137,7 @@ function AboutPage() {
               attention to the details that make a home feel cared for.
             </p>
             <div className="mt-10 flex flex-col gap-4 sm:flex-row">
-              <a href="/#contact" className={primaryButton}>
+              <a href="/quote" className={primaryButton}>
                 Request a Quote
               </a>
               <Link to="/services" className={secondaryButton}>
@@ -325,7 +325,7 @@ function AboutPage() {
               Tell us about your home and we&apos;ll prepare a personalised cleaning quotation.
             </p>
             <div className="mt-9 flex flex-col justify-center gap-4 sm:flex-row">
-              <a href="/#contact" className={primaryButton}>
+              <a href="/quote" className={primaryButton}>
                 Request Your Quote
               </a>
               <a href="https://wa.me/27684231614" className={secondaryButton}>

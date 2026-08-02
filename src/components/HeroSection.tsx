@@ -6,7 +6,7 @@ export function HeroSection() {
   return (
     <section className="relative mt-20 overflow-hidden bg-[#F8F3E8]">
       <div className="pointer-events-none absolute -left-32 top-24 h-80 w-80 rounded-full bg-[#C9A45B]/10 blur-3xl" />
-      <div className="relative mx-auto grid min-h-[calc(100vh-5rem)] max-w-7xl items-center gap-12 px-6 py-16 lg:grid-cols-[0.9fr_1.1fr] lg:gap-16 lg:py-20">
+      <div className="relative mx-auto grid min-h-[calc(100vh-5rem)] max-w-7xl items-center gap-12 px-6 py-16 lg:grid-cols-[0.82fr_1.18fr] lg:gap-16 lg:py-20">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -18,17 +18,17 @@ export function HeroSection() {
               <Sparkles className="h-4 w-4 text-[#9A7132]" aria-hidden="true" />
             </span>
             <span className="text-xs font-semibold uppercase tracking-[0.28em] text-[#9A7132]">
-              Thoughtful home care
+              Grace in Every Detail.
             </span>
           </div>
 
-          <h1 className="mb-7 text-5xl font-semibold leading-[1.02] tracking-[-0.035em] text-[#3B0F1A] sm:text-6xl lg:text-7xl">
-            Grace in Every <span className="text-[#9A7132]">Detail.</span>
+          <h1 className="mb-7 text-4xl font-semibold leading-[1.06] tracking-[-0.035em] text-[#3B0F1A] sm:text-5xl lg:text-[4rem]">
+            A Cleaner Home. More Time for What Matters.
           </h1>
 
-          <p className="mb-10 max-w-xl text-lg leading-relaxed text-[#3B0F1A]/75 sm:text-xl">
-            Professional residential cleaning that gives busy households more time to enjoy the
-            moments that matter.
+          <p className="mb-10 max-w-xl text-lg leading-[1.75] text-[#3B0F1A]/85 sm:text-xl">
+            Thoughtful residential cleaning for busy households that value care, consistency and
+            attention to detail.
           </p>
 
           <div className="flex flex-col gap-4 sm:flex-row">
@@ -67,7 +67,7 @@ export function HeroSection() {
               height={1080}
               fetchPriority="high"
               decoding="async"
-              className="aspect-[4/3] h-full w-full object-cover lg:aspect-[5/6] xl:aspect-[4/3]"
+              className="aspect-[4/3] h-full w-full object-cover lg:aspect-[5/4]"
             />
           </div>
         </motion.div>

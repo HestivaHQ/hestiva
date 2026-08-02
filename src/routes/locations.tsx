@@ -1,140 +1,404 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { MapPin } from "lucide-react";
-import { Navbar } from "@/components/Navbar";
+import { ArrowRight, Check, Home, MapPin, MessageCircle, Navigation } from "lucide-react";
 import { Footer } from "@/components/Footer";
-import { ContactSection } from "@/components/ContactSection";
-import { locationPages } from "@/content/locations";
+import { Navbar } from "@/components/Navbar";
+import { SITE_NAME, SITE_URL } from "@/lib/site";
 
-const SITE_URL = "https://www.maintenancemarshall.co.za";
-const LOCATION_NAMES = locationPages.map((location) => location.name).join(", ");
+const serviceAreas = [
+  "Johannesburg",
+  "Riverlea",
+  "Randburg",
+  "Roodepoort",
+  "Sandton",
+  "Midrand",
+  "Centurion",
+  "Pretoria",
+] as const;
+
+const areaGroups = [
+  {
+    title: "Johannesburg West",
+    areas: ["Riverlea", "Roodepoort", "Surrounding suburbs by confirmation"],
+  },
+  {
+    title: "Johannesburg North",
+    areas: ["Randburg", "Sandton", "Surrounding suburbs by confirmation"],
+  },
+  {
+    title: "Midrand and Centurion",
+    areas: ["Midrand", "Centurion", "Nearby estates and residential areas by confirmation"],
+  },
+  {
+    title: "Pretoria",
+    areas: ["Selected Pretoria suburbs by confirmation"],
+  },
+] as const;
+
+const bookingNotes = [
+  "Exact service availability depends on your address.",
+  "Some areas may require additional travel time or cost.",
+  "Estate and complex access details should be provided in advance.",
+  "Preferred dates are not confirmed until Hestiva accepts the booking.",
+  "Recurring cleaning availability may differ by area.",
+] as const;
+
+const quoteEmail = "mailto:quotes@hestiva.co.za?subject=Hestiva%20address%20and%20quote%20request";
+const whatsAppUrl =
+  "https://wa.me/27684231614?text=Hello%20Hestiva%2C%20I%27d%20like%20to%20check%20cleaning%20availability%20for%20my%20address.";
 
 export const Route = createFileRoute("/locations")({
   component: LocationsOverview,
   head: () => {
     const canonical = `${SITE_URL}/locations`;
-    const title = "Property Maintenance Service Areas Gauteng | Maintenance Marshall";
-    const description = `Maintenance Marshall provides property maintenance services across Gauteng, including ${LOCATION_NAMES}.`;
+    const title = `Areas We Serve | ${SITE_NAME} Residential Cleaning`;
+    const description =
+      "Check Hestiva residential cleaning availability across selected Johannesburg, Midrand, Centurion and Pretoria areas.";
 
-    const collectionSchema = {
+    const localBusinessSchema = {
       "@context": "https://schema.org",
-      "@type": "CollectionPage",
-      name: "Property Maintenance Service Areas in Gauteng",
-      description,
-      url: canonical,
-      mainEntity: {
-        "@type": "ItemList",
-        itemListElement: locationPages.map((location, index) => ({
-          "@type": "ListItem",
-          position: index + 1,
-          name: `Property Maintenance in ${location.name}`,
-          description: location.metaDescription,
-          url: `${SITE_URL}/locations/${location.slug}`,
-        })),
+      "@type": "LocalBusiness",
+      name: SITE_NAME,
+      url: SITE_URL,
+      telephone: "+27684231614",
+      email: "info@hestiva.co.za",
+      address: {
+        "@type": "PostalAddress",
+        streetAddress: "2962 Dunlin Drive",
+        addressLocality: "Riverlea",
+        addressRegion: "Johannesburg",
+        postalCode: "2093",
+        addressCountry: "ZA",
       },
-      provider: {
-        "@type": "LocalBusiness",
-        name: "Maintenance Marshall (Pty) Ltd",
-        url: SITE_URL,
-        telephone: "+27767816550",
-        email: "quotes@maintenancemarshall.co.za",
-        areaServed: {
-          "@type": "AdministrativeArea",
-          name: "Gauteng",
-        },
-      },
-    };
-
-    const breadcrumbSchema = {
-      "@context": "https://schema.org",
-      "@type": "BreadcrumbList",
-      itemListElement: [
-        {
-          "@type": "ListItem",
-          position: 1,
-          name: "Home",
-          item: SITE_URL,
-        },
-        {
-          "@type": "ListItem",
-          position: 2,
-          name: "Locations",
-          item: canonical,
-        },
-      ],
+      areaServed: serviceAreas.map((name) => ({ "@type": "Place", name })),
     };
 
     return {
       meta: [
         { title },
-        {
-          name: "description",
-          content: description,
-        },
+        { name: "description", content: description },
         { property: "og:title", content: title },
-        {
-          property: "og:description",
-          content:
-            "View Maintenance Marshall service areas for multi-skilled property maintenance across Gauteng homes, offices, shops, landlords and commercial properties.",
-        },
+        { property: "og:description", content: description },
         { property: "og:type", content: "website" },
         { property: "og:url", content: canonical },
         { name: "twitter:title", content: title },
-        {
-          name: "twitter:description",
-          content:
-            "View Maintenance Marshall service areas for multi-skilled property maintenance across Gauteng homes, offices, shops, landlords and commercial properties.",
-        },
+        { name: "twitter:description", content: description },
       ],
       links: [{ rel: "canonical", href: canonical }],
       scripts: [
         {
           type: "application/ld+json",
-          children: JSON.stringify(collectionSchema),
-        },
-        {
-          type: "application/ld+json",
-          children: JSON.stringify(breadcrumbSchema),
+          children: JSON.stringify(localBusinessSchema),
         },
       ],
     };
   },
 });
 
+const primaryButton =
+  "inline-flex min-h-12 items-center justify-center gap-2 rounded-md bg-[#5A1425] px-7 py-3 text-sm font-semibold uppercase tracking-[0.1em] text-white shadow-[0_12px_30px_rgba(90,20,37,0.14)] transition hover:-translate-y-0.5 hover:bg-[#711C31] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A45B] focus-visible:ring-offset-4";
+const secondaryButton =
+  "inline-flex min-h-12 items-center justify-center gap-2 rounded-md border border-[#5A1425]/35 bg-white/60 px-7 py-3 text-sm font-semibold uppercase tracking-[0.1em] text-[#5A1425] transition hover:border-[#5A1425] hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A45B] focus-visible:ring-offset-4";
+
 function LocationsOverview() {
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen bg-[#FCFAF6] text-[#403936]">
       <Navbar />
       <main>
-        <section className="pt-32 pb-16 bg-secondary border-b border-border">
-          <div className="max-w-6xl mx-auto px-6">
-            <p className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.3em] text-primary font-semibold mb-4">
-              <MapPin className="w-4 h-4" />
-              Gauteng Service Areas
+        <section className="relative overflow-hidden border-b border-[#C9A45B]/20 bg-[#F7F0E3] px-6 pb-24 pt-36 md:pb-32 md:pt-44">
+          <div
+            aria-hidden="true"
+            className="absolute -right-36 top-16 h-[30rem] w-[30rem] rounded-full border border-[#C9A45B]/20"
+          />
+          <div
+            aria-hidden="true"
+            className="absolute -right-12 top-40 h-72 w-72 rounded-full border border-[#C9A45B]/25"
+          />
+          <div className="relative mx-auto max-w-7xl">
+            <nav
+              aria-label="Breadcrumb"
+              className="mb-12 flex items-center gap-2 text-sm text-[#695E59]"
+            >
+              <Link
+                to="/"
+                className="rounded-sm transition hover:text-[#5A1425] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A45B]"
+              >
+                Home
+              </Link>
+              <span aria-hidden="true" className="text-[#C9A45B]">
+                /
+              </span>
+              <span aria-current="page">Areas We Serve</span>
+            </nav>
+            <p className="mb-5 flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.28em] text-[#9A742E]">
+              <MapPin aria-hidden="true" className="h-4 w-4" /> Areas We Serve
             </p>
-            <h1 className="text-4xl md:text-6xl font-extrabold mb-6">Property Maintenance Across Gauteng</h1>
-            <p className="text-lg md:text-xl text-muted-foreground max-w-3xl leading-relaxed">
-              Maintenance Marshall provides multi-skilled property maintenance for homes, landlords, offices, shops,
-              body corporates and commercial properties across key Gauteng areas.
+            <h1 className="max-w-5xl text-4xl font-semibold leading-[1.08] tracking-[-0.03em] text-[#5A1425] sm:text-6xl md:text-7xl">
+              Thoughtful home cleaning across Johannesburg and nearby areas.
+            </h1>
+            <p className="mt-7 max-w-3xl text-lg leading-8 text-[#695E59] md:text-xl">
+              Hestiva serves households across selected parts of Johannesburg and surrounding areas,
+              with each booking confirmed according to travel distance, availability and service
+              requirements.
             </p>
+            <div className="mt-10 flex flex-col gap-4 sm:flex-row">
+              <a href={quoteEmail} className={primaryButton}>
+                Request a Quote <ArrowRight aria-hidden="true" className="h-4 w-4" />
+              </a>
+              <a href="mailto:info@hestiva.co.za" className={secondaryButton}>
+                Contact Hestiva
+              </a>
+            </div>
           </div>
         </section>
 
-        <section className="py-20">
-          <div className="max-w-6xl mx-auto px-6 grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {locationPages.map((location) => (
-              <article key={location.slug} className="bg-card border border-border rounded-lg p-6">
-                <p className="text-xs uppercase tracking-[0.2em] text-primary font-semibold mb-3">{location.region}</p>
-                <h2 className="text-xl font-bold mb-3">Property Maintenance in {location.name}</h2>
-                <p className="text-sm text-muted-foreground leading-relaxed mb-5">{location.heroDescription}</p>
-                <Link to="/locations/$locationSlug" params={{ locationSlug: location.slug }} className="text-primary text-sm font-semibold">
-                  View {location.name} services
-                </Link>
-              </article>
-            ))}
+        <section aria-labelledby="footprint-heading" className="px-6 py-20 md:py-28">
+          <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-[0.85fr_1.15fr] lg:items-start">
+            <div className="lg:sticky lg:top-28">
+              <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#9A742E]">
+                Current service area
+              </p>
+              <h2
+                id="footprint-heading"
+                className="mt-4 text-3xl font-semibold tracking-tight text-[#5A1425] md:text-5xl"
+              >
+                Our current service footprint
+              </h2>
+              <p className="mt-6 max-w-xl leading-7 text-[#695E59]">
+                These are the main areas within our current footprint, rather than a promise of full
+                coverage in every suburb. We confirm availability using your exact address, travel
+                distance and our schedule.
+              </p>
+            </div>
+            <ul
+              className="grid gap-x-8 gap-y-1 border-y border-[#C9A45B]/30 py-4 sm:grid-cols-2"
+              role="list"
+            >
+              {serviceAreas.map((area) => (
+                <li
+                  key={area}
+                  className="flex items-center gap-4 border-b border-[#E6D9C8] py-5 text-lg font-medium text-[#514946] last:border-b-0 sm:[&:nth-last-child(-n+2)]:border-b-0"
+                >
+                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#F3E8D5] text-[#8A6729]">
+                    <MapPin aria-hidden="true" className="h-4 w-4" />
+                  </span>
+                  {area}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+
+        <section
+          aria-labelledby="groups-heading"
+          className="border-y border-[#E6D9C8] bg-white px-6 py-20 md:py-28"
+        >
+          <div className="mx-auto max-w-7xl">
+            <div className="max-w-2xl">
+              <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#9A742E]">
+                Area groups
+              </p>
+              <h2
+                id="groups-heading"
+                className="mt-4 text-3xl font-semibold tracking-tight text-[#5A1425] md:text-5xl"
+              >
+                Where our teams currently travel
+              </h2>
+              <p className="mt-5 leading-7 text-[#695E59]">
+                Use these groups as a guide. Nearby residential areas are considered individually
+                when you request a quotation.
+              </p>
+            </div>
+            <div className="mt-14 grid gap-x-12 gap-y-10 md:grid-cols-2">
+              {areaGroups.map((group) => (
+                <article key={group.title} className="border-t border-[#C9A45B]/50 pt-7">
+                  <div className="flex items-start gap-4">
+                    <Navigation
+                      aria-hidden="true"
+                      className="mt-1 h-5 w-5 shrink-0 text-[#9A742E]"
+                    />
+                    <div>
+                      <h3 className="text-2xl font-semibold text-[#5A1425]">{group.title}</h3>
+                      <ul className="mt-5 space-y-3" role="list">
+                        {group.areas.map((area) => (
+                          <li key={area} className="flex gap-3 leading-7 text-[#695E59]">
+                            <span
+                              aria-hidden="true"
+                              className="mt-3 h-1.5 w-1.5 shrink-0 rounded-full bg-[#C9A45B]"
+                            />
+                            {area}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section aria-labelledby="address-check-heading" className="px-6 py-20 md:py-28">
+          <div className="mx-auto max-w-5xl rounded-3xl border border-[#C9A45B]/30 bg-[#F7F0E3] px-7 py-14 text-center shadow-[0_18px_60px_rgba(70,42,33,0.06)] sm:px-12 md:py-20">
+            <MapPin aria-hidden="true" className="mx-auto h-8 w-8 text-[#9A742E]" />
+            <h2
+              id="address-check-heading"
+              className="mt-5 text-3xl font-semibold tracking-tight text-[#5A1425] md:text-5xl"
+            >
+              Not sure whether we cover your area?
+            </h2>
+            <p className="mx-auto mt-5 max-w-2xl text-lg leading-8 text-[#695E59]">
+              Send us your suburb or full address and we’ll confirm availability before preparing
+              your quotation.
+            </p>
+            <div className="mt-9 flex flex-col justify-center gap-4 sm:flex-row">
+              <a href={quoteEmail} className={primaryButton}>
+                Check My Address <ArrowRight aria-hidden="true" className="h-4 w-4" />
+              </a>
+              <a
+                href={whatsAppUrl}
+                target="_blank"
+                rel="noreferrer"
+                className={secondaryButton}
+                aria-label="WhatsApp Hestiva on 068 423 1614"
+              >
+                <MessageCircle aria-hidden="true" className="h-4 w-4" /> WhatsApp 068 423 1614
+              </a>
+            </div>
+          </div>
+        </section>
+
+        <section
+          aria-labelledby="booking-notes-heading"
+          className="bg-[#F2E9DC] px-6 py-20 md:py-24"
+        >
+          <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-2 lg:gap-20">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#9A742E]">
+                Before you book
+              </p>
+              <h2
+                id="booking-notes-heading"
+                className="mt-4 text-3xl font-semibold tracking-tight text-[#5A1425] md:text-4xl"
+              >
+                Travel and booking notes
+              </h2>
+              <p className="mt-5 max-w-lg leading-7 text-[#695E59]">
+                A few helpful details allow us to plan the right time and travel for your home.
+              </p>
+            </div>
+            <ul className="space-y-4" role="list">
+              {bookingNotes.map((note) => (
+                <li
+                  key={note}
+                  className="flex gap-4 border-b border-[#C9A45B]/25 pb-4 leading-7 text-[#514946]"
+                >
+                  <Check aria-hidden="true" className="mt-1 h-5 w-5 shrink-0 text-[#9A742E]" />
+                  {note}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+
+        <section aria-labelledby="business-address-heading" className="px-6 py-20 md:py-28">
+          <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[1fr_1.1fr] lg:items-center">
+            <div className="relative flex min-h-72 items-center justify-center overflow-hidden rounded-3xl border border-[#C9A45B]/30 bg-[#F7F0E3]">
+              <div
+                aria-hidden="true"
+                className="absolute h-52 w-52 rounded-full border border-[#C9A45B]/30"
+              />
+              <div className="relative text-center text-[#8A6729]">
+                <MapPin aria-hidden="true" className="mx-auto h-10 w-10" />
+                <span className="mt-4 block text-xs font-semibold uppercase tracking-[0.24em]">
+                  Riverlea, Johannesburg
+                </span>
+              </div>
+            </div>
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#9A742E]">
+                Hestiva business address
+              </p>
+              <h2
+                id="business-address-heading"
+                className="mt-4 text-3xl font-semibold tracking-tight text-[#5A1425] md:text-5xl"
+              >
+                Our home base
+              </h2>
+              <address className="mt-6 flex gap-4 text-lg not-italic leading-8 text-[#514946]">
+                <Home aria-hidden="true" className="mt-1 h-5 w-5 shrink-0 text-[#9A742E]" />
+                <span>
+                  2962 Dunlin Drive
+                  <br />
+                  Riverlea
+                  <br />
+                  Johannesburg
+                  <br />
+                  2093
+                </span>
+              </address>
+              <p className="mt-6 max-w-xl leading-7 text-[#695E59]">
+                This is Hestiva’s business address. It is not presented as a walk-in customer
+                location, so please contact us before planning a visit.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <section
+          aria-labelledby="closing-heading"
+          className="border-t border-[#C9A45B]/25 bg-[#F7F0E3] px-6 py-20 text-center md:py-28"
+        >
+          <div className="mx-auto max-w-4xl">
+            <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#9A742E]">
+              Your home, beautifully cared for
+            </p>
+            <h2
+              id="closing-heading"
+              className="mt-5 text-3xl font-semibold tracking-tight text-[#5A1425] md:text-5xl"
+            >
+              Ready to check availability for your home?
+            </h2>
+            <p className="mx-auto mt-5 max-w-2xl text-lg leading-8 text-[#695E59]">
+              Tell us where you are and what type of cleaning you need, and we’ll confirm whether we
+              can assist.
+            </p>
+            <div className="mt-9 flex flex-col justify-center gap-4 sm:flex-row">
+              <a href={quoteEmail} className={primaryButton}>
+                Request Your Quote <ArrowRight aria-hidden="true" className="h-4 w-4" />
+              </a>
+              <a
+                href={whatsAppUrl}
+                target="_blank"
+                rel="noreferrer"
+                className={secondaryButton}
+                aria-label="WhatsApp Hestiva on 068 423 1614"
+              >
+                <MessageCircle aria-hidden="true" className="h-4 w-4" /> WhatsApp 068 423 1614
+              </a>
+            </div>
+            <div className="mt-12 flex flex-col items-center justify-center gap-x-8 gap-y-3 border-t border-[#C9A45B]/30 pt-8 text-sm text-[#695E59] sm:flex-row sm:flex-wrap">
+              <a
+                href="tel:+27684231614"
+                className="rounded-sm hover:text-[#5A1425] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A45B]"
+              >
+                Phone: 068 423 1614
+              </a>
+              <a
+                href="mailto:quotes@hestiva.co.za"
+                className="rounded-sm hover:text-[#5A1425] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A45B]"
+              >
+                Quotes: quotes@hestiva.co.za
+              </a>
+              <a
+                href="mailto:info@hestiva.co.za"
+                className="rounded-sm hover:text-[#5A1425] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A45B]"
+              >
+                General enquiries: info@hestiva.co.za
+              </a>
+            </div>
           </div>
         </section>
       </main>
-      <ContactSection />
       <Footer />
     </div>
   );

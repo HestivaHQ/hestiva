@@ -43,7 +43,12 @@ function getRelatedServices(service: ServicePage) {
   return servicePages
     .filter((item) => item.slug !== service.slug)
     .map((item) => {
-      const candidateText = [item.title, item.metaDescription, ...item.services, ...item.commonProblems]
+      const candidateText = [
+        item.title,
+        item.metaDescription,
+        ...item.services,
+        ...item.commonProblems,
+      ]
         .join(" ")
         .toLowerCase();
       const score = [...serviceWords].filter((word) => candidateText.includes(word)).length;
@@ -65,7 +70,10 @@ export function ServicePageLayout({ service }: { service: ServicePage }) {
       <main>
         <section className="pt-32 pb-20 bg-secondary">
           <div className="max-w-7xl mx-auto px-6">
-            <nav aria-label="Breadcrumb" className="mb-8 flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
+            <nav
+              aria-label="Breadcrumb"
+              className="mb-8 flex flex-wrap items-center gap-2 text-sm text-muted-foreground"
+            >
               <Link to="/" className="hover:text-primary transition-colors">
                 Home
               </Link>
@@ -108,7 +116,7 @@ export function ServicePageLayout({ service }: { service: ServicePage }) {
                   </a>
                 </Button>
                 <Button variant="outline" size="lg" asChild>
-                  <a href="mailto:quotes@maintenancemarshall.co.za">Request a Quote</a>
+                  <a href="/quote">Request a Quote</a>
                 </Button>
               </div>
             </div>
@@ -123,7 +131,10 @@ export function ServicePageLayout({ service }: { service: ServicePage }) {
 
               <div className="mt-10 grid sm:grid-cols-2 gap-4">
                 {service.services.map((item) => (
-                  <div key={item} className="flex items-start gap-3 rounded-lg border border-border bg-card p-4">
+                  <div
+                    key={item}
+                    className="flex items-start gap-3 rounded-lg border border-border bg-card p-4"
+                  >
                     <CheckCircle2 className="w-5 h-5 text-primary shrink-0 mt-0.5" />
                     <span className="text-sm text-muted-foreground">{item}</span>
                   </div>
@@ -158,7 +169,8 @@ export function ServicePageLayout({ service }: { service: ServicePage }) {
                     {service.shortTitle} support across Gauteng
                   </h2>
                   <p className="text-muted-foreground mt-3 max-w-3xl leading-relaxed">
-                    Maintenance Marshall assists residential, commercial and rental properties across key Gauteng areas.
+                    Maintenance Marshall assists residential, commercial and rental properties
+                    across key Gauteng areas.
                   </p>
                 </div>
                 <Button variant="hero" size="lg" asChild>
@@ -187,12 +199,17 @@ export function ServicePageLayout({ service }: { service: ServicePage }) {
         <section className="py-20 bg-secondary">
           <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-[0.9fr_1.1fr] gap-12 items-start">
             <div>
-              <span className="text-xs uppercase tracking-[0.3em] text-primary font-semibold">Why Clients Choose Us</span>
+              <span className="text-xs uppercase tracking-[0.3em] text-primary font-semibold">
+                Why Clients Choose Us
+              </span>
               <h2 className="text-3xl md:text-4xl font-bold text-foreground mt-3">
                 Maintenance planned around the full repair sequence
               </h2>
               <p className="text-muted-foreground mt-4 leading-relaxed">
-                Many property problems are connected. A leak can affect ceilings and paintwork, a drain issue can affect paving, and poor preparation can shorten the life of a repair. Maintenance Marshall looks at the full sequence so the work is planned clearly and completed in the correct order.
+                Many property problems are connected. A leak can affect ceilings and paintwork, a
+                drain issue can affect paving, and poor preparation can shorten the life of a
+                repair. Maintenance Marshall looks at the full sequence so the work is planned
+                clearly and completed in the correct order.
               </p>
             </div>
             <div className="grid sm:grid-cols-2 gap-4">
@@ -209,7 +226,9 @@ export function ServicePageLayout({ service }: { service: ServicePage }) {
         <section className="py-20">
           <div className="max-w-7xl mx-auto px-6">
             <div className="max-w-2xl">
-              <span className="text-xs uppercase tracking-[0.3em] text-primary font-semibold">Our Process</span>
+              <span className="text-xs uppercase tracking-[0.3em] text-primary font-semibold">
+                Our Process
+              </span>
               <h2 className="text-3xl md:text-4xl font-bold text-foreground mt-3">
                 How We Approach This Work
               </h2>
@@ -228,7 +247,9 @@ export function ServicePageLayout({ service }: { service: ServicePage }) {
         <section className="py-20 bg-secondary">
           <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-[0.8fr_1.2fr] gap-12">
             <div>
-              <span className="text-xs uppercase tracking-[0.3em] text-primary font-semibold">Questions</span>
+              <span className="text-xs uppercase tracking-[0.3em] text-primary font-semibold">
+                Questions
+              </span>
               <h2 className="text-3xl md:text-4xl font-bold text-foreground mt-3">
                 Frequently Asked Questions
               </h2>
@@ -250,12 +271,15 @@ export function ServicePageLayout({ service }: { service: ServicePage }) {
         <section className="py-20">
           <div className="max-w-7xl mx-auto px-6">
             <div className="max-w-2xl">
-              <span className="text-xs uppercase tracking-[0.3em] text-primary font-semibold">Related Services</span>
+              <span className="text-xs uppercase tracking-[0.3em] text-primary font-semibold">
+                Related Services
+              </span>
               <h2 className="text-3xl md:text-4xl font-bold text-foreground mt-3">
                 Other Maintenance Services
               </h2>
               <p className="text-muted-foreground mt-4">
-                Many property problems connect across more than one trade. These related services help clients find the full repair sequence.
+                Many property problems connect across more than one trade. These related services
+                help clients find the full repair sequence.
               </p>
             </div>
             <div className="mt-10 grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -280,13 +304,19 @@ export function ServicePageLayout({ service }: { service: ServicePage }) {
           <div className="max-w-7xl mx-auto px-6 rounded-xl border border-border bg-card p-8 md:p-10">
             <div className="grid lg:grid-cols-[1fr_auto] gap-8 items-center">
               <div>
-                <h2 className="text-3xl font-bold text-foreground">Need help with {service.shortTitle.toLowerCase()}?</h2>
+                <h2 className="text-3xl font-bold text-foreground">
+                  Need help with {service.shortTitle.toLowerCase()}?
+                </h2>
                 <p className="text-muted-foreground mt-3 max-w-2xl">
-                  Send Maintenance Marshall the details, photos and location of the work needed. We will help you turn the problem into a practical scope of work.
+                  Send Maintenance Marshall the details, photos and location of the work needed. We
+                  will help you turn the problem into a practical scope of work.
                 </p>
                 <div className="mt-5 flex flex-wrap gap-2">
                   {serviceHighlights.map((item) => (
-                    <span key={item} className="rounded-full border border-border px-3 py-1 text-xs text-muted-foreground">
+                    <span
+                      key={item}
+                      className="rounded-full border border-border px-3 py-1 text-xs text-muted-foreground"
+                    >
                       {item}
                     </span>
                   ))}
@@ -299,7 +329,7 @@ export function ServicePageLayout({ service }: { service: ServicePage }) {
                   </a>
                 </Button>
                 <Button variant="outline" size="lg" asChild>
-                  <a href="mailto:quotes@maintenancemarshall.co.za">Request a Quote</a>
+                  <a href="/quote">Request a Quote</a>
                 </Button>
               </div>
             </div>

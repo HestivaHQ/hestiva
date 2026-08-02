@@ -30,7 +30,9 @@ export function LocationPageLayout({ location }: { location: LocationPage }) {
               <h1 className="text-4xl md:text-6xl font-extrabold mt-4 text-foreground leading-tight">
                 Property Maintenance in {location.name}
               </h1>
-              <p className="text-lg text-muted-foreground mt-6 leading-relaxed">{location.heroDescription}</p>
+              <p className="text-lg text-muted-foreground mt-6 leading-relaxed">
+                {location.heroDescription}
+              </p>
               <div className="mt-8 flex flex-col sm:flex-row gap-4">
                 <Button variant="hero" size="lg" asChild>
                   <a href="tel:+27767816550">
@@ -39,7 +41,7 @@ export function LocationPageLayout({ location }: { location: LocationPage }) {
                   </a>
                 </Button>
                 <Button variant="outline" size="lg" asChild>
-                  <a href="mailto:quotes@maintenancemarshall.co.za">Request a Quote</a>
+                  <a href="/quote">Request a Quote</a>
                 </Button>
               </div>
             </div>
@@ -49,12 +51,17 @@ export function LocationPageLayout({ location }: { location: LocationPage }) {
         <section className="py-20">
           <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-[1.2fr_0.8fr] gap-12">
             <div>
-              <h2 className="text-3xl font-bold text-foreground">Maintenance Services for {location.name}</h2>
+              <h2 className="text-3xl font-bold text-foreground">
+                Maintenance Services for {location.name}
+              </h2>
               <p className="text-muted-foreground mt-4 leading-relaxed">{location.overview}</p>
 
               <div className="mt-10 grid sm:grid-cols-2 gap-4">
                 {location.priorityServices.map((item) => (
-                  <div key={item} className="flex items-start gap-3 rounded-lg border border-border bg-card p-4">
+                  <div
+                    key={item}
+                    className="flex items-start gap-3 rounded-lg border border-border bg-card p-4"
+                  >
                     <CheckCircle2 className="w-5 h-5 text-primary shrink-0 mt-0.5" />
                     <span className="text-sm text-muted-foreground">{item}</span>
                   </div>
@@ -79,20 +86,29 @@ export function LocationPageLayout({ location }: { location: LocationPage }) {
         <section className="py-20 bg-secondary">
           <div className="max-w-7xl mx-auto px-6">
             <div className="max-w-2xl">
-              <span className="text-xs uppercase tracking-[0.3em] text-primary font-semibold">Popular Services</span>
+              <span className="text-xs uppercase tracking-[0.3em] text-primary font-semibold">
+                Popular Services
+              </span>
               <h2 className="text-3xl md:text-4xl font-bold text-foreground mt-3">
                 Common {location.name} Maintenance Work
               </h2>
               <p className="text-muted-foreground mt-4">
-                These service pages explain our process, common problems and frequently asked questions for each type of work.
+                These service pages explain our process, common problems and frequently asked
+                questions for each type of work.
               </p>
             </div>
             <div className="mt-10 grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {featuredServices.map((service) => (
                 <article key={service.slug} className="rounded-lg border border-border bg-card p-6">
                   <h3 className="font-bold text-foreground">{service.title}</h3>
-                  <p className="text-sm text-muted-foreground mt-3 leading-relaxed">{service.metaDescription}</p>
-                  <Link to="/services/$serviceSlug" params={{ serviceSlug: service.slug }} className="inline-block mt-5 text-sm text-primary font-semibold">
+                  <p className="text-sm text-muted-foreground mt-3 leading-relaxed">
+                    {service.metaDescription}
+                  </p>
+                  <Link
+                    to="/services/$serviceSlug"
+                    params={{ serviceSlug: service.slug }}
+                    className="inline-block mt-5 text-sm text-primary font-semibold"
+                  >
                     View service
                   </Link>
                 </article>
@@ -104,12 +120,15 @@ export function LocationPageLayout({ location }: { location: LocationPage }) {
         <section className="py-20">
           <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-[0.8fr_1.2fr] gap-12">
             <div>
-              <span className="text-xs uppercase tracking-[0.3em] text-primary font-semibold">Questions</span>
+              <span className="text-xs uppercase tracking-[0.3em] text-primary font-semibold">
+                Questions
+              </span>
               <h2 className="text-3xl md:text-4xl font-bold text-foreground mt-3">
                 {location.name} Maintenance FAQs
               </h2>
               <p className="text-muted-foreground mt-4">
-                Practical answers for clients looking for property maintenance support in {location.name}.
+                Practical answers for clients looking for property maintenance support in{" "}
+                {location.name}.
               </p>
             </div>
             <div className="space-y-4">
@@ -127,20 +146,26 @@ export function LocationPageLayout({ location }: { location: LocationPage }) {
           <div className="max-w-7xl mx-auto px-6 rounded-xl border border-border bg-card p-8 md:p-10">
             <div className="grid lg:grid-cols-[1fr_auto] gap-8 items-center">
               <div>
-                <h2 className="text-3xl font-bold text-foreground">Need maintenance help in {location.name}?</h2>
+                <h2 className="text-3xl font-bold text-foreground">
+                  Need maintenance help in {location.name}?
+                </h2>
                 <p className="text-muted-foreground mt-3 max-w-2xl">
-                  Send Maintenance Marshall the details, photos and location of the work needed. We will help turn the problem into a practical scope of work.
+                  Send Maintenance Marshall the details, photos and location of the work needed. We
+                  will help turn the problem into a practical scope of work.
                 </p>
                 <div className="mt-5 flex flex-wrap gap-2">
                   {location.nearbyAreas.map((area) => (
-                    <span key={area} className="rounded-full border border-border px-3 py-1 text-xs text-muted-foreground">
+                    <span
+                      key={area}
+                      className="rounded-full border border-border px-3 py-1 text-xs text-muted-foreground"
+                    >
                       Nearby: {area}
                     </span>
                   ))}
                 </div>
               </div>
               <Button variant="hero" size="lg" asChild>
-                <a href="mailto:quotes@maintenancemarshall.co.za">Request a Quote</a>
+                <a href="/quote">Request a Quote</a>
               </Button>
             </div>
           </div>

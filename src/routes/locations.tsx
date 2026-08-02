@@ -42,7 +42,6 @@ const bookingNotes = [
   "Recurring cleaning availability may differ by area.",
 ] as const;
 
-const quoteEmail = "mailto:quotes@hestiva.co.za?subject=Hestiva%20address%20and%20quote%20request";
 const whatsAppUrl =
   "https://wa.me/27684231614?text=Hello%20Hestiva%2C%20I%27d%20like%20to%20check%20cleaning%20availability%20for%20my%20address.";
 
@@ -141,7 +140,7 @@ function LocationsOverview() {
               requirements.
             </p>
             <div className="mt-10 flex flex-col gap-4 sm:flex-row">
-              <a href={quoteEmail} className={primaryButton}>
+              <a href="/quote" className={primaryButton}>
                 Request a Quote <ArrowRight aria-hidden="true" className="h-4 w-4" />
               </a>
               <a href="mailto:info@hestiva.co.za" className={secondaryButton}>
@@ -251,7 +250,7 @@ function LocationsOverview() {
               your quotation.
             </p>
             <div className="mt-9 flex flex-col justify-center gap-4 sm:flex-row">
-              <a href={quoteEmail} className={primaryButton}>
+              <a href="/quote" className={primaryButton}>
                 Check My Address <ArrowRight aria-hidden="true" className="h-4 w-4" />
               </a>
               <a
@@ -363,7 +362,7 @@ function LocationsOverview() {
               can assist.
             </p>
             <div className="mt-9 flex flex-col justify-center gap-4 sm:flex-row">
-              <a href={quoteEmail} className={primaryButton}>
+              <a href="/quote" className={primaryButton}>
                 Request Your Quote <ArrowRight aria-hidden="true" className="h-4 w-4" />
               </a>
               <a

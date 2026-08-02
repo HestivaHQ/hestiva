@@ -34,7 +34,7 @@ export function HeroSection() {
           <div className="flex flex-col gap-4 sm:flex-row">
             <Button variant="hero" size="lg" asChild>
               <a
-                href="#contact"
+                href="/quote"
                 className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#3B0F1A] focus-visible:ring-offset-4 focus-visible:ring-offset-[#F8F3E8]"
               >
                 Request Your Quote

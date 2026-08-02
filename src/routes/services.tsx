@@ -273,7 +273,7 @@ function ServicesOverview() {
               thoughtful residential cleaning designed around your home and your routine.
             </p>
             <a
-              href="/#contact"
+              href="/quote"
               className="mt-10 inline-flex min-h-12 items-center justify-center rounded-md bg-[#5A1425] px-7 py-3 text-sm font-semibold uppercase tracking-[0.12em] text-white shadow-[0_12px_30px_rgba(90,20,37,0.16)] transition hover:-translate-y-0.5 hover:bg-[#711C31] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A45B] focus-visible:ring-offset-4 focus-visible:ring-offset-[#F7F0E3]"
             >
               Request a Quote
@@ -367,7 +367,7 @@ function ServicesOverview() {
               and schedule.
             </p>
             <a
-              href="/#contact"
+              href="/quote"
               className="mt-9 inline-flex min-h-12 items-center justify-center rounded-md bg-[#C9A45B] px-7 py-3 text-sm font-semibold uppercase tracking-[0.12em] text-[#3B0F1A] transition hover:-translate-y-0.5 hover:bg-[#D8B970] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-4 focus-visible:ring-offset-[#5A1425]"
             >
               Request a Quote

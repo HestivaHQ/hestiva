@@ -105,6 +105,10 @@ const selectOptions = {
   floorSize: ["Under 80 m²", "80–150 m²", "151–250 m²", "Over 250 m²", "Not sure"],
   bedrooms: ["Studio", "1", "2", "3", "4", "5+"],
   bathrooms: ["1", "2", "3", "4", "5+"],
+  livingAreas: ["1", "2", "3", "4+"],
+  storeys: ["1 storey", "2 storeys", "3 storeys", "4+ storeys"],
+  outdoor: ["None", "Balcony", "Patio", "Both"],
+  estate: ["No", "Yes — estate", "Yes — complex", "Yes — gated community"],
   service: [
     "Regular Home Cleaning",
     "Deep Cleaning",
@@ -471,15 +475,25 @@ function StepContent({
           options={selectOptions.bathrooms}
           required
         />
-        <TextField {...props} name="livingAreas" label="Living areas" type="number" />
-        <TextField {...props} name="storeys" label="Storeys" type="number" />
+        <SelectField
+          {...props}
+          name="livingAreas"
+          label="Living areas"
+          options={selectOptions.livingAreas}
+        />
+        <SelectField {...props} name="storeys" label="Storeys" options={selectOptions.storeys} />
         <SelectField
           {...props}
           name="outdoor"
           label="Balcony or patio"
-          options={["None", "Balcony", "Patio", "Both"]}
+          options={selectOptions.outdoor}
         />
-        <TextField {...props} name="estate" label="Estate or complex" />
+        <SelectField
+          {...props}
+          name="estate"
+          label="Estate or complex"
+          options={selectOptions.estate}
+        />
       </div>
     );
   if (step === 1)
@@ -621,8 +635,18 @@ function StepContent({
           />
           {form.pets.startsWith("Yes") && (
             <>
-              <TextField {...props} name="petType" label="Pet type" />
-              <TextField {...props} name="petTemperament" label="Pet temperament" />
+              <SelectField
+                {...props}
+                name="petType"
+                label="Pet type"
+                options={["Dog", "Cat", "Dog and cat", "Bird", "Other"]}
+              />
+              <SelectField
+                {...props}
+                name="petTemperament"
+                label="Pet temperament"
+                options={["Friendly", "Shy", "Protective", "Reactive", "Not sure"]}
+              />
             </>
           )}
           <SelectField

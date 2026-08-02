@@ -5,6 +5,8 @@ export type QuoteAttachment = {
 };
 
 export type OutboundEmail = {
+  from?: string;
+  replyTo?: string;
   to: string;
   subject: string;
   text: string;
@@ -24,8 +26,8 @@ function getResendApiKey(): string {
 
 export async function sendEmailViaResend(email: OutboundEmail) {
   const emailPayload: Record<string, unknown> = {
-    from: "Maintenance Marshall <quotes@maintenancemarshall.co.za>",
-    reply_to: "quotes@maintenancemarshall.co.za",
+    from: email.from ?? "Maintenance Marshall <quotes@maintenancemarshall.co.za>",
+    reply_to: email.replyTo ?? "quotes@maintenancemarshall.co.za",
     to: email.to,
     subject: email.subject,
     text: email.text,
@@ -66,7 +68,9 @@ export async function sendEmailViaResend(email: OutboundEmail) {
   }
 
   if (!response.ok) {
-    console.error(`Email provider error for ${email.to}: status=${response.status}, response=${responseBody}`);
+    console.error(
+      `Email provider error for ${email.to}: status=${response.status}, response=${responseBody}`,
+    );
     throw new Error(`Email delivery failed: ${response.status} - ${responseBody}`);
   }
 

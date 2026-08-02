@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import {
   ArrowLeft,
   ArrowRight,
@@ -15,6 +15,7 @@ import {
 import { Footer } from "@/components/Footer";
 import { Navbar } from "@/components/Navbar";
 import { SITE_URL } from "@/lib/site";
+import { submitHestivaQuote } from "@/lib/hestiva-quote.functions";
 
 // The generated route tree is refreshed during the build.
 // @ts-expect-error The route is new and is not present in the checked-in generated types yet.
@@ -189,6 +190,10 @@ function QuotePage() {
   const [form, setForm] = useState(initialForm);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [notice, setNotice] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState("");
+  const [website, setWebsite] = useState("");
+  const startedAt = useRef(Date.now());
   const [summaryOpen, setSummaryOpen] = useState(false);
 
   const update = (key: TextKey, value: string) => {
@@ -217,7 +222,8 @@ function QuotePage() {
     });
   };
 
-  const submit = () => {
+  const submit = async () => {
+    if (submitting) return;
     const allErrors: Record<string, string> = {};
     Object.values(requiredByStep)
       .filter((keys): keys is TextKey[] => Boolean(keys))
@@ -230,11 +236,27 @@ function QuotePage() {
       allErrors.email = "Enter a valid email address.";
     setErrors(allErrors);
     if (Object.keys(allErrors).length) return;
-    setNotice(true);
+    setSubmitting(true);
+    setSubmitError("");
+    setNotice(false);
+    try {
+      const result = await submitHestivaQuote({
+        data: { ...form, website, elapsedMs: Date.now() - startedAt.current },
+      });
+      if (!result.success) throw new Error("The server did not confirm delivery.");
+      setNotice(true);
+    } catch (error) {
+      console.error("Quote submission failed", error);
+      setSubmitError(
+        "We couldn't send your request. Your details are still here—please try again in a moment or email quotes@hestiva.co.za.",
+      );
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const whatsappUrl = useMemo(() => {
-    const message = `Hello Hestiva,\n\nI would like help with a residential cleaning quotation.\n\nName: ${form.fullName}\nSuburb: ${form.suburb}\nProperty type: ${form.propertyType}\nBedrooms: ${form.bedrooms}\nBathrooms: ${form.bathrooms}\nService: ${form.service}\nFrequency: ${form.frequency}\nPreferred date: ${form.preferredDate}\nAdditional notes: ${form.notes}`;
+    const message = `Hello Hestiva,\n\nI would like help with a residential cleaning quotation.\n\nName: ${form.fullName}\nSuburb: ${form.suburb}\nProperty type: ${form.propertyType}\nBedrooms: ${form.bedrooms}\nBathrooms: ${form.bathrooms}\nService: ${form.service}\nFrequency: ${form.frequency}\nPreferred date: ${form.preferredDate}`;
     return `https://wa.me/27684231614?text=${encodeURIComponent(message)}`;
   }, [form]);
 
@@ -298,10 +320,28 @@ function QuotePage() {
 
             <div className="mt-8 grid items-start gap-8 lg:grid-cols-[minmax(0,1fr)_21rem]">
               <form
-                onSubmit={(event) => event.preventDefault()}
+                onSubmit={(event) => {
+                  event.preventDefault();
+                  void submit();
+                }}
                 noValidate
                 className="rounded-2xl border border-[#C9A45B]/25 bg-white p-5 shadow-[0_20px_60px_rgba(70,37,29,0.06)] sm:p-8 md:p-10"
               >
+                <div
+                  className="absolute -left-[10000px] top-auto h-px w-px overflow-hidden"
+                  aria-hidden="true"
+                >
+                  <label htmlFor="quote-website">Leave this field empty</label>
+                  <input
+                    id="quote-website"
+                    name="website"
+                    type="text"
+                    tabIndex={-1}
+                    autoComplete="off"
+                    value={website}
+                    onChange={(event) => setWebsite(event.target.value)}
+                  />
+                </div>
                 <div className="mb-8 border-b border-[#E8DDD0] pb-6">
                   <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#9A742E]">
                     Step {step + 1} of {steps.length}
@@ -338,15 +378,21 @@ function QuotePage() {
                     className="mt-8 rounded-xl border border-[#C9A45B]/40 bg-[#FBF7EF] p-5 leading-7 text-[#5D504B]"
                   >
                     <p className="font-semibold text-[#5A1425]">
-                      Online quote submission is being prepared.
+                      Your quote request has been sent.
                     </p>
                     <p>
-                      For immediate assistance, email{" "}
-                      <a className="font-semibold underline" href="mailto:quotes@hestiva.co.za">
-                        quotes@hestiva.co.za
-                      </a>{" "}
-                      or continue via WhatsApp.
+                      Thank you. The Hestiva team will review your details and contact you about
+                      your personalised quotation.
                     </p>
+                  </div>
+                )}
+                {submitError && (
+                  <div
+                    role="alert"
+                    className="mt-8 rounded-xl border border-[#9B3349]/30 bg-[#FFF4F4] p-5 leading-7 text-[#751C31]"
+                  >
+                    <p className="font-semibold">Request not sent</p>
+                    <p>{submitError}</p>
                   </div>
                 )}
                 <div className="mt-10 flex flex-col-reverse gap-3 border-t border-[#E8DDD0] pt-6 sm:flex-row sm:justify-between">
@@ -375,8 +421,13 @@ function QuotePage() {
                       >
                         <MessageCircle className="h-4 w-4" /> Continue via WhatsApp
                       </a>
-                      <button type="button" onClick={submit} className={primaryButton}>
-                        <Send className="h-4 w-4" /> Send Request
+                      <button
+                        type="submit"
+                        disabled={submitting || notice}
+                        className={primaryButton}
+                      >
+                        <Send className="h-4 w-4" />{" "}
+                        {submitting ? "Sending…" : notice ? "Request Sent" : "Send Request"}
                       </button>
                     </div>
                   )}

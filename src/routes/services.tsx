@@ -1,178 +1,380 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, CheckCircle2, MessageCircle, Phone } from "lucide-react";
-import { Navbar } from "@/components/Navbar";
+import { Check, Sparkles } from "lucide-react";
 import { Footer } from "@/components/Footer";
-import { ContactSection } from "@/components/ContactSection";
-import { Button } from "@/components/ui/button";
-import { servicePages } from "@/content/services";
+import { Navbar } from "@/components/Navbar";
+import { SITE_NAME, SITE_URL } from "@/lib/site";
 
-const SITE_URL = "https://www.maintenancemarshall.co.za";
-const WHATSAPP_LINK = `https://wa.me/27767816550?text=${encodeURIComponent(
-  "Hi Maintenance Marshall, I need help with property maintenance services.",
-)}`;
+type CleaningService = {
+  title: string;
+  introduction: string;
+  included: string[];
+  closing: string;
+};
+
+const services: CleaningService[] = [
+  {
+    title: "Regular Home Cleaning",
+    introduction:
+      "A considered weekly or fortnightly clean that keeps your home feeling calm, cared for and ready to enjoy.",
+    included: [
+      "Dusting of reachable surfaces",
+      "Vacuuming carpets and rugs",
+      "Mopping hard floors",
+      "Kitchen surface cleaning",
+      "Bathroom cleaning",
+      "General tidying",
+    ],
+    closing:
+      "We shape each recurring visit around your priorities, so your home receives reliable care without disrupting your routine.",
+  },
+  {
+    title: "Deep Cleaning",
+    introduction:
+      "A detailed top-to-bottom refresh for homes that need more time, attention and a beautifully thorough finish.",
+    included: [
+      "Detailed surface and ledge dusting",
+      "Skirting board cleaning",
+      "Cabinet exterior cleaning",
+      "Focused kitchen degreasing",
+      "Bathroom descaling",
+      "Thorough floor care",
+    ],
+    closing:
+      "Ideal as a seasonal reset or before beginning regular visits, this service brings a renewed sense of ease to every room.",
+  },
+  {
+    title: "Move-In Cleaning",
+    introduction:
+      "Begin life in your new home with a clean, welcoming canvas prepared before your belongings are unpacked.",
+    included: [
+      "Inside cupboards and drawers",
+      "Kitchen and appliance exteriors",
+      "Bathroom sanitisation",
+      "Wardrobe interiors",
+      "Floor vacuuming and mopping",
+      "Reachable surface dusting",
+    ],
+    closing:
+      "We carefully attend to empty spaces so that settling in feels simpler, fresher and distinctly more comfortable.",
+  },
+  {
+    title: "Move-Out Cleaning",
+    introduction:
+      "A comprehensive final clean designed to leave your previous home polished, presentable and ready for its next chapter.",
+    included: [
+      "Empty-room dusting",
+      "Cupboard and drawer interiors",
+      "Kitchen surface degreasing",
+      "Bathroom sanitisation",
+      "Skirting board cleaning",
+      "Complete floor care",
+    ],
+    closing:
+      "With the cleaning thoughtfully handled, you can focus your attention on the move and what comes next.",
+  },
+  {
+    title: "Apartment Cleaning",
+    introduction:
+      "Efficient, detail-led care created for apartment living, from compact studios to generous multi-bedroom spaces.",
+    included: [
+      "Living and dining areas",
+      "Bedrooms and wardrobes",
+      "Kitchen surfaces",
+      "Bathroom cleaning",
+      "Balcony sweeping on request",
+      "Vacuuming and mopping",
+    ],
+    closing:
+      "Our approach makes the most of every visit, leaving smaller spaces feeling open, orderly and wonderfully fresh.",
+  },
+  {
+    title: "Kitchen Cleaning",
+    introduction:
+      "Focused attention for the heart of your home, with careful cleaning of the surfaces you use every day.",
+    included: [
+      "Worktop and splashback cleaning",
+      "Sink and tap polishing",
+      "Stovetop cleaning",
+      "Appliance exterior wiping",
+      "Cupboard-front cleaning",
+      "Floor vacuuming and mopping",
+    ],
+    closing:
+      "The result is a bright, hygienic kitchen that feels inviting for weekday meals, weekend gatherings and everything between.",
+  },
+  {
+    title: "Bathroom Sanitisation",
+    introduction:
+      "A meticulous clean that brings freshness, shine and a reassuring sense of hygiene to your bathroom.",
+    included: [
+      "Bath and shower cleaning",
+      "Toilet sanitisation",
+      "Basin and tap polishing",
+      "Mirror cleaning",
+      "Tile and surface wiping",
+      "Floor cleaning",
+    ],
+    closing:
+      "We pay attention to high-touch details and visible finishes, creating a space that feels serene and cared for.",
+  },
+  {
+    title: "Bedroom Cleaning",
+    introduction:
+      "Gentle, precise care for restful rooms, helping each bedroom feel peaceful, ordered and comfortable.",
+    included: [
+      "Reachable surface dusting",
+      "Bed making",
+      "Mirror cleaning",
+      "Light general tidying",
+      "Carpet vacuuming",
+      "Hard-floor mopping",
+    ],
+    closing:
+      "Tell us how you prefer your space arranged and we will finish it with quiet attention to the details that matter.",
+  },
+  {
+    title: "Living Area Cleaning",
+    introduction:
+      "Thoughtful cleaning for the shared spaces where your household relaxes, connects and welcomes guests.",
+    included: [
+      "Furniture and surface dusting",
+      "Cushion straightening",
+      "Rug and carpet vacuuming",
+      "Hard-floor mopping",
+      "Reachable décor dusting",
+      "General tidying",
+    ],
+    closing:
+      "We leave your living areas feeling composed and comfortable, while respecting the way your family uses each space.",
+  },
+  {
+    title: "Interior Window Cleaning",
+    introduction:
+      "A careful interior service that clears everyday marks and helps natural light shine through your home.",
+    included: [
+      "Interior glass cleaning",
+      "Frame and sill wiping",
+      "Finger-mark removal",
+      "Reachable door glass",
+      "Mirror polishing",
+      "Streak-conscious finishing",
+    ],
+    closing:
+      "Available for safely reachable windows, this finishing touch gives rooms a brighter, more polished appearance.",
+  },
+  {
+    title: "Laundry Folding",
+    introduction:
+      "A practical helping hand that turns clean, dry laundry into neat, organised stacks ready to be put away.",
+    included: [
+      "Folding everyday clothing",
+      "Pairing socks",
+      "Folding towels",
+      "Folding bed linen",
+      "Sorting by household member",
+      "Neat placement in agreed areas",
+    ],
+    closing:
+      "Add folding to your cleaning visit and reclaim valuable time while keeping wardrobes and linen cupboards beautifully ordered.",
+  },
+  {
+    title: "Eco-Friendly Cleaning",
+    introduction:
+      "A mindful option for households that prefer considered product choices without compromising on attentive care.",
+    included: [
+      "Preference-led product planning",
+      "Reusable cloths where suitable",
+      "Measured product use",
+      "Low-fragrance options on request",
+      "Care for high-touch surfaces",
+      "Responsible waste handling",
+    ],
+    closing:
+      "Share your household preferences when requesting a quote, and we will discuss an approach suited to your home.",
+  },
+  {
+    title: "Add-on Services",
+    introduction:
+      "Flexible extras let you personalise a visit when particular areas of your home need a little more attention.",
+    included: [
+      "Inside-fridge cleaning",
+      "Inside-oven cleaning",
+      "Interior cupboard cleaning",
+      "Extra laundry folding",
+      "Balcony sweeping",
+      "Additional room cleaning",
+    ],
+    closing:
+      "Choose add-ons when requesting your quote and we will allow the right amount of time for a beautifully finished visit.",
+  },
+];
 
 export const Route = createFileRoute("/services")({
   component: ServicesOverview,
-  head: () => {
-    const canonical = `${SITE_URL}/services`;
-    const collectionSchema = {
-      "@context": "https://schema.org",
-      "@type": "CollectionPage",
-      name: "Property Maintenance Services in Gauteng",
-      description:
-        "Maintenance Marshall property maintenance services across Gauteng, including ceilings, waterproofing, plumbing, electrical, painting, roof repairs, geysers and general maintenance.",
-      url: canonical,
-      mainEntity: {
-        "@type": "ItemList",
-        itemListElement: servicePages.map((service, index) => ({
-          "@type": "ListItem",
-          position: index + 1,
-          name: service.title,
-          description: service.metaDescription,
-          url: `${SITE_URL}/services/${service.slug}`,
-        })),
+  head: () => ({
+    meta: [
+      { title: `Residential Cleaning Services | ${SITE_NAME}` },
+      {
+        name: "description",
+        content:
+          "Explore thoughtful home cleaning services tailored to your space, schedule and everyday routine.",
       },
-      provider: {
-        "@type": "LocalBusiness",
-        name: "Maintenance Marshall (Pty) Ltd",
-        url: SITE_URL,
-        telephone: "+27767816550",
-        email: "quotes@maintenancemarshall.co.za",
-        areaServed: {
-          "@type": "AdministrativeArea",
-          name: "Gauteng",
-        },
+      { property: "og:title", content: `Residential Cleaning Services | ${SITE_NAME}` },
+      {
+        property: "og:description",
+        content:
+          "Dependable recurring cleans, detailed deep cleans and flexible home cleaning options.",
       },
-    };
-
-    const breadcrumbSchema = {
-      "@context": "https://schema.org",
-      "@type": "BreadcrumbList",
-      itemListElement: [
-        {
-          "@type": "ListItem",
-          position: 1,
-          name: "Home",
-          item: SITE_URL,
-        },
-        {
-          "@type": "ListItem",
-          position: 2,
-          name: "Services",
-          item: canonical,
-        },
-      ],
-    };
-
-    return {
-      meta: [
-        { title: "Property Maintenance Services Gauteng | Maintenance Marshall" },
-        {
-          name: "description",
-          content:
-            "Explore Maintenance Marshall property maintenance services across Gauteng, including ceilings, waterproofing, plumbing, electrical, painting, roof repairs, geysers and general maintenance.",
-        },
-        { property: "og:title", content: "Property Maintenance Services Gauteng | Maintenance Marshall" },
-        {
-          property: "og:description",
-          content:
-            "Multi-skilled property maintenance services across Gauteng for homes, offices, shops, landlords and commercial properties.",
-        },
-        { property: "og:type", content: "website" },
-        { property: "og:url", content: canonical },
-        { name: "twitter:title", content: "Property Maintenance Services Gauteng | Maintenance Marshall" },
-        {
-          name: "twitter:description",
-          content:
-            "Multi-skilled property maintenance services across Gauteng for homes, offices, shops, landlords and commercial properties.",
-        },
-      ],
-      links: [{ rel: "canonical", href: canonical }],
-      scripts: [
-        {
-          type: "application/ld+json",
-          children: JSON.stringify(collectionSchema),
-        },
-        {
-          type: "application/ld+json",
-          children: JSON.stringify(breadcrumbSchema),
-        },
-      ],
-    };
-  },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: `${SITE_URL}/services` },
+    ],
+    links: [{ rel: "canonical", href: `${SITE_URL}/services` }],
+  }),
 });
 
 function ServicesOverview() {
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen bg-[#FBF7EF] text-[#322B2A]">
       <Navbar />
       <main>
-        <section className="pt-32 pb-16 bg-secondary border-b border-border">
-          <div className="max-w-6xl mx-auto px-6">
-            <nav aria-label="Breadcrumb" className="mb-8 flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
-              <Link to="/" className="hover:text-primary transition-colors">
+        <section className="relative overflow-hidden border-b border-[#C9A45B]/25 bg-[#F7F0E3] px-6 pb-24 pt-36 md:pb-32 md:pt-44">
+          <div
+            aria-hidden="true"
+            className="absolute -right-28 top-20 h-96 w-96 rounded-full border border-[#C9A45B]/25"
+          />
+          <div
+            aria-hidden="true"
+            className="absolute -right-12 top-36 h-64 w-64 rounded-full border border-[#C9A45B]/20"
+          />
+          <div className="relative mx-auto max-w-7xl">
+            <nav
+              aria-label="Breadcrumb"
+              className="mb-12 flex items-center gap-2 text-sm text-[#695E59]"
+            >
+              <Link
+                to="/"
+                className="rounded-sm transition-colors hover:text-[#5A1425] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A45B]"
+              >
                 Home
               </Link>
-              <span>/</span>
-              <span className="text-foreground">Services</span>
+              <span aria-hidden="true" className="text-[#C9A45B]">
+                /
+              </span>
+              <span aria-current="page">Services</span>
             </nav>
-            <p className="text-xs uppercase tracking-[0.3em] text-primary font-semibold mb-4">
-              Maintenance Services Gauteng
+            <p className="mb-5 text-xs font-semibold uppercase tracking-[0.28em] text-[#9A742E]">
+              Residential Cleaning Services
             </p>
-            <h1 className="text-4xl md:text-6xl font-extrabold mb-6">Property Maintenance Services</h1>
-            <p className="text-lg md:text-xl text-muted-foreground max-w-3xl leading-relaxed">
-              Maintenance Marshall provides practical, multi-skilled property maintenance services for homes,
-              landlords, offices, shops, body corporates and commercial properties across Gauteng.
+            <h1 className="max-w-4xl text-5xl font-semibold leading-[1.08] tracking-[-0.03em] text-[#5A1425] sm:text-6xl md:text-7xl">
+              Cleaning tailored to your home.
+            </h1>
+            <p className="mt-7 max-w-2xl text-lg leading-8 text-[#695E59] md:text-xl">
+              Whether you need dependable weekly cleaning or a one-time deep refresh, Hestiva offers
+              thoughtful residential cleaning designed around your home and your routine.
             </p>
-            <div className="mt-8 flex flex-col sm:flex-row gap-4">
-              <Button variant="hero" size="lg" asChild>
-                <a href="tel:+27767816550" aria-label="Call Maintenance Marshall on 076 781 6550">
-                  <Phone className="w-4 h-4" />
-                  Call 076 781 6550
-                </a>
-              </Button>
-              <Button variant="outline" size="lg" asChild>
-                <a href={WHATSAPP_LINK} target="_blank" rel="noopener noreferrer">
-                  <MessageCircle className="w-4 h-4" />
-                  WhatsApp Job Details
-                </a>
-              </Button>
+            <a
+              href="/#contact"
+              className="mt-10 inline-flex min-h-12 items-center justify-center rounded-md bg-[#5A1425] px-7 py-3 text-sm font-semibold uppercase tracking-[0.12em] text-white shadow-[0_12px_30px_rgba(90,20,37,0.16)] transition hover:-translate-y-0.5 hover:bg-[#711C31] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A45B] focus-visible:ring-offset-4 focus-visible:ring-offset-[#F7F0E3]"
+            >
+              Request a Quote
+            </a>
+          </div>
+        </section>
+
+        <section aria-labelledby="services-heading" className="px-6 py-20 md:py-28">
+          <div className="mx-auto max-w-7xl">
+            <div className="mx-auto mb-16 max-w-2xl text-center md:mb-24">
+              <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#9A742E]">
+                Care for every room
+              </p>
+              <h2
+                id="services-heading"
+                className="mt-4 text-3xl font-semibold tracking-tight text-[#5A1425] md:text-5xl"
+              >
+                A considered clean, down to the details.
+              </h2>
+            </div>
+
+            <div className="space-y-16 md:space-y-24">
+              {services.map((service, index) => {
+                const imageFirst = index % 2 === 0;
+                return (
+                  <article
+                    key={service.title}
+                    className="grid items-stretch gap-8 lg:grid-cols-2 lg:gap-14"
+                  >
+                    <div
+                      role="img"
+                      aria-label={`${service.title} image placeholder`}
+                      className={`relative min-h-72 overflow-hidden rounded-2xl border border-[#C9A45B]/30 bg-[#EFE4D2] shadow-[0_18px_50px_rgba(70,42,33,0.08)] lg:min-h-[31rem] ${imageFirst ? "lg:order-1" : "lg:order-2"}`}
+                    >
+                      <div
+                        aria-hidden="true"
+                        className="absolute inset-6 rounded-xl border border-white/70"
+                      />
+                      <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 text-[#8A6729]">
+                        <Sparkles aria-hidden="true" className="h-8 w-8" strokeWidth={1.25} />
+                        <span className="text-xs font-semibold uppercase tracking-[0.24em]">
+                          Image placeholder
+                        </span>
+                      </div>
+                    </div>
+
+                    <div
+                      className={`flex flex-col justify-center rounded-2xl border border-[#E6D9C8] bg-white p-7 shadow-[0_18px_50px_rgba(70,42,33,0.06)] sm:p-10 lg:p-12 ${imageFirst ? "lg:order-2" : "lg:order-1"}`}
+                    >
+                      <p className="mb-3 text-xs font-semibold uppercase tracking-[0.24em] text-[#9A742E]">
+                        Service {String(index + 1).padStart(2, "0")}
+                      </p>
+                      <h3 className="text-3xl font-semibold tracking-tight text-[#5A1425] md:text-4xl">
+                        {service.title}
+                      </h3>
+                      <p className="mt-5 leading-7 text-[#695E59]">{service.introduction}</p>
+                      <h4 className="mt-8 text-sm font-semibold uppercase tracking-[0.16em] text-[#5A1425]">
+                        What&apos;s Included
+                      </h4>
+                      <ul className="mt-5 grid gap-3 sm:grid-cols-2" role="list">
+                        {service.included.map((item) => (
+                          <li key={item} className="flex gap-3 text-sm leading-6 text-[#514946]">
+                            <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#F3E8D5] text-[#8A6729]">
+                              <Check aria-hidden="true" className="h-3.5 w-3.5" strokeWidth={2} />
+                            </span>
+                            {item}
+                          </li>
+                        ))}
+                      </ul>
+                      <p className="mt-8 border-t border-[#C9A45B]/25 pt-6 text-sm leading-7 text-[#695E59]">
+                        {service.closing}
+                      </p>
+                    </div>
+                  </article>
+                );
+              })}
             </div>
           </div>
         </section>
 
-        <section className="py-20">
-          <div className="max-w-6xl mx-auto px-6 grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {servicePages.map((service) => (
-              <article key={service.slug} className="bg-card border border-border rounded-lg p-6 flex flex-col">
-                <p className="text-xs uppercase tracking-[0.2em] text-primary font-semibold mb-3">
-                  {service.shortTitle}
-                </p>
-                <h2 className="text-xl font-bold mb-3">{service.title}</h2>
-                <p className="text-sm text-muted-foreground leading-relaxed mb-5">{service.metaDescription}</p>
-                <ul className="space-y-2 mb-6">
-                  {service.services.slice(0, 3).map((item) => (
-                    <li key={item} className="text-sm text-muted-foreground flex gap-2">
-                      <CheckCircle2 className="w-4 h-4 text-primary shrink-0 mt-0.5" />
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-                <Link
-                  to="/services/$serviceSlug"
-                  params={{ serviceSlug: service.slug }}
-                  className="text-primary text-sm font-semibold inline-flex items-center gap-2 mt-auto"
-                  aria-label={`View ${service.title} service details`}
-                >
-                  View service
-                  <ArrowRight className="w-4 h-4" />
-                </Link>
-              </article>
-            ))}
+        <section className="bg-[#5A1425] px-6 py-20 text-center text-white md:py-24">
+          <div className="mx-auto max-w-3xl">
+            <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#D9BC7A]">
+              A cleaner home, thoughtfully arranged
+            </p>
+            <h2 className="mt-5 text-3xl font-semibold tracking-tight md:text-5xl">
+              Tell us what would make home feel lighter.
+            </h2>
+            <p className="mx-auto mt-5 max-w-xl leading-7 text-white/75">
+              We will listen to your priorities and recommend a cleaning plan that fits your space
+              and schedule.
+            </p>
+            <a
+              href="/#contact"
+              className="mt-9 inline-flex min-h-12 items-center justify-center rounded-md bg-[#C9A45B] px-7 py-3 text-sm font-semibold uppercase tracking-[0.12em] text-[#3B0F1A] transition hover:-translate-y-0.5 hover:bg-[#D8B970] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-4 focus-visible:ring-offset-[#5A1425]"
+            >
+              Request a Quote
+            </a>
           </div>
         </section>
       </main>
-      <ContactSection />
       <Footer />
     </div>
   );

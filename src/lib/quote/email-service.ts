@@ -24,8 +24,8 @@ function getResendApiKey(): string {
 
 export async function sendEmailViaResend(email: OutboundEmail) {
   const emailPayload: Record<string, unknown> = {
-    from: "Maintenance Marshall <quotes@maintenancemarshall.co.za>",
-    reply_to: "quotes@maintenancemarshall.co.za",
+    from: "Hestiva <info@hestiva.co.za>",
+    reply_to: "info@hestiva.co.za",
     to: email.to,
     subject: email.subject,
     text: email.text,

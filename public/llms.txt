@@ -1,19 +1,21 @@
-# Maintenance Marshall
+# Hestiva
 
-> Multi-skilled property maintenance and technical services across Gauteng, South Africa. Services include ceilings, waterproofing, plumbing, electrical work, painting, roofing, geysers, drain unblocking, paving, welding, water systems, security automation and general property maintenance.
+> Thoughtful residential cleaning for busy households that value care, consistency and attention to detail.
 
-Maintenance Marshall (Pty) Ltd is a Kempton Park based maintenance company serving residential and commercial clients across Gauteng. The company provides accountable maintenance solutions for homes, offices, shops, body corporates, landlords, property managers and businesses.
+Hestiva provides residential cleaning services for homes and apartments in Johannesburg and surrounding service areas. The website explains available services, areas served and how to request a personalised quotation.
 
 ## Pages
 
-- [Home](/): Property maintenance overview, service categories, company information and quote request form.
-- [Sitemap](/sitemap.xml): Search engine sitemap for crawl discovery.
-
-## Main Service Areas
-
-Kempton Park, Johannesburg, Pretoria, Centurion, Midrand, Sandton, Randburg, Roodepoort, Boksburg, Edenvale, Benoni and Germiston.
+- [Home](/): Hestiva overview, services and enquiry options.
+- [Services](/services): Residential cleaning services.
+- [Areas](/areas): Current service-area information.
+- [About](/about): Information about Hestiva.
+- [Contact](/contact): Contact details and enquiry options.
+- [Request a Quote](/quote): Residential cleaning quote request form.
+- [Sitemap](/sitemap.xml): Search-engine sitemap.
 
 ## Contact
 
-- Website: https://www.maintenancemarshall.co.za
-- Location: Kempton Park, Gauteng, South Africa
+- Website: https://hestiva.co.za
+- Quote enquiries: quotes@hestiva.co.za
+- General enquiries: info@hestiva.co.za

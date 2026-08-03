@@ -53,7 +53,7 @@ async function assertRateLimit() {
   const fwd = getRequestHeader("x-forwarded-for") || "";
   const realIp = getRequestHeader("x-real-ip") || getRequestHeader("cf-connecting-ip") || "";
   const ip = (fwd.split(",")[0] || realIp || "unknown").trim();
-  const ipHash = await sha256Hex(ip + "|mm-quote-form");
+  const ipHash = await sha256Hex(ip + "|hestiva-quote-form");
   const allowed = await checkRateLimit(ipHash);
 
   if (!allowed) {
@@ -76,7 +76,7 @@ export const submitContactForm = createServerFn({ method: "POST" })
     await assertRateLimit();
 
     const attachments = validateQuoteAttachments(data.files);
-    const reference = data.quoteReference || `MM-${Date.now()}`;
+    const reference = data.quoteReference || `HST-${Date.now()}`;
     const submittedAt = getSubmittedAt();
     const attachmentSummary = attachments.length
       ? attachments.map((attachment) => `- ${attachment.filename}`).join("\n")
@@ -102,7 +102,7 @@ export const submitContactForm = createServerFn({ method: "POST" })
     try {
       await Promise.all([
         sendEmailViaResend({
-          to: "quotes@maintenancemarshall.co.za",
+          to: "info@hestiva.co.za",
           subject: emailPackage.adminSubject,
           text: emailPackage.adminText,
           html: emailPackage.adminHtml,

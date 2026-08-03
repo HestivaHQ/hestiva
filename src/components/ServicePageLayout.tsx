@@ -6,11 +6,13 @@ import { Button } from "@/components/ui/button";
 import { locationPages } from "@/content/locations";
 import { servicePages, type ServicePage } from "@/content/services";
 
+const PHONE_NUMBER = "+27767816550";
+
 const trustPoints = [
-  "Clear scope of work before the job starts",
-  "Practical sequencing across connected trades",
-  "Neat workmanship with attention to preparation",
-  "Residential and commercial maintenance support",
+  "Clear cleaning scope before the booking is confirmed",
+  "Thoughtful attention to high-use areas and finishing details",
+  "Respectful service for occupied homes and apartments",
+  "Straightforward communication from enquiry to completion",
 ];
 
 const linkedServiceAreas = locationPages.filter((location) =>
@@ -22,13 +24,13 @@ const linkedServiceAreas = locationPages.filter((location) =>
     "midrand",
     "sandton",
     "roodepoort",
-    "boksburg",
+    "randburg",
   ].includes(location.slug),
 );
 
 function buildWhatsAppLink(service: ServicePage) {
-  const message = `Hi Maintenance Marshall, I need help with ${service.title}.`;
-  return `https://wa.me/27767816550?text=${encodeURIComponent(message)}`;
+  const message = `Hi Hestiva, I would like a quote for ${service.title}.`;
+  return `https://wa.me/${PHONE_NUMBER.replace("+", "")}?text=${encodeURIComponent(message)}`;
 }
 
 function getRelatedServices(service: ServicePage) {
@@ -55,7 +57,6 @@ function getRelatedServices(service: ServicePage) {
 }
 
 export function ServicePageLayout({ service }: { service: ServicePage }) {
-  const serviceHighlights = service.services.slice(0, 4);
   const relatedServices = getRelatedServices(service);
   const whatsappLink = buildWhatsAppLink(service);
 
@@ -66,49 +67,35 @@ export function ServicePageLayout({ service }: { service: ServicePage }) {
         <section className="pt-32 pb-20 bg-secondary">
           <div className="max-w-7xl mx-auto px-6">
             <nav aria-label="Breadcrumb" className="mb-8 flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
-              <Link to="/" className="hover:text-primary transition-colors">
-                Home
-              </Link>
+              <Link to="/" className="hover:text-primary transition-colors">Home</Link>
               <span>/</span>
-              <Link to="/services" className="hover:text-primary transition-colors">
-                Services
-              </Link>
+              <Link to="/services" className="hover:text-primary transition-colors">Services</Link>
               <span>/</span>
               <span className="text-foreground">{service.shortTitle}</span>
             </nav>
 
-            <Link
-              to="/services"
-              className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors mb-8"
-            >
+            <Link to="/services" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors mb-8">
               <ArrowLeft className="w-4 h-4" />
               Back to all services
             </Link>
+
             <div className="max-w-3xl">
-              <span className="text-xs uppercase tracking-[0.3em] text-primary font-semibold">
-                Maintenance Marshall Services
-              </span>
-              <h1 className="text-4xl md:text-6xl font-extrabold mt-4 text-foreground leading-tight">
-                {service.title}
-              </h1>
-              <p className="text-lg text-muted-foreground mt-6 leading-relaxed">
-                {service.heroDescription}
-              </p>
+              <span className="text-xs uppercase tracking-[0.3em] text-primary font-semibold">Hestiva Residential Cleaning</span>
+              <h1 className="text-4xl md:text-6xl font-extrabold mt-4 text-foreground leading-tight">{service.title}</h1>
+              <p className="text-lg text-muted-foreground mt-6 leading-relaxed">{service.heroDescription}</p>
               <div className="mt-8 flex flex-col sm:flex-row gap-4">
                 <Button variant="hero" size="lg" asChild>
-                  <a href="tel:+27767816550" aria-label="Call Maintenance Marshall on 076 781 6550">
-                    <Phone className="w-4 h-4" />
-                    Call 076 781 6550
-                  </a>
+                  <Link to="/quote">Request a Quote</Link>
                 </Button>
                 <Button variant="outline" size="lg" asChild>
                   <a href={whatsappLink} target="_blank" rel="noopener noreferrer">
-                    <MessageCircle className="w-4 h-4" />
-                    WhatsApp Us
+                    <MessageCircle className="w-4 h-4" /> WhatsApp Hestiva
                   </a>
                 </Button>
                 <Button variant="outline" size="lg" asChild>
-                  <a href="mailto:quotes@maintenancemarshall.co.za">Request a Quote</a>
+                  <a href={`tel:${PHONE_NUMBER}`} aria-label="Call Hestiva">
+                    <Phone className="w-4 h-4" /> Call Us
+                  </a>
                 </Button>
               </div>
             </div>
@@ -118,9 +105,8 @@ export function ServicePageLayout({ service }: { service: ServicePage }) {
         <section className="py-20">
           <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-[1.2fr_0.8fr] gap-12">
             <div>
-              <h2 className="text-3xl font-bold text-foreground">Service Overview</h2>
+              <h2 className="text-3xl font-bold text-foreground">What This Service Includes</h2>
               <p className="text-muted-foreground mt-4 leading-relaxed">{service.overview}</p>
-
               <div className="mt-10 grid sm:grid-cols-2 gap-4">
                 {service.services.map((item) => (
                   <div key={item} className="flex items-start gap-3 rounded-lg border border-border bg-card p-4">
@@ -132,7 +118,7 @@ export function ServicePageLayout({ service }: { service: ServicePage }) {
             </div>
 
             <aside className="rounded-lg border border-border bg-card p-6 h-fit">
-              <h2 className="text-xl font-bold text-foreground">Common Problems We Help With</h2>
+              <h2 className="text-xl font-bold text-foreground">A Good Fit When You Need</h2>
               <ul className="mt-4 space-y-3">
                 {service.commonProblems.map((problem) => (
                   <li key={problem} className="text-sm text-muted-foreground flex gap-2">
@@ -151,21 +137,14 @@ export function ServicePageLayout({ service }: { service: ServicePage }) {
               <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
                 <div>
                   <div className="flex items-center gap-2 text-primary font-semibold text-sm uppercase tracking-[0.2em]">
-                    <MapPin className="w-4 h-4" />
-                    Service Areas
+                    <MapPin className="w-4 h-4" /> Service Areas
                   </div>
-                  <h2 className="text-2xl md:text-3xl font-bold text-foreground mt-3">
-                    {service.shortTitle} support across Gauteng
-                  </h2>
+                  <h2 className="text-2xl md:text-3xl font-bold text-foreground mt-3">{service.shortTitle} across our Gauteng footprint</h2>
                   <p className="text-muted-foreground mt-3 max-w-3xl leading-relaxed">
-                    Maintenance Marshall assists residential, commercial and rental properties across key Gauteng areas.
+                    Availability is confirmed using your exact address, travel distance and our schedule.
                   </p>
                 </div>
-                <Button variant="hero" size="lg" asChild>
-                  <a href={whatsappLink} target="_blank" rel="noopener noreferrer">
-                    Send Job Details
-                  </a>
-                </Button>
+                <Button variant="hero" size="lg" asChild><Link to="/quote">Check Availability</Link></Button>
               </div>
               <div className="mt-6 flex flex-wrap gap-2">
                 {linkedServiceAreas.map((area) => (
@@ -174,7 +153,7 @@ export function ServicePageLayout({ service }: { service: ServicePage }) {
                     to="/locations/$locationSlug"
                     params={{ locationSlug: area.slug }}
                     className="rounded-full border border-border px-3 py-1 text-xs text-muted-foreground hover:border-primary hover:text-primary transition-colors"
-                    aria-label={`View Maintenance Marshall services in ${area.name}`}
+                    aria-label={`View Hestiva cleaning services in ${area.name}`}
                   >
                     {area.name}
                   </Link>
@@ -184,15 +163,13 @@ export function ServicePageLayout({ service }: { service: ServicePage }) {
           </div>
         </section>
 
-        <section className="py-20 bg-secondary">
+        <section className="py-20">
           <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-[0.9fr_1.1fr] gap-12 items-start">
             <div>
-              <span className="text-xs uppercase tracking-[0.3em] text-primary font-semibold">Why Clients Choose Us</span>
-              <h2 className="text-3xl md:text-4xl font-bold text-foreground mt-3">
-                Maintenance planned around the full repair sequence
-              </h2>
+              <span className="text-xs uppercase tracking-[0.3em] text-primary font-semibold">Why Hestiva</span>
+              <h2 className="text-3xl md:text-4xl font-bold text-foreground mt-3">Cleaning planned around your home</h2>
               <p className="text-muted-foreground mt-4 leading-relaxed">
-                Many property problems are connected. A leak can affect ceilings and paintwork, a drain issue can affect paving, and poor preparation can shorten the life of a repair. Maintenance Marshall looks at the full sequence so the work is planned clearly and completed in the correct order.
+                Every household is different. We use the property details, condition, priorities and selected add-ons in your enquiry to prepare a cleaning scope that is clear and practical.
               </p>
             </div>
             <div className="grid sm:grid-cols-2 gap-4">
@@ -206,13 +183,11 @@ export function ServicePageLayout({ service }: { service: ServicePage }) {
           </div>
         </section>
 
-        <section className="py-20">
+        <section className="py-20 bg-secondary">
           <div className="max-w-7xl mx-auto px-6">
             <div className="max-w-2xl">
               <span className="text-xs uppercase tracking-[0.3em] text-primary font-semibold">Our Process</span>
-              <h2 className="text-3xl md:text-4xl font-bold text-foreground mt-3">
-                How We Approach This Work
-              </h2>
+              <h2 className="text-3xl md:text-4xl font-bold text-foreground mt-3">How the Service Is Prepared</h2>
             </div>
             <ol className="mt-10 grid md:grid-cols-5 gap-4">
               {service.process.map((step, index) => (
@@ -225,16 +200,12 @@ export function ServicePageLayout({ service }: { service: ServicePage }) {
           </div>
         </section>
 
-        <section className="py-20 bg-secondary">
+        <section className="py-20">
           <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-[0.8fr_1.2fr] gap-12">
             <div>
               <span className="text-xs uppercase tracking-[0.3em] text-primary font-semibold">Questions</span>
-              <h2 className="text-3xl md:text-4xl font-bold text-foreground mt-3">
-                Frequently Asked Questions
-              </h2>
-              <p className="text-muted-foreground mt-4">
-                Practical answers for clients comparing maintenance contractors in Gauteng.
-              </p>
+              <h2 className="text-3xl md:text-4xl font-bold text-foreground mt-3">Frequently Asked Questions</h2>
+              <p className="text-muted-foreground mt-4">Helpful answers before requesting your personalised quotation.</p>
             </div>
             <div className="space-y-4">
               {service.faqs.map((faq) => (
@@ -247,16 +218,11 @@ export function ServicePageLayout({ service }: { service: ServicePage }) {
           </div>
         </section>
 
-        <section className="py-20">
+        <section className="py-20 bg-secondary">
           <div className="max-w-7xl mx-auto px-6">
             <div className="max-w-2xl">
               <span className="text-xs uppercase tracking-[0.3em] text-primary font-semibold">Related Services</span>
-              <h2 className="text-3xl md:text-4xl font-bold text-foreground mt-3">
-                Other Maintenance Services
-              </h2>
-              <p className="text-muted-foreground mt-4">
-                Many property problems connect across more than one trade. These related services help clients find the full repair sequence.
-              </p>
+              <h2 className="text-3xl md:text-4xl font-bold text-foreground mt-3">Explore More Cleaning Options</h2>
             </div>
             <div className="mt-10 grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
               {relatedServices.map((relatedService) => (
@@ -267,39 +233,26 @@ export function ServicePageLayout({ service }: { service: ServicePage }) {
                   className="rounded-lg border border-border bg-card p-5 hover:border-primary transition-colors"
                 >
                   <h3 className="font-bold text-foreground">{relatedService.shortTitle}</h3>
-                  <p className="text-sm text-muted-foreground mt-2 leading-relaxed">
-                    {relatedService.heroDescription}
-                  </p>
+                  <p className="text-sm text-muted-foreground mt-2 leading-relaxed">{relatedService.heroDescription}</p>
                 </Link>
               ))}
             </div>
           </div>
         </section>
 
-        <section className="py-20 bg-secondary">
+        <section className="py-20">
           <div className="max-w-7xl mx-auto px-6 rounded-xl border border-border bg-card p-8 md:p-10">
             <div className="grid lg:grid-cols-[1fr_auto] gap-8 items-center">
               <div>
-                <h2 className="text-3xl font-bold text-foreground">Need help with {service.shortTitle.toLowerCase()}?</h2>
+                <h2 className="text-3xl font-bold text-foreground">Ready to request {service.shortTitle.toLowerCase()}?</h2>
                 <p className="text-muted-foreground mt-3 max-w-2xl">
-                  Send Maintenance Marshall the details, photos and location of the work needed. We will help you turn the problem into a practical scope of work.
+                  Tell us about your property, preferred date, home condition and any add-ons. We will review the details and prepare a personalised quotation.
                 </p>
-                <div className="mt-5 flex flex-wrap gap-2">
-                  {serviceHighlights.map((item) => (
-                    <span key={item} className="rounded-full border border-border px-3 py-1 text-xs text-muted-foreground">
-                      {item}
-                    </span>
-                  ))}
-                </div>
               </div>
               <div className="flex flex-col sm:flex-row gap-3">
-                <Button variant="hero" size="lg" asChild>
-                  <a href={whatsappLink} target="_blank" rel="noopener noreferrer">
-                    WhatsApp Details
-                  </a>
-                </Button>
+                <Button variant="hero" size="lg" asChild><Link to="/quote">Request Your Quote</Link></Button>
                 <Button variant="outline" size="lg" asChild>
-                  <a href="mailto:quotes@maintenancemarshall.co.za">Request a Quote</a>
+                  <a href="mailto:quotes@hestiva.co.za">Email Quotes</a>
                 </Button>
               </div>
             </div>

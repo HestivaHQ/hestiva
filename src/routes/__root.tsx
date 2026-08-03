@@ -91,8 +91,16 @@ function RootShell({ children }: { children: React.ReactNode }) {
 function RootComponent() {
   return (
     <>
+      <a
+        href="#main-content"
+        className="fixed left-4 top-4 z-[100] -translate-y-24 rounded-md bg-[#F5F1E8] px-4 py-3 font-semibold text-[#3B0F1A] shadow-lg transition-transform focus:translate-y-0 focus:outline-none focus:ring-2 focus:ring-[#C9A45B] focus:ring-offset-2"
+      >
+        Skip to main content
+      </a>
       <LiveFormSubmission />
-      <Outlet />
+      <div id="main-content" tabIndex={-1}>
+        <Outlet />
+      </div>
     </>
   );
 }

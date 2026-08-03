@@ -1,75 +1,111 @@
 import { useEffect } from "react";
 import { submitContactForm } from "@/lib/contact.functions";
 
-function value(id: string) {
-  const element = document.getElementById(id) as HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement | null;
-  return element?.value?.trim() ?? "";
+const quoteValues: Record<string, string> = {};
+const quoteAddons = new Set<string>();
+
+function fieldName(id: string) {
+  return id.startsWith("field-") ? id.slice("field-".length) : id;
+}
+
+function rememberVisibleQuoteFields() {
+  document
+    .querySelectorAll<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>(
+      '#quote-form input[id^="field-"], #quote-form select[id^="field-"], #quote-form textarea[id^="field-"]',
+    )
+    .forEach((element) => {
+      quoteValues[fieldName(element.id)] = element.value.trim();
+    });
+
+  document.querySelectorAll<HTMLInputElement>('#quote-form input[type="checkbox"]').forEach((checkbox) => {
+    const label = checkbox.closest("label")?.querySelector("span")?.textContent?.trim();
+    if (!label || label.startsWith("I consent")) return;
+    if (checkbox.checked) quoteAddons.add(label);
+    else quoteAddons.delete(label);
+  });
 }
 
 function setButtonState(button: HTMLButtonElement, text: string, disabled: boolean) {
   button.disabled = disabled;
-  button.dataset.originalText ||= button.textContent ?? "Send Request";
+  button.dataset.originalText ||= button.textContent?.trim() || "Send Request";
   button.textContent = text;
 }
 
+function quoteValue(name: string, fallback = "") {
+  return quoteValues[name]?.trim() || fallback;
+}
+
 async function sendQuoteForm(button: HTMLButtonElement) {
-  const consent = document.querySelector<HTMLInputElement>('input[type="checkbox"]:checked');
-  if (!consent) return;
+  rememberVisibleQuoteFields();
+
+  const consent = Array.from(
+    document.querySelectorAll<HTMLInputElement>('#quote-form input[type="checkbox"]'),
+  ).find((checkbox) => checkbox.closest("label")?.textContent?.includes("I consent"));
+  if (!consent?.checked) return;
 
   const details = [
-    ["Property type", value("field-propertyType")],
-    ["Suburb", value("field-suburb")],
-    ["Address", value("field-address")],
-    ["Floor size", value("field-floorSize")],
-    ["Bedrooms", value("field-bedrooms")],
-    ["Bathrooms", value("field-bathrooms")],
-    ["Living areas", value("field-livingAreas")],
-    ["Storeys", value("field-storeys")],
-    ["Outdoor area", value("field-outdoor")],
-    ["Estate or complex", value("field-estate")],
-    ["Frequency", value("field-frequency")],
-    ["Home condition", value("field-condition")],
-    ["Preferred date", value("field-preferredDate")],
-    ["Alternative date", value("field-alternativeDate")],
-    ["Preferred time", value("field-preferredTime")],
-    ["Flexibility", value("field-flexibility")],
-    ["Urgency", value("field-urgency")],
-    ["Recurring notes", value("field-recurringNotes")],
-    ["Access", value("field-complexAccess")],
-    ["Security instructions", value("field-securityInstructions")],
-    ["Parking", value("field-parking")],
-    ["Key handover", value("field-keyHandover")],
-    ["Someone present", value("field-present")],
-    ["Pets", value("field-pets")],
-    ["Pet type", value("field-petType")],
-    ["Pet temperament", value("field-petTemperament")],
-    ["Cameras", value("field-cameras")],
-    ["Off-limits areas", value("field-offLimits")],
-    ["Fragile items", value("field-fragileItems")],
-    ["Product restrictions", value("field-restrictions")],
-    ["Allergies", value("field-allergies")],
-    ["Areas needing attention", value("field-attentionAreas")],
-    ["Existing damage", value("field-existingDamage")],
-    ["Renovation dust", value("field-renovationDust")],
-    ["Appliance add-ons", value("field-applianceAddons")],
-    ["Additional notes", value("field-notes")],
+    ["Property type", quoteValue("propertyType")],
+    ["Suburb", quoteValue("suburb")],
+    ["Address", quoteValue("address")],
+    ["Floor size", quoteValue("floorSize")],
+    ["Bedrooms", quoteValue("bedrooms")],
+    ["Bathrooms", quoteValue("bathrooms")],
+    ["Living areas", quoteValue("livingAreas")],
+    ["Storeys", quoteValue("storeys")],
+    ["Outdoor area", quoteValue("outdoor")],
+    ["Estate or complex", quoteValue("estate")],
+    ["Frequency", quoteValue("frequency")],
+    ["Home condition", quoteValue("condition")],
+    ["Selected add-ons", Array.from(quoteAddons).join(", ")],
+    ["Preferred date", quoteValue("preferredDate")],
+    ["Alternative date", quoteValue("alternativeDate")],
+    ["Preferred time", quoteValue("preferredTime")],
+    ["Flexibility", quoteValue("flexibility")],
+    ["Urgency", quoteValue("urgency")],
+    ["Recurring notes", quoteValue("recurringNotes")],
+    ["Access", quoteValue("complexAccess")],
+    ["Security instructions", quoteValue("securityInstructions")],
+    ["Parking", quoteValue("parking")],
+    ["Key handover", quoteValue("keyHandover")],
+    ["Someone present", quoteValue("present")],
+    ["Pets", quoteValue("pets")],
+    ["Pet type", quoteValue("petType")],
+    ["Pet temperament", quoteValue("petTemperament")],
+    ["Cameras", quoteValue("cameras")],
+    ["Off-limits areas", quoteValue("offLimits")],
+    ["Fragile items", quoteValue("fragileItems")],
+    ["Product restrictions", quoteValue("restrictions")],
+    ["Allergies", quoteValue("allergies")],
+    ["Areas needing attention", quoteValue("attentionAreas")],
+    ["Existing damage", quoteValue("existingDamage")],
+    ["Renovation dust", quoteValue("renovationDust")],
+    ["Appliance add-ons", quoteValue("applianceAddons")],
+    ["Additional notes", quoteValue("notes")],
   ].filter(([, entry]) => entry);
+
+  const name = quoteValue("fullName");
+  const phone = quoteValue("mobile");
+  const email = quoteValue("email");
+  const propertyAddress = [quoteValue("address"), quoteValue("suburb")].filter(Boolean).join(", ");
+  const description = details.length
+    ? details.map(([label, entry]) => `${label}: ${entry}`).join("\n")
+    : "Residential cleaning quotation requested through the Hestiva website.";
 
   setButtonState(button, "Sending…", true);
   try {
     await submitContactForm({
       data: {
-        name: value("field-fullName"),
-        phone: value("field-mobile"),
-        email: value("field-email"),
-        service: value("field-service") || "Residential Cleaning Quote",
-        jobType: value("field-propertyType"),
-        multipleServices: [],
+        name,
+        phone,
+        email,
+        service: quoteValue("service", "Residential Cleaning Quote"),
+        jobType: quoteValue("propertyType"),
+        multipleServices: Array.from(quoteAddons),
         otherService: "",
-        propertyAddress: [value("field-address"), value("field-suburb")].filter(Boolean).join(", "),
-        description: details.map(([label, entry]) => `${label}: ${entry}`).join("\n"),
-        preferredContact: value("field-contactMethod") || "Not specified",
-        urgency: value("field-urgency") || "Not specified",
+        propertyAddress: propertyAddress || "Address supplied in quote form",
+        description,
+        preferredContact: quoteValue("contactMethod", "Not specified"),
+        urgency: quoteValue("urgency", "Not specified"),
         quoteReference: "",
         files: [],
         website: "",
@@ -100,7 +136,7 @@ async function sendContactForm(form: HTMLFormElement, button: HTMLButtonElement)
         multipleServices: [],
         otherService: "",
         propertyAddress: String(data.get("suburb") || "Not provided"),
-        description: String(data.get("message") || ""),
+        description: String(data.get("message") || "General website enquiry"),
         preferredContact: String(data.get("preferredContact") || "Not specified"),
         urgency: "Not specified",
         quoteReference: "",
@@ -121,14 +157,21 @@ async function sendContactForm(form: HTMLFormElement, button: HTMLButtonElement)
 
 export function LiveFormSubmission() {
   useEffect(() => {
+    const remember = () => {
+      if (window.location.pathname === "/quote") rememberVisibleQuoteFields();
+    };
+
     const onClick = (event: MouseEvent) => {
       const button = (event.target as HTMLElement | null)?.closest("button") as HTMLButtonElement | null;
-      if (!button || button.textContent?.trim() !== "Send Request") return;
+      if (!button) return;
 
       if (window.location.pathname === "/quote") {
-        event.preventDefault();
-        event.stopPropagation();
-        void sendQuoteForm(button);
+        rememberVisibleQuoteFields();
+        if (button.textContent?.includes("Send Request")) {
+          event.preventDefault();
+          event.stopPropagation();
+          void sendQuoteForm(button);
+        }
       }
     };
 
@@ -142,9 +185,13 @@ export function LiveFormSubmission() {
       void sendContactForm(form, button);
     };
 
+    document.addEventListener("input", remember, true);
+    document.addEventListener("change", remember, true);
     document.addEventListener("click", onClick, true);
     document.addEventListener("submit", onSubmit, true);
     return () => {
+      document.removeEventListener("input", remember, true);
+      document.removeEventListener("change", remember, true);
       document.removeEventListener("click", onClick, true);
       document.removeEventListener("submit", onSubmit, true);
     };

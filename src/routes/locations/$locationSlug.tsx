@@ -2,7 +2,7 @@ import { createFileRoute, notFound } from "@tanstack/react-router";
 import { LocationPageLayout } from "@/components/LocationPageLayout";
 import { getLocationPage, locationPages } from "@/content/locations";
 
-const SITE_URL = "https://www.maintenancemarshall.co.za";
+const SITE_URL = "https://hestiva.co.za";
 
 export const Route = createFileRoute("/locations/$locationSlug")({
   loader: ({ params }) => {
@@ -25,14 +25,11 @@ export const Route = createFileRoute("/locations/$locationSlug")({
     const localBusinessSchema = {
       "@context": "https://schema.org",
       "@type": "LocalBusiness",
-      name: "Maintenance Marshall (Pty) Ltd",
-      image: `${SITE_URL}/assets/logo-BMmUvPyL.png`,
-      telephone: "+27767816550",
-      email: "quotes@maintenancemarshall.co.za",
+      name: "Hestiva",
+      email: "quotes@hestiva.co.za",
       url: canonical,
       address: {
         "@type": "PostalAddress",
-        addressLocality: "Kempton Park",
         addressRegion: "Gauteng",
         addressCountry: "ZA",
       },
@@ -80,13 +77,13 @@ export const Route = createFileRoute("/locations/$locationSlug")({
         {
           "@type": "ListItem",
           position: 2,
-          name: "Locations",
+          name: "Areas",
           item: `${SITE_URL}/locations`,
         },
         {
           "@type": "ListItem",
           position: 3,
-          name: `Property Maintenance in ${location.name}`,
+          name: `Residential Cleaning in ${location.name}`,
           item: canonical,
         },
       ],

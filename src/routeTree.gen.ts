@@ -20,6 +20,7 @@ import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as LocationsLocationSlugRouteImport } from './routes/locations/$locationSlug'
 import { Route as ServicesServiceSlugRouteImport } from './routes/services/$serviceSlug'
+import { Route as ServicesApartmentCleaningRouteImport } from './routes/services/apartment-cleaning'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -76,6 +77,12 @@ const ServicesServiceSlugRoute = ServicesServiceSlugRouteImport.update({
   path: '/$serviceSlug',
   getParentRoute: () => ServicesRoute,
 } as any)
+const ServicesApartmentCleaningRoute =
+  ServicesApartmentCleaningRouteImport.update({
+    id: '/apartment-cleaning',
+    path: '/apartment-cleaning',
+    getParentRoute: () => ServicesRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -89,6 +96,7 @@ export interface FileRoutesByFullPath {
   '/terms': typeof TermsRoute
   '/locations/$locationSlug': typeof LocationsLocationSlugRoute
   '/services/$serviceSlug': typeof ServicesServiceSlugRoute
+  '/services/apartment-cleaning': typeof ServicesApartmentCleaningRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -102,6 +110,7 @@ export interface FileRoutesByTo {
   '/terms': typeof TermsRoute
   '/locations/$locationSlug': typeof LocationsLocationSlugRoute
   '/services/$serviceSlug': typeof ServicesServiceSlugRoute
+  '/services/apartment-cleaning': typeof ServicesApartmentCleaningRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -116,6 +125,7 @@ export interface FileRoutesById {
   '/terms': typeof TermsRoute
   '/locations/$locationSlug': typeof LocationsLocationSlugRoute
   '/services/$serviceSlug': typeof ServicesServiceSlugRoute
+  '/services/apartment-cleaning': typeof ServicesApartmentCleaningRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -131,6 +141,7 @@ export interface FileRouteTypes {
     | '/terms'
     | '/locations/$locationSlug'
     | '/services/$serviceSlug'
+    | '/services/apartment-cleaning'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -144,6 +155,7 @@ export interface FileRouteTypes {
     | '/terms'
     | '/locations/$locationSlug'
     | '/services/$serviceSlug'
+    | '/services/apartment-cleaning'
   id:
     | '__root__'
     | '/'
@@ -157,6 +169,7 @@ export interface FileRouteTypes {
     | '/terms'
     | '/locations/$locationSlug'
     | '/services/$serviceSlug'
+    | '/services/apartment-cleaning'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -250,6 +263,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ServicesServiceSlugRouteImport
       parentRoute: typeof ServicesRoute
     }
+    '/services/apartment-cleaning': {
+      id: '/services/apartment-cleaning'
+      path: '/apartment-cleaning'
+      fullPath: '/services/apartment-cleaning'
+      preLoaderRoute: typeof ServicesApartmentCleaningRouteImport
+      parentRoute: typeof ServicesRoute
+    }
   }
 }
 
@@ -267,10 +287,12 @@ const LocationsRouteWithChildren = LocationsRoute._addFileChildren(
 
 interface ServicesRouteChildren {
   ServicesServiceSlugRoute: typeof ServicesServiceSlugRoute
+  ServicesApartmentCleaningRoute: typeof ServicesApartmentCleaningRoute
 }
 
 const ServicesRouteChildren: ServicesRouteChildren = {
   ServicesServiceSlugRoute: ServicesServiceSlugRoute,
+  ServicesApartmentCleaningRoute: ServicesApartmentCleaningRoute,
 }
 
 const ServicesRouteWithChildren = ServicesRoute._addFileChildren(

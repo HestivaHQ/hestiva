@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Check, Sparkles } from "lucide-react";
 import { Footer } from "@/components/Footer";
 import { Navbar } from "@/components/Navbar";
-import { SITE_NAME, SITE_URL } from "@/lib/site";
+import { BRAND_ASSETS, SITE_NAME, SITE_URL } from "@/lib/site";
 
 type CleaningService = {
   title: string;
@@ -227,6 +227,7 @@ export const Route = createFileRoute("/services")({
       },
       { property: "og:type", content: "website" },
       { property: "og:url", content: `${SITE_URL}/services` },
+      { property: "og:image", content: `${SITE_URL}${BRAND_ASSETS.socialImage}` },
     ],
     links: [{ rel: "canonical", href: `${SITE_URL}/services` }],
   }),

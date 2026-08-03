@@ -18,8 +18,6 @@ import { Route as QuoteRouteImport } from './routes/quote'
 import { Route as ServicesRouteImport } from './routes/services'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as TermsRouteImport } from './routes/terms'
-import { Route as LocationsLocationSlugRouteImport } from './routes/locations/$locationSlug'
-import { Route as ServicesServiceSlugRouteImport } from './routes/services/$serviceSlug'
 import { Route as ServicesApartmentCleaningRouteImport } from './routes/services/apartment-cleaning'
 
 const IndexRoute = IndexRouteImport.update({
@@ -67,16 +65,6 @@ const TermsRoute = TermsRouteImport.update({
   path: '/terms',
   getParentRoute: () => rootRouteImport,
 } as any)
-const LocationsLocationSlugRoute = LocationsLocationSlugRouteImport.update({
-  id: '/$locationSlug',
-  path: '/$locationSlug',
-  getParentRoute: () => LocationsRoute,
-} as any)
-const ServicesServiceSlugRoute = ServicesServiceSlugRouteImport.update({
-  id: '/$serviceSlug',
-  path: '/$serviceSlug',
-  getParentRoute: () => ServicesRoute,
-} as any)
 const ServicesApartmentCleaningRoute =
   ServicesApartmentCleaningRouteImport.update({
     id: '/apartment-cleaning',
@@ -88,28 +76,24 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
-  '/locations': typeof LocationsRouteWithChildren
+  '/locations': typeof LocationsRoute
   '/privacy': typeof PrivacyRoute
   '/quote': typeof QuoteRoute
   '/services': typeof ServicesRouteWithChildren
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
-  '/locations/$locationSlug': typeof LocationsLocationSlugRoute
-  '/services/$serviceSlug': typeof ServicesServiceSlugRoute
   '/services/apartment-cleaning': typeof ServicesApartmentCleaningRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
-  '/locations': typeof LocationsRouteWithChildren
+  '/locations': typeof LocationsRoute
   '/privacy': typeof PrivacyRoute
   '/quote': typeof QuoteRoute
   '/services': typeof ServicesRouteWithChildren
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
-  '/locations/$locationSlug': typeof LocationsLocationSlugRoute
-  '/services/$serviceSlug': typeof ServicesServiceSlugRoute
   '/services/apartment-cleaning': typeof ServicesApartmentCleaningRoute
 }
 export interface FileRoutesById {
@@ -117,14 +101,12 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
-  '/locations': typeof LocationsRouteWithChildren
+  '/locations': typeof LocationsRoute
   '/privacy': typeof PrivacyRoute
   '/quote': typeof QuoteRoute
   '/services': typeof ServicesRouteWithChildren
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
-  '/locations/$locationSlug': typeof LocationsLocationSlugRoute
-  '/services/$serviceSlug': typeof ServicesServiceSlugRoute
   '/services/apartment-cleaning': typeof ServicesApartmentCleaningRoute
 }
 export interface FileRouteTypes {
@@ -139,8 +121,6 @@ export interface FileRouteTypes {
     | '/services'
     | '/sitemap.xml'
     | '/terms'
-    | '/locations/$locationSlug'
-    | '/services/$serviceSlug'
     | '/services/apartment-cleaning'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -153,8 +133,6 @@ export interface FileRouteTypes {
     | '/services'
     | '/sitemap.xml'
     | '/terms'
-    | '/locations/$locationSlug'
-    | '/services/$serviceSlug'
     | '/services/apartment-cleaning'
   id:
     | '__root__'
@@ -167,8 +145,6 @@ export interface FileRouteTypes {
     | '/services'
     | '/sitemap.xml'
     | '/terms'
-    | '/locations/$locationSlug'
-    | '/services/$serviceSlug'
     | '/services/apartment-cleaning'
   fileRoutesById: FileRoutesById
 }
@@ -176,7 +152,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   ContactRoute: typeof ContactRoute
-  LocationsRoute: typeof LocationsRouteWithChildren
+  LocationsRoute: typeof LocationsRoute
   PrivacyRoute: typeof PrivacyRoute
   QuoteRoute: typeof QuoteRoute
   ServicesRoute: typeof ServicesRouteWithChildren
@@ -249,20 +225,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TermsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/locations/$locationSlug': {
-      id: '/locations/$locationSlug'
-      path: '/$locationSlug'
-      fullPath: '/locations/$locationSlug'
-      preLoaderRoute: typeof LocationsLocationSlugRouteImport
-      parentRoute: typeof LocationsRoute
-    }
-    '/services/$serviceSlug': {
-      id: '/services/$serviceSlug'
-      path: '/$serviceSlug'
-      fullPath: '/services/$serviceSlug'
-      preLoaderRoute: typeof ServicesServiceSlugRouteImport
-      parentRoute: typeof ServicesRoute
-    }
     '/services/apartment-cleaning': {
       id: '/services/apartment-cleaning'
       path: '/apartment-cleaning'
@@ -273,25 +235,11 @@ declare module '@tanstack/react-router' {
   }
 }
 
-interface LocationsRouteChildren {
-  LocationsLocationSlugRoute: typeof LocationsLocationSlugRoute
-}
-
-const LocationsRouteChildren: LocationsRouteChildren = {
-  LocationsLocationSlugRoute: LocationsLocationSlugRoute,
-}
-
-const LocationsRouteWithChildren = LocationsRoute._addFileChildren(
-  LocationsRouteChildren,
-)
-
 interface ServicesRouteChildren {
-  ServicesServiceSlugRoute: typeof ServicesServiceSlugRoute
   ServicesApartmentCleaningRoute: typeof ServicesApartmentCleaningRoute
 }
 
 const ServicesRouteChildren: ServicesRouteChildren = {
-  ServicesServiceSlugRoute: ServicesServiceSlugRoute,
   ServicesApartmentCleaningRoute: ServicesApartmentCleaningRoute,
 }
 
@@ -303,7 +251,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   ContactRoute: ContactRoute,
-  LocationsRoute: LocationsRouteWithChildren,
+  LocationsRoute: LocationsRoute,
   PrivacyRoute: PrivacyRoute,
   QuoteRoute: QuoteRoute,
   ServicesRoute: ServicesRouteWithChildren,

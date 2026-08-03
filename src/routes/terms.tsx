@@ -1,8 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Footer } from "@/components/Footer";
 import { Navbar } from "@/components/Navbar";
+import { BRAND_ASSETS, SITE_URL } from "@/lib/site";
 
-const canonicalUrl = "https://www.hestiva.co.za/terms";
+const canonicalUrl = `${SITE_URL}/terms`;
 
 export const Route = createFileRoute("/terms")({
   component: TermsPage,
@@ -22,6 +23,7 @@ export const Route = createFileRoute("/terms")({
       },
       { property: "og:type", content: "website" },
       { property: "og:url", content: canonicalUrl },
+      { property: "og:image", content: `${SITE_URL}${BRAND_ASSETS.socialImage}` },
     ],
     links: [{ rel: "canonical", href: canonicalUrl }],
   }),

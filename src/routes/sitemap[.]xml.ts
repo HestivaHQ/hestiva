@@ -1,32 +1,25 @@
 import { createFileRoute } from "@tanstack/react-router";
 import type {} from "@tanstack/react-start";
-import { servicePages } from "@/content/services";
-import { locationPages } from "@/content/locations";
+import { SITE_URL } from "@/lib/site";
 
-const BASE_URL = "https://www.maintenancemarshall.co.za";
+const publicRoutes = [
+  "/",
+  "/services",
+  "/services/apartment-cleaning",
+  "/about",
+  "/locations",
+  "/contact",
+  "/quote",
+  "/privacy",
+  "/terms",
+] as const;
 
 export const Route = createFileRoute("/sitemap.xml")({
   server: {
     handlers: {
       GET: async () => {
-        const entries = [
-          { path: "/", changefreq: "weekly", priority: "1.0" },
-          { path: "/services", changefreq: "monthly", priority: "0.9" },
-          { path: "/locations", changefreq: "monthly", priority: "0.9" },
-          ...servicePages.map((service) => ({
-            path: `/services/${service.slug}`,
-            changefreq: "monthly",
-            priority: "0.8",
-          })),
-          ...locationPages.map((location) => ({
-            path: `/locations/${location.slug}`,
-            changefreq: "monthly",
-            priority: "0.75",
-          })),
-        ];
-        const urls = entries.map(
-          (e) =>
-            `  <url>\n    <loc>${BASE_URL}${e.path}</loc>\n    <changefreq>${e.changefreq}</changefreq>\n    <priority>${e.priority}</priority>\n  </url>`
+        const urls = publicRoutes.map(
+          (path) => `  <url>\n    <loc>${SITE_URL}${path}</loc>\n  </url>`,
         );
         const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.join("\n")}\n</urlset>`;
         return new Response(xml, {

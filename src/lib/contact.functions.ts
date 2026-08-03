@@ -8,7 +8,10 @@ import { validateQuoteAttachments } from "@/lib/quote/file-validation";
 const fileSchema = z.object({
   name: z.string().min(1).max(255),
   type: z.string().min(1).max(200),
-  base64: z.string().min(1).max(15 * 1024 * 1024),
+  base64: z
+    .string()
+    .min(1)
+    .max(15 * 1024 * 1024),
 });
 
 const contactSchema = z.object({
@@ -26,12 +29,20 @@ const contactSchema = z.object({
   quoteReference: z.string().max(50).optional().default(""),
   files: z.array(fileSchema).max(10).optional().default([]),
   website: z.string().max(200).optional().default(""),
-  elapsedMs: z.number().int().min(0).max(24 * 60 * 60 * 1000).optional().default(0),
+  elapsedMs: z
+    .number()
+    .int()
+    .min(0)
+    .max(24 * 60 * 60 * 1000)
+    .optional()
+    .default(0),
 });
 
 async function sha256Hex(input: string): Promise<string> {
   const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(input));
-  return Array.from(new Uint8Array(buf)).map((b) => b.toString(16).padStart(2, "0")).join("");
+  return Array.from(new Uint8Array(buf))
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
 }
 
 function assertHumanSubmission(website: string, elapsedMs: number) {
@@ -102,7 +113,7 @@ export const submitContactForm = createServerFn({ method: "POST" })
     try {
       await Promise.all([
         sendEmailViaResend({
-          to: "quotes@maintenancemarshall.co.za",
+          to: "quotes@hestiva.co.za",
           subject: emailPackage.adminSubject,
           text: emailPackage.adminText,
           html: emailPackage.adminHtml,

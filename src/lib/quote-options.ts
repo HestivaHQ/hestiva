@@ -1,87 +1,42 @@
 export const SERVICE_OPTIONS = [
-  "General Property Maintenance",
-  "Electrical Services",
-  "Plumbing Services",
-  "Water Systems & Pumps",
-  "Security & Automation",
-  "Lock & Access Control",
-  "Property Repairs",
+  "Regular Home Cleaning",
+  "Deep Cleaning",
+  "Move-In Cleaning",
+  "Move-Out Cleaning",
+  "Apartment Cleaning",
+  "Kitchen Cleaning",
+  "Bathroom Sanitisation",
+  "Laundry Folding",
   "Multiple Services Required",
   "Other (Please Describe)",
 ] as const;
 
+const homeTypes = ["Apartment", "Townhouse", "Freestanding Home", "Other"];
+
 export const JOB_TYPES: Record<string, string[]> = {
-  "General Property Maintenance": [
-    "Routine Maintenance",
-    "Inspection",
-    "Minor Repairs",
-    "Other",
+  "Regular Home Cleaning": [
+    "Once-Off Cleaning",
+    "Weekly Cleaning",
+    "Fortnightly Cleaning",
+    "Monthly Cleaning",
   ],
-  "Electrical Services": [
-    "Fault Finding",
-    "New Installation",
-    "Lighting",
-    "Distribution Board",
-    "Compliance Inspection",
-    "Emergency Repair",
-  ],
-  "Plumbing Services": [
-    "Leak Repair",
-    "Blocked Drain",
-    "Geyser",
-    "New Installation",
-    "Water Pressure Issue",
-    "Emergency Plumbing",
-  ],
-  "Water Systems & Pumps": [
-    "Pump Repair",
-    "New Installation",
-    "Borehole",
-    "JoJo Tank",
-    "Pressure System",
-    "Maintenance",
-  ],
-  "Security & Automation": [
-    "CCTV",
-    "Alarm Systems",
-    "Access Control",
-    "Electric Fence",
-    "Gate Motor",
-    "Intercom System",
-  ],
-  "Lock & Access Control": [
-    "Lock Repair",
-    "Lock Replacement",
-    "Rekeying",
-    "Access System Installation",
-    "Emergency Lockout",
-  ],
-  "Property Repairs": [
-    "Ceiling Repairs",
-    "Drywall Repairs",
-    "Painting",
-    "Tiling",
-    "Roofing",
-    "General Repairs",
-  ],
+  "Deep Cleaning": homeTypes,
+  "Move-In Cleaning": homeTypes,
+  "Move-Out Cleaning": homeTypes,
+  "Apartment Cleaning": ["Studio", "One Bedroom", "Two Bedrooms", "Three or More Bedrooms"],
+  "Kitchen Cleaning": ["Standard Cleaning", "Deep Cleaning"],
+  "Bathroom Sanitisation": ["One Bathroom", "Two Bathrooms", "Three or More Bathrooms"],
+  "Laundry Folding": ["Add to Cleaning Visit", "Laundry Folding Only"],
 };
 
-export const MULTIPLE_SERVICE_CATEGORIES = [
-  "General Property Maintenance",
-  "Electrical Services",
-  "Plumbing Services",
-  "Water Systems & Pumps",
-  "Security & Automation",
-  "Lock & Access Control",
-  "Property Repairs",
-];
+export const MULTIPLE_SERVICE_CATEGORIES = SERVICE_OPTIONS.slice(0, 8);
 
 export const CONTACT_METHODS = ["Phone Call", "WhatsApp", "Email"] as const;
 
 export const URGENCY_OPTIONS = [
-  "Emergency (Same Day)",
-  "Within 24 Hours",
+  "As Soon as Available",
   "This Week",
+  "Next Week",
   "Flexible",
 ] as const;
 

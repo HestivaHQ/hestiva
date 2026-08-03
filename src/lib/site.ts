@@ -63,9 +63,9 @@ export const siteConfig: SiteConfig = {
     "Professional home cleaning for apartments, townhouses and homes across Randburg, Midrand, Centurion and selected surrounding areas.",
   business: {
     domain: SITE_URL,
-    email: null,
-    phone: null,
-    whatsApp: null,
+    email: "info@hestiva.co.za",
+    phone: "068 423 1614",
+    whatsApp: "+27684231614",
     serviceAreas: [
       "Randburg",
       "Bryanston",
@@ -78,7 +78,7 @@ export const siteConfig: SiteConfig = {
     ],
     legalName: null,
     registrationNumber: null,
-    address: null,
+    address: "2962 Dunlin Drive, Riverlea, Johannesburg, 2093, South Africa",
     operatingHours: null,
   },
   assets: {

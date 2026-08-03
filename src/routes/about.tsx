@@ -10,7 +10,7 @@ import {
 } from "lucide-react";
 import { Footer } from "@/components/Footer";
 import { Navbar } from "@/components/Navbar";
-import { SITE_NAME, SITE_URL } from "@/lib/site";
+import { BRAND_ASSETS, SITE_NAME, SITE_URL } from "@/lib/site";
 
 const principles = [
   {
@@ -86,6 +86,7 @@ export const Route = createFileRoute("/about")({
       },
       { property: "og:type", content: "website" },
       { property: "og:url", content: `${SITE_URL}/about` },
+      { property: "og:image", content: `${SITE_URL}${BRAND_ASSETS.socialImage}` },
     ],
     links: [{ rel: "canonical", href: `${SITE_URL}/about` }],
   }),

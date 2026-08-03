@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Footer } from "@/components/Footer";
 import { Navbar } from "@/components/Navbar";
-import { SITE_URL } from "@/lib/site";
+import { BRAND_ASSETS, SITE_URL } from "@/lib/site";
 
 export const Route = createFileRoute("/privacy")({
   component: PrivacyPage,
@@ -21,6 +21,7 @@ export const Route = createFileRoute("/privacy")({
       },
       { property: "og:type", content: "website" },
       { property: "og:url", content: `${SITE_URL}/privacy` },
+      { property: "og:image", content: `${SITE_URL}${BRAND_ASSETS.socialImage}` },
     ],
     links: [{ rel: "canonical", href: `${SITE_URL}/privacy` }],
   }),

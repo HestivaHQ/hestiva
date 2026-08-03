@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, Clock3, Mail, MapPin, MessageCircle, Phone, Send } from "lucide-react";
 import { Footer } from "@/components/Footer";
 import { Navbar } from "@/components/Navbar";
-import { SITE_NAME, SITE_URL } from "@/lib/site";
+import { BRAND_ASSETS, SITE_NAME, SITE_URL } from "@/lib/site";
 
 const phoneDisplay = "068 423 1614";
 const phoneLink = "tel:+27684231614";
@@ -45,6 +45,7 @@ export const Route = createFileRoute("/contact")({
       },
       { property: "og:type", content: "website" },
       { property: "og:url", content: `${SITE_URL}/contact` },
+      { property: "og:image", content: `${SITE_URL}${BRAND_ASSETS.socialImage}` },
     ],
     links: [{ rel: "canonical", href: `${SITE_URL}/contact` }],
   }),

@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, Check, Home, MapPin, MessageCircle, Navigation } from "lucide-react";
 import { Footer } from "@/components/Footer";
 import { Navbar } from "@/components/Navbar";
-import { SITE_NAME, SITE_URL } from "@/lib/site";
+import { BRAND_ASSETS, SITE_NAME, SITE_URL } from "@/lib/site";
 
 const serviceAreas = [
   "Johannesburg",
@@ -54,24 +54,6 @@ export const Route = createFileRoute("/locations")({
     const description =
       "Check Hestiva residential cleaning availability across selected Johannesburg, Midrand, Centurion and Pretoria areas.";
 
-    const localBusinessSchema = {
-      "@context": "https://schema.org",
-      "@type": "LocalBusiness",
-      name: SITE_NAME,
-      url: SITE_URL,
-      telephone: "+27684231614",
-      email: "info@hestiva.co.za",
-      address: {
-        "@type": "PostalAddress",
-        streetAddress: "2962 Dunlin Drive",
-        addressLocality: "Riverlea",
-        addressRegion: "Johannesburg",
-        postalCode: "2093",
-        addressCountry: "ZA",
-      },
-      areaServed: serviceAreas.map((name) => ({ "@type": "Place", name })),
-    };
-
     return {
       meta: [
         { title },
@@ -80,16 +62,11 @@ export const Route = createFileRoute("/locations")({
         { property: "og:description", content: description },
         { property: "og:type", content: "website" },
         { property: "og:url", content: canonical },
+        { property: "og:image", content: `${SITE_URL}${BRAND_ASSETS.socialImage}` },
         { name: "twitter:title", content: title },
         { name: "twitter:description", content: description },
       ],
       links: [{ rel: "canonical", href: canonical }],
-      scripts: [
-        {
-          type: "application/ld+json",
-          children: JSON.stringify(localBusinessSchema),
-        },
-      ],
     };
   },
 });

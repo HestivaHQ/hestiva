@@ -42,8 +42,8 @@ serve(async (req) => {
         Authorization: `Bearer ${RESEND_API_KEY}`,
       },
       body: JSON.stringify({
-        from: "Maintenance Marshall <quotes@maintenancemarshall.co.za>",
-        reply_to: "quotes@maintenancemarshall.co.za",
+        from: "Hestiva <quotes@hestiva.co.za>",
+        reply_to: "quotes@hestiva.co.za",
         to: recipients,
         subject,
         text: body,
@@ -51,7 +51,14 @@ serve(async (req) => {
     });
 
     const result = await emailRes.json();
-    console.log("Resend status:", emailRes.status, "to:", JSON.stringify(recipients), "response:", JSON.stringify(result));
+    console.log(
+      "Resend status:",
+      emailRes.status,
+      "to:",
+      JSON.stringify(recipients),
+      "response:",
+      JSON.stringify(result),
+    );
 
     if (!emailRes.ok) {
       return new Response(JSON.stringify({ error: "Failed to send email", details: result }), {

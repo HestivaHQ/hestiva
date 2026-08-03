@@ -940,12 +940,8 @@ function Review({
         />
         <span>
           I consent to Hestiva contacting me about this enquiry.{" "}
-          <a
-            href="#privacy-notice"
-            onClick={(e) => e.preventDefault()}
-            className="font-semibold text-[#5A1425] underline underline-offset-4"
-          >
-            Privacy notice
+          <a href="/privacy" className="font-semibold text-[#5A1425] underline underline-offset-4">
+            Privacy Policy
           </a>
           .
         </span>

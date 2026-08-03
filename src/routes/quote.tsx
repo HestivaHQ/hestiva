@@ -16,8 +16,6 @@ import { Footer } from "@/components/Footer";
 import { Navbar } from "@/components/Navbar";
 import { SITE_URL } from "@/lib/site";
 
-// The generated route tree is refreshed during the build.
-// @ts-expect-error The route is new and is not present in the checked-in generated types yet.
 export const Route = createFileRoute("/quote")({
   component: QuotePage,
   head: () => ({
@@ -939,7 +937,11 @@ function Review({
           className="mt-1 h-5 w-5 shrink-0 accent-[#5A1425]"
         />
         <span>
-          I consent to Hestiva contacting me about this enquiry.{" "}
+          I consent to Hestiva contacting me about this enquiry and acknowledge the{" "}
+          <a href="/terms" className="font-semibold text-[#5A1425] underline underline-offset-4">
+            Terms of Service
+          </a>{" "}
+          and{" "}
           <a href="/privacy" className="font-semibold text-[#5A1425] underline underline-offset-4">
             Privacy Policy
           </a>

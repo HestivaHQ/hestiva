@@ -3,7 +3,7 @@ import type {} from "@tanstack/react-start";
 import { servicePages } from "@/content/services";
 import { locationPages } from "@/content/locations";
 
-const BASE_URL = "https://www.maintenancemarshall.co.za";
+const BASE_URL = "https://hestiva.co.za";
 
 export const Route = createFileRoute("/sitemap.xml")({
   server: {
@@ -25,8 +25,8 @@ export const Route = createFileRoute("/sitemap.xml")({
           })),
         ];
         const urls = entries.map(
-          (e) =>
-            `  <url>\n    <loc>${BASE_URL}${e.path}</loc>\n    <changefreq>${e.changefreq}</changefreq>\n    <priority>${e.priority}</priority>\n  </url>`
+          (entry) =>
+            `  <url>\n    <loc>${BASE_URL}${entry.path}</loc>\n    <changefreq>${entry.changefreq}</changefreq>\n    <priority>${entry.priority}</priority>\n  </url>`,
         );
         const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.join("\n")}\n</urlset>`;
         return new Response(xml, {

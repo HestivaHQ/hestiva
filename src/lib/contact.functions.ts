@@ -102,7 +102,7 @@ export const submitContactForm = createServerFn({ method: "POST" })
     try {
       await Promise.all([
         sendEmailViaResend({
-          to: "info@hestiva.co.za",
+          to: "quotes@hestiva.co.za",
           subject: emailPackage.adminSubject,
           text: emailPackage.adminText,
           html: emailPackage.adminHtml,

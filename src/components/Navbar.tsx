@@ -24,6 +24,17 @@ export function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  useEffect(() => {
+    if (!open) return;
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setOpen(false);
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [open]);
+
   return (
     <nav
       aria-label="Primary navigation"
@@ -64,13 +75,18 @@ export function Navbar() {
         </div>
 
         <button
+          type="button"
           className="rounded-md p-2 text-[#F5F1E8] transition-colors hover:bg-[#F5F1E8]/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A45B] md:hidden"
           onClick={() => setOpen((current) => !current)}
-          aria-label="Toggle menu"
+          aria-label={open ? "Close navigation menu" : "Open navigation menu"}
           aria-expanded={open}
           aria-controls="mobile-navigation"
         >
-          {open ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+          {open ? (
+            <X className="h-6 w-6" aria-hidden="true" />
+          ) : (
+            <Menu className="h-6 w-6" aria-hidden="true" />
+          )}
         </button>
       </div>
 

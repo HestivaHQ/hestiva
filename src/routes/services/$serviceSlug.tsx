@@ -2,7 +2,7 @@ import { createFileRoute, notFound } from "@tanstack/react-router";
 import { ServicePageLayout } from "@/components/ServicePageLayout";
 import { getServicePage, servicePages } from "@/content/services";
 
-const SITE_URL = "https://www.maintenancemarshall.co.za";
+const SITE_URL = "https://hestiva.co.za";
 
 export const Route = createFileRoute("/services/$serviceSlug")({
   loader: ({ params }) => {
@@ -43,13 +43,11 @@ export const Route = createFileRoute("/services/$serviceSlug")({
       url: canonical,
       provider: {
         "@type": "LocalBusiness",
-        name: "Maintenance Marshall (Pty) Ltd",
-        telephone: "+27767816550",
-        email: "quotes@maintenancemarshall.co.za",
+        name: "Hestiva",
+        email: "quotes@hestiva.co.za",
         url: SITE_URL,
         address: {
           "@type": "PostalAddress",
-          addressLocality: "Kempton Park",
           addressRegion: "Gauteng",
           addressCountry: "ZA",
         },

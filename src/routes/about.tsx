@@ -68,8 +68,6 @@ const households = [
   "Regular or once-off cleaning",
 ];
 
-// The generated route tree is refreshed during the build.
-// @ts-expect-error The route is new and is not present in the checked-in generated types yet.
 export const Route = createFileRoute("/about")({
   component: AboutPage,
   head: () => ({

@@ -3,8 +3,6 @@ import { Footer } from "@/components/Footer";
 import { Navbar } from "@/components/Navbar";
 import { SITE_URL } from "@/lib/site";
 
-// The generated route tree is refreshed during the build.
-// @ts-expect-error The route is new and is not present in the checked-in generated types yet.
 export const Route = createFileRoute("/privacy")({
   component: PrivacyPage,
   head: () => ({

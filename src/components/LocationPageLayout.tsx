@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { ArrowLeft, CheckCircle2, MapPin, Phone } from "lucide-react";
+import { ArrowLeft, CheckCircle2, MapPin } from "lucide-react";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -28,18 +28,12 @@ export function LocationPageLayout({ location }: { location: LocationPage }) {
                 {location.region} Service Area
               </span>
               <h1 className="text-4xl md:text-6xl font-extrabold mt-4 text-foreground leading-tight">
-                Property Maintenance in {location.name}
+                Residential Cleaning in {location.name}
               </h1>
               <p className="text-lg text-muted-foreground mt-6 leading-relaxed">{location.heroDescription}</p>
-              <div className="mt-8 flex flex-col sm:flex-row gap-4">
+              <div className="mt-8">
                 <Button variant="hero" size="lg" asChild>
-                  <a href="tel:+27767816550">
-                    <Phone className="w-4 h-4" />
-                    Call 076 781 6550
-                  </a>
-                </Button>
-                <Button variant="outline" size="lg" asChild>
-                  <a href="mailto:quotes@maintenancemarshall.co.za">Request a Quote</a>
+                  <Link to="/quote">Request a Quote</Link>
                 </Button>
               </div>
             </div>
@@ -49,7 +43,7 @@ export function LocationPageLayout({ location }: { location: LocationPage }) {
         <section className="py-20">
           <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-[1.2fr_0.8fr] gap-12">
             <div>
-              <h2 className="text-3xl font-bold text-foreground">Maintenance Services for {location.name}</h2>
+              <h2 className="text-3xl font-bold text-foreground">Cleaning Services for {location.name}</h2>
               <p className="text-muted-foreground mt-4 leading-relaxed">{location.overview}</p>
 
               <div className="mt-10 grid sm:grid-cols-2 gap-4">
@@ -63,7 +57,7 @@ export function LocationPageLayout({ location }: { location: LocationPage }) {
             </div>
 
             <aside className="rounded-lg border border-border bg-card p-6 h-fit">
-              <h2 className="text-xl font-bold text-foreground">Property Types We Support</h2>
+              <h2 className="text-xl font-bold text-foreground">Homes We Support</h2>
               <ul className="mt-4 space-y-3">
                 {location.propertyTypes.map((propertyType) => (
                   <li key={propertyType} className="text-sm text-muted-foreground flex gap-2">
@@ -81,10 +75,10 @@ export function LocationPageLayout({ location }: { location: LocationPage }) {
             <div className="max-w-2xl">
               <span className="text-xs uppercase tracking-[0.3em] text-primary font-semibold">Popular Services</span>
               <h2 className="text-3xl md:text-4xl font-bold text-foreground mt-3">
-                Common {location.name} Maintenance Work
+                Popular Cleaning Services in {location.name}
               </h2>
               <p className="text-muted-foreground mt-4">
-                These service pages explain our process, common problems and frequently asked questions for each type of work.
+                Explore the residential cleaning services available for different homes, routines and occasions.
               </p>
             </div>
             <div className="mt-10 grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -106,10 +100,10 @@ export function LocationPageLayout({ location }: { location: LocationPage }) {
             <div>
               <span className="text-xs uppercase tracking-[0.3em] text-primary font-semibold">Questions</span>
               <h2 className="text-3xl md:text-4xl font-bold text-foreground mt-3">
-                {location.name} Maintenance FAQs
+                {location.name} Cleaning FAQs
               </h2>
               <p className="text-muted-foreground mt-4">
-                Practical answers for clients looking for property maintenance support in {location.name}.
+                Helpful answers for households considering Hestiva cleaning services in {location.name}.
               </p>
             </div>
             <div className="space-y-4">
@@ -127,9 +121,9 @@ export function LocationPageLayout({ location }: { location: LocationPage }) {
           <div className="max-w-7xl mx-auto px-6 rounded-xl border border-border bg-card p-8 md:p-10">
             <div className="grid lg:grid-cols-[1fr_auto] gap-8 items-center">
               <div>
-                <h2 className="text-3xl font-bold text-foreground">Need maintenance help in {location.name}?</h2>
+                <h2 className="text-3xl font-bold text-foreground">Need home cleaning in {location.name}?</h2>
                 <p className="text-muted-foreground mt-3 max-w-2xl">
-                  Send Maintenance Marshall the details, photos and location of the work needed. We will help turn the problem into a practical scope of work.
+                  Tell Hestiva about your home, preferred service and timing, and we will help you choose the right cleaning option.
                 </p>
                 <div className="mt-5 flex flex-wrap gap-2">
                   {location.nearbyAreas.map((area) => (
@@ -140,7 +134,7 @@ export function LocationPageLayout({ location }: { location: LocationPage }) {
                 </div>
               </div>
               <Button variant="hero" size="lg" asChild>
-                <a href="mailto:quotes@maintenancemarshall.co.za">Request a Quote</a>
+                <Link to="/quote">Request a Quote</Link>
               </Button>
             </div>
           </div>

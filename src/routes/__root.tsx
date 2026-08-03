@@ -1,6 +1,7 @@
 import { Outlet, Link, createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
 
 import appCss from "../styles.css?url";
+import { LiveFormSubmission } from "@/components/LiveFormSubmission";
 import { absoluteUrl, BRAND_ASSETS, siteConfig } from "@/lib/site";
 
 function NotFoundComponent() {
@@ -88,5 +89,10 @@ function RootShell({ children }: { children: React.ReactNode }) {
 }
 
 function RootComponent() {
-  return <Outlet />;
+  return (
+    <>
+      <LiveFormSubmission />
+      <Outlet />
+    </>
+  );
 }

@@ -39,16 +39,13 @@ const steps = [
 export function WhyUsSection() {
   return (
     <>
-      <section id="why-us" className="py-24" aria-labelledby="why-heading">
+      <section id="why-us" className="bg-[#FFFDF8] py-24" aria-labelledby="why-heading">
         <div className="mx-auto max-w-7xl px-6">
           <div className="mx-auto max-w-2xl text-center">
-            <span className="text-xs font-semibold uppercase tracking-[0.3em] text-primary">
+            <span className="text-xs font-semibold uppercase tracking-[0.3em] text-[#9A7132]">
               Why Hestiva
             </span>
-            <h2
-              id="why-heading"
-              className="mt-3 text-4xl font-semibold text-foreground md:text-5xl"
-            >
+            <h2 id="why-heading" className="mt-3 text-4xl font-semibold text-[#3B0F1A] md:text-5xl">
               A higher standard of home cleaning
             </h2>
           </div>
@@ -60,62 +57,62 @@ export function WhyUsSection() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
-                className="rounded-xl border border-border bg-card p-7 text-center"
+                className="rounded-xl border border-[#E7DCC9] bg-[#FFFDF8] p-7 text-center"
               >
-                <benefit.icon className="mx-auto h-7 w-7 text-primary" aria-hidden="true" />
-                <h3 className="mt-5 text-xl font-semibold text-foreground">{benefit.title}</h3>
-                <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{benefit.text}</p>
+                <benefit.icon className="mx-auto h-7 w-7 text-[#9A7132]" aria-hidden="true" />
+                <h3 className="mt-5 text-xl font-semibold text-[#3B0F1A]">{benefit.title}</h3>
+                <p className="mt-3 text-sm leading-relaxed text-[#6D5B55]">{benefit.text}</p>
               </motion.article>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="bg-secondary py-24" aria-labelledby="process-heading">
+      <section className="bg-[#F8F3E8] py-24" aria-labelledby="process-heading">
         <div className="mx-auto max-w-7xl px-6">
           <div className="text-center">
-            <span className="text-xs font-semibold uppercase tracking-[0.3em] text-primary">
+            <span className="text-xs font-semibold uppercase tracking-[0.3em] text-[#9A7132]">
               How It Works
             </span>
             <h2
               id="process-heading"
-              className="mt-3 text-4xl font-semibold text-foreground md:text-5xl"
+              className="mt-3 text-4xl font-semibold text-[#3B0F1A] md:text-5xl"
             >
               Effortless from the first hello
             </h2>
           </div>
           <ol className="mt-14 grid gap-8 md:grid-cols-3">
             {steps.map(([number, title, text]) => (
-              <li key={number} className="relative border-t border-primary/30 pt-7">
-                <span className="text-sm font-semibold tracking-[0.2em] text-primary">
+              <li key={number} className="relative border-t border-[#C9A45B]/30 pt-7">
+                <span className="text-sm font-semibold tracking-[0.2em] text-[#9A7132]">
                   {number}
                 </span>
-                <h3 className="mt-3 text-xl font-semibold text-foreground">{title}</h3>
-                <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{text}</p>
+                <h3 className="mt-3 text-xl font-semibold text-[#3B0F1A]">{title}</h3>
+                <p className="mt-3 text-sm leading-relaxed text-[#6D5B55]">{text}</p>
               </li>
             ))}
           </ol>
         </div>
       </section>
 
-      <section className="py-24" aria-labelledby="safety-heading">
+      <section className="bg-[#FFFDF8] py-24" aria-labelledby="safety-heading">
         <div className="mx-auto grid max-w-7xl gap-12 px-6 lg:grid-cols-2 lg:items-center">
           <div>
-            <span className="text-xs font-semibold uppercase tracking-[0.3em] text-primary">
+            <span className="text-xs font-semibold uppercase tracking-[0.3em] text-[#9A7132]">
               Trust &amp; Safety
             </span>
             <h2
               id="safety-heading"
-              className="mt-3 text-4xl font-semibold text-foreground md:text-5xl"
+              className="mt-3 text-4xl font-semibold text-[#3B0F1A] md:text-5xl"
             >
               Peace of mind, built into every visit
             </h2>
-            <p className="mt-5 leading-relaxed text-muted-foreground">
+            <p className="mt-5 leading-relaxed text-[#5F4B46]">
               We understand the trust involved in welcoming someone into your home. Thoughtful
               protocols, respectful conduct and careful quality checks guide every Hestiva visit.
             </p>
           </div>
-          <div className="rounded-2xl border border-primary/20 bg-primary/5 p-8">
+          <div className="rounded-2xl border border-[#C9A45B]/30 bg-[#F8F3E8] p-8">
             {[
               "Carefully selected cleaning professionals",
               "Clear arrival and service communication",
@@ -124,13 +121,13 @@ export function WhyUsSection() {
             ].map((item, index) => (
               <div key={item} className="flex gap-4 py-4 first:pt-0 last:pb-0">
                 {index === 2 ? (
-                  <KeyRound className="h-5 w-5 shrink-0 text-primary" />
+                  <KeyRound className="h-5 w-5 shrink-0 text-[#9A7132]" />
                 ) : index === 0 ? (
-                  <ShieldCheck className="h-5 w-5 shrink-0 text-primary" />
+                  <ShieldCheck className="h-5 w-5 shrink-0 text-[#9A7132]" />
                 ) : (
-                  <CheckCircle2 className="h-5 w-5 shrink-0 text-primary" />
+                  <CheckCircle2 className="h-5 w-5 shrink-0 text-[#9A7132]" />
                 )}
-                <span className="text-sm text-foreground">{item}</span>
+                <span className="text-sm text-[#5F4B46]">{item}</span>
               </div>
             ))}
           </div>

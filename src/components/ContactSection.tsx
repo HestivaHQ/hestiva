@@ -2,7 +2,7 @@ import { ArrowRight, Mail } from "lucide-react";
 
 export function ContactSection() {
   return (
-    <section id="contact" className="py-24" aria-labelledby="contact-heading">
+    <section id="contact" className="bg-[#FFFDF8] py-24" aria-labelledby="contact-heading">
       <div className="mx-auto max-w-5xl px-6">
         <div className="rounded-2xl bg-[#3B0F1A] px-7 py-14 text-center shadow-xl sm:px-12">
           <span className="text-xs font-semibold uppercase tracking-[0.3em] text-[#C9A45B]">

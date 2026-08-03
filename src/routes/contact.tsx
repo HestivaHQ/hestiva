@@ -51,20 +51,20 @@ export const Route = createFileRoute("/contact")({
 });
 
 const primaryButton =
-  "inline-flex min-h-12 items-center justify-center gap-2 rounded-md bg-[#5A1425] px-7 py-3 text-center text-sm font-semibold uppercase tracking-[0.12em] text-white shadow-[0_12px_30px_rgba(90,20,37,0.14)] transition duration-300 hover:-translate-y-0.5 hover:bg-[#711C31] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A45B] focus-visible:ring-offset-4 focus-visible:ring-offset-[#FBF7EF]";
+  "inline-flex min-h-12 items-center justify-center gap-2 rounded-md bg-[#3B0F1A] px-7 py-3 text-center text-sm font-semibold uppercase tracking-[0.12em] text-white shadow-[0_12px_30px_rgba(90,20,37,0.14)] transition duration-300 hover:-translate-y-0.5 hover:bg-[#531628] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A45B] focus-visible:ring-offset-4 focus-visible:ring-offset-[#F8F3E8]";
 
 const secondaryButton =
-  "inline-flex min-h-12 items-center justify-center gap-2 rounded-md border border-[#5A1425]/30 bg-white/60 px-7 py-3 text-center text-sm font-semibold uppercase tracking-[0.12em] text-[#5A1425] transition duration-300 hover:-translate-y-0.5 hover:border-[#5A1425] hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A45B] focus-visible:ring-offset-4 focus-visible:ring-offset-[#FBF7EF]";
+  "inline-flex min-h-12 items-center justify-center gap-2 rounded-md border border-[#3B0F1A]/30 bg-[#FFFDF8] px-7 py-3 text-center text-sm font-semibold uppercase tracking-[0.12em] text-[#3B0F1A] transition duration-300 hover:-translate-y-0.5 hover:border-[#3B0F1A] hover:bg-[#FFFDF8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A45B] focus-visible:ring-offset-4 focus-visible:ring-offset-[#F8F3E8]";
 
 const fieldClass =
-  "mt-2 min-h-12 w-full rounded-md border border-[#B9AA9E] bg-white px-4 py-3 text-base text-[#322B2A] shadow-sm outline-none transition placeholder:text-[#8A7D76] hover:border-[#8F7A69] focus:border-[#5A1425] focus:ring-2 focus:ring-[#C9A45B]/45";
+  "mt-2 min-h-12 w-full rounded-md border border-[#E7DCC9] bg-white px-4 py-3 text-base text-[#5F4B46] shadow-sm outline-none transition placeholder:text-[#6D5B55] hover:border-[#9A7132] focus:border-[#3B0F1A] focus:ring-2 focus:ring-[#C9A45B]/45";
 
 function ContactPage() {
   return (
-    <div className="min-h-screen bg-[#FBF7EF] text-[#322B2A]">
+    <div className="min-h-screen bg-[#F8F3E8] text-[#5F4B46]">
       <Navbar />
       <main>
-        <section className="relative overflow-hidden border-b border-[#C9A45B]/20 bg-[#F7F0E3] px-6 pb-24 pt-36 md:pb-32 md:pt-44">
+        <section className="relative overflow-hidden border-b border-[#C9A45B]/20 bg-[#EDE2CF] px-6 pb-24 pt-36 md:pb-32 md:pt-44">
           <div
             aria-hidden="true"
             className="absolute -right-32 top-10 h-[30rem] w-[30rem] rounded-full border border-[#C9A45B]/20"
@@ -74,10 +74,10 @@ function ContactPage() {
             className="absolute -right-12 top-32 h-72 w-72 rounded-full bg-[#C9A45B]/[0.07]"
           />
           <div className="relative mx-auto max-w-7xl">
-            <nav aria-label="Breadcrumb" className="mb-12 flex gap-2 text-sm text-[#695E59]">
+            <nav aria-label="Breadcrumb" className="mb-12 flex gap-2 text-sm text-[#5F4B46]">
               <Link
                 to="/"
-                className="rounded-sm transition-colors hover:text-[#5A1425] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A45B]"
+                className="rounded-sm transition-colors hover:text-[#3B0F1A] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A45B]"
               >
                 Home
               </Link>
@@ -86,13 +86,13 @@ function ContactPage() {
               </span>
               <span aria-current="page">Contact</span>
             </nav>
-            <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#9A742E]">
+            <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#9A7132]">
               Contact Hestiva
             </p>
-            <h1 className="mt-5 max-w-4xl text-5xl font-semibold leading-[1.08] tracking-[-0.035em] text-[#5A1425] sm:text-6xl md:text-7xl">
+            <h1 className="mt-5 max-w-4xl text-5xl font-semibold leading-[1.08] tracking-[-0.035em] text-[#3B0F1A] sm:text-6xl md:text-7xl">
               Let&apos;s talk about your home.
             </h1>
-            <p className="mt-7 max-w-2xl text-lg leading-8 text-[#695E59] md:text-xl">
+            <p className="mt-7 max-w-2xl text-lg leading-8 text-[#5F4B46] md:text-xl">
               Tell us what type of cleaning you need and we&apos;ll help you take the next step
               toward a cleaner, calmer home.
             </p>
@@ -112,12 +112,12 @@ function ContactPage() {
         <section aria-labelledby="contact-options-heading" className="px-6 py-20 md:py-28">
           <div className="mx-auto max-w-7xl">
             <div className="max-w-2xl">
-              <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#9A742E]">
+              <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#9A7132]">
                 Contact options
               </p>
               <h2
                 id="contact-options-heading"
-                className="mt-4 text-3xl font-semibold tracking-tight text-[#5A1425] md:text-5xl"
+                className="mt-4 text-3xl font-semibold tracking-tight text-[#3B0F1A] md:text-5xl"
               >
                 Choose the easiest way to reach us.
               </h2>
@@ -126,7 +126,7 @@ function ContactPage() {
               <ContactCard icon={Phone} title="Phone and WhatsApp">
                 <a
                   href={phoneLink}
-                  className="font-semibold text-[#5A1425] underline decoration-[#C9A45B] underline-offset-4 transition hover:text-[#711C31] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A45B]"
+                  className="font-semibold text-[#3B0F1A] underline decoration-[#C9A45B] underline-offset-4 transition hover:text-[#531628] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A45B]"
                 >
                   {phoneDisplay}
                 </a>
@@ -134,7 +134,7 @@ function ContactPage() {
               <ContactCard icon={Mail} title="Quote requests">
                 <a
                   href="mailto:quotes@hestiva.co.za"
-                  className="break-all font-semibold text-[#5A1425] underline decoration-[#C9A45B] underline-offset-4 transition hover:text-[#711C31] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A45B]"
+                  className="break-all font-semibold text-[#3B0F1A] underline decoration-[#C9A45B] underline-offset-4 transition hover:text-[#531628] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A45B]"
                 >
                   quotes@hestiva.co.za
                 </a>
@@ -142,13 +142,13 @@ function ContactPage() {
               <ContactCard icon={Mail} title="General enquiries">
                 <a
                   href="mailto:info@hestiva.co.za"
-                  className="break-all font-semibold text-[#5A1425] underline decoration-[#C9A45B] underline-offset-4 transition hover:text-[#711C31] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A45B]"
+                  className="break-all font-semibold text-[#3B0F1A] underline decoration-[#C9A45B] underline-offset-4 transition hover:text-[#531628] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A45B]"
                 >
                   info@hestiva.co.za
                 </a>
               </ContactCard>
               <ContactCard icon={MapPin} title="Business address">
-                <address className="not-italic leading-7 text-[#4F4642]">
+                <address className="not-italic leading-7 text-[#6D5B55]">
                   2962 Dunlin Drive
                   <br />
                   Riverlea
@@ -157,7 +157,7 @@ function ContactPage() {
                   <br />
                   2093
                 </address>
-                <p className="mt-4 text-sm leading-6 text-[#695E59]">
+                <p className="mt-4 text-sm leading-6 text-[#5F4B46]">
                   This is our business address and is not necessarily a walk-in customer location.
                 </p>
               </ContactCard>
@@ -168,20 +168,20 @@ function ContactPage() {
         <section
           id="enquiry-form"
           aria-labelledby="form-heading"
-          className="bg-white/70 px-6 py-20 md:py-28"
+          className="bg-[#FFFDF8] px-6 py-20 md:py-28"
         >
           <div className="mx-auto grid max-w-7xl gap-14 lg:grid-cols-[0.75fr_1.25fr] lg:gap-24">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#9A742E]">
+              <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#9A7132]">
                 Enquiry form
               </p>
               <h2
                 id="form-heading"
-                className="mt-4 text-3xl font-semibold tracking-tight text-[#5A1425] md:text-5xl"
+                className="mt-4 text-3xl font-semibold tracking-tight text-[#3B0F1A] md:text-5xl"
               >
                 Tell us how we can help.
               </h2>
-              <p id="required-note" className="mt-6 max-w-md leading-7 text-[#695E59]">
+              <p id="required-note" className="mt-6 max-w-md leading-7 text-[#5F4B46]">
                 Complete the form and we will continue the conversation with you. All fields are
                 required.
               </p>
@@ -190,14 +190,14 @@ function ContactPage() {
             <form
               onSubmit={(event) => event.preventDefault()}
               aria-describedby="required-note form-availability"
-              className="rounded-lg border border-[#C9A45B]/30 bg-[#FBF7EF] p-6 shadow-[0_20px_60px_rgba(70,37,29,0.06)] sm:p-10"
+              className="rounded-lg border border-[#C9A45B]/30 bg-[#F8F3E8] p-6 shadow-[0_20px_60px_rgba(70,37,29,0.06)] sm:p-10"
             >
               <div className="grid gap-6 sm:grid-cols-2">
                 <FormField label="Full name" name="fullName" autoComplete="name" />
                 <FormField label="Mobile number" name="mobile" type="tel" autoComplete="tel" />
                 <FormField label="Email address" name="email" type="email" autoComplete="email" />
                 <FormField label="Suburb" name="suburb" autoComplete="address-level2" />
-                <label className="text-sm font-semibold text-[#4A3435]">
+                <label className="text-sm font-semibold text-[#5F4B46]">
                   Enquiry type
                   <select name="enquiryType" required defaultValue="" className={fieldClass}>
                     <option value="" disabled>
@@ -210,7 +210,7 @@ function ContactPage() {
                     <option>Feedback</option>
                   </select>
                 </label>
-                <label className="text-sm font-semibold text-[#4A3435]">
+                <label className="text-sm font-semibold text-[#5F4B46]">
                   Preferred contact method
                   <select name="preferredContact" required defaultValue="" className={fieldClass}>
                     <option value="" disabled>
@@ -221,7 +221,7 @@ function ContactPage() {
                     <option>Email</option>
                   </select>
                 </label>
-                <label className="text-sm font-semibold text-[#4A3435] sm:col-span-2">
+                <label className="text-sm font-semibold text-[#5F4B46] sm:col-span-2">
                   Message
                   <textarea
                     name="message"
@@ -242,11 +242,11 @@ function ContactPage() {
                   WhatsApp Hestiva
                 </a>
               </div>
-              <p id="form-availability" className="mt-5 text-sm leading-6 text-[#695E59]">
+              <p id="form-availability" className="mt-5 text-sm leading-6 text-[#5F4B46]">
                 Online submission is not yet available. To send your request now, please email
                 <a
                   href="mailto:quotes@hestiva.co.za"
-                  className="mx-1 font-semibold text-[#5A1425] underline decoration-[#C9A45B] underline-offset-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A45B]"
+                  className="mx-1 font-semibold text-[#3B0F1A] underline decoration-[#C9A45B] underline-offset-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A45B]"
                 >
                   quotes@hestiva.co.za
                 </a>
@@ -257,35 +257,35 @@ function ContactPage() {
         </section>
 
         <section aria-labelledby="whatsapp-heading" className="px-6 py-20 md:py-24">
-          <div className="mx-auto flex max-w-7xl flex-col justify-between gap-8 rounded-xl border border-[#C9A45B]/35 bg-[#F3EBDD] p-8 sm:p-12 lg:flex-row lg:items-center">
+          <div className="mx-auto flex max-w-7xl flex-col justify-between gap-8 rounded-xl border border-[#C9A45B]/35 bg-[#EDE2CF] p-8 sm:p-12 lg:flex-row lg:items-center">
             <div className="max-w-2xl">
-              <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#9A742E]">
+              <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#9A7132]">
                 Optional WhatsApp contact
               </p>
-              <h2 id="whatsapp-heading" className="mt-4 text-3xl font-semibold text-[#5A1425]">
+              <h2 id="whatsapp-heading" className="mt-4 text-3xl font-semibold text-[#3B0F1A]">
                 Prefer to message us?
               </h2>
-              <p className="mt-4 leading-7 text-[#695E59]">
+              <p className="mt-4 leading-7 text-[#5F4B46]">
                 Start a WhatsApp conversation with Hestiva on {phoneDisplay} using our short
                 pre-filled message.
               </p>
             </div>
-            <a href={whatsappLink} className={`${secondaryButton} shrink-0 bg-[#FBF7EF]`}>
+            <a href={whatsappLink} className={`${secondaryButton} shrink-0 bg-[#F8F3E8]`}>
               <MessageCircle aria-hidden="true" className="h-5 w-5" />
               Open WhatsApp
             </a>
           </div>
         </section>
 
-        <section aria-labelledby="next-steps-heading" className="bg-[#F7F0E3] px-6 py-20 md:py-28">
+        <section aria-labelledby="next-steps-heading" className="bg-[#EDE2CF] px-6 py-20 md:py-28">
           <div className="mx-auto max-w-7xl">
             <div className="mx-auto max-w-2xl text-center">
-              <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#9A742E]">
+              <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#9A7132]">
                 What happens next
               </p>
               <h2
                 id="next-steps-heading"
-                className="mt-4 text-3xl font-semibold tracking-tight text-[#5A1425] md:text-5xl"
+                className="mt-4 text-3xl font-semibold tracking-tight text-[#3B0F1A] md:text-5xl"
               >
                 A simple, thoughtful process.
               </h2>
@@ -297,11 +297,11 @@ function ContactPage() {
               />
               {nextSteps.map((step) => (
                 <li key={step.number} className="relative text-center">
-                  <span className="relative mx-auto flex h-12 w-12 items-center justify-center rounded-full border border-[#C9A45B] bg-[#F7F0E3] text-xs font-semibold tracking-[0.12em] text-[#8A6729]">
+                  <span className="relative mx-auto flex h-12 w-12 items-center justify-center rounded-full border border-[#C9A45B] bg-[#EDE2CF] text-xs font-semibold tracking-[0.12em] text-[#9A7132]">
                     {step.number}
                   </span>
-                  <h3 className="mt-6 text-xl font-semibold text-[#5A1425]">{step.title}</h3>
-                  <p className="mx-auto mt-3 max-w-sm leading-7 text-[#695E59]">
+                  <h3 className="mt-6 text-xl font-semibold text-[#3B0F1A]">{step.title}</h3>
+                  <p className="mx-auto mt-3 max-w-sm leading-7 text-[#5F4B46]">
                     {step.description}
                   </p>
                 </li>
@@ -312,12 +312,12 @@ function ContactPage() {
 
         <section aria-labelledby="hours-heading" className="px-6 py-16 md:py-20">
           <div className="mx-auto flex max-w-4xl flex-col items-start gap-6 border-y border-[#C9A45B]/30 py-10 sm:flex-row">
-            <Clock3 aria-hidden="true" className="h-8 w-8 shrink-0 text-[#9A742E]" />
+            <Clock3 aria-hidden="true" className="h-8 w-8 shrink-0 text-[#9A7132]" />
             <div>
-              <h2 id="hours-heading" className="text-2xl font-semibold text-[#5A1425]">
+              <h2 id="hours-heading" className="text-2xl font-semibold text-[#3B0F1A]">
                 Business hours
               </h2>
-              <p className="mt-3 leading-7 text-[#695E59]">
+              <p className="mt-3 leading-7 text-[#5F4B46]">
                 Our team responds during normal business hours. Confirmed service times depend on
                 availability and location.
               </p>
@@ -325,12 +325,12 @@ function ContactPage() {
           </div>
         </section>
 
-        <section className="bg-[#F3EBDD] px-6 py-20 text-center md:py-28">
+        <section className="bg-[#EDE2CF] px-6 py-20 text-center md:py-28">
           <div className="mx-auto max-w-3xl">
-            <h2 className="text-4xl font-semibold tracking-tight text-[#5A1425] md:text-6xl">
+            <h2 className="text-4xl font-semibold tracking-tight text-[#3B0F1A] md:text-6xl">
               We&apos;re ready when you are.
             </h2>
-            <p className="mx-auto mt-6 max-w-xl text-lg leading-8 text-[#695E59]">
+            <p className="mx-auto mt-6 max-w-xl text-lg leading-8 text-[#5F4B46]">
               Send your enquiry and we&apos;ll respond with clear, helpful next steps.
             </p>
             <a href="#enquiry-form" className={`${primaryButton} mt-9`}>
@@ -355,9 +355,9 @@ function ContactCard({
   children: React.ReactNode;
 }) {
   return (
-    <article className="bg-[#FFFCF7] p-7 sm:p-8">
-      <Icon aria-hidden="true" className="h-7 w-7 text-[#9A742E]" strokeWidth={1.5} />
-      <h3 className="mt-5 text-sm font-semibold uppercase tracking-[0.12em] text-[#5A1425]">
+    <article className="bg-[#FFFDF8] p-7 sm:p-8">
+      <Icon aria-hidden="true" className="h-7 w-7 text-[#9A7132]" strokeWidth={1.5} />
+      <h3 className="mt-5 text-sm font-semibold uppercase tracking-[0.12em] text-[#3B0F1A]">
         {title}
       </h3>
       <div className="mt-3">{children}</div>
@@ -377,7 +377,7 @@ function FormField({
   autoComplete: string;
 }) {
   return (
-    <label className="text-sm font-semibold text-[#4A3435]">
+    <label className="text-sm font-semibold text-[#5F4B46]">
       {label}
       <input name={name} type={type} required autoComplete={autoComplete} className={fieldClass} />
     </label>

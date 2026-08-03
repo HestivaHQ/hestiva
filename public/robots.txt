@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://www.maintenancemarshall.co.za/sitemap.xml
+Sitemap: https://hestiva.co.za/sitemap.xml

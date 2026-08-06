@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, Check, Home, MapPin, MessageCircle, Navigation } from "lucide-react";
 import { Footer } from "@/components/Footer";
 import { Navbar } from "@/components/Navbar";
+import { createSeoHead } from "@/lib/seo";
 import { SITE_NAME, SITE_URL } from "@/lib/site";
 
 const serviceAreas = [
@@ -51,7 +52,6 @@ export const Route = createFileRoute("/locations")({
   head: ({ match, matches }) => {
     if (matches[matches.length - 1]?.routeId !== match.routeId) return {};
 
-    const canonical = `${SITE_URL}/locations`;
     const title = `Areas We Serve | ${SITE_NAME} Residential Cleaning`;
     const description =
       "Check Hestiva residential cleaning availability across selected Johannesburg, Midrand, Centurion and Pretoria areas.";
@@ -75,17 +75,7 @@ export const Route = createFileRoute("/locations")({
     };
 
     return {
-      meta: [
-        { title },
-        { name: "description", content: description },
-        { property: "og:title", content: title },
-        { property: "og:description", content: description },
-        { property: "og:type", content: "website" },
-        { property: "og:url", content: canonical },
-        { name: "twitter:title", content: title },
-        { name: "twitter:description", content: description },
-      ],
-      links: [{ rel: "canonical", href: canonical }],
+      ...createSeoHead({ title, description, path: "/locations" }),
       scripts: [
         {
           type: "application/ld+json",

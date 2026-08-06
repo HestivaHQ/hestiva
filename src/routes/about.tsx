@@ -10,7 +10,8 @@ import {
 } from "lucide-react";
 import { Footer } from "@/components/Footer";
 import { Navbar } from "@/components/Navbar";
-import { SITE_NAME, SITE_URL } from "@/lib/site";
+import { createSeoHead } from "@/lib/seo";
+import { SITE_NAME } from "@/lib/site";
 
 const principles = [
   {
@@ -70,25 +71,13 @@ const households = [
 
 export const Route = createFileRoute("/about")({
   component: AboutPage,
-  head: () => ({
-    meta: [
-      { title: `About ${SITE_NAME} | Trusted Residential Cleaning` },
-      {
-        name: "description",
-        content:
-          "Discover Hestiva's thoughtful approach to dependable residential cleaning, respectful home care and clear communication.",
-      },
-      { property: "og:title", content: `About ${SITE_NAME} | Residential Cleaning` },
-      {
-        property: "og:description",
-        content:
-          "Thoughtful residential cleaning delivered with respect, consistency and close attention to detail.",
-      },
-      { property: "og:type", content: "website" },
-      { property: "og:url", content: `${SITE_URL}/about` },
-    ],
-    links: [{ rel: "canonical", href: `${SITE_URL}/about` }],
-  }),
+  head: () =>
+    createSeoHead({
+      title: `About ${SITE_NAME} | Trusted Residential Cleaning`,
+      description:
+        "Discover Hestiva's thoughtful approach to dependable residential cleaning, respectful home care and clear communication.",
+      path: "/about",
+    }),
 });
 
 const primaryButton =

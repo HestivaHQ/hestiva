@@ -2,7 +2,8 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Check, Sparkles } from "lucide-react";
 import { Footer } from "@/components/Footer";
 import { Navbar } from "@/components/Navbar";
-import { SITE_NAME, SITE_URL } from "@/lib/site";
+import { createSeoHead } from "@/lib/seo";
+import { SITE_NAME } from "@/lib/site";
 
 const includedServices = [
   "Living and dining areas",
@@ -15,25 +16,13 @@ const includedServices = [
 
 export const Route = createFileRoute("/services/apartment-cleaning")({
   component: ApartmentCleaningPage,
-  head: () => ({
-    meta: [
-      { title: `Apartment Cleaning | ${SITE_NAME}` },
-      {
-        name: "description",
-        content:
-          "Detail-led apartment cleaning for studios and multi-bedroom homes, tailored to your space and routine.",
-      },
-      { property: "og:title", content: `Apartment Cleaning | ${SITE_NAME}` },
-      {
-        property: "og:description",
-        content:
-          "Thoughtful apartment cleaning that leaves every room fresh and beautifully cared for.",
-      },
-      { property: "og:type", content: "website" },
-      { property: "og:url", content: `${SITE_URL}/services/apartment-cleaning` },
-    ],
-    links: [{ rel: "canonical", href: `${SITE_URL}/services/apartment-cleaning` }],
-  }),
+  head: () =>
+    createSeoHead({
+      title: `Apartment Cleaning | ${SITE_NAME}`,
+      description:
+        "Detail-led apartment cleaning for studios and multi-bedroom homes, tailored to your space and routine.",
+      path: "/services/apartment-cleaning",
+    }),
 });
 
 function ApartmentCleaningPage() {

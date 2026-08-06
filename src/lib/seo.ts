@@ -1,4 +1,4 @@
-import { absoluteUrl, SITE_URL, siteConfig } from "@/lib/site";
+import { SITE_URL, SOCIAL_IMAGE, siteConfig } from "@/lib/site";
 
 export type SeoRobots = {
   index?: boolean;
@@ -12,7 +12,6 @@ export type SeoConfig = {
   title: string;
   description: string;
   path?: string;
-  image?: string | null;
   type?: "website" | "article";
   keywords?: readonly string[];
   robots?: SeoRobots;
@@ -53,15 +52,12 @@ export function createSeoHead({
   title,
   description,
   path = "/",
-  image = siteConfig.assets.socialImage,
   type = "website",
   keywords,
   robots,
   themeColor = DEFAULT_THEME_COLOR,
 }: SeoConfig) {
   const canonical = canonicalUrl(path);
-  const socialImageUrl = image ? absoluteUrl(image) : null;
-
   return {
     meta: [
       { title },
@@ -70,39 +66,29 @@ export function createSeoHead({
       { name: "robots", content: robotsContent(robots) },
       { name: "googlebot", content: robotsContent(robots) },
       { name: "theme-color", content: themeColor },
-      ...(keywords?.length
-        ? [{ name: "keywords", content: keywords.join(", ") }]
-        : []),
+      ...(keywords?.length ? [{ name: "keywords", content: keywords.join(", ") }] : []),
       { property: "og:title", content: title },
       { property: "og:description", content: description },
       { property: "og:type", content: type },
       { property: "og:site_name", content: siteConfig.name },
       { property: "og:locale", content: "en_ZA" },
       { property: "og:url", content: canonical },
-      ...(socialImageUrl
-        ? [
-            { property: "og:image", content: socialImageUrl },
-            { property: "og:image:secure_url", content: socialImageUrl },
-            { property: "og:image:width", content: "1200" },
-            { property: "og:image:height", content: "630" },
-            {
-              property: "og:image:alt",
-              content: `${siteConfig.name} — ${siteConfig.tagline}`,
-            },
-          ]
-        : []),
+      { property: "og:image", content: SOCIAL_IMAGE },
+      { property: "og:image:secure_url", content: SOCIAL_IMAGE },
+      { property: "og:image:width", content: "1200" },
+      { property: "og:image:height", content: "630" },
+      {
+        property: "og:image:alt",
+        content: `${siteConfig.name} — ${siteConfig.tagline}`,
+      },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: title },
       { name: "twitter:description", content: description },
-      ...(socialImageUrl
-        ? [
-            { name: "twitter:image", content: socialImageUrl },
-            {
-              name: "twitter:image:alt",
-              content: `${siteConfig.name} — ${siteConfig.tagline}`,
-            },
-          ]
-        : []),
+      { name: "twitter:image", content: SOCIAL_IMAGE },
+      {
+        name: "twitter:image:alt",
+        content: `${siteConfig.name} — ${siteConfig.tagline}`,
+      },
     ],
     links: [{ rel: "canonical", href: canonical }],
   };

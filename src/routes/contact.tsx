@@ -2,7 +2,8 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, Clock3, Mail, MapPin, MessageCircle, Phone, Send } from "lucide-react";
 import { Footer } from "@/components/Footer";
 import { Navbar } from "@/components/Navbar";
-import { SITE_NAME, SITE_URL } from "@/lib/site";
+import { createSeoHead } from "@/lib/seo";
+import { SITE_NAME } from "@/lib/site";
 
 const phoneDisplay = "068 423 1614";
 const phoneLink = "tel:+27684231614";
@@ -29,25 +30,13 @@ const nextSteps = [
 
 export const Route = createFileRoute("/contact")({
   component: ContactPage,
-  head: () => ({
-    meta: [
-      { title: `Contact ${SITE_NAME} | Residential Cleaning Enquiries` },
-      {
-        name: "description",
-        content:
-          "Contact Hestiva for a personalised residential cleaning quotation, a general enquiry or help with an existing booking.",
-      },
-      { property: "og:title", content: `Contact ${SITE_NAME} | Residential Cleaning` },
-      {
-        property: "og:description",
-        content:
-          "Tell Hestiva what type of home cleaning you need and receive clear, helpful next steps.",
-      },
-      { property: "og:type", content: "website" },
-      { property: "og:url", content: `${SITE_URL}/contact` },
-    ],
-    links: [{ rel: "canonical", href: `${SITE_URL}/contact` }],
-  }),
+  head: () =>
+    createSeoHead({
+      title: `Contact ${SITE_NAME} | Residential Cleaning Enquiries`,
+      description:
+        "Contact Hestiva for a personalised residential cleaning quotation, a general enquiry or help with an existing booking.",
+      path: "/contact",
+    }),
 });
 
 const primaryButton =

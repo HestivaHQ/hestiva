@@ -5,6 +5,7 @@ import { get } from "node:http";
 import { setTimeout as delay } from "node:timers/promises";
 
 const PRODUCTION_ORIGIN = "https://www.hestiva.co.za";
+const SOCIAL_IMAGE = `${PRODUCTION_ORIGIN}/brand/social/social-share-1200x630.png`;
 const LOCAL_ORIGIN = "http://127.0.0.1:8787";
 const WRANGLER_CONFIG = ".output/server/wrangler.json";
 const REQUEST_TIMEOUT_MS = 5_000;
@@ -12,12 +13,53 @@ const STARTUP_TIMEOUT_MS = 30_000;
 const SHUTDOWN_TIMEOUT_MS = 5_000;
 const ROUTES = [
   "/",
+  "/about",
+  "/contact",
+  "/quote",
+  "/privacy",
+  "/terms",
   "/services",
+  "/services/regular-home-cleaning",
   "/services/deep-cleaning",
+  "/services/move-in-cleaning",
+  "/services/move-out-cleaning",
+  "/services/kitchen-cleaning",
+  "/services/bathroom-sanitisation",
+  "/services/bedroom-cleaning",
+  "/services/living-area-cleaning",
+  "/services/interior-window-cleaning",
+  "/services/laundry-folding",
+  "/services/apartment-cleaning",
+  "/services/eco-conscious-cleaning",
+  "/services/cleaning-add-ons",
   "/locations",
+  "/locations/johannesburg",
+  "/locations/pretoria",
+  "/locations/centurion",
+  "/locations/midrand",
+  "/locations/kempton-park",
   "/locations/randburg",
+  "/locations/roodepoort",
+  "/locations/boksburg",
+  "/locations/benoni",
+  "/locations/edenvale",
+  "/locations/germiston",
+  "/locations/sandton",
   "/services/deep-cleaning?utm_source=test&utm_medium=seo",
 ];
+
+const REQUIRED_OPEN_GRAPH = {
+  "og:title": null,
+  "og:description": null,
+  "og:type": "website",
+  "og:url": null,
+  "og:image": SOCIAL_IMAGE,
+  "og:image:width": "1200",
+  "og:image:height": "630",
+  "og:image:alt": null,
+  "og:site_name": "Hestiva",
+  "og:locale": "en_ZA",
+};
 
 function metadataValues(html, selector) {
   const values = [];
@@ -126,6 +168,16 @@ async function verifyRoute(route) {
   );
 
   assert.equal(canonicals.length, 1, `${route}: expected exactly one canonical tag`);
+
+  for (const [property, expectedValue] of Object.entries(REQUIRED_OPEN_GRAPH)) {
+    const values = metadataValues(response.body, (attributes) => attributes.property === property);
+    assert.equal(values.length, 1, `${route}: expected exactly one ${property} tag`);
+    assert.ok(values[0], `${route}: ${property} must not be empty`);
+    if (expectedValue !== null) {
+      assert.equal(values[0], expectedValue, `${route}: ${property} has the wrong value`);
+    }
+  }
+
   assert.equal(openGraphUrls.length, 1, `${route}: expected exactly one og:url tag`);
   assert.equal(canonicals[0], openGraphUrls[0], `${route}: canonical and og:url must match`);
 

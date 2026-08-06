@@ -2,8 +2,7 @@ import { Outlet, Link, createRootRoute, HeadContent, Scripts } from "@tanstack/r
 
 import appCss from "../styles.css?url";
 import { LiveFormSubmission } from "@/components/LiveFormSubmission";
-import { BRAND_ASSETS, siteConfig } from "@/lib/site";
-import { createSeoHead } from "@/lib/seo";
+import { BRAND_ASSETS } from "@/lib/site";
 
 function NotFoundComponent() {
   return (
@@ -28,32 +27,22 @@ function NotFoundComponent() {
 }
 
 export const Route = createRootRoute({
-  head: () => {
-    const seo = createSeoHead({
-      title: siteConfig.defaultTitle,
-      description: siteConfig.defaultDescription,
-      path: "/",
-    });
-
-    return {
-      meta: [
-        { charSet: "utf-8" },
-        { name: "viewport", content: "width=device-width, initial-scale=1" },
-        {
-          name: "google-site-verification",
-          content: "9ptdX6MHhpK25xbIHLMeVG7iSoMbLHXTVYynNZcH3zs",
-        },
-        ...seo.meta,
-      ],
-      links: [
-        { rel: "stylesheet", href: appCss },
-        { rel: "icon", type: "image/png", sizes: "16x16", href: BRAND_ASSETS.favicon16 },
-        { rel: "icon", type: "image/png", sizes: "32x32", href: BRAND_ASSETS.favicon32 },
-        { rel: "apple-touch-icon", sizes: "180x180", href: BRAND_ASSETS.appleTouchIcon },
-        ...seo.links,
-      ],
-    };
-  },
+  head: () => ({
+    meta: [
+      { charSet: "utf-8" },
+      { name: "viewport", content: "width=device-width, initial-scale=1" },
+      {
+        name: "google-site-verification",
+        content: "9ptdX6MHhpK25xbIHLMeVG7iSoMbLHXTVYynNZcH3zs",
+      },
+    ],
+    links: [
+      { rel: "stylesheet", href: appCss },
+      { rel: "icon", type: "image/png", sizes: "16x16", href: BRAND_ASSETS.favicon16 },
+      { rel: "icon", type: "image/png", sizes: "32x32", href: BRAND_ASSETS.favicon32 },
+      { rel: "apple-touch-icon", sizes: "180x180", href: BRAND_ASSETS.appleTouchIcon },
+    ],
+  }),
   shellComponent: RootShell,
   component: RootComponent,
   notFoundComponent: NotFoundComponent,

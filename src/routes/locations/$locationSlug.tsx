@@ -1,8 +1,8 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { LocationPageLayout } from "@/components/LocationPageLayout";
 import { getLocationPage, locationPages } from "@/content/locations";
-
-const SITE_URL = "https://hestiva.co.za";
+import { canonicalUrl, createSeoHead } from "@/lib/seo";
+import { SITE_NAME } from "@/lib/site";
 
 export const Route = createFileRoute("/locations/$locationSlug")({
   loader: ({ params }) => {
@@ -16,16 +16,23 @@ export const Route = createFileRoute("/locations/$locationSlug")({
   },
   head: ({ loaderData, params }) => {
     const location = loaderData?.location ?? getLocationPage(params.locationSlug);
-    const canonical = `${SITE_URL}/locations/${params.locationSlug}`;
 
     if (!location) {
       return {};
     }
 
+    const path = `/locations/${location.slug}`;
+    const canonical = canonicalUrl(path);
+    const seo = createSeoHead({
+      title: location.metaTitle,
+      description: location.metaDescription,
+      path,
+    });
+
     const localBusinessSchema = {
       "@context": "https://schema.org",
       "@type": "LocalBusiness",
-      name: "Hestiva",
+      name: SITE_NAME,
       email: "quotes@hestiva.co.za",
       url: canonical,
       address: {
@@ -72,13 +79,13 @@ export const Route = createFileRoute("/locations/$locationSlug")({
           "@type": "ListItem",
           position: 1,
           name: "Home",
-          item: SITE_URL,
+          item: canonicalUrl("/"),
         },
         {
           "@type": "ListItem",
           position: 2,
           name: "Areas",
-          item: `${SITE_URL}/locations`,
+          item: canonicalUrl("/locations"),
         },
         {
           "@type": "ListItem",
@@ -90,17 +97,7 @@ export const Route = createFileRoute("/locations/$locationSlug")({
     };
 
     return {
-      meta: [
-        { title: location.metaTitle },
-        { name: "description", content: location.metaDescription },
-        { property: "og:title", content: location.metaTitle },
-        { property: "og:description", content: location.metaDescription },
-        { property: "og:type", content: "website" },
-        { property: "og:url", content: canonical },
-        { name: "twitter:title", content: location.metaTitle },
-        { name: "twitter:description", content: location.metaDescription },
-      ],
-      links: [{ rel: "canonical", href: canonical }],
+      ...seo,
       scripts: [
         {
           type: "application/ld+json",

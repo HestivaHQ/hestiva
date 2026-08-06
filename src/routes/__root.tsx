@@ -2,7 +2,8 @@ import { Outlet, Link, createRootRoute, HeadContent, Scripts } from "@tanstack/r
 
 import appCss from "../styles.css?url";
 import { LiveFormSubmission } from "@/components/LiveFormSubmission";
-import { absoluteUrl, BRAND_ASSETS, siteConfig } from "@/lib/site";
+import { BRAND_ASSETS, siteConfig } from "@/lib/site";
+import { createSeoHead } from "@/lib/seo";
 
 function NotFoundComponent() {
   return (
@@ -28,10 +29,11 @@ function NotFoundComponent() {
 
 export const Route = createRootRoute({
   head: () => {
-    const canonicalUrl = absoluteUrl();
-    const socialImageUrl = siteConfig.assets.socialImage
-      ? absoluteUrl(siteConfig.assets.socialImage)
-      : null;
+    const seo = createSeoHead({
+      title: siteConfig.defaultTitle,
+      description: siteConfig.defaultDescription,
+      path: "/",
+    });
 
     return {
       meta: [
@@ -41,31 +43,14 @@ export const Route = createRootRoute({
           name: "google-site-verification",
           content: "9ptdX6MHhpK25xbIHLMeVG7iSoMbLHXTVYynNZcH3zs",
         },
-        { title: siteConfig.defaultTitle },
-        { name: "description", content: siteConfig.defaultDescription },
-        { name: "author", content: siteConfig.name },
-        { property: "og:title", content: siteConfig.defaultTitle },
-        { property: "og:description", content: siteConfig.defaultDescription },
-        { property: "og:type", content: "website" },
-        { property: "og:site_name", content: siteConfig.name },
-        ...(canonicalUrl ? [{ property: "og:url", content: canonicalUrl }] : []),
-        ...(socialImageUrl
-          ? [
-              { property: "og:image", content: socialImageUrl },
-              { property: "og:image:width", content: "1200" },
-              { property: "og:image:height", content: "630" },
-            ]
-          : []),
-        { name: "twitter:card", content: "summary_large_image" },
-        { name: "twitter:title", content: siteConfig.defaultTitle },
-        { name: "twitter:description", content: siteConfig.defaultDescription },
-        ...(socialImageUrl ? [{ name: "twitter:image", content: socialImageUrl }] : []),
+        ...seo.meta,
       ],
       links: [
         { rel: "stylesheet", href: appCss },
         { rel: "icon", type: "image/png", sizes: "16x16", href: BRAND_ASSETS.favicon16 },
         { rel: "icon", type: "image/png", sizes: "32x32", href: BRAND_ASSETS.favicon32 },
         { rel: "apple-touch-icon", sizes: "180x180", href: BRAND_ASSETS.appleTouchIcon },
+        ...seo.links,
       ],
     };
   },
@@ -76,7 +61,7 @@ export const Route = createRootRoute({
 
 function RootShell({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en-ZA">
       <head>
         <HeadContent />
       </head>

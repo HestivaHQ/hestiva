@@ -30,7 +30,18 @@ jobs:
         run: bunx eslint src/lib/site.ts src/routes/__root.tsx src/components/Navbar.tsx src/components/Footer.tsx src/components/HeroSection.tsx
 
       - name: Targeted format check
-        run: bunx prettier --check src/lib/site.ts src/routes/__root.tsx src/components/Navbar.tsx src/components/Footer.tsx src/components/HeroSection.tsx
+        run: >-
+          bunx prettier --check
+          src/lib/site.ts
+          src/routes/__root.tsx
+          src/components/Navbar.tsx
+          src/components/Footer.tsx
+          src/components/HeroSection.tsx
+          scripts/verify-seo-heads.mjs
+          .github/workflows/hestiva-pr-check.yml
 
       - name: Production build
         run: bun run build
+
+      - name: Verify rendered SEO heads
+        run: node scripts/verify-seo-heads.mjs

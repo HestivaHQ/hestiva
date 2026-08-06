@@ -211,25 +211,29 @@ const services: CleaningService[] = [
 
 export const Route = createFileRoute("/services")({
   component: ServicesOverview,
-  head: () => ({
-    meta: [
-      { title: `Residential Cleaning Services | ${SITE_NAME}` },
-      {
-        name: "description",
-        content:
-          "Explore thoughtful home cleaning services tailored to your space, schedule and everyday routine.",
-      },
-      { property: "og:title", content: `Residential Cleaning Services | ${SITE_NAME}` },
-      {
-        property: "og:description",
-        content:
-          "Dependable recurring cleans, detailed deep cleans and flexible home cleaning options.",
-      },
-      { property: "og:type", content: "website" },
-      { property: "og:url", content: `${SITE_URL}/services` },
-    ],
-    links: [{ rel: "canonical", href: `${SITE_URL}/services` }],
-  }),
+  head: ({ match, matches }) => {
+    if (matches[matches.length - 1]?.routeId !== match.routeId) return {};
+
+    return {
+      meta: [
+        { title: `Residential Cleaning Services | ${SITE_NAME}` },
+        {
+          name: "description",
+          content:
+            "Explore thoughtful home cleaning services tailored to your space, schedule and everyday routine.",
+        },
+        { property: "og:title", content: `Residential Cleaning Services | ${SITE_NAME}` },
+        {
+          property: "og:description",
+          content:
+            "Dependable recurring cleans, detailed deep cleans and flexible home cleaning options.",
+        },
+        { property: "og:type", content: "website" },
+        { property: "og:url", content: `${SITE_URL}/services` },
+      ],
+      links: [{ rel: "canonical", href: `${SITE_URL}/services` }],
+    };
+  },
 });
 
 function ServicesOverview() {

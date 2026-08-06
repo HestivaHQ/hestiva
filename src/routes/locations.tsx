@@ -48,7 +48,9 @@ const whatsAppUrl =
 
 export const Route = createFileRoute("/locations")({
   component: LocationsOverview,
-  head: () => {
+  head: ({ match, matches }) => {
+    if (matches[matches.length - 1]?.routeId !== match.routeId) return {};
+
     const canonical = `${SITE_URL}/locations`;
     const title = `Areas We Serve | ${SITE_NAME} Residential Cleaning`;
     const description =

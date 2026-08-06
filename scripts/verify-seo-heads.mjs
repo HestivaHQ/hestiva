@@ -61,6 +61,14 @@ const REQUIRED_OPEN_GRAPH = {
   "og:locale": "en_ZA",
 };
 
+const REQUIRED_TWITTER = {
+  "twitter:card": "summary_large_image",
+  "twitter:title": null,
+  "twitter:description": null,
+  "twitter:image": SOCIAL_IMAGE,
+  "twitter:image:alt": null,
+};
+
 function metadataValues(html, selector) {
   const values = [];
 
@@ -177,6 +185,63 @@ async function verifyRoute(route) {
       assert.equal(values[0], expectedValue, `${route}: ${property} has the wrong value`);
     }
   }
+
+  const twitterValues = {};
+  const twitterMetadata = metadataValues(response.body, (attributes) =>
+    attributes.name?.startsWith("twitter:"),
+  );
+  assert.equal(
+    twitterMetadata.length,
+    Object.keys(REQUIRED_TWITTER).length,
+    `${route}: expected only the complete Twitter card metadata set`,
+  );
+  for (const [name, expectedValue] of Object.entries(REQUIRED_TWITTER)) {
+    const values = metadataValues(response.body, (attributes) => attributes.name === name);
+    assert.equal(values.length, 1, `${route}: expected exactly one ${name} tag`);
+    assert.ok(values[0], `${route}: ${name} must not be empty`);
+    if (expectedValue !== null) {
+      assert.equal(values[0], expectedValue, `${route}: ${name} has the wrong value`);
+    }
+    twitterValues[name] = values[0];
+  }
+
+  const twitterImage = new URL(twitterValues["twitter:image"]);
+  assert.equal(twitterImage.protocol, "https:", `${route}: twitter:image must use HTTPS`);
+  assert.equal(
+    twitterImage.origin,
+    PRODUCTION_ORIGIN,
+    `${route}: twitter:image has the wrong host`,
+  );
+  assert.equal(twitterImage.search, "", `${route}: twitter:image must not contain a query string`);
+  assert.equal(twitterImage.hash, "", `${route}: twitter:image must not contain a fragment`);
+
+  const openGraphTitles = metadataValues(
+    response.body,
+    (attributes) => attributes.property === "og:title",
+  );
+  const openGraphDescriptions = metadataValues(
+    response.body,
+    (attributes) => attributes.property === "og:description",
+  );
+  const openGraphImageAlts = metadataValues(
+    response.body,
+    (attributes) => attributes.property === "og:image:alt",
+  );
+  assert.equal(
+    twitterValues["twitter:title"],
+    openGraphTitles[0],
+    `${route}: twitter:title must match og:title`,
+  );
+  assert.equal(
+    twitterValues["twitter:description"],
+    openGraphDescriptions[0],
+    `${route}: twitter:description must match og:description`,
+  );
+  assert.equal(
+    twitterValues["twitter:image:alt"],
+    openGraphImageAlts[0],
+    `${route}: twitter:image:alt must match og:image:alt`,
+  );
 
   assert.equal(openGraphUrls.length, 1, `${route}: expected exactly one og:url tag`);
   assert.equal(canonicals[0], openGraphUrls[0], `${route}: canonical and og:url must match`);

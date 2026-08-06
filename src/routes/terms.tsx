@@ -1,30 +1,17 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Footer } from "@/components/Footer";
 import { Navbar } from "@/components/Navbar";
-
-const canonicalUrl = "https://www.hestiva.co.za/terms";
+import { createSeoHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/terms")({
   component: TermsPage,
-  head: () => ({
-    meta: [
-      { title: "Terms of Service | Hestiva Residential Cleaning" },
-      {
-        name: "description",
-        content:
-          "Read the terms that apply to Hestiva residential cleaning quotations, bookings and services in South Africa.",
-      },
-      { property: "og:title", content: "Terms of Service | Hestiva Residential Cleaning" },
-      {
-        property: "og:description",
-        content:
-          "Terms for requesting quotations, accepting bookings and receiving Hestiva services.",
-      },
-      { property: "og:type", content: "website" },
-      { property: "og:url", content: canonicalUrl },
-    ],
-    links: [{ rel: "canonical", href: canonicalUrl }],
-  }),
+  head: () =>
+    createSeoHead({
+      title: "Terms of Service | Hestiva Residential Cleaning",
+      description:
+        "Read the terms that apply to Hestiva residential cleaning quotations, bookings and services in South Africa.",
+      path: "/terms",
+    }),
 });
 
 const sections = [

@@ -14,28 +14,17 @@ import {
 } from "lucide-react";
 import { Footer } from "@/components/Footer";
 import { Navbar } from "@/components/Navbar";
-import { SITE_URL } from "@/lib/site";
+import { createSeoHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/quote")({
   component: QuotePage,
-  head: () => ({
-    meta: [
-      { title: "Request a Residential Cleaning Quote | Hestiva" },
-      {
-        name: "description",
-        content:
-          "Tell Hestiva about your Johannesburg home and cleaning needs to request a personalised residential cleaning quotation.",
-      },
-      { property: "og:title", content: "Request a Residential Cleaning Quote | Hestiva" },
-      {
-        property: "og:description",
-        content: "Share your home, cleaning and scheduling preferences with the Hestiva team.",
-      },
-      { property: "og:type", content: "website" },
-      { property: "og:url", content: `${SITE_URL}/quote` },
-    ],
-    links: [{ rel: "canonical", href: `${SITE_URL}/quote` }],
-  }),
+  head: () =>
+    createSeoHead({
+      title: "Request a Residential Cleaning Quote | Hestiva",
+      description:
+        "Tell Hestiva about your Johannesburg home and cleaning needs to request a personalised residential cleaning quotation.",
+      path: "/quote",
+    }),
 });
 
 const steps = [

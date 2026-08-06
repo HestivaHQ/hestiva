@@ -1,29 +1,17 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Footer } from "@/components/Footer";
 import { Navbar } from "@/components/Navbar";
-import { SITE_URL } from "@/lib/site";
+import { createSeoHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/privacy")({
   component: PrivacyPage,
-  head: () => ({
-    meta: [
-      { title: "Privacy Policy | Hestiva Residential Cleaning" },
-      {
-        name: "description",
-        content:
-          "Learn how Hestiva Residential Cleaning collects, uses, protects and manages personal information in line with POPIA.",
-      },
-      { property: "og:title", content: "Privacy Policy | Hestiva Residential Cleaning" },
-      {
-        property: "og:description",
-        content:
-          "How Hestiva handles personal information for quotations and residential cleaning services.",
-      },
-      { property: "og:type", content: "website" },
-      { property: "og:url", content: `${SITE_URL}/privacy` },
-    ],
-    links: [{ rel: "canonical", href: `${SITE_URL}/privacy` }],
-  }),
+  head: () =>
+    createSeoHead({
+      title: "Privacy Policy | Hestiva Residential Cleaning",
+      description:
+        "Learn how Hestiva Residential Cleaning collects, uses, protects and manages personal information in line with POPIA.",
+      path: "/privacy",
+    }),
 });
 
 const sections = [

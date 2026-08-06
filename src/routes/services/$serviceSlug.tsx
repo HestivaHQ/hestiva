@@ -1,8 +1,8 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { ServicePageLayout } from "@/components/ServicePageLayout";
 import { getServicePage, servicePages } from "@/content/services";
-
-const SITE_URL = "https://hestiva.co.za";
+import { canonicalUrl, createSeoHead } from "@/lib/seo";
+import { SITE_NAME, SITE_URL } from "@/lib/site";
 
 export const Route = createFileRoute("/services/$serviceSlug")({
   loader: ({ params }) => {
@@ -16,11 +16,18 @@ export const Route = createFileRoute("/services/$serviceSlug")({
   },
   head: ({ loaderData, params }) => {
     const service = loaderData?.service ?? getServicePage(params.serviceSlug);
-    const canonical = `${SITE_URL}/services/${params.serviceSlug}`;
 
     if (!service) {
       return {};
     }
+
+    const path = `/services/${service.slug}`;
+    const canonical = canonicalUrl(path);
+    const seo = createSeoHead({
+      title: service.metaTitle,
+      description: service.metaDescription,
+      path,
+    });
 
     const faqSchema = {
       "@context": "https://schema.org",
@@ -43,7 +50,7 @@ export const Route = createFileRoute("/services/$serviceSlug")({
       url: canonical,
       provider: {
         "@type": "LocalBusiness",
-        name: "Hestiva",
+        name: SITE_NAME,
         email: "quotes@hestiva.co.za",
         url: SITE_URL,
         address: {
@@ -77,13 +84,13 @@ export const Route = createFileRoute("/services/$serviceSlug")({
           "@type": "ListItem",
           position: 1,
           name: "Home",
-          item: SITE_URL,
+          item: canonicalUrl("/"),
         },
         {
           "@type": "ListItem",
           position: 2,
           name: "Services",
-          item: `${SITE_URL}/services`,
+          item: canonicalUrl("/services"),
         },
         {
           "@type": "ListItem",
@@ -95,17 +102,7 @@ export const Route = createFileRoute("/services/$serviceSlug")({
     };
 
     return {
-      meta: [
-        { title: service.metaTitle },
-        { name: "description", content: service.metaDescription },
-        { property: "og:title", content: service.metaTitle },
-        { property: "og:description", content: service.metaDescription },
-        { property: "og:type", content: "website" },
-        { property: "og:url", content: canonical },
-        { name: "twitter:title", content: service.metaTitle },
-        { name: "twitter:description", content: service.metaDescription },
-      ],
-      links: [{ rel: "canonical", href: canonical }],
+      ...seo,
       scripts: [
         {
           type: "application/ld+json",

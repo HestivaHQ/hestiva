@@ -1,4 +1,4 @@
-import { absoluteUrl, siteConfig } from "@/lib/site";
+import { absoluteUrl, SITE_URL, siteConfig } from "@/lib/site";
 
 export type SeoRobots = {
   index?: boolean;
@@ -20,6 +20,7 @@ export type SeoConfig = {
 };
 
 const DEFAULT_THEME_COLOR = "#3B0F1A";
+const CANONICAL_ORIGIN = SITE_URL.replace(/\/$/, "");
 
 function robotsContent(robots: SeoRobots = {}): string {
   const directives = [
@@ -34,6 +35,20 @@ function robotsContent(robots: SeoRobots = {}): string {
   return directives.join(", ");
 }
 
+export function normalizeCanonicalPath(path = "/"): string {
+  const pathOnly = path.split("#", 1)[0].split("?", 1)[0];
+  const withLeadingSlash = pathOnly.startsWith("/") ? pathOnly : `/${pathOnly}`;
+  const collapsedSlashes = withLeadingSlash.replace(/\/{2,}/g, "/");
+
+  if (collapsedSlashes === "/") return "/";
+
+  return collapsedSlashes.replace(/\/+$/, "");
+}
+
+export function canonicalUrl(path = "/"): string {
+  return `${CANONICAL_ORIGIN}${normalizeCanonicalPath(path)}`;
+}
+
 export function createSeoHead({
   title,
   description,
@@ -44,7 +59,7 @@ export function createSeoHead({
   robots,
   themeColor = DEFAULT_THEME_COLOR,
 }: SeoConfig) {
-  const canonicalUrl = absoluteUrl(path);
+  const canonical = canonicalUrl(path);
   const socialImageUrl = image ? absoluteUrl(image) : null;
 
   return {
@@ -63,7 +78,7 @@ export function createSeoHead({
       { property: "og:type", content: type },
       { property: "og:site_name", content: siteConfig.name },
       { property: "og:locale", content: "en_ZA" },
-      ...(canonicalUrl ? [{ property: "og:url", content: canonicalUrl }] : []),
+      { property: "og:url", content: canonical },
       ...(socialImageUrl
         ? [
             { property: "og:image", content: socialImageUrl },
@@ -89,6 +104,6 @@ export function createSeoHead({
           ]
         : []),
     ],
-    links: canonicalUrl ? [{ rel: "canonical", href: canonicalUrl }] : [],
+    links: [{ rel: "canonical", href: canonical }],
   };
 }

@@ -6,27 +6,25 @@ import { HeroSection } from "@/components/HeroSection";
 import { Navbar } from "@/components/Navbar";
 import { ServicesSection } from "@/components/ServicesSection";
 import { WhyUsSection } from "@/components/WhyUsSection";
-import { BRAND_ASSETS, SITE_NAME, SITE_URL, TAGLINE } from "@/lib/site";
+import { BRAND_ASSETS, SITE_NAME, SITE_URL } from "@/lib/site";
+import { createSeoHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/")({
   component: Index,
   head: () => ({
-    meta: [
-      { title: `${SITE_NAME} | Premium Residential Cleaning` },
-      {
-        name: "description",
-        content:
-          "Thoughtful residential cleaning and home care with warmth, respect and exceptional attention to detail.",
-      },
-      { property: "og:title", content: `${SITE_NAME} | ${TAGLINE}` },
-      {
-        property: "og:description",
-        content: "Premium residential cleaning shaped around your home and your routine.",
-      },
-      { property: "og:url", content: `${SITE_URL}/` },
-      { property: "og:image", content: `${SITE_URL}${BRAND_ASSETS.socialImage}` },
-    ],
-    links: [{ rel: "canonical", href: `${SITE_URL}/` }],
+    ...createSeoHead({
+      title: `${SITE_NAME} | Premium Residential Cleaning`,
+      description:
+        "Thoughtful residential cleaning and home care with warmth, respect and exceptional attention to detail.",
+      path: "/",
+      keywords: [
+        "residential cleaning",
+        "home cleaning",
+        "house cleaning",
+        "cleaning services Gauteng",
+        "Hestiva",
+      ],
+    }),
     scripts: [
       {
         type: "application/ld+json",

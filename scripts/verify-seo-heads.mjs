@@ -158,7 +158,7 @@ function breadcrumbItemsFromHtml(route, html) {
   const items = [...navs[0][2].matchAll(/<li\b[^>]*>([\s\S]*?)<\/li>/gi)].map((match) => {
     const anchor = match[1].match(/<a\b([^>]*)>([\s\S]*?)<\/a>/i);
     return {
-      label: decodeText(anchor?.[2] ?? match[1]),
+      label: decodeAccessibleText(anchor?.[2] ?? match[1]),
       href: anchor ? attributeValue(anchor[1], "href") : undefined,
       current: /aria-current=(?:"page"|'page')/i.test(match[1]),
     };
@@ -270,6 +270,15 @@ function decodeText(value) {
     .replace(/&#(?:39|x27);/gi, "'")
     .replace(/\s+/g, " ")
     .trim();
+}
+
+function decodeAccessibleText(value) {
+  return decodeText(
+    value.replace(
+      /<([a-z][\w:-]*)\b[^>]*\baria-hidden\s*=\s*(?:["']true["'])[^>]*>[\s\S]*?<\/\1>/gi,
+      "",
+    ),
+  );
 }
 
 function attributeValue(tag, name) {

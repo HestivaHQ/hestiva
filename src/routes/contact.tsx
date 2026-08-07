@@ -3,6 +3,7 @@ import { ArrowRight, Clock3, Mail, MapPin, MessageCircle, Phone, Send } from "lu
 import { Footer } from "@/components/Footer";
 import { Navbar } from "@/components/Navbar";
 import { createSeoHead } from "@/lib/seo";
+import { createPageGraph, schemaScripts } from "@/lib/structured-data";
 import { SITE_NAME } from "@/lib/site";
 
 const phoneDisplay = "068 423 1614";
@@ -30,13 +31,16 @@ const nextSteps = [
 
 export const Route = createFileRoute("/contact")({
   component: ContactPage,
-  head: () =>
-    createSeoHead({
-      title: `Contact ${SITE_NAME} | Residential Cleaning Enquiries`,
-      description:
-        "Contact Hestiva for a personalised residential cleaning quotation, a general enquiry or help with an existing booking.",
-      path: "/contact",
-    }),
+  head: () => {
+    const title = `Contact ${SITE_NAME} | Residential Cleaning Enquiries`;
+    const description =
+      "Contact Hestiva for a personalised residential cleaning quotation, a general enquiry or help with an existing booking.";
+    const path = "/contact";
+    return {
+      ...createSeoHead({ title, description, path }),
+      scripts: schemaScripts(createPageGraph(path, title, description)),
+    };
+  },
 });
 
 const primaryButton =

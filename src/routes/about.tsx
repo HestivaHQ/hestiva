@@ -11,6 +11,7 @@ import {
 import { Footer } from "@/components/Footer";
 import { Navbar } from "@/components/Navbar";
 import { createSeoHead } from "@/lib/seo";
+import { createPageGraph, schemaScripts } from "@/lib/structured-data";
 import { SITE_NAME } from "@/lib/site";
 
 const principles = [
@@ -71,13 +72,16 @@ const households = [
 
 export const Route = createFileRoute("/about")({
   component: AboutPage,
-  head: () =>
-    createSeoHead({
-      title: `About ${SITE_NAME} | Trusted Residential Cleaning`,
-      description:
-        "Discover Hestiva's thoughtful approach to dependable residential cleaning, respectful home care and clear communication.",
-      path: "/about",
-    }),
+  head: () => {
+    const title = `About ${SITE_NAME} | Trusted Residential Cleaning`;
+    const description =
+      "Discover Hestiva's thoughtful approach to dependable residential cleaning, respectful home care and clear communication.";
+    const path = "/about";
+    return {
+      ...createSeoHead({ title, description, path }),
+      scripts: schemaScripts(createPageGraph(path, title, description)),
+    };
+  },
 });
 
 const primaryButton =

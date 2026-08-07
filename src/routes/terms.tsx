@@ -2,16 +2,20 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Footer } from "@/components/Footer";
 import { Navbar } from "@/components/Navbar";
 import { createSeoHead } from "@/lib/seo";
+import { createPageGraph, schemaScripts } from "@/lib/structured-data";
 
 export const Route = createFileRoute("/terms")({
   component: TermsPage,
-  head: () =>
-    createSeoHead({
-      title: "Terms of Service | Hestiva Residential Cleaning",
-      description:
-        "Read the terms that apply to Hestiva residential cleaning quotations, bookings and services in South Africa.",
-      path: "/terms",
-    }),
+  head: () => {
+    const title = "Terms of Service | Hestiva Residential Cleaning";
+    const description =
+      "Read the terms that apply to Hestiva residential cleaning quotations, bookings and services in South Africa.";
+    const path = "/terms";
+    return {
+      ...createSeoHead({ title, description, path }),
+      scripts: schemaScripts(createPageGraph(path, title, description)),
+    };
+  },
 });
 
 const sections = [

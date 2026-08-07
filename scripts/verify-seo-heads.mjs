@@ -69,6 +69,102 @@ const REQUIRED_TWITTER = {
   "twitter:image:alt": null,
 };
 
+const FORBIDDEN_SCHEMA_FIELDS = new Set([
+  "aggregateRating",
+  "review",
+  "price",
+  "priceRange",
+  "openingHours",
+  "openingHoursSpecification",
+]);
+
+function jsonLdObjects(html) {
+  return [
+    ...html.matchAll(
+      /<script\b[^>]*type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi,
+    ),
+  ].map((match) => JSON.parse(match[1]));
+}
+
+function walk(value, visit) {
+  if (!value || typeof value !== "object") return;
+  visit(value);
+  for (const child of Array.isArray(value) ? value : Object.values(value)) walk(child, visit);
+}
+
+function schemaEntities(schema) {
+  return Array.isArray(schema["@graph"]) ? schema["@graph"] : [schema];
+}
+
+function verifyStructuredData(route, html) {
+  const schemas = jsonLdObjects(html);
+  assert.ok(schemas.length > 0, `${route}: expected structured data`);
+  const entityKeys = new Set();
+
+  for (const schema of schemas) {
+    assert.equal(schema["@context"], "https://schema.org", `${route}: invalid @context`);
+    for (const entity of schemaEntities(schema)) {
+      const key = entity["@id"] && entity["@type"] && `${entity["@type"]}|${entity["@id"]}`;
+      if (key) {
+        assert.ok(!entityKeys.has(key), `${route}: duplicate schema entity ${key}`);
+        entityKeys.add(key);
+      }
+    }
+
+    walk(schema, (object) => {
+      for (const field of Object.keys(object)) {
+        assert.ok(!FORBIDDEN_SCHEMA_FIELDS.has(field), `${route}: forbidden schema field ${field}`);
+      }
+      for (const [field, value] of Object.entries(object)) {
+        if (
+          (field === "url" ||
+            field === "item" ||
+            field === "@id" ||
+            field === "logo" ||
+            field === "image") &&
+          typeof value === "string"
+        ) {
+          const url = new URL(value);
+          assert.equal(url.origin, PRODUCTION_ORIGIN, `${route}: schema URL has the wrong host`);
+          assert.equal(url.search, "", `${route}: schema URL contains a query string`);
+          if (field !== "@id")
+            assert.equal(url.hash, "", `${route}: schema URL contains a fragment`);
+        }
+      }
+    });
+  }
+
+  const entities = schemas.flatMap(schemaEntities);
+  const types = entities.map((entity) => entity["@type"]);
+  if (route === "/") {
+    assert.ok(types.includes("WebSite"), `${route}: missing WebSite schema`);
+    assert.ok(types.includes("HomeAndConstructionBusiness"), `${route}: missing business schema`);
+  }
+  if (route.startsWith("/services/")) {
+    assert.ok(types.includes("Service"), `${route}: missing Service schema`);
+  }
+  if (/^\/(services|locations)(\/|$)/.test(route)) {
+    const breadcrumb = entities.find((entity) => entity["@type"] === "BreadcrumbList");
+    assert.ok(breadcrumb, `${route}: missing BreadcrumbList schema`);
+    assert.deepEqual(
+      breadcrumb.itemListElement.map((item) => item.position),
+      breadcrumb.itemListElement.map((_, index) => index + 1),
+      `${route}: breadcrumb positions are not consecutive`,
+    );
+  }
+
+  const faq = entities.find((entity) => entity["@type"] === "FAQPage");
+  assert.equal(
+    Boolean(faq),
+    /^\/(services|locations)\//.test(route) && route !== "/services/apartment-cleaning",
+    `${route}: unexpected FAQPage presence`,
+  );
+  for (const question of faq?.mainEntity ?? []) {
+    assert.ok(html.includes(question.name), `${route}: FAQ question is not visible`);
+    assert.ok(html.includes(question.acceptedAnswer.text), `${route}: FAQ answer is not visible`);
+  }
+}
+
 function metadataValues(html, selector) {
   const values = [];
 
@@ -252,6 +348,8 @@ async function verifyRoute(route) {
   assert.equal(canonical.search, "", `${route}: canonical must not contain a query string`);
   assert.equal(canonical.hash, "", `${route}: canonical must not contain a fragment`);
   assert.equal(canonical.pathname, expectedPath, `${route}: canonical path is not normalized`);
+
+  verifyStructuredData(requestUrl.pathname, response.body);
 
   console.log(`PASS ${route} -> ${canonical.href}`);
 }

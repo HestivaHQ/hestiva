@@ -3,6 +3,7 @@ import { ArrowRight, Check, Home, MapPin, MessageCircle, Navigation } from "luci
 import { Footer } from "@/components/Footer";
 import { Navbar } from "@/components/Navbar";
 import { createSeoHead } from "@/lib/seo";
+import { locationPages } from "@/content/locations";
 import { SITE_NAME } from "@/lib/site";
 import { createBreadcrumbList, createPageGraph, schemaScripts } from "@/lib/structured-data";
 
@@ -16,6 +17,16 @@ const serviceAreas = [
   "Centurion",
   "Pretoria",
 ] as const;
+
+const overviewAreas = [
+  ...serviceAreas.map((name) => ({
+    name,
+    location: locationPages.find((location) => location.name === name),
+  })),
+  ...locationPages
+    .filter((location) => !serviceAreas.some((name) => name === location.name))
+    .map((location) => ({ name: location.name, location })),
+];
 
 const areaGroups = [
   {
@@ -149,15 +160,25 @@ function LocationsOverview() {
               className="grid gap-x-8 gap-y-1 border-y border-[#C9A45B]/30 py-4 sm:grid-cols-2"
               role="list"
             >
-              {serviceAreas.map((area) => (
+              {overviewAreas.map(({ name, location }) => (
                 <li
-                  key={area}
+                  key={name}
                   className="flex items-center gap-4 border-b border-[#E6D9C8] py-5 text-lg font-medium text-[#514946] last:border-b-0 sm:[&:nth-last-child(-n+2)]:border-b-0"
                 >
                   <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#F3E8D5] text-[#8A6729]">
                     <MapPin aria-hidden="true" className="h-4 w-4" />
                   </span>
-                  {area}
+                  {location ? (
+                    <Link
+                      to="/locations/$locationSlug"
+                      params={{ locationSlug: location.slug }}
+                      className="rounded-sm transition-colors hover:text-[#711C31] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A45B]"
+                    >
+                      {name}
+                    </Link>
+                  ) : (
+                    name
+                  )}
                 </li>
               ))}
             </ul>
@@ -195,15 +216,28 @@ function LocationsOverview() {
                     <div>
                       <h3 className="text-2xl font-semibold text-[#5A1425]">{group.title}</h3>
                       <ul className="mt-5 space-y-3" role="list">
-                        {group.areas.map((area) => (
-                          <li key={area} className="flex gap-3 leading-7 text-[#695E59]">
-                            <span
-                              aria-hidden="true"
-                              className="mt-3 h-1.5 w-1.5 shrink-0 rounded-full bg-[#C9A45B]"
-                            />
-                            {area}
-                          </li>
-                        ))}
+                        {group.areas.map((area) => {
+                          const location = locationPages.find(({ name }) => name === area);
+                          return (
+                            <li key={area} className="flex gap-3 leading-7 text-[#695E59]">
+                              <span
+                                aria-hidden="true"
+                                className="mt-3 h-1.5 w-1.5 shrink-0 rounded-full bg-[#C9A45B]"
+                              />
+                              {location ? (
+                                <Link
+                                  to="/locations/$locationSlug"
+                                  params={{ locationSlug: location.slug }}
+                                  className="underline-offset-4 hover:underline"
+                                >
+                                  {area}
+                                </Link>
+                              ) : (
+                                area
+                              )}
+                            </li>
+                          );
+                        })}
                       </ul>
                     </div>
                   </div>

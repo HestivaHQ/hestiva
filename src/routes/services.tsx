@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, Outlet, useRouterState } from "@tanstack/react-router";
 import { Check, Sparkles } from "lucide-react";
 import { Footer } from "@/components/Footer";
 import { Navbar } from "@/components/Navbar";
@@ -213,7 +213,7 @@ const services: CleaningService[] = [
 ];
 
 export const Route = createFileRoute("/services")({
-  component: ServicesOverview,
+  component: ServicesRoute,
   head: ({ match, matches }) => {
     if (matches[matches.length - 1]?.routeId !== match.routeId) return {};
 
@@ -232,6 +232,11 @@ export const Route = createFileRoute("/services")({
     };
   },
 });
+
+function ServicesRoute() {
+  const pathname = useRouterState({ select: (state) => state.location.pathname });
+  return pathname === "/services" || pathname === "/services/" ? <ServicesOverview /> : <Outlet />;
+}
 
 function ServicesOverview() {
   return (

@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, Outlet, useRouterState } from "@tanstack/react-router";
 import { ArrowRight, Check, Home, MapPin, MessageCircle, Navigation } from "lucide-react";
 import { Footer } from "@/components/Footer";
 import { Navbar } from "@/components/Navbar";
@@ -60,7 +60,7 @@ const whatsAppUrl =
   "https://wa.me/27684231614?text=Hello%20Hestiva%2C%20I%27d%20like%20to%20check%20cleaning%20availability%20for%20my%20address.";
 
 export const Route = createFileRoute("/locations")({
-  component: LocationsOverview,
+  component: LocationsRoute,
   head: ({ match, matches }) => {
     if (matches[matches.length - 1]?.routeId !== match.routeId) return {};
 
@@ -80,6 +80,15 @@ export const Route = createFileRoute("/locations")({
     };
   },
 });
+
+function LocationsRoute() {
+  const pathname = useRouterState({ select: (state) => state.location.pathname });
+  return pathname === "/locations" || pathname === "/locations/" ? (
+    <LocationsOverview />
+  ) : (
+    <Outlet />
+  );
+}
 
 const primaryButton =
   "inline-flex min-h-12 items-center justify-center gap-2 rounded-md bg-[#5A1425] px-7 py-3 text-sm font-semibold uppercase tracking-[0.1em] text-white shadow-[0_12px_30px_rgba(90,20,37,0.14)] transition hover:-translate-y-0.5 hover:bg-[#711C31] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A45B] focus-visible:ring-offset-4";

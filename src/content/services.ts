@@ -24,7 +24,7 @@ const createService = (
   title,
   shortTitle,
   metaTitle: `${title} in Gauteng | Hestiva`,
-  metaDescription: `${description} Request a personalised residential cleaning quote from Hestiva.`,
+  metaDescription: `${description} Request a personalised Hestiva quote.`,
   heroDescription: description,
   overview: `${title} is delivered with a clear checklist, careful attention to the home and a scope confirmed before the booking. Hestiva focuses on practical residential cleaning without promising services or equipment outside the agreed quotation.`,
   services,

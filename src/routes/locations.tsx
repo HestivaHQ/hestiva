@@ -3,7 +3,8 @@ import { ArrowRight, Check, Home, MapPin, MessageCircle, Navigation } from "luci
 import { Footer } from "@/components/Footer";
 import { Navbar } from "@/components/Navbar";
 import { createSeoHead } from "@/lib/seo";
-import { SITE_NAME, SITE_URL } from "@/lib/site";
+import { SITE_NAME } from "@/lib/site";
+import { createBreadcrumbList, createPageGraph, schemaScripts } from "@/lib/structured-data";
 
 const serviceAreas = [
   "Johannesburg",
@@ -56,32 +57,15 @@ export const Route = createFileRoute("/locations")({
     const description =
       "Check Hestiva residential cleaning availability across selected Johannesburg, Midrand, Centurion and Pretoria areas.";
 
-    const localBusinessSchema = {
-      "@context": "https://schema.org",
-      "@type": "LocalBusiness",
-      name: SITE_NAME,
-      url: SITE_URL,
-      telephone: "+27684231614",
-      email: "info@hestiva.co.za",
-      address: {
-        "@type": "PostalAddress",
-        streetAddress: "2962 Dunlin Drive",
-        addressLocality: "Riverlea",
-        addressRegion: "Johannesburg",
-        postalCode: "2093",
-        addressCountry: "ZA",
-      },
-      areaServed: serviceAreas.map((name) => ({ "@type": "Place", name })),
-    };
-
     return {
       ...createSeoHead({ title, description, path: "/locations" }),
-      scripts: [
-        {
-          type: "application/ld+json",
-          children: JSON.stringify(localBusinessSchema),
-        },
-      ],
+      scripts: schemaScripts(
+        createPageGraph("/locations", title, description),
+        createBreadcrumbList([
+          { name: "Home", path: "/" },
+          { name: "Areas", path: "/locations" },
+        ]),
+      ),
     };
   },
 });

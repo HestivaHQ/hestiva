@@ -4,6 +4,7 @@ import { Footer } from "@/components/Footer";
 import { Navbar } from "@/components/Navbar";
 import { createSeoHead } from "@/lib/seo";
 import { SITE_NAME } from "@/lib/site";
+import { createBreadcrumbList, createPageGraph, schemaScripts } from "@/lib/structured-data";
 
 type CleaningService = {
   title: string;
@@ -215,12 +216,19 @@ export const Route = createFileRoute("/services")({
   head: ({ match, matches }) => {
     if (matches[matches.length - 1]?.routeId !== match.routeId) return {};
 
-    return createSeoHead({
-      title: `Residential Cleaning Services | ${SITE_NAME}`,
-      description:
-        "Explore thoughtful home cleaning services tailored to your space, schedule and everyday routine.",
-      path: "/services",
-    });
+    const title = `Residential Cleaning Services | ${SITE_NAME}`;
+    const description =
+      "Explore thoughtful home cleaning services tailored to your space, schedule and everyday routine.";
+    return {
+      ...createSeoHead({ title, description, path: "/services" }),
+      scripts: schemaScripts(
+        createPageGraph("/services", title, description),
+        createBreadcrumbList([
+          { name: "Home", path: "/" },
+          { name: "Services", path: "/services" },
+        ]),
+      ),
+    };
   },
 });
 

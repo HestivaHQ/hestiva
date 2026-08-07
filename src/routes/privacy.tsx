@@ -2,16 +2,20 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Footer } from "@/components/Footer";
 import { Navbar } from "@/components/Navbar";
 import { createSeoHead } from "@/lib/seo";
+import { createPageGraph, schemaScripts } from "@/lib/structured-data";
 
 export const Route = createFileRoute("/privacy")({
   component: PrivacyPage,
-  head: () =>
-    createSeoHead({
-      title: "Privacy Policy | Hestiva Residential Cleaning",
-      description:
-        "Learn how Hestiva Residential Cleaning collects, uses, protects and manages personal information in line with POPIA.",
-      path: "/privacy",
-    }),
+  head: () => {
+    const title = "Privacy Policy | Hestiva Residential Cleaning";
+    const description =
+      "Learn how Hestiva Residential Cleaning collects, uses, protects and manages personal information in line with POPIA.";
+    const path = "/privacy";
+    return {
+      ...createSeoHead({ title, description, path }),
+      scripts: schemaScripts(createPageGraph(path, title, description)),
+    };
+  },
 });
 
 const sections = [

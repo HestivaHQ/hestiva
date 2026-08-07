@@ -4,6 +4,12 @@ import { Footer } from "@/components/Footer";
 import { Navbar } from "@/components/Navbar";
 import { createSeoHead } from "@/lib/seo";
 import { SITE_NAME } from "@/lib/site";
+import {
+  createBreadcrumbList,
+  createPageGraph,
+  createServiceSchema,
+  schemaScripts,
+} from "@/lib/structured-data";
 
 const includedServices = [
   "Living and dining areas",
@@ -16,13 +22,24 @@ const includedServices = [
 
 export const Route = createFileRoute("/services/apartment-cleaning")({
   component: ApartmentCleaningPage,
-  head: () =>
-    createSeoHead({
-      title: `Apartment Cleaning | ${SITE_NAME}`,
-      description:
-        "Detail-led apartment cleaning for studios and multi-bedroom homes, tailored to your space and routine.",
-      path: "/services/apartment-cleaning",
-    }),
+  head: () => {
+    const title = `Apartment Cleaning | ${SITE_NAME}`;
+    const description =
+      "Detail-led apartment cleaning for studios and multi-bedroom homes, tailored to your space and routine.";
+    const path = "/services/apartment-cleaning";
+    return {
+      ...createSeoHead({ title, description, path }),
+      scripts: schemaScripts(
+        createPageGraph(path, title, description),
+        createServiceSchema(path, "Apartment Cleaning", description),
+        createBreadcrumbList([
+          { name: "Home", path: "/" },
+          { name: "Services", path: "/services" },
+          { name: "Apartment Cleaning", path },
+        ]),
+      ),
+    };
+  },
 });
 
 function ApartmentCleaningPage() {

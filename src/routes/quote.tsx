@@ -15,16 +15,20 @@ import {
 import { Footer } from "@/components/Footer";
 import { Navbar } from "@/components/Navbar";
 import { createSeoHead } from "@/lib/seo";
+import { createPageGraph, schemaScripts } from "@/lib/structured-data";
 
 export const Route = createFileRoute("/quote")({
   component: QuotePage,
-  head: () =>
-    createSeoHead({
-      title: "Request a Residential Cleaning Quote | Hestiva",
-      description:
-        "Tell Hestiva about your Johannesburg home and cleaning needs to request a personalised residential cleaning quotation.",
-      path: "/quote",
-    }),
+  head: () => {
+    const title = "Request a Residential Cleaning Quote | Hestiva";
+    const description =
+      "Tell Hestiva about your Johannesburg home and cleaning needs to request a personalised residential cleaning quotation.";
+    const path = "/quote";
+    return {
+      ...createSeoHead({ title, description, path }),
+      scripts: schemaScripts(createPageGraph(path, title, description)),
+    };
+  },
 });
 
 const steps = [

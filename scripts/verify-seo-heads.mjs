@@ -11,42 +11,12 @@ const WRANGLER_CONFIG = ".output/server/wrangler.json";
 const REQUEST_TIMEOUT_MS = 5_000;
 const STARTUP_TIMEOUT_MS = 30_000;
 const SHUTDOWN_TIMEOUT_MS = 5_000;
-const ROUTES = [
-  "/",
-  "/about",
-  "/contact",
-  "/quote",
-  "/privacy",
-  "/terms",
-  "/services",
-  "/services/regular-home-cleaning",
-  "/services/deep-cleaning",
-  "/services/move-in-cleaning",
-  "/services/move-out-cleaning",
-  "/services/kitchen-cleaning",
-  "/services/bathroom-sanitisation",
-  "/services/bedroom-cleaning",
-  "/services/living-area-cleaning",
-  "/services/interior-window-cleaning",
-  "/services/laundry-folding",
-  "/services/apartment-cleaning",
-  "/services/eco-conscious-cleaning",
-  "/services/cleaning-add-ons",
-  "/locations",
-  "/locations/johannesburg",
-  "/locations/pretoria",
-  "/locations/centurion",
-  "/locations/midrand",
-  "/locations/kempton-park",
-  "/locations/randburg",
-  "/locations/roodepoort",
-  "/locations/boksburg",
-  "/locations/benoni",
-  "/locations/edenvale",
-  "/locations/germiston",
-  "/locations/sandton",
-  "/services/deep-cleaning?utm_source=test&utm_medium=seo",
+const INVALID_CASES = [
+  "/services/not-a-real-service",
+  "/locations/not-a-real-location",
+  "/not-a-real-page",
 ];
+const QUERY_CASES = ["/services/deep-cleaning?utm_source=test&utm_medium=seo"];
 
 const REQUIRED_OPEN_GRAPH = {
   "og:title": null,
@@ -255,7 +225,14 @@ async function stopWrangler(process) {
   }
 }
 
-async function verifyRoute(route) {
+function hrefPaths(html) {
+  return [...html.matchAll(/<a\b[^>]*href=(?:"([^"]*)"|'([^']*)')/gi)]
+    .map((match) => match[1] ?? match[2])
+    .filter((href) => href.startsWith("/"))
+    .map((href) => new URL(href, PRODUCTION_ORIGIN).pathname.replace(/\/$/, "") || "/");
+}
+
+async function verifyRoute(route, sitemapUrls) {
   const requestUrl = new URL(route, LOCAL_ORIGIN);
   const response = await request(requestUrl);
   assert.ok(
@@ -272,6 +249,11 @@ async function verifyRoute(route) {
   );
 
   assert.equal(canonicals.length, 1, `${route}: expected exactly one canonical tag`);
+
+  const robots = metadataValues(response.body, (attributes) => attributes.name === "robots");
+  const googlebot = metadataValues(response.body, (attributes) => attributes.name === "googlebot");
+  assert.deepEqual(robots, ["index, follow"], `${route}: invalid robots policy`);
+  assert.deepEqual(googlebot, ["index, follow"], `${route}: invalid googlebot policy`);
 
   for (const [property, expectedValue] of Object.entries(REQUIRED_OPEN_GRAPH)) {
     const values = metadataValues(response.body, (attributes) => attributes.property === property);
@@ -348,10 +330,70 @@ async function verifyRoute(route) {
   assert.equal(canonical.search, "", `${route}: canonical must not contain a query string`);
   assert.equal(canonical.hash, "", `${route}: canonical must not contain a fragment`);
   assert.equal(canonical.pathname, expectedPath, `${route}: canonical path is not normalized`);
+  assert.equal(
+    sitemapUrls.has(canonical.href),
+    true,
+    `${route}: canonical is missing from the sitemap`,
+  );
 
   verifyStructuredData(requestUrl.pathname, response.body);
 
-  console.log(`PASS ${route} -> ${canonical.href}`);
+  console.log(
+    `INDEXABLE | ${route} | HTTP ${response.status} | robots=${robots[0]} | canonical=${canonical.href} | sitemap=yes | expected=200/index/self-canonical | PASS`,
+  );
+  return { canonical: canonical.href, links: hrefPaths(response.body) };
+}
+
+async function verifyInvalidRoute(route, sitemapUrls) {
+  const response = await request(route);
+  const robots = metadataValues(response.body, (attributes) => attributes.name === "robots");
+  const canonicals = metadataValues(response.body, (attributes) =>
+    attributes.rel?.split(/\s+/).includes("canonical"),
+  );
+  assert.equal(response.status, 404, `${route}: expected HTTP 404`);
+  assert.deepEqual(robots, ["noindex, follow"], `${route}: expected one noindex directive`);
+  assert.equal(canonicals.length, 0, `${route}: 404 must not claim a canonical URL`);
+  assert.equal(
+    sitemapUrls.has(`${PRODUCTION_ORIGIN}${route}`),
+    false,
+    `${route}: found in sitemap`,
+  );
+  console.log(
+    `NOT_FOUND_OR_INVALID | ${route} | HTTP 404 | robots=${robots[0]} | canonical=none | sitemap=no | expected=404/noindex/no-canonical | PASS`,
+  );
+}
+
+async function loadPolicy() {
+  const [sitemap, robots] = await Promise.all([request("/sitemap.xml"), request("/robots.txt")]);
+  assert.equal(sitemap.status, 200, "sitemap: expected HTTP 200");
+  assert.match(sitemap.body, /<urlset\b/, "sitemap: missing urlset");
+  const urls = [...sitemap.body.matchAll(/<loc>(.*?)<\/loc>/g)].map((match) => match[1]);
+  assert.equal(new Set(urls).size, urls.length, "sitemap: duplicate URL");
+  for (const value of urls) {
+    const url = new URL(value);
+    assert.equal(url.origin, PRODUCTION_ORIGIN, `sitemap: wrong origin in ${value}`);
+    assert.equal(url.search, "", `sitemap: query string in ${value}`);
+    assert.equal(url.hash, "", `sitemap: fragment in ${value}`);
+    assert.ok(
+      url.pathname === "/" || !url.pathname.endsWith("/"),
+      `sitemap: trailing slash in ${value}`,
+    );
+  }
+  assert.equal(robots.status, 200, "robots.txt: expected HTTP 200");
+  assert.match(robots.body, /User-agent:\s*\*/i, "robots.txt: missing general user agent");
+  assert.match(robots.body, /Allow:\s*\//i, "robots.txt: indexable pages are not allowed");
+  assert.match(
+    robots.body,
+    new RegExp(`Sitemap:\\s*${PRODUCTION_ORIGIN.replaceAll(".", "\\.")}\\/sitemap\\.xml`, "i"),
+    "robots.txt: sitemap declaration is missing or incorrect",
+  );
+  console.log(
+    `NON_HTML_TECHNICAL | /robots.txt | HTTP 200 | robots=n/a | canonical=n/a | sitemap=no | expected=crawl policy | PASS`,
+  );
+  console.log(
+    `NON_HTML_TECHNICAL | /sitemap.xml | HTTP 200 | robots=n/a | canonical=n/a | sitemap=no | expected=unique indexable URLs | PASS`,
+  );
+  return new Set(urls);
 }
 
 await access(WRANGLER_CONFIG).catch(() => {
@@ -373,9 +415,28 @@ wrangler.once("error", (error) => {
 
 try {
   await waitForRuntime(wrangler, () => startupError);
-  for (const route of ROUTES) {
-    await verifyRoute(route);
+  const sitemapUrls = await loadPolicy();
+  const routes = [...sitemapUrls].map((url) => new URL(url).pathname);
+  const inboundLinks = new Map(routes.map((route) => [route, 0]));
+  for (const route of [...routes, ...QUERY_CASES]) {
+    const result = await verifyRoute(route, sitemapUrls);
+    if (!route.includes("?")) {
+      for (const link of new Set(result.links)) {
+        if (link !== route && inboundLinks.has(link))
+          inboundLinks.set(link, inboundLinks.get(link) + 1);
+      }
+    }
   }
+  for (const route of INVALID_CASES) await verifyInvalidRoute(route, sitemapUrls);
+  const orphans = [...inboundLinks].filter(([route, count]) => route !== "/" && count === 0);
+  assert.deepEqual(
+    orphans,
+    [],
+    `Orphaned indexable routes: ${orphans.map(([route]) => route).join(", ")}`,
+  );
+  console.log(
+    `ORPHAN AUDIT | ${routes.length} indexable routes | expected=inbound internal link | PASS`,
+  );
 } finally {
   await stopWrangler(wrangler);
 }

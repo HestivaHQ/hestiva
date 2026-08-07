@@ -3,6 +3,7 @@ import { ArrowRight, Check, Home, MapPin, MessageCircle, Navigation } from "luci
 import { Footer } from "@/components/Footer";
 import { Navbar } from "@/components/Navbar";
 import { createSeoHead } from "@/lib/seo";
+import { locationPages } from "@/content/locations";
 import { SITE_NAME } from "@/lib/site";
 import { createBreadcrumbList, createPageGraph, schemaScripts } from "@/lib/structured-data";
 
@@ -195,15 +196,28 @@ function LocationsOverview() {
                     <div>
                       <h3 className="text-2xl font-semibold text-[#5A1425]">{group.title}</h3>
                       <ul className="mt-5 space-y-3" role="list">
-                        {group.areas.map((area) => (
-                          <li key={area} className="flex gap-3 leading-7 text-[#695E59]">
-                            <span
-                              aria-hidden="true"
-                              className="mt-3 h-1.5 w-1.5 shrink-0 rounded-full bg-[#C9A45B]"
-                            />
-                            {area}
-                          </li>
-                        ))}
+                        {group.areas.map((area) => {
+                          const location = locationPages.find(({ name }) => name === area);
+                          return (
+                            <li key={area} className="flex gap-3 leading-7 text-[#695E59]">
+                              <span
+                                aria-hidden="true"
+                                className="mt-3 h-1.5 w-1.5 shrink-0 rounded-full bg-[#C9A45B]"
+                              />
+                              {location ? (
+                                <Link
+                                  to="/locations/$locationSlug"
+                                  params={{ locationSlug: location.slug }}
+                                  className="underline-offset-4 hover:underline"
+                                >
+                                  {area}
+                                </Link>
+                              ) : (
+                                area
+                              )}
+                            </li>
+                          );
+                        })}
                       </ul>
                     </div>
                   </div>

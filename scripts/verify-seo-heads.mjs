@@ -17,6 +17,15 @@ const INVALID_CASES = [
   "/not-a-real-page",
 ];
 const QUERY_CASES = ["/services/deep-cleaning?utm_source=test&utm_medium=seo"];
+const STATIC_BREADCRUMB_LABELS = new Map([
+  ["/about", "About"],
+  ["/contact", "Contact"],
+  ["/quote", "Quote"],
+  ["/privacy", "Privacy Policy"],
+  ["/terms", "Terms of Service"],
+  ["/services", "Services"],
+  ["/locations", "Locations"],
+]);
 
 const REQUIRED_OPEN_GRAPH = {
   "og:title": null,
@@ -113,7 +122,7 @@ function verifyStructuredData(route, html) {
   if (route.startsWith("/services/")) {
     assert.ok(types.includes("Service"), `${route}: missing Service schema`);
   }
-  if (/^\/(services|locations)(\/|$)/.test(route)) {
+  if (route !== "/") {
     const breadcrumb = entities.find((entity) => entity["@type"] === "BreadcrumbList");
     assert.ok(breadcrumb, `${route}: missing BreadcrumbList schema`);
     assert.deepEqual(
@@ -132,6 +141,109 @@ function verifyStructuredData(route, html) {
   for (const question of faq?.mainEntity ?? []) {
     assert.ok(html.includes(question.name), `${route}: FAQ question is not visible`);
     assert.ok(html.includes(question.acceptedAnswer.text), `${route}: FAQ answer is not visible`);
+  }
+}
+
+function breadcrumbItemsFromHtml(route, html) {
+  const navs = [...html.matchAll(/<nav\b([^>]*)>([\s\S]*?)<\/nav>/gi)].filter(
+    (match) => attributeValue(match[1], "aria-label")?.toLowerCase() === "breadcrumb",
+  );
+
+  if (route === "/") {
+    assert.equal(navs.length, 0, `${route}: homepage must not render a breadcrumb`);
+    return [];
+  }
+
+  assert.equal(navs.length, 1, `${route}: expected exactly one visible breadcrumb`);
+  assert.equal(
+    [...navs[0][2].matchAll(/\baria-current\s*=\s*(?:["']page["'])/gi)].length,
+    1,
+    `${route}: expected exactly one aria-current=\"page\" in the breadcrumb`,
+  );
+  const items = [...navs[0][2].matchAll(/<li\b[^>]*>([\s\S]*?)<\/li>/gi)].map((match) => {
+    const anchor = match[1].match(/<a\b([^>]*)>([\s\S]*?)<\/a>/i);
+    return {
+      label: decodeAccessibleText(anchor?.[2] ?? match[1]),
+      href: anchor ? attributeValue(anchor[1], "href") : undefined,
+      current: /aria-current=(?:"page"|'page')/i.test(match[1]),
+    };
+  });
+  assert.ok(items.length > 0, `${route}: breadcrumb has no list items`);
+  return items;
+}
+
+function expectedBreadcrumbPaths(route) {
+  if (route === "/") return [];
+  if (route.startsWith("/services/")) return ["/", "/services", route];
+  if (route.startsWith("/locations/")) return ["/", "/locations", route];
+  return ["/", route];
+}
+
+function verifyBreadcrumbs(route, html) {
+  const visible = breadcrumbItemsFromHtml(route, html);
+  const entities = jsonLdObjects(html).flatMap(schemaEntities);
+  const schemas = entities.filter((entity) => entity["@type"] === "BreadcrumbList");
+
+  if (route === "/") {
+    assert.equal(schemas.length, 0, `${route}: homepage must not emit BreadcrumbList schema`);
+    return;
+  }
+
+  assert.equal(schemas.length, 1, `${route}: expected exactly one BreadcrumbList schema`);
+  const structured = schemas[0].itemListElement;
+  const expectedPaths = expectedBreadcrumbPaths(route);
+  assert.equal(
+    visible.length,
+    expectedPaths.length,
+    `${route}: breadcrumb hierarchy is incomplete`,
+  );
+  assert.equal(structured.length, expectedPaths.length, `${route}: schema hierarchy is incomplete`);
+  assert.equal(
+    new Set(structured.map((item) => item.position)).size,
+    structured.length,
+    `${route}: duplicate breadcrumb positions`,
+  );
+
+  const currentItems = visible.filter((item) => item.current);
+  assert.equal(currentItems.length, 1, `${route}: expected exactly one current breadcrumb item`);
+  assert.equal(visible.at(-1).current, true, `${route}: only the final breadcrumb may be current`);
+  assert.equal(visible.at(-1).href, undefined, `${route}: current breadcrumb must not be linked`);
+
+  visible.forEach((item, index) => {
+    const schemaItem = structured[index];
+    const expectedUrl = new URL(expectedPaths[index], PRODUCTION_ORIGIN);
+    assert.equal(item.label, schemaItem.name, `${route}: visible and structured labels differ`);
+    assert.equal(
+      schemaItem.position,
+      index + 1,
+      `${route}: breadcrumb positions are not consecutive`,
+    );
+    assert.equal(
+      schemaItem.item,
+      expectedUrl.href,
+      `${route}: structured breadcrumb URL is not canonical`,
+    );
+    if (index < visible.length - 1) {
+      const href = new URL(item.href, PRODUCTION_ORIGIN);
+      assert.equal(
+        href.href,
+        expectedUrl.href,
+        `${route}: visible breadcrumb URL is not canonical`,
+      );
+      assert.equal(href.search, "", `${route}: breadcrumb URL contains a query string`);
+      assert.equal(href.hash, "", `${route}: breadcrumb URL contains a fragment`);
+    }
+  });
+
+  assert.equal(visible[0].label, "Home", `${route}: breadcrumb must begin at Home`);
+  if (route.startsWith("/services/")) assert.equal(visible[1].label, "Services");
+  if (route.startsWith("/locations/")) assert.equal(visible[1].label, "Locations");
+  if (STATIC_BREADCRUMB_LABELS.has(route)) {
+    assert.equal(
+      visible.at(-1).label,
+      STATIC_BREADCRUMB_LABELS.get(route),
+      `${route}: current breadcrumb label is incorrect`,
+    );
   }
 }
 
@@ -163,6 +275,15 @@ function decodeText(value) {
     .replace(/&#(?:39|x27);/gi, "'")
     .replace(/\s+/g, " ")
     .trim();
+}
+
+function decodeAccessibleText(value) {
+  return decodeText(
+    value.replace(
+      /<([a-z][\w:-]*)\b[^>]*\baria-hidden\s*=\s*(?:["']true["'])[^>]*>[\s\S]*?<\/\1>/gi,
+      "",
+    ),
+  );
 }
 
 function attributeValue(tag, name) {
@@ -322,6 +443,7 @@ async function verifyRoute(route, sitemapUrls) {
     response.status >= 200 && response.status < 300,
     `${route}: expected a successful response, received ${response.status}`,
   );
+  verifyBreadcrumbs(requestUrl.pathname, response.body);
 
   const canonicals = metadataValues(response.body, (attributes) =>
     attributes.rel?.split(/\s+/).includes("canonical"),

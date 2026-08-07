@@ -14,8 +14,12 @@ import {
 } from "lucide-react";
 import { Footer } from "@/components/Footer";
 import { Navbar } from "@/components/Navbar";
+import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { createSeoHead } from "@/lib/seo";
-import { createPageGraph, schemaScripts } from "@/lib/structured-data";
+import { pageBreadcrumbs } from "@/lib/breadcrumbs";
+import { createBreadcrumbList, createPageGraph, schemaScripts } from "@/lib/structured-data";
+
+const breadcrumbs = pageBreadcrumbs("Quote", "/quote");
 
 export const Route = createFileRoute("/quote")({
   component: QuotePage,
@@ -26,7 +30,10 @@ export const Route = createFileRoute("/quote")({
     const path = "/quote";
     return {
       ...createSeoHead({ title, description, path }),
-      scripts: schemaScripts(createPageGraph(path, title, description)),
+      scripts: schemaScripts(
+        createPageGraph(path, title, description),
+        createBreadcrumbList(breadcrumbs),
+      ),
     };
   },
 });
@@ -243,16 +250,12 @@ function QuotePage() {
             className="absolute -right-28 top-20 h-80 w-80 rounded-full border border-[#C9A45B]/20"
           />
           <div className="relative mx-auto max-w-7xl">
-            <nav aria-label="Breadcrumb" className="mb-9 flex gap-2 text-sm text-[#6B5E58]">
-              <Link
-                to="/"
-                className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A45B]"
-              >
-                Home
-              </Link>
-              <span aria-hidden="true">/</span>
-              <span aria-current="page">Request a Quote</span>
-            </nav>
+            <Breadcrumbs
+              items={breadcrumbs}
+              className="mb-12 text-[#5F4B46]"
+              linkClassName="rounded-sm transition-colors hover:text-[#3B0F1A] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A45B]"
+              separatorClassName="text-[#C9A45B]"
+            />
             <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#98732E]">
               Request a Quote
             </p>

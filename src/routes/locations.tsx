@@ -2,7 +2,9 @@ import { createFileRoute, Link, Outlet, useRouterState } from "@tanstack/react-r
 import { ArrowRight, Check, Home, MapPin, MessageCircle, Navigation } from "lucide-react";
 import { Footer } from "@/components/Footer";
 import { Navbar } from "@/components/Navbar";
+import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { createSeoHead } from "@/lib/seo";
+import { locationBreadcrumbs } from "@/lib/breadcrumbs";
 import { locationPages } from "@/content/locations";
 import { SITE_NAME } from "@/lib/site";
 import { createBreadcrumbList, createPageGraph, schemaScripts } from "@/lib/structured-data";
@@ -59,6 +61,8 @@ const quoteEmail = "mailto:quotes@hestiva.co.za?subject=Hestiva%20address%20and%
 const whatsAppUrl =
   "https://wa.me/27684231614?text=Hello%20Hestiva%2C%20I%27d%20like%20to%20check%20cleaning%20availability%20for%20my%20address.";
 
+const breadcrumbs = locationBreadcrumbs();
+
 export const Route = createFileRoute("/locations")({
   component: LocationsRoute,
   head: ({ match, matches }) => {
@@ -72,10 +76,7 @@ export const Route = createFileRoute("/locations")({
       ...createSeoHead({ title, description, path: "/locations" }),
       scripts: schemaScripts(
         createPageGraph("/locations", title, description),
-        createBreadcrumbList([
-          { name: "Home", path: "/" },
-          { name: "Areas", path: "/locations" },
-        ]),
+        createBreadcrumbList(breadcrumbs),
       ),
     };
   },
@@ -110,21 +111,12 @@ function LocationsOverview() {
             className="absolute -right-12 top-40 h-72 w-72 rounded-full border border-[#C9A45B]/25"
           />
           <div className="relative mx-auto max-w-7xl">
-            <nav
-              aria-label="Breadcrumb"
-              className="mb-12 flex items-center gap-2 text-sm text-[#695E59]"
-            >
-              <Link
-                to="/"
-                className="rounded-sm transition hover:text-[#5A1425] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A45B]"
-              >
-                Home
-              </Link>
-              <span aria-hidden="true" className="text-[#C9A45B]">
-                /
-              </span>
-              <span aria-current="page">Areas We Serve</span>
-            </nav>
+            <Breadcrumbs
+              items={breadcrumbs}
+              className="mb-12 text-[#695E59]"
+              linkClassName="rounded-sm transition-colors hover:text-[#5A1425] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A45B]"
+              separatorClassName="text-[#C9A45B]"
+            />
             <p className="mb-5 flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.28em] text-[#9A742E]">
               <MapPin aria-hidden="true" className="h-4 w-4" /> Areas We Serve
             </p>

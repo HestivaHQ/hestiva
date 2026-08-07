@@ -154,6 +154,89 @@ function metadataValues(html, selector) {
   return values;
 }
 
+function decodeText(value) {
+  return value
+    .replace(/<[^>]*>/g, " ")
+    .replace(/&nbsp;/gi, " ")
+    .replace(/&amp;/gi, "&")
+    .replace(/&quot;/gi, '"')
+    .replace(/&#(?:39|x27);/gi, "'")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function attributeValue(tag, name) {
+  const match = tag.match(new RegExp(`\\b${name}\\s*=\\s*(?:"([^"]*)"|'([^']*)')`, "i"));
+  return match?.[1] ?? match?.[2];
+}
+
+function verifyOnPageSeo(route, html) {
+  const titles = [...html.matchAll(/<title\b[^>]*>([\s\S]*?)<\/title>/gi)].map((match) =>
+    decodeText(match[1]),
+  );
+  assert.equal(titles.length, 1, `${route}: expected exactly one page title`);
+  assert.ok(
+    titles[0].length >= 20 && titles[0].length <= 65,
+    `${route}: title length is unsuitable`,
+  );
+  assert.match(titles[0], /Hestiva/i, `${route}: title is missing consistent branding`);
+
+  const descriptions = metadataValues(
+    html,
+    (attributes) => attributes.name?.toLowerCase() === "description",
+  );
+  assert.equal(descriptions.length, 1, `${route}: expected exactly one meta description`);
+  assert.ok(
+    descriptions[0].length >= 70 && descriptions[0].length <= 160,
+    `${route}: meta description length is unsuitable (${descriptions[0].length})`,
+  );
+
+  const headings = [...html.matchAll(/<h([1-6])\b[^>]*>([\s\S]*?)<\/h\1>/gi)].map((match) => ({
+    level: Number(match[1]),
+    text: decodeText(match[2]),
+  }));
+  assert.ok(headings.length > 0, `${route}: expected visible headings`);
+  assert.ok(
+    headings.every(({ text }) => text.length > 0),
+    `${route}: empty heading found`,
+  );
+  const h1s = headings.filter(({ level }) => level === 1);
+  assert.equal(h1s.length, 1, `${route}: expected exactly one H1`);
+  for (let index = 1; index < headings.length; index += 1) {
+    assert.ok(
+      headings[index].level <= headings[index - 1].level + 1,
+      `${route}: heading level skips from H${headings[index - 1].level} to H${headings[index].level}`,
+    );
+  }
+
+  for (const image of html.matchAll(/<img\b[^>]*>/gi)) {
+    const alt = attributeValue(image[0], "alt");
+    assert.notEqual(alt, undefined, `${route}: image is missing an alt attribute`);
+    if (alt) {
+      assert.ok(decodeText(alt).length >= 5, `${route}: image alt text is not descriptive`);
+      assert.doesNotMatch(
+        decodeText(alt),
+        /^(image|photo|picture|placeholder|logo\.(?:png|jpe?g|webp))$/i,
+        `${route}: image has generic alt text`,
+      );
+    }
+  }
+
+  const genericAnchors = /^(click here|here|read more|learn more|more)$/i;
+  for (const anchor of html.matchAll(/<a\b([^>]*)>([\s\S]*?)<\/a>/gi)) {
+    const label = attributeValue(anchor[1], "aria-label");
+    const imageAlt = [...anchor[2].matchAll(/<img\b[^>]*>/gi)]
+      .map((image) => attributeValue(image[0], "alt"))
+      .filter(Boolean)
+      .join(" ");
+    const text = decodeText(label || anchor[2]) || decodeText(imageAlt);
+    assert.ok(text.length > 0, `${route}: link has no descriptive accessible text`);
+    assert.doesNotMatch(text, genericAnchors, `${route}: generic link text "${text}" found`);
+  }
+
+  return { title: titles[0], description: descriptions[0], h1: h1s[0].text };
+}
+
 function request(path) {
   return new Promise((resolve, reject) => {
     const request = get(new URL(path, LOCAL_ORIGIN), (response) => {
@@ -337,11 +420,12 @@ async function verifyRoute(route, sitemapUrls) {
   );
 
   verifyStructuredData(requestUrl.pathname, response.body);
+  const onPage = verifyOnPageSeo(route, response.body);
 
   console.log(
     `INDEXABLE | ${route} | HTTP ${response.status} | robots=${robots[0]} | canonical=${canonical.href} | sitemap=yes | expected=200/index/self-canonical | PASS`,
   );
-  return { canonical: canonical.href, links: hrefPaths(response.body) };
+  return { canonical: canonical.href, links: hrefPaths(response.body), onPage };
 }
 
 async function verifyInvalidRoute(route, sitemapUrls) {
@@ -418,9 +502,11 @@ try {
   const sitemapUrls = await loadPolicy();
   const routes = [...sitemapUrls].map((url) => new URL(url).pathname);
   const inboundLinks = new Map(routes.map((route) => [route, 0]));
+  const onPageResults = [];
   for (const route of [...routes, ...QUERY_CASES]) {
     const result = await verifyRoute(route, sitemapUrls);
     if (!route.includes("?")) {
+      onPageResults.push({ route, ...result.onPage });
       for (const link of new Set(result.links)) {
         if (link !== route && inboundLinks.has(link))
           inboundLinks.set(link, inboundLinks.get(link) + 1);
@@ -433,6 +519,18 @@ try {
     orphans,
     [],
     `Orphaned indexable routes: ${orphans.map(([route]) => route).join(", ")}`,
+  );
+  for (const field of ["title", "description", "h1"]) {
+    const values = onPageResults.map((result) => result[field].toLocaleLowerCase("en-ZA"));
+    const duplicates = values.filter((value, index) => values.indexOf(value) !== index);
+    assert.equal(
+      new Set(values).size,
+      values.length,
+      `Duplicate ${field} values found across indexable routes: ${[...new Set(duplicates)].join(", ")}`,
+    );
+  }
+  console.log(
+    `ON-PAGE AUDIT | ${routes.length} indexable routes | expected=unique title/description/H1, one H1, valid headings/images/anchors | PASS`,
   );
   console.log(
     `ORPHAN AUDIT | ${routes.length} indexable routes | expected=inbound internal link | PASS`,

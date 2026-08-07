@@ -111,7 +111,7 @@ export function LocationPageLayout({ location }: { location: LocationPage }) {
                     params={{ serviceSlug: service.slug }}
                     className="inline-block mt-5 text-sm text-primary font-semibold"
                   >
-                    View service
+                    Explore {service.shortTitle}
                   </Link>
                 </article>
               ))}

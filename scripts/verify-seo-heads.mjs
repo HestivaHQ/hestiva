@@ -429,11 +429,88 @@ async function stopWrangler(process) {
   }
 }
 
-function hrefPaths(html) {
-  return [...html.matchAll(/<a\b[^>]*href=(?:"([^"]*)"|'([^']*)')/gi)]
-    .map((match) => match[1] ?? match[2])
-    .filter((href) => href.startsWith("/"))
-    .map((href) => new URL(href, PRODUCTION_ORIGIN).pathname.replace(/\/$/, "") || "/");
+function internalLinks(route, html) {
+  const breadcrumbRanges = [
+    ...html.matchAll(/<nav\b[^>]*aria-label=(?:"breadcrumb"|'breadcrumb')[^>]*>[\s\S]*?<\/nav>/gi),
+  ].map((match) => [match.index, match.index + match[0].length]);
+  const links = [];
+
+  for (const anchor of html.matchAll(/<a\b([^>]*)>([\s\S]*?)<\/a>/gi)) {
+    const href = attributeValue(anchor[1], "href");
+    const absoluteInternalHost = href?.match(/^(?:https?:)?\/\/([^/?#]+)(?:[/?#]|$)/i)?.[1];
+    if (absoluteInternalHost?.replace(/^www\./i, "") === "hestiva.co.za") {
+      assert.ok(
+        href.startsWith(PRODUCTION_ORIGIN),
+        `${route}: internal link uses a non-canonical host: ${href}`,
+      );
+    }
+    if (
+      !href ||
+      (/^(?:mailto:|tel:|https?:\/\/)/i.test(href) && !href.startsWith(PRODUCTION_ORIGIN))
+    )
+      continue;
+    assert.doesNotMatch(
+      href,
+      /^(?:javascript|data|file):/i,
+      `${route}: malformed internal href "${href}"`,
+    );
+
+    let url;
+    try {
+      url = new URL(href, PRODUCTION_ORIGIN);
+    } catch {
+      assert.fail(`${route}: malformed internal href "${href}"`);
+    }
+    if (url.origin !== PRODUCTION_ORIGIN) continue;
+    assert.equal(url.search, "", `${route}: internal link contains a query string: ${href}`);
+    assert.ok(
+      url.pathname === "/" || !url.pathname.endsWith("/"),
+      `${route}: internal link has a trailing slash: ${href}`,
+    );
+    assert.ok(
+      !/^https?:\/\//i.test(href) || href.startsWith(PRODUCTION_ORIGIN),
+      `${route}: internal link uses a non-canonical host: ${href}`,
+    );
+    assert.doesNotMatch(
+      anchor[1],
+      /(?:\bhidden\b|aria-hidden=(?:"true"|'true')|style=(?:"[^"]*display\s*:\s*none|'[^']*display\s*:\s*none))/i,
+      `${route}: hidden internal link found: ${href}`,
+    );
+
+    const label = decodeAccessibleText(attributeValue(anchor[1], "aria-label") || anchor[2]);
+    assert.doesNotMatch(
+      label,
+      /^(?:click here|here|read more|learn more|view service|more|go)$/i,
+      `${route}: generic internal anchor "${label}" found`,
+    );
+    const path = url.pathname.replace(/\/$/, "") || "/";
+    links.push({
+      href,
+      path,
+      fragment: url.hash,
+      label,
+      breadcrumb: breadcrumbRanges.some(
+        ([start, end]) => anchor.index >= start && anchor.index < end,
+      ),
+    });
+  }
+
+  for (const section of html.matchAll(/<section\b[^>]*>([\s\S]*?)<\/section>/gi)) {
+    const identities = [...section[1].matchAll(/<a\b([^>]*)>([\s\S]*?)<\/a>/gi)]
+      .map((anchor) => {
+        const href = attributeValue(anchor[1], "href");
+        const label = decodeAccessibleText(attributeValue(anchor[1], "aria-label") || anchor[2]);
+        return href?.startsWith("/") ? `${href}|${label}` : undefined;
+      })
+      .filter(Boolean);
+    assert.equal(
+      new Set(identities).size,
+      identities.length,
+      `${route}: repeated identical internal links found in one content section`,
+    );
+  }
+
+  return links;
 }
 
 async function verifyRoute(route, sitemapUrls) {
@@ -547,7 +624,7 @@ async function verifyRoute(route, sitemapUrls) {
   console.log(
     `INDEXABLE | ${route} | HTTP ${response.status} | robots=${robots[0]} | canonical=${canonical.href} | sitemap=yes | expected=200/index/self-canonical | PASS`,
   );
-  return { canonical: canonical.href, links: hrefPaths(response.body), onPage };
+  return { canonical: canonical.href, links: internalLinks(route, response.body), onPage };
 }
 
 async function verifyInvalidRoute(route, sitemapUrls) {
@@ -624,18 +701,52 @@ try {
   const sitemapUrls = await loadPolicy();
   const routes = [...sitemapUrls].map((url) => new URL(url).pathname);
   const inboundLinks = new Map(routes.map((route) => [route, 0]));
+  const outboundLinks = new Map(routes.map((route) => [route, 0]));
+  const contextualLinksByRoute = new Map();
+  const discoveredTargets = new Map();
   const onPageResults = [];
   for (const route of [...routes, ...QUERY_CASES]) {
     const result = await verifyRoute(route, sitemapUrls);
     if (!route.includes("?")) {
       onPageResults.push({ route, ...result.onPage });
-      for (const link of new Set(result.links)) {
+      const contextualPaths = new Set(
+        result.links.filter((link) => !link.breadcrumb).map((link) => link.path),
+      );
+      contextualLinksByRoute.set(route, contextualPaths);
+      outboundLinks.set(route, contextualPaths.size);
+      for (const link of result.links) {
+        if (!link.fragment) discoveredTargets.set(link.path, link.href);
+      }
+      for (const link of contextualPaths) {
         if (link !== route && inboundLinks.has(link))
           inboundLinks.set(link, inboundLinks.get(link) + 1);
       }
     }
   }
+  for (const [path, href] of discoveredTargets) {
+    assert.ok(
+      sitemapUrls.has(`${PRODUCTION_ORIGIN}${path}`),
+      `Internal link is not an indexable route: ${href}`,
+    );
+    const response = await request(path);
+    assert.ok(
+      response.status >= 200 && response.status < 300,
+      `Broken or redirecting internal link ${href}: received HTTP ${response.status}`,
+    );
+  }
   for (const route of INVALID_CASES) await verifyInvalidRoute(route, sitemapUrls);
+  for (const route of routes.filter((path) => path.startsWith("/services/"))) {
+    assert.ok(
+      contextualLinksByRoute.get("/services").has(route),
+      `${route}: missing meaningful navigation from /services`,
+    );
+  }
+  for (const route of routes.filter((path) => path.startsWith("/locations/"))) {
+    assert.ok(
+      contextualLinksByRoute.get("/locations").has(route),
+      `${route}: missing meaningful navigation from /locations`,
+    );
+  }
   const orphans = [...inboundLinks].filter(([route, count]) => route !== "/" && count === 0);
   assert.deepEqual(
     orphans,
@@ -657,6 +768,14 @@ try {
   console.log(
     `ORPHAN AUDIT | ${routes.length} indexable routes | expected=inbound internal link | PASS`,
   );
+  console.log(
+    `INTERNAL LINK AUDIT | ${routes.length} routes | ${discoveredTargets.size} destinations | broken=0 | non-canonical=0 | generic=0 | PASS`,
+  );
+  for (const route of routes) {
+    console.log(
+      `LINK GRAPH | ${route} | inbound=${inboundLinks.get(route)} | outbound=${outboundLinks.get(route)} | PASS`,
+    );
+  }
 } finally {
   await stopWrangler(wrangler);
 }

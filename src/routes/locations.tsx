@@ -18,6 +18,16 @@ const serviceAreas = [
   "Pretoria",
 ] as const;
 
+const overviewAreas = [
+  ...serviceAreas.map((name) => ({
+    name,
+    location: locationPages.find((location) => location.name === name),
+  })),
+  ...locationPages
+    .filter((location) => !serviceAreas.some((name) => name === location.name))
+    .map((location) => ({ name: location.name, location })),
+];
+
 const areaGroups = [
   {
     title: "Johannesburg West",
@@ -150,15 +160,25 @@ function LocationsOverview() {
               className="grid gap-x-8 gap-y-1 border-y border-[#C9A45B]/30 py-4 sm:grid-cols-2"
               role="list"
             >
-              {serviceAreas.map((area) => (
+              {overviewAreas.map(({ name, location }) => (
                 <li
-                  key={area}
+                  key={name}
                   className="flex items-center gap-4 border-b border-[#E6D9C8] py-5 text-lg font-medium text-[#514946] last:border-b-0 sm:[&:nth-last-child(-n+2)]:border-b-0"
                 >
                   <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#F3E8D5] text-[#8A6729]">
                     <MapPin aria-hidden="true" className="h-4 w-4" />
                   </span>
-                  {area}
+                  {location ? (
+                    <Link
+                      to="/locations/$locationSlug"
+                      params={{ locationSlug: location.slug }}
+                      className="rounded-sm transition-colors hover:text-[#711C31] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A45B]"
+                    >
+                      {name}
+                    </Link>
+                  ) : (
+                    name
+                  )}
                 </li>
               ))}
             </ul>

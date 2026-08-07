@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Check, Sparkles } from "lucide-react";
 import { Footer } from "@/components/Footer";
 import { Navbar } from "@/components/Navbar";
+import { servicePages } from "@/content/services";
 import { createSeoHead } from "@/lib/seo";
 import { SITE_NAME } from "@/lib/site";
 import { createBreadcrumbList, createPageGraph, schemaScripts } from "@/lib/structured-data";
@@ -296,7 +297,8 @@ function ServicesOverview() {
             </div>
 
             <div className="space-y-16 md:space-y-24">
-              {services.map((service, index) => {
+              {servicePages.map((canonicalService, index) => {
+                const service = services[index];
                 const imageFirst = index % 2 === 0;
                 return (
                   <article
@@ -327,7 +329,13 @@ function ServicesOverview() {
                         Service {String(index + 1).padStart(2, "0")}
                       </p>
                       <h3 className="text-3xl font-semibold tracking-tight text-[#5A1425] md:text-4xl">
-                        {service.title}
+                        <Link
+                          to="/services/$serviceSlug"
+                          params={{ serviceSlug: canonicalService.slug }}
+                          className="rounded-sm transition-colors hover:text-[#711C31] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A45B]"
+                        >
+                          {service.title}
+                        </Link>
                       </h3>
                       <p className="mt-5 leading-7 text-[#695E59]">{service.introduction}</p>
                       <h4 className="mt-8 text-sm font-semibold uppercase tracking-[0.16em] text-[#5A1425]">

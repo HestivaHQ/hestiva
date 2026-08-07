@@ -155,6 +155,11 @@ function breadcrumbItemsFromHtml(route, html) {
   }
 
   assert.equal(navs.length, 1, `${route}: expected exactly one visible breadcrumb`);
+  assert.equal(
+    [...navs[0][2].matchAll(/\baria-current\s*=\s*(?:["']page["'])/gi)].length,
+    1,
+    `${route}: expected exactly one aria-current=\"page\" in the breadcrumb`,
+  );
   const items = [...navs[0][2].matchAll(/<li\b[^>]*>([\s\S]*?)<\/li>/gi)].map((match) => {
     const anchor = match[1].match(/<a\b([^>]*)>([\s\S]*?)<\/a>/i);
     return {

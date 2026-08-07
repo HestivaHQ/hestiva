@@ -31,7 +31,7 @@ export function Breadcrumbs({
               {current ? (
                 <span aria-current="page">{item.label}</span>
               ) : (
-                <Link to={item.path} className={linkClassName}>
+                <Link to={item.path} activeOptions={{ exact: true }} className={linkClassName}>
                   {item.label}
                 </Link>
               )}

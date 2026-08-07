@@ -2,6 +2,7 @@ import { createFileRoute, notFound } from "@tanstack/react-router";
 import { LocationPageLayout } from "@/components/LocationPageLayout";
 import { getLocationPage, locationPages } from "@/content/locations";
 import { createSeoHead } from "@/lib/seo";
+import { locationBreadcrumbs } from "@/lib/breadcrumbs";
 import {
   createBreadcrumbList,
   createFaqPage,
@@ -38,11 +39,7 @@ export const Route = createFileRoute("/locations/$locationSlug")({
       scripts: schemaScripts(
         createPageGraph(path, location.metaTitle, location.metaDescription),
         createFaqPage(location.faqs),
-        createBreadcrumbList([
-          { name: "Home", path: "/" },
-          { name: "Areas", path: "/locations" },
-          { name: `Residential Cleaning in ${location.name}`, path },
-        ]),
+        createBreadcrumbList(locationBreadcrumbs(location.name, path)),
       ),
     };
   },

@@ -1,8 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Footer } from "@/components/Footer";
 import { Navbar } from "@/components/Navbar";
+import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { createSeoHead } from "@/lib/seo";
-import { createPageGraph, schemaScripts } from "@/lib/structured-data";
+import { pageBreadcrumbs } from "@/lib/breadcrumbs";
+import { createBreadcrumbList, createPageGraph, schemaScripts } from "@/lib/structured-data";
+
+const breadcrumbs = pageBreadcrumbs("Terms of Service", "/terms");
 
 export const Route = createFileRoute("/terms")({
   component: TermsPage,
@@ -13,7 +17,10 @@ export const Route = createFileRoute("/terms")({
     const path = "/terms";
     return {
       ...createSeoHead({ title, description, path }),
-      scripts: schemaScripts(createPageGraph(path, title, description)),
+      scripts: schemaScripts(
+        createPageGraph(path, title, description),
+        createBreadcrumbList(breadcrumbs),
+      ),
     };
   },
 });
@@ -41,18 +48,12 @@ function TermsPage() {
       <main>
         <header className="border-b border-[#C9A45B]/25 bg-[#F7F0E3] px-6 pb-20 pt-32 md:pb-24 md:pt-40">
           <div className="mx-auto max-w-6xl">
-            <nav aria-label="Breadcrumb" className="mb-10 flex gap-2 text-sm text-[#695E59]">
-              <Link
-                to="/"
-                className="rounded-sm hover:text-[#5A1425] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A45B]"
-              >
-                Home
-              </Link>
-              <span aria-hidden="true" className="text-[#C9A45B]">
-                /
-              </span>
-              <span aria-current="page">Terms of Service</span>
-            </nav>
+            <Breadcrumbs
+              items={breadcrumbs}
+              className="mb-12 text-[#5F4B46]"
+              linkClassName="rounded-sm transition-colors hover:text-[#3B0F1A] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A45B]"
+              separatorClassName="text-[#C9A45B]"
+            />
             <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#9A742E]">
               Clear service expectations
             </p>

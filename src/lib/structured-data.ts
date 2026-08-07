@@ -1,5 +1,6 @@
 import { BRAND_ASSETS, SITE_NAME, SITE_URL, siteConfig } from "@/lib/site";
 import { canonicalUrl } from "@/lib/seo";
+import type { BreadcrumbItem } from "@/lib/breadcrumbs";
 
 export const SCHEMA_CONTEXT = "https://schema.org" as const;
 export const WEBSITE_ID = `${SITE_URL}/#website`;
@@ -7,7 +8,6 @@ export const BUSINESS_ID = `${SITE_URL}/#business`;
 
 type JsonLd = Record<string, unknown>;
 type Faq = { question: string; answer: string };
-type Breadcrumb = { name: string; path: string };
 
 export function schemaScripts(...schemas: JsonLd[]) {
   return schemas.map((schema) => ({
@@ -58,14 +58,14 @@ export function createWebPage(path: string, name: string, description: string): 
   };
 }
 
-export function createBreadcrumbList(items: Breadcrumb[]): JsonLd {
+export function createBreadcrumbList(items: BreadcrumbItem[]): JsonLd {
   return {
     "@context": SCHEMA_CONTEXT,
     "@type": "BreadcrumbList",
-    itemListElement: items.map(({ name, path }, index) => ({
+    itemListElement: items.map(({ label, path }, index) => ({
       "@type": "ListItem",
       position: index + 1,
-      name,
+      name: label,
       item: canonicalUrl(path),
     })),
   };

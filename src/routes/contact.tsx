@@ -2,8 +2,10 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, Clock3, Mail, MapPin, MessageCircle, Phone, Send } from "lucide-react";
 import { Footer } from "@/components/Footer";
 import { Navbar } from "@/components/Navbar";
+import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { createSeoHead } from "@/lib/seo";
-import { createPageGraph, schemaScripts } from "@/lib/structured-data";
+import { pageBreadcrumbs } from "@/lib/breadcrumbs";
+import { createBreadcrumbList, createPageGraph, schemaScripts } from "@/lib/structured-data";
 import { SITE_NAME } from "@/lib/site";
 
 const phoneDisplay = "068 423 1614";
@@ -29,6 +31,8 @@ const nextSteps = [
   },
 ];
 
+const breadcrumbs = pageBreadcrumbs("Contact", "/contact");
+
 export const Route = createFileRoute("/contact")({
   component: ContactPage,
   head: () => {
@@ -38,7 +42,10 @@ export const Route = createFileRoute("/contact")({
     const path = "/contact";
     return {
       ...createSeoHead({ title, description, path }),
-      scripts: schemaScripts(createPageGraph(path, title, description)),
+      scripts: schemaScripts(
+        createPageGraph(path, title, description),
+        createBreadcrumbList(breadcrumbs),
+      ),
     };
   },
 });
@@ -67,18 +74,12 @@ function ContactPage() {
             className="absolute -right-12 top-32 h-72 w-72 rounded-full bg-[#C9A45B]/[0.07]"
           />
           <div className="relative mx-auto max-w-7xl">
-            <nav aria-label="Breadcrumb" className="mb-12 flex gap-2 text-sm text-[#5F4B46]">
-              <Link
-                to="/"
-                className="rounded-sm transition-colors hover:text-[#3B0F1A] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A45B]"
-              >
-                Home
-              </Link>
-              <span aria-hidden="true" className="text-[#C9A45B]">
-                /
-              </span>
-              <span aria-current="page">Contact</span>
-            </nav>
+            <Breadcrumbs
+              items={breadcrumbs}
+              className="mb-12 text-[#5F4B46]"
+              linkClassName="rounded-sm transition-colors hover:text-[#3B0F1A] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A45B]"
+              separatorClassName="text-[#C9A45B]"
+            />
             <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#9A7132]">
               Contact Hestiva
             </p>

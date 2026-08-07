@@ -2,6 +2,7 @@ import { createFileRoute, notFound } from "@tanstack/react-router";
 import { ServicePageLayout } from "@/components/ServicePageLayout";
 import { getServicePage, servicePages } from "@/content/services";
 import { createSeoHead } from "@/lib/seo";
+import { serviceBreadcrumbs } from "@/lib/breadcrumbs";
 import {
   createBreadcrumbList,
   createFaqPage,
@@ -40,11 +41,7 @@ export const Route = createFileRoute("/services/$serviceSlug")({
         createPageGraph(path, service.metaTitle, service.metaDescription),
         createServiceSchema(path, service.title, service.metaDescription),
         createFaqPage(service.faqs),
-        createBreadcrumbList([
-          { name: "Home", path: "/" },
-          { name: "Services", path: "/services" },
-          { name: service.title, path },
-        ]),
+        createBreadcrumbList(serviceBreadcrumbs(service.title, path)),
       ),
     };
   },

@@ -2,6 +2,8 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Check, Sparkles } from "lucide-react";
 import { Footer } from "@/components/Footer";
 import { Navbar } from "@/components/Navbar";
+import { Breadcrumbs } from "@/components/Breadcrumbs";
+import { serviceBreadcrumbs } from "@/lib/breadcrumbs";
 import { createSeoHead } from "@/lib/seo";
 import { SITE_NAME } from "@/lib/site";
 import {
@@ -20,6 +22,8 @@ const includedServices = [
   "Vacuuming and mopping",
 ];
 
+const breadcrumbs = serviceBreadcrumbs("Apartment Cleaning", "/services/apartment-cleaning");
+
 export const Route = createFileRoute("/services/apartment-cleaning")({
   component: ApartmentCleaningPage,
   head: () => {
@@ -32,11 +36,7 @@ export const Route = createFileRoute("/services/apartment-cleaning")({
       scripts: schemaScripts(
         createPageGraph(path, title, description),
         createServiceSchema(path, "Apartment Cleaning", description),
-        createBreadcrumbList([
-          { name: "Home", path: "/" },
-          { name: "Services", path: "/services" },
-          { name: "Apartment Cleaning", path },
-        ]),
+        createBreadcrumbList(breadcrumbs),
       ),
     };
   },
@@ -53,27 +53,12 @@ function ApartmentCleaningPage() {
             className="absolute -right-28 top-20 h-96 w-96 rounded-full border border-[#C9A45B]/25"
           />
           <div className="relative mx-auto max-w-7xl">
-            <nav aria-label="Breadcrumb" className="mb-12 flex items-center gap-2 text-sm">
-              <Link
-                to="/"
-                className="rounded-sm transition-colors hover:text-[#3B0F1A] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A45B]"
-              >
-                Home
-              </Link>
-              <span aria-hidden="true" className="text-[#C9A45B]">
-                /
-              </span>
-              <Link
-                to="/services"
-                className="rounded-sm transition-colors hover:text-[#3B0F1A] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A45B]"
-              >
-                Services
-              </Link>
-              <span aria-hidden="true" className="text-[#C9A45B]">
-                /
-              </span>
-              <span aria-current="page">Apartment Cleaning</span>
-            </nav>
+            <Breadcrumbs
+              items={breadcrumbs}
+              className="mb-12"
+              linkClassName="rounded-sm transition-colors hover:text-[#3B0F1A] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A45B]"
+              separatorClassName="text-[#C9A45B]"
+            />
             <p className="mb-5 text-xs font-semibold uppercase tracking-[0.28em] text-[#9A7132]">
               Residential Cleaning Services
             </p>

@@ -2,8 +2,10 @@ import { createFileRoute, Link, Outlet, useRouterState } from "@tanstack/react-r
 import { Check, Sparkles } from "lucide-react";
 import { Footer } from "@/components/Footer";
 import { Navbar } from "@/components/Navbar";
+import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { servicePages } from "@/content/services";
 import { createSeoHead } from "@/lib/seo";
+import { serviceBreadcrumbs } from "@/lib/breadcrumbs";
 import { SITE_NAME } from "@/lib/site";
 import { createBreadcrumbList, createPageGraph, schemaScripts } from "@/lib/structured-data";
 
@@ -212,6 +214,8 @@ const services: CleaningService[] = [
   },
 ];
 
+const breadcrumbs = serviceBreadcrumbs();
+
 export const Route = createFileRoute("/services")({
   component: ServicesRoute,
   head: ({ match, matches }) => {
@@ -224,10 +228,7 @@ export const Route = createFileRoute("/services")({
       ...createSeoHead({ title, description, path: "/services" }),
       scripts: schemaScripts(
         createPageGraph("/services", title, description),
-        createBreadcrumbList([
-          { name: "Home", path: "/" },
-          { name: "Services", path: "/services" },
-        ]),
+        createBreadcrumbList(breadcrumbs),
       ),
     };
   },
@@ -253,21 +254,12 @@ function ServicesOverview() {
             className="absolute -right-12 top-36 h-64 w-64 rounded-full border border-[#C9A45B]/20"
           />
           <div className="relative mx-auto max-w-7xl">
-            <nav
-              aria-label="Breadcrumb"
-              className="mb-12 flex items-center gap-2 text-sm text-[#695E59]"
-            >
-              <Link
-                to="/"
-                className="rounded-sm transition-colors hover:text-[#5A1425] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A45B]"
-              >
-                Home
-              </Link>
-              <span aria-hidden="true" className="text-[#C9A45B]">
-                /
-              </span>
-              <span aria-current="page">Services</span>
-            </nav>
+            <Breadcrumbs
+              items={breadcrumbs}
+              className="mb-12 text-[#695E59]"
+              linkClassName="rounded-sm transition-colors hover:text-[#5A1425] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A45B]"
+              separatorClassName="text-[#C9A45B]"
+            />
             <p className="mb-5 text-xs font-semibold uppercase tracking-[0.28em] text-[#9A742E]">
               Residential Cleaning Services
             </p>

@@ -17,6 +17,7 @@ const INVALID_CASES = [
   "/not-a-real-page",
 ];
 const QUERY_CASES = ["/services/deep-cleaning?utm_source=test&utm_medium=seo"];
+const TRAILING_SLASH_CASES = ["/services/deep-cleaning/", "/locations/johannesburg/"];
 const STATIC_BREADCRUMB_LABELS = new Map([
   ["/about", "About"],
   ["/contact", "Contact"],
@@ -366,7 +367,9 @@ function request(path) {
       response.on("data", (chunk) => {
         body += chunk;
       });
-      response.on("end", () => resolve({ body, status: response.statusCode ?? 0 }));
+      response.on("end", () =>
+        resolve({ body, headers: response.headers, status: response.statusCode ?? 0 }),
+      );
     });
 
     request.setTimeout(REQUEST_TIMEOUT_MS, () => {
@@ -515,12 +518,13 @@ function internalLinks(route, html) {
 
 async function verifyRoute(route, sitemapUrls) {
   const requestUrl = new URL(route, LOCAL_ORIGIN);
+  const expectedPath = requestUrl.pathname === "/" ? "/" : requestUrl.pathname.replace(/\/+$/, "");
   const response = await request(requestUrl);
   assert.ok(
     response.status >= 200 && response.status < 300,
     `${route}: expected a successful response, received ${response.status}`,
   );
-  verifyBreadcrumbs(requestUrl.pathname, response.body);
+  verifyBreadcrumbs(expectedPath, response.body);
 
   const canonicals = metadataValues(response.body, (attributes) =>
     attributes.rel?.split(/\s+/).includes("canonical"),
@@ -607,7 +611,6 @@ async function verifyRoute(route, sitemapUrls) {
   assert.equal(canonicals[0], openGraphUrls[0], `${route}: canonical and og:url must match`);
 
   const canonical = new URL(canonicals[0]);
-  const expectedPath = requestUrl.pathname === "/" ? "/" : requestUrl.pathname.replace(/\/+$/, "");
   assert.equal(canonical.origin, PRODUCTION_ORIGIN, `${route}: canonical has the wrong host`);
   assert.equal(canonical.search, "", `${route}: canonical must not contain a query string`);
   assert.equal(canonical.hash, "", `${route}: canonical must not contain a fragment`);
@@ -618,7 +621,7 @@ async function verifyRoute(route, sitemapUrls) {
     `${route}: canonical is missing from the sitemap`,
   );
 
-  verifyStructuredData(requestUrl.pathname, response.body);
+  verifyStructuredData(expectedPath, response.body);
   const onPage = verifyOnPageSeo(route, response.body);
 
   console.log(
@@ -633,8 +636,14 @@ async function verifyInvalidRoute(route, sitemapUrls) {
   const canonicals = metadataValues(response.body, (attributes) =>
     attributes.rel?.split(/\s+/).includes("canonical"),
   );
+  const googlebot = metadataValues(response.body, (attributes) => attributes.name === "googlebot");
   assert.equal(response.status, 404, `${route}: expected HTTP 404`);
   assert.deepEqual(robots, ["noindex, follow"], `${route}: expected one noindex directive`);
+  assert.deepEqual(
+    googlebot,
+    ["noindex, follow"],
+    `${route}: expected one matching Googlebot noindex directive`,
+  );
   assert.equal(canonicals.length, 0, `${route}: 404 must not claim a canonical URL`);
   assert.equal(
     sitemapUrls.has(`${PRODUCTION_ORIGIN}${route}`),
@@ -646,10 +655,41 @@ async function verifyInvalidRoute(route, sitemapUrls) {
   );
 }
 
+async function verifyTrailingSlashRoute(route, sitemapUrls) {
+  const response = await request(route);
+  assert.ok(
+    [301, 307, 308].includes(response.status),
+    `${route}: expected a permanent or method-preserving canonical redirect`,
+  );
+  const expectedPath = route.replace(/\/+$/, "") || "/";
+  const location = new URL(response.headers.location ?? "", LOCAL_ORIGIN);
+  assert.equal(location.origin, LOCAL_ORIGIN, `${route}: redirect must stay on the same origin`);
+  assert.equal(location.pathname, expectedPath, `${route}: redirect target is not canonical`);
+  assert.equal(location.search, "", `${route}: redirect target contains a query string`);
+  assert.equal(location.hash, "", `${route}: redirect target contains a fragment`);
+  await verifyRoute(expectedPath, sitemapUrls);
+  console.log(
+    `NORMALIZATION | ${route} | HTTP ${response.status} | target=${expectedPath} | expected=single-hop canonical redirect | PASS`,
+  );
+}
+
 async function loadPolicy() {
-  const [sitemap, robots] = await Promise.all([request("/sitemap.xml"), request("/robots.txt")]);
+  const [sitemap, robots, llms] = await Promise.all([
+    request("/sitemap.xml"),
+    request("/robots.txt"),
+    request("/llms.txt"),
+  ]);
   assert.equal(sitemap.status, 200, "sitemap: expected HTTP 200");
-  assert.match(sitemap.body, /<urlset\b/, "sitemap: missing urlset");
+  assert.match(
+    sitemap.headers["content-type"] ?? "",
+    /(?:application|text)\/xml/i,
+    "sitemap: expected an XML content type",
+  );
+  assert.match(
+    sitemap.body,
+    /<urlset\b[^>]*xmlns=["']http:\/\/www\.sitemaps\.org\/schemas\/sitemap\/0\.9["']/,
+    "sitemap: missing the standard sitemap namespace",
+  );
   const urls = [...sitemap.body.matchAll(/<loc>(.*?)<\/loc>/g)].map((match) => match[1]);
   assert.equal(new Set(urls).size, urls.length, "sitemap: duplicate URL");
   for (const value of urls) {
@@ -663,6 +703,11 @@ async function loadPolicy() {
     );
   }
   assert.equal(robots.status, 200, "robots.txt: expected HTTP 200");
+  assert.match(
+    robots.headers["content-type"] ?? "",
+    /^text\/plain\b/i,
+    "robots.txt: expected a text/plain content type",
+  );
   assert.match(robots.body, /User-agent:\s*\*/i, "robots.txt: missing general user agent");
   assert.match(robots.body, /Allow:\s*\//i, "robots.txt: indexable pages are not allowed");
   assert.match(
@@ -670,6 +715,26 @@ async function loadPolicy() {
     new RegExp(`Sitemap:\\s*${PRODUCTION_ORIGIN.replaceAll(".", "\\.")}\\/sitemap\\.xml`, "i"),
     "robots.txt: sitemap declaration is missing or incorrect",
   );
+  assert.equal(
+    [...robots.body.matchAll(/^\s*Sitemap\s*:/gim)].length,
+    1,
+    "robots.txt: expected exactly one sitemap declaration",
+  );
+  assert.doesNotMatch(
+    robots.body,
+    /^\s*Disallow\s*:\s*\/(?:assets|_build|build|src|public)(?:\/|\s|$)/gim,
+    "robots.txt: rendering assets must not be blocked",
+  );
+  assert.equal(llms.status, 200, "llms.txt: expected HTTP 200");
+  assert.match(llms.body, new RegExp(PRODUCTION_ORIGIN), "llms.txt: production origin is missing");
+  assert.doesNotMatch(llms.body, /https:\/\/hestiva\.co\.za/, "llms.txt: non-www origin found");
+  for (const match of llms.body.matchAll(/\[[^\]]+\]\((\/[^)#?]*)(?:[?#][^)]*)?\)/g)) {
+    const href = new URL(match[1], PRODUCTION_ORIGIN).href;
+    assert.ok(
+      urls.includes(href) || href === `${PRODUCTION_ORIGIN}/sitemap.xml`,
+      `llms.txt: link is not an indexable route: ${match[1]}`,
+    );
+  }
   console.log(
     `NON_HTML_TECHNICAL | /robots.txt | HTTP 200 | robots=n/a | canonical=n/a | sitemap=no | expected=crawl policy | PASS`,
   );
@@ -705,7 +770,7 @@ try {
   const contextualLinksByRoute = new Map();
   const discoveredTargets = new Map();
   const onPageResults = [];
-  for (const route of [...routes, ...QUERY_CASES]) {
+  for (const route of routes) {
     const result = await verifyRoute(route, sitemapUrls);
     if (!route.includes("?")) {
       onPageResults.push({ route, ...result.onPage });
@@ -722,6 +787,12 @@ try {
           inboundLinks.set(link, inboundLinks.get(link) + 1);
       }
     }
+  }
+  for (const route of QUERY_CASES) {
+    await verifyRoute(route, sitemapUrls);
+  }
+  for (const route of TRAILING_SLASH_CASES) {
+    await verifyTrailingSlashRoute(route, sitemapUrls);
   }
   for (const [path, href] of discoveredTargets) {
     assert.ok(

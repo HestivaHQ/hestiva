@@ -8,7 +8,7 @@ Hestiva provides residential cleaning services for homes and apartments in Johan
 
 - [Home](/): Hestiva overview, services and enquiry options.
 - [Services](/services): Residential cleaning services.
-- [Areas](/areas): Current service-area information.
+- [Locations](/locations): Current service-area information.
 - [About](/about): Information about Hestiva.
 - [Contact](/contact): Contact details and enquiry options.
 - [Request a Quote](/quote): Residential cleaning quote request form.
@@ -16,6 +16,6 @@ Hestiva provides residential cleaning services for homes and apartments in Johan
 
 ## Contact
 
-- Website: https://hestiva.co.za
+- Website: https://www.hestiva.co.za
 - Quote enquiries: quotes@hestiva.co.za
 - General enquiries: info@hestiva.co.za

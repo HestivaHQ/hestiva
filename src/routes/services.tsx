@@ -1,5 +1,7 @@
 import { createFileRoute, Link, Outlet, useRouterState } from "@tanstack/react-router";
-import { Check, Sparkles } from "lucide-react";
+import { Check } from "lucide-react";
+import { AddOnCarousel } from "@/components/AddOnCarousel";
+import { ServiceImage } from "@/components/ServiceImage";
 import { Footer } from "@/components/Footer";
 import { Navbar } from "@/components/Navbar";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
@@ -10,6 +12,7 @@ import { SITE_NAME } from "@/lib/site";
 import { createBreadcrumbList, createPageGraph, schemaScripts } from "@/lib/structured-data";
 
 type CleaningService = {
+  slug: string;
   title: string;
   introduction: string;
   included: string[];
@@ -18,6 +21,7 @@ type CleaningService = {
 
 const services: CleaningService[] = [
   {
+    slug: "regular-home-cleaning",
     title: "Regular Home Cleaning",
     introduction:
       "A considered weekly or fortnightly clean that keeps your home feeling calm, cared for and ready to enjoy.",
@@ -33,6 +37,7 @@ const services: CleaningService[] = [
       "We shape each recurring visit around your priorities, so your home receives reliable care without disrupting your routine.",
   },
   {
+    slug: "deep-cleaning",
     title: "Deep Cleaning",
     introduction:
       "A detailed top-to-bottom refresh for homes that need more time, attention and a beautifully thorough finish.",
@@ -48,6 +53,7 @@ const services: CleaningService[] = [
       "Ideal as a seasonal reset or before beginning regular visits, this service brings a renewed sense of ease to every room.",
   },
   {
+    slug: "move-in-cleaning",
     title: "Move-In Cleaning",
     introduction:
       "Begin life in your new home with a clean, welcoming canvas prepared before your belongings are unpacked.",
@@ -63,6 +69,7 @@ const services: CleaningService[] = [
       "We carefully attend to empty spaces so that settling in feels simpler, fresher and distinctly more comfortable.",
   },
   {
+    slug: "move-out-cleaning",
     title: "Move-Out Cleaning",
     introduction:
       "A comprehensive final clean designed to leave your previous home polished, presentable and ready for its next chapter.",
@@ -78,6 +85,7 @@ const services: CleaningService[] = [
       "With the cleaning thoughtfully handled, you can focus your attention on the move and what comes next.",
   },
   {
+    slug: "apartment-cleaning",
     title: "Apartment Cleaning",
     introduction:
       "Efficient, detail-led care created for apartment living, from compact studios to generous multi-bedroom spaces.",
@@ -93,6 +101,7 @@ const services: CleaningService[] = [
       "Our approach makes the most of every visit, leaving smaller spaces feeling open, orderly and wonderfully fresh.",
   },
   {
+    slug: "kitchen-cleaning",
     title: "Kitchen Cleaning",
     introduction:
       "Focused attention for the heart of your home, with careful cleaning of the surfaces you use every day.",
@@ -108,6 +117,7 @@ const services: CleaningService[] = [
       "The result is a bright, hygienic kitchen that feels inviting for weekday meals, weekend gatherings and everything between.",
   },
   {
+    slug: "bathroom-sanitisation",
     title: "Bathroom Sanitisation",
     introduction:
       "A meticulous clean that brings freshness, shine and a reassuring sense of hygiene to your bathroom.",
@@ -123,6 +133,7 @@ const services: CleaningService[] = [
       "We pay attention to high-touch details and visible finishes, creating a space that feels serene and cared for.",
   },
   {
+    slug: "bedroom-cleaning",
     title: "Bedroom Cleaning",
     introduction:
       "Gentle, precise care for restful rooms, helping each bedroom feel peaceful, ordered and comfortable.",
@@ -138,6 +149,7 @@ const services: CleaningService[] = [
       "Tell us how you prefer your space arranged and we will finish it with quiet attention to the details that matter.",
   },
   {
+    slug: "living-area-cleaning",
     title: "Living Area Cleaning",
     introduction:
       "Thoughtful cleaning for the shared spaces where your household relaxes, connects and welcomes guests.",
@@ -153,6 +165,7 @@ const services: CleaningService[] = [
       "We leave your living areas feeling composed and comfortable, while respecting the way your family uses each space.",
   },
   {
+    slug: "interior-window-cleaning",
     title: "Interior Window Cleaning",
     introduction:
       "A careful interior service that clears everyday marks and helps natural light shine through your home.",
@@ -168,6 +181,7 @@ const services: CleaningService[] = [
       "Available for safely reachable windows, this finishing touch gives rooms a brighter, more polished appearance.",
   },
   {
+    slug: "laundry-folding",
     title: "Laundry Folding",
     introduction:
       "A practical helping hand that turns clean, dry laundry into neat, organised stacks ready to be put away.",
@@ -183,6 +197,7 @@ const services: CleaningService[] = [
       "Add folding to your cleaning visit and reclaim valuable time while keeping wardrobes and linen cupboards beautifully ordered.",
   },
   {
+    slug: "eco-conscious-cleaning",
     title: "Eco-Friendly Cleaning",
     introduction:
       "A mindful option for households that prefer considered product choices without compromising on attentive care.",
@@ -198,6 +213,7 @@ const services: CleaningService[] = [
       "Share your household preferences when requesting a quote, and we will discuss an approach suited to your home.",
   },
   {
+    slug: "cleaning-add-ons",
     title: "Add-on Services",
     introduction:
       "Flexible extras let you personalise a visit when particular areas of your home need a little more attention.",
@@ -213,6 +229,10 @@ const services: CleaningService[] = [
       "Choose add-ons when requesting your quote and we will allow the right amount of time for a beautifully finished visit.",
   },
 ];
+
+const serviceOverviewBySlug = new Map(services.map((service) => [service.slug, service]));
+
+const overviewServicePages = servicePages.filter((service) => service.image);
 
 const breadcrumbs = serviceBreadcrumbs();
 
@@ -294,30 +314,19 @@ function ServicesOverview() {
             </div>
 
             <div className="space-y-16 md:space-y-24">
-              {servicePages.map((canonicalService, index) => {
-                const service = services[index];
+              {overviewServicePages.map((canonicalService, index) => {
+                const service = serviceOverviewBySlug.get(canonicalService.slug);
+                if (!service || !canonicalService.image) return null;
                 const imageFirst = index % 2 === 0;
                 return (
                   <article
                     key={service.title}
                     className="grid items-stretch gap-8 lg:grid-cols-2 lg:gap-14"
                   >
-                    <div
-                      role="img"
-                      aria-label={`${service.title} image placeholder`}
-                      className={`relative min-h-72 overflow-hidden rounded-2xl border border-[#C9A45B]/30 bg-[#EFE4D2] shadow-[0_18px_50px_rgba(70,42,33,0.08)] lg:min-h-[31rem] ${imageFirst ? "lg:order-1" : "lg:order-2"}`}
-                    >
-                      <div
-                        aria-hidden="true"
-                        className="absolute inset-6 rounded-xl border border-white/70"
-                      />
-                      <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 text-[#8A6729]">
-                        <Sparkles aria-hidden="true" className="h-8 w-8" strokeWidth={1.25} />
-                        <span className="text-xs font-semibold uppercase tracking-[0.24em]">
-                          Image placeholder
-                        </span>
-                      </div>
-                    </div>
+                    <ServiceImage
+                      image={canonicalService.image}
+                      className={`block aspect-[3/2] min-h-72 overflow-hidden rounded-2xl border border-[#C9A45B]/30 bg-[#EFE4D2] shadow-[0_18px_50px_rgba(70,42,33,0.08)] lg:min-h-[31rem] ${imageFirst ? "lg:order-1" : "lg:order-2"}`}
+                    />
 
                     <div
                       className={`flex flex-col justify-center rounded-2xl border border-[#E6D9C8] bg-white p-7 shadow-[0_18px_50px_rgba(70,42,33,0.06)] sm:p-10 lg:p-12 ${imageFirst ? "lg:order-2" : "lg:order-1"}`}
@@ -355,6 +364,9 @@ function ServicesOverview() {
                   </article>
                 );
               })}
+            </div>
+            <div className="mt-20 md:mt-28">
+              <AddOnCarousel />
             </div>
           </div>
         </section>

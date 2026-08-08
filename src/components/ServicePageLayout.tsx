@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { ArrowLeft, CheckCircle2, MapPin, MessageCircle, Phone } from "lucide-react";
 import { Navbar } from "@/components/Navbar";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
+import { ServiceImage } from "@/components/ServiceImage";
 import { serviceBreadcrumbs } from "@/lib/breadcrumbs";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -88,31 +89,40 @@ export function ServicePageLayout({ service }: { service: ServicePage }) {
               Back to all services
             </Link>
 
-            <div className="max-w-3xl">
-              <span className="text-xs uppercase tracking-[0.3em] text-primary font-semibold">
-                Hestiva Residential Cleaning
-              </span>
-              <h1 className="text-4xl md:text-6xl font-extrabold mt-4 text-foreground leading-tight">
-                {service.title}
-              </h1>
-              <p className="text-lg text-muted-foreground mt-6 leading-relaxed">
-                {service.heroDescription}
-              </p>
-              <div className="mt-8 flex flex-col sm:flex-row gap-4">
-                <Button variant="hero" size="lg" asChild>
-                  <Link to="/quote">Request a Quote</Link>
-                </Button>
-                <Button variant="outline" size="lg" asChild>
-                  <a href={whatsappLink} target="_blank" rel="noopener noreferrer">
-                    <MessageCircle className="w-4 h-4" /> WhatsApp Hestiva
-                  </a>
-                </Button>
-                <Button variant="outline" size="lg" asChild>
-                  <a href={`tel:${PHONE_NUMBER}`} aria-label="Call Hestiva">
-                    <Phone className="w-4 h-4" /> Call Us
-                  </a>
-                </Button>
+            <div className="grid items-center gap-10 lg:grid-cols-2">
+              <div>
+                <span className="text-xs uppercase tracking-[0.3em] text-primary font-semibold">
+                  Hestiva Residential Cleaning
+                </span>
+                <h1 className="text-4xl md:text-6xl font-extrabold mt-4 text-foreground leading-tight">
+                  {service.title}
+                </h1>
+                <p className="text-lg text-muted-foreground mt-6 leading-relaxed">
+                  {service.heroDescription}
+                </p>
+                <div className="mt-8 flex flex-col sm:flex-row gap-4">
+                  <Button variant="hero" size="lg" asChild>
+                    <Link to="/quote">Request a Quote</Link>
+                  </Button>
+                  <Button variant="outline" size="lg" asChild>
+                    <a href={whatsappLink} target="_blank" rel="noopener noreferrer">
+                      <MessageCircle className="w-4 h-4" /> WhatsApp Hestiva
+                    </a>
+                  </Button>
+                  <Button variant="outline" size="lg" asChild>
+                    <a href={`tel:${PHONE_NUMBER}`} aria-label="Call Hestiva">
+                      <Phone className="w-4 h-4" /> Call Us
+                    </a>
+                  </Button>
+                </div>
               </div>
+              {service.image && (
+                <ServiceImage
+                  image={service.image}
+                  eager
+                  className="block aspect-[3/2] overflow-hidden rounded-xl border border-border bg-card shadow-lg"
+                />
+              )}
             </div>
           </div>
         </section>

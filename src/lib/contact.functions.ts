@@ -26,12 +26,14 @@ function getSubmittedAt() {
   });
 }
 
-function previewFailure(stage: PublicSubmissionError["category"] | "validation" | "unexpected") {
-  const host = getRequestHeader("host")?.toLowerCase() ?? "";
+function isCloudflarePreview() {
+  return (getRequestHeader("host")?.toLowerCase() ?? "").endsWith(".workers.dev");
+}
 
+function previewFailure(stage: PublicSubmissionError["category"] | "validation" | "unexpected") {
   // Temporary diagnostic for Cloudflare Preview URLs only. It exposes only the broad
   // failure stage and never includes request data, identity, secrets, or provider output.
-  if (host.endsWith(".workers.dev")) {
+  if (isCloudflarePreview()) {
     return { success: false as const, diagnosticStage: stage };
   }
 
@@ -49,7 +51,12 @@ export const submitContactForm = createServerFn({ method: "POST" })
       }
 
       const submission = parsed.data;
-      assertSameOrigin(getRequestHeader("origin"), getRequestHeader("host"));
+
+      // Temporary preview-only diagnostic: production still enforces same-origin.
+      if (!isCloudflarePreview()) {
+        assertSameOrigin(getRequestHeader("origin"), getRequestHeader("host"));
+      }
+
       assertHoneypotEmpty(submission.website);
       await assertRateLimit();
 

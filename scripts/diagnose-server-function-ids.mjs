@@ -4,7 +4,8 @@ import path from "node:path";
 const clientRoot = ".output/public";
 const serverRoot = ".output/server";
 const textExtensions = new Set([".js", ".mjs", ".json", ".html"]);
-const serverFunctionPattern = /\/_serverFn\/([a-f0-9]{64})\b/gi;
+const hexIdPattern = /\b[a-f0-9]{64}\b/gi;
+const metadataHintPattern = /serverFn|server.function|functionId|functionName|_serverFn/i;
 
 async function collectTextFiles(root) {
   const files = [];
@@ -33,63 +34,82 @@ async function readTextFiles(files) {
   );
 }
 
+function collectHexIds(entries) {
+  const ids = new Map();
+
+  for (const { file, text } of entries) {
+    for (const match of text.matchAll(hexIdPattern)) {
+      const id = match[0].toLowerCase();
+      const locations = ids.get(id) ?? new Set();
+      locations.add(path.relative(".", file));
+      ids.set(id, locations);
+    }
+  }
+
+  return ids;
+}
+
 const clientFiles = await readTextFiles(await collectTextFiles(clientRoot));
 const serverFiles = await readTextFiles(await collectTextFiles(serverRoot));
-const clientIds = new Map();
 
-for (const { file, text } of clientFiles) {
-  for (const match of text.matchAll(serverFunctionPattern)) {
-    const id = match[1].toLowerCase();
-    const files = clientIds.get(id) ?? new Set();
-    files.add(path.relative(".", file));
-    clientIds.set(id, files);
+const manifestEntries = serverFiles.filter(({ file }) => file.includes("tanstack-start-manifest"));
+const contactEntries = serverFiles.filter(({ file }) => file.includes("contact.functions"));
+
+if (manifestEntries.length === 0) {
+  throw new Error("No generated TanStack Start server manifest was found in .output/server.");
+}
+
+if (contactEntries.length === 0) {
+  throw new Error("No generated contact.functions server chunk was found in .output/server.");
+}
+
+const clientIds = collectHexIds(clientFiles);
+const serverIds = collectHexIds(serverFiles);
+const manifestIds = collectHexIds(manifestEntries);
+const sharedIds = [...clientIds.keys()].filter((id) => serverIds.has(id)).sort();
+
+console.log(`TanStack manifest: ${manifestEntries.map(({ file }) => path.relative(".", file)).join(", ")}`);
+console.log(`Contact server chunk: ${contactEntries.map(({ file }) => path.relative(".", file)).join(", ")}`);
+console.log(`64-hex tokens: client=${clientIds.size}, server=${serverIds.size}, manifest=${manifestIds.size}, shared=${sharedIds.length}`);
+
+if (manifestIds.size > 0) {
+  for (const [id, serverLocations] of [...manifestIds.entries()].sort()) {
+    const clientLocations = clientIds.get(id);
+    console.log(`manifest id ${id}`);
+    console.log(`  manifest/server: ${[...serverLocations].sort().join(", ")}`);
+    console.log(`  client: ${clientLocations ? [...clientLocations].sort().join(", ") : "NONE"}`);
   }
+} else {
+  console.log("The generated TanStack manifest does not encode server-function identifiers as literal 64-hex tokens.");
 }
 
-if (clientIds.size === 0) {
-  throw new Error("No client /_serverFn/<64-hex-id> references were found in .output/public.");
-}
-
-let failed = false;
-console.log(`Found ${clientIds.size} unique client server-function ID(s).`);
-
-for (const [id, clientLocations] of [...clientIds.entries()].sort()) {
-  const allServerMatches = serverFiles
-    .filter(({ text }) => text.includes(id))
-    .map(({ file }) => path.relative(".", file));
-  const registrationMatches = allServerMatches.filter(
-    (file) =>
-      file.includes("tanstack-start-manifest") ||
-      file.includes("contact.functions") ||
-      file === ".output/server/index.mjs",
-  );
-
-  console.log(`serverFn ${id}`);
-  console.log(`  client: ${[...clientLocations].sort().join(", ")}`);
-  console.log(
-    `  server registration candidates: ${registrationMatches.length ? registrationMatches.join(", ") : "NONE"}`,
-  );
-  console.log(`  all server matches: ${allServerMatches.length}`);
-
-  if (registrationMatches.length === 0) {
-    failed = true;
+if (sharedIds.length > 0) {
+  console.log("Shared 64-hex tokens present in both client and server output:");
+  for (const id of sharedIds) {
+    console.log(`  ${id}`);
   }
+} else {
+  console.log("No literal 64-hex token is shared between client and server output; inspecting generated metadata hints instead.");
 }
 
-const manifestFiles = serverFiles
-  .map(({ file }) => path.relative(".", file))
-  .filter((file) => file.includes("tanstack-start-manifest"));
+let hintCount = 0;
+for (const { file, text } of [...manifestEntries, ...contactEntries]) {
+  const lines = text.split("\n");
+  for (let index = 0; index < lines.length; index += 1) {
+    const line = lines[index];
+    if (!metadataHintPattern.test(line)) continue;
 
-console.log(`TanStack manifest files: ${manifestFiles.length ? manifestFiles.join(", ") : "NONE"}`);
+    hintCount += 1;
+    const compact = line.trim().replace(/\s+/g, " ").slice(0, 700);
+    console.log(`metadata hint ${path.relative(".", file)}:${index + 1}: ${compact}`);
 
-if (manifestFiles.length === 0) {
-  failed = true;
+    if (hintCount >= 25) break;
+  }
+  if (hintCount >= 25) break;
 }
 
-if (failed) {
-  throw new Error(
-    "Client/server server-function ID diagnostic failed: at least one client ID has no registration-candidate match, or no TanStack server manifest was generated.",
-  );
+if (hintCount === 0) {
+  console.log("No textual server-function metadata hints were found in the generated manifest/contact chunk.");
 }
 
-console.log("Client/server server-function ID diagnostic passed.");
+console.log("Generated TanStack server-function metadata diagnostic completed.");

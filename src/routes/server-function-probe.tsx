@@ -2,7 +2,7 @@ import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { runServerFunctionProbe } from "@/lib/server-function-probe.functions";
 
-export const Route = createFileRoute("/server-function-probe")({
+export const Route = createFileRoute("/server-function-probe" as never)({
   component: ServerFunctionProbePage,
 });
 

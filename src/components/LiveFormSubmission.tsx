@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { submitContactForm } from "@/lib/contact.functions";
+import { isSuccessfulSubmissionResult } from "@/lib/submission-result";
 
 const quoteValues: Record<string, string> = {};
 const quoteAddons = new Set<string>();
@@ -95,7 +96,7 @@ async function sendQuoteForm(button: HTMLButtonElement) {
 
   setButtonState(button, "Sending…", true);
   try {
-    await submitContactForm({
+    const result = await submitContactForm({
       data: {
         name,
         phone,
@@ -112,10 +113,11 @@ async function sendQuoteForm(button: HTMLButtonElement) {
         website: "",
       },
     });
+    if (!isSuccessfulSubmissionResult(result)) throw new Error("Submission was not acknowledged");
     setButtonState(button, "Request Sent", true);
     window.alert("Your request has been sent successfully. A confirmation email is on its way.");
-  } catch (error) {
-    console.error("Quote submission failed", error);
+  } catch {
+    console.error("Quote submission failed");
     setButtonState(button, button.dataset.originalText || "Send Request", false);
     window.alert("We could not send your request. Please try again or email quotes@hestiva.co.za.");
   }
@@ -126,7 +128,7 @@ async function sendContactForm(form: HTMLFormElement, button: HTMLButtonElement)
   const data = new FormData(form);
   setButtonState(button, "Sending…", true);
   try {
-    await submitContactForm({
+    const result = await submitContactForm({
       data: {
         name: String(data.get("fullName") || ""),
         phone: String(data.get("mobile") || ""),
@@ -143,11 +145,12 @@ async function sendContactForm(form: HTMLFormElement, button: HTMLButtonElement)
         website: String(data.get("website") || ""),
       },
     });
+    if (!isSuccessfulSubmissionResult(result)) throw new Error("Submission was not acknowledged");
     setButtonState(button, "Request Sent", true);
     form.reset();
     window.alert("Your request has been sent successfully.");
-  } catch (error) {
-    console.error("Contact submission failed", error);
+  } catch {
+    console.error("Contact submission failed");
     setButtonState(button, button.dataset.originalText || "Send Request", false);
     window.alert("We could not send your request. Please try again or email quotes@hestiva.co.za.");
   }

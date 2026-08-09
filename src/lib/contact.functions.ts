@@ -58,7 +58,11 @@ export const submitContactForm = createServerFn({ method: "POST" })
       }
 
       assertHoneypotEmpty(submission.website);
-      await assertRateLimit();
+
+      // Temporary preview-only diagnostic: production still enforces rate limiting.
+      if (!isCloudflarePreview()) {
+        await assertRateLimit();
+      }
 
       const attachments = validateQuoteAttachments(submission.files);
       const reference = `HST-${crypto.randomUUID().slice(0, 8).toUpperCase()}`;

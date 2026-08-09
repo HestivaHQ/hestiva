@@ -1,0 +1,160 @@
+name: Hestiva Miniflare Remediation Diagnostic
+
+on:
+  workflow_dispatch:
+
+# Read-only diagnostic: published npm metadata is inspected without changing dependencies.
+permissions:
+  contents: read
+
+jobs:
+  inspect-published-metadata:
+    name: Find the first compatible fixed Miniflare release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Inspect authoritative npm package metadata
+        env:
+          NODE_AUTH_TOKEN: ""
+        run: |
+          set -euo pipefail
+          helper_dir="$(mktemp -d)"
+          trap 'rm -rf "$helper_dir"' EXIT
+
+          # Keep the temporary semver helper and npm's lockfile outside the checkout.
+          npm install --prefix "$helper_dir" --no-audit --no-fund --ignore-scripts --save-exact semver@7
+          NODE_PATH="$helper_dir/node_modules" node <<'NODE'
+          const fs = require('node:fs');
+          const semver = require('semver');
+
+          const registrySource = 'https://registry.npmjs.org/miniflare';
+          const envRunnerRange = '^4.20260515.0';
+          const currentMiniflare = '4.20260730.0';
+          const fixedUndiciRange = '>=7.29.0';
+
+          function undiciIsFixed(spec) {
+            if (typeof spec !== 'string' || !semver.validRange(spec)) {
+              throw new Error(`Cannot reliably interpret Undici dependency range: ${JSON.stringify(spec)}`);
+            }
+            const minimum = semver.minVersion(spec);
+            return minimum !== null && semver.gte(minimum, '7.29.0');
+          }
+
+          (async () => {
+            const response = await fetch(registrySource, {
+              headers: { Accept: 'application/vnd.npm.install-v1+json' },
+            });
+            if (!response.ok) {
+              throw new Error(`npm registry request failed: ${response.status} ${response.statusText}`);
+            }
+            const packument = await response.json();
+            if (!packument || typeof packument.versions !== 'object') {
+              throw new Error('npm registry response has no parseable versions metadata');
+            }
+
+            const compatible = Object.keys(packument.versions)
+              .filter((version) => semver.valid(version))
+              .filter((version) => semver.major(version) === 4 && semver.satisfies(version, envRunnerRange))
+              .sort(semver.compare);
+            if (compatible.length === 0) throw new Error('npm metadata contains no compatible Miniflare 4 releases');
+
+            const inspected = compatible.map((version) => {
+              const manifest = packument.versions[version];
+              if (!manifest || typeof manifest !== 'object') throw new Error(`Missing manifest for miniflare@${version}`);
+              const undici = manifest.dependencies?.undici;
+              if (typeof undici !== 'string' || undici.length === 0) {
+                throw new Error(`Published manifest for miniflare@${version} has no declared Undici dependency`);
+              }
+              return { miniflare: version, undici, fixed: undiciIsFixed(undici) };
+            });
+
+            const current = inspected.find(({ miniflare }) => miniflare === currentMiniflare);
+            if (!current) throw new Error(`Current miniflare@${currentMiniflare} is absent from compatible metadata`);
+            const later = inspected.filter(({ miniflare }) => semver.gt(miniflare, currentMiniflare));
+            const firstFixed = later.find(({ fixed }) => fixed) ?? null;
+            const latest = inspected.at(-1);
+            const transitionCandidates = [];
+            if (firstFixed) {
+              const index = inspected.indexOf(firstFixed);
+              for (const candidate of inspected.slice(Math.max(0, index - 1), index + 2)) {
+                transitionCandidates.push(candidate);
+              }
+            } else {
+              transitionCandidates.push(...inspected.slice(-2));
+            }
+
+            const report = {
+              envRunnerRange,
+              currentMiniflare,
+              currentUndici: current.undici,
+              firstFixedMiniflare: firstFixed?.miniflare ?? null,
+              firstFixedUndici: firstFixed?.undici ?? null,
+              latestCompatibleMiniflare: latest.miniflare,
+              latestCompatibleUndici: latest.undici,
+              transitionCandidates,
+              registrySource,
+              fixedReleaseAvailable: firstFixed !== null,
+            };
+            fs.writeFileSync('miniflare-remediation-report.json', `${JSON.stringify(report, null, 2)}\n`);
+
+            console.log(`Current Miniflare: ${currentMiniflare}`);
+            console.log(`Current Undici: ${current.undici}`);
+            console.log(`\nenv-runner accepted range: ${envRunnerRange}`);
+            console.log(`\nFirst compatible fixed Miniflare: ${firstFixed?.miniflare ?? 'NONE FOUND'}`);
+            console.log(`Declared Undici dependency: ${firstFixed?.undici ?? 'N/A'}`);
+            console.log(`\nLatest compatible Miniflare 4: ${latest.miniflare}`);
+            console.log(`Declared Undici dependency: ${latest.undici}`);
+            console.log('\nTransition candidates:');
+            console.table(transitionCandidates);
+          })().catch((error) => {
+            console.error(error);
+            process.exitCode = 1;
+          });
+          NODE
+
+      - name: Validate machine-readable report
+        run: |
+          set -euo pipefail
+          test -s miniflare-remediation-report.json
+          jq -e '
+            .envRunnerRange == "^4.20260515.0" and
+            (.currentMiniflare | type == "string" and length > 0) and
+            (.currentUndici | type == "string" and length > 0) and
+            (.latestCompatibleMiniflare | type == "string" and length > 0) and
+            (.latestCompatibleUndici | type == "string" and length > 0) and
+            (.transitionCandidates | type == "array" and length > 0) and
+            (.registrySource == "https://registry.npmjs.org/miniflare") and
+            (
+              (.fixedReleaseAvailable == true and
+               (.firstFixedMiniflare | type == "string" and length > 0) and
+               (.firstFixedUndici | type == "string" and length > 0)) or
+              (.fixedReleaseAvailable == false and
+               .firstFixedMiniflare == null and .firstFixedUndici == null)
+            )
+          ' miniflare-remediation-report.json >/dev/null
+
+          if jq -e '.fixedReleaseAvailable' miniflare-remediation-report.json >/dev/null; then
+            helper_dir="$(mktemp -d)"
+            trap 'rm -rf "$helper_dir"' EXIT
+            npm install --prefix "$helper_dir" --no-audit --no-fund --ignore-scripts --save-exact semver@7
+            NODE_PATH="$helper_dir/node_modules" node -e '
+              const semver = require("semver");
+              const report = require(process.cwd() + "/miniflare-remediation-report.json");
+              const minimum = semver.minVersion(report.firstFixedUndici);
+              if (!minimum || !semver.gte(minimum, "7.29.0")) process.exit(1);
+            '
+          else
+            echo "No later compatible Miniflare 4 release declaring only Undici >=7.29.0 was found."
+          fi
+
+      - name: Upload remediation metadata report
+        uses: actions/upload-artifact@v4
+        with:
+          name: miniflare-remediation-report
+          path: miniflare-remediation-report.json
+          if-no-files-found: error
+          retention-days: 14

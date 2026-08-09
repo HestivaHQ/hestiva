@@ -26,57 +26,78 @@ function getSubmittedAt() {
   });
 }
 
+function previewFailure(stage: PublicSubmissionError["category"] | "unexpected") {
+  const host = getRequestHeader("host")?.toLowerCase() ?? "";
+
+  // Temporary diagnostic for Cloudflare Preview URLs only. It exposes only the broad
+  // failure stage and never includes request data, identity, secrets, or provider output.
+  if (host.endsWith(".workers.dev")) {
+    return { success: false as const, diagnosticStage: stage };
+  }
+
+  return { success: false as const };
+}
+
 export const submitContactForm = createServerFn({ method: "POST" })
   .inputValidator((data) => contactSchema.parse(data))
   .handler(async ({ data }) => {
-    assertSameOrigin(getRequestHeader("origin"), getRequestHeader("host"));
-    assertHoneypotEmpty(data.website);
-    await assertRateLimit();
-
-    const attachments = validateQuoteAttachments(data.files);
-    const reference = `HST-${crypto.randomUUID().slice(0, 8).toUpperCase()}`;
-    const submittedAt = getSubmittedAt();
-    const attachmentSummary = attachments.length
-      ? attachments.map((attachment) => `- ${attachment.filename}`).join("\n")
-      : "None";
-
-    const emailPackage = buildQuoteEmailPackage({
-      name: data.name,
-      phone: data.phone,
-      email: data.email,
-      service: data.service,
-      jobType: data.jobType,
-      multipleServices: data.multipleServices,
-      otherService: data.otherService,
-      propertyAddress: data.propertyAddress,
-      description: data.description,
-      preferredContact: data.preferredContact,
-      urgency: data.urgency,
-      reference,
-      submittedAt,
-      attachmentSummary,
-    });
-
     try {
-      await Promise.all([
-        sendEmailViaResend({
-          to: "quotes@hestiva.co.za",
-          subject: emailPackage.adminSubject,
-          text: emailPackage.adminText,
-          html: emailPackage.adminHtml,
-          attachments,
-        }),
-        sendEmailViaResend({
-          to: data.email,
-          subject: emailPackage.customerSubject,
-          text: emailPackage.customerText,
-          html: emailPackage.customerHtml,
-        }),
-      ]);
-    } catch (emailError) {
-      console.error({ event: "form_submission_failed", stage: "email_delivery", reference });
-      throw new PublicSubmissionError("delivery");
-    }
+      assertSameOrigin(getRequestHeader("origin"), getRequestHeader("host"));
+      assertHoneypotEmpty(data.website);
+      await assertRateLimit();
 
-    return { success: true };
+      const attachments = validateQuoteAttachments(data.files);
+      const reference = `HST-${crypto.randomUUID().slice(0, 8).toUpperCase()}`;
+      const submittedAt = getSubmittedAt();
+      const attachmentSummary = attachments.length
+        ? attachments.map((attachment) => `- ${attachment.filename}`).join("\n")
+        : "None";
+
+      const emailPackage = buildQuoteEmailPackage({
+        name: data.name,
+        phone: data.phone,
+        email: data.email,
+        service: data.service,
+        jobType: data.jobType,
+        multipleServices: data.multipleServices,
+        otherService: data.otherService,
+        propertyAddress: data.propertyAddress,
+        description: data.description,
+        preferredContact: data.preferredContact,
+        urgency: data.urgency,
+        reference,
+        submittedAt,
+        attachmentSummary,
+      });
+
+      try {
+        await Promise.all([
+          sendEmailViaResend({
+            to: "quotes@hestiva.co.za",
+            subject: emailPackage.adminSubject,
+            text: emailPackage.adminText,
+            html: emailPackage.adminHtml,
+            attachments,
+          }),
+          sendEmailViaResend({
+            to: data.email,
+            subject: emailPackage.customerSubject,
+            text: emailPackage.customerText,
+            html: emailPackage.customerHtml,
+          }),
+        ]);
+      } catch {
+        throw new PublicSubmissionError("delivery");
+      }
+
+      return { success: true as const };
+    } catch (error) {
+      if (error instanceof PublicSubmissionError) {
+        console.error({ event: "form_submission_rejected", stage: error.category });
+        return previewFailure(error.category);
+      }
+
+      console.error({ event: "form_submission_rejected", stage: "unexpected" });
+      return previewFailure("unexpected");
+    }
   });

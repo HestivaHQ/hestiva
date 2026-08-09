@@ -187,6 +187,14 @@ function ContactPage() {
               className="rounded-lg border border-[#C9A45B]/30 bg-[#F8F3E8] p-6 shadow-[0_20px_60px_rgba(70,37,29,0.06)] sm:p-10"
             >
               <div className="grid gap-6 sm:grid-cols-2">
+                <input
+                  name="website"
+                  type="text"
+                  tabIndex={-1}
+                  autoComplete="off"
+                  aria-hidden="true"
+                  className="absolute -left-[10000px] h-px w-px"
+                />
                 <FormField label="Full name" name="fullName" autoComplete="name" />
                 <FormField label="Mobile number" name="mobile" type="tel" autoComplete="tel" />
                 <FormField label="Email address" name="email" type="email" autoComplete="email" />

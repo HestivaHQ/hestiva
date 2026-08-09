@@ -22,7 +22,13 @@ function getResendApiKey(): string {
   return key;
 }
 
-export async function sendEmailViaResend(email: OutboundEmail) {
+const PROVIDER_TIMEOUT_MS = 10_000;
+
+export async function sendEmailViaResend(
+  email: OutboundEmail,
+  fetchImplementation: typeof fetch = fetch,
+  timeoutMs = PROVIDER_TIMEOUT_MS,
+) {
   const emailPayload: Record<string, unknown> = {
     from: "Hestiva Quotes <quotes@hestiva.co.za>",
     reply_to: "quotes@hestiva.co.za",
@@ -41,19 +47,28 @@ export async function sendEmailViaResend(email: OutboundEmail) {
   }
 
   let response: Response;
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), timeoutMs);
 
   try {
-    response = await fetch("https://api.resend.com/emails", {
+    response = await fetchImplementation("https://api.resend.com/emails", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${getResendApiKey()}`,
       },
       body: JSON.stringify(emailPayload),
+      signal: controller.signal,
     });
   } catch (fetchErr) {
-    console.error(`Fetch error sending email to ${email.to}:`, fetchErr);
-    throw new Error(`Network error contacting email provider: ${String(fetchErr)}`);
+    console.error({
+      event: "email_provider_failure",
+      stage: "request",
+      category: "network_or_timeout",
+    });
+    throw new Error("Email provider request failed");
+  } finally {
+    clearTimeout(timeout);
   }
 
   let responseBody = "";
@@ -61,13 +76,21 @@ export async function sendEmailViaResend(email: OutboundEmail) {
   try {
     responseBody = await response.text();
   } catch (textErr) {
-    console.error("Failed to read email provider response body:", textErr);
+    console.error({
+      event: "email_provider_failure",
+      stage: "response",
+      category: "unreadable_body",
+    });
     responseBody = "(unable to read response)";
   }
 
   if (!response.ok) {
-    console.error(`Email provider error for ${email.to}: status=${response.status}, response=${responseBody}`);
-    throw new Error(`Email delivery failed: ${response.status} - ${responseBody}`);
+    console.error({
+      event: "email_provider_failure",
+      stage: "response",
+      statusCategory: `${Math.floor(response.status / 100)}xx`,
+    });
+    throw new Error("Email provider rejected the request");
   }
 
   try {

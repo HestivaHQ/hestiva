@@ -1,5 +1,11 @@
 # Environment baseline
 
+> **Form-security prerequisite:** No Turnstile credential or rate-limit resource is currently
+> declared. Turnstile requires an operator-created widget for production/preview hosts, a public
+> browser site key, and a distinct encrypted Worker secret for server-side Siteverify. Globally
+> consistent rate limiting requires a separately reviewed Durable Object binding and migration.
+> Do not reuse or expose `RESEND_API_KEY` for either purpose.
+
 ## Rules
 
 - Record variable names and roles only. Never place secret values in documentation, issues, build

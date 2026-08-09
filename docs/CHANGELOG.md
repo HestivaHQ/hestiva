@@ -7,6 +7,11 @@ not infer or recreate undocumented historical releases.
 
 ### Documentation
 
+- Hardened public contact/quote submissions with strict bounded server validation, same-origin
+  checks, server-generated references, a supplemental honeypot, an isolate-scoped throttle, a
+  ten-second provider timeout, sanitized failures, privacy-safe logs, and focused tests. Recorded
+  the Durable Object and Turnstile prerequisites without adding infrastructure or keys.
+
 - Recorded the verified `undici@7.28.0` Nitro tooling exposure, exhausted upstream remediation
   routes, operational constraints, non-blocking deployment decision, and temporary accepted-risk
   disposition without describing the vulnerability as resolved.

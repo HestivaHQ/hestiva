@@ -4,6 +4,24 @@ This lightweight log records verified engineering work without reconstructing un
 history. Add newest entries first. Link a pull request/commit when available and describe validation
 without including secrets or customer data.
 
+## 2026-08-09 — Hardened public form submission boundary
+
+**Purpose:** Bound and sanitize the email-generating form path while recording infrastructure
+required for globally reliable abuse prevention.
+
+**Work recorded:**
+
+- replaced the permissive stub with a server-side, isolate-scoped five-per-15-minute throttle based
+  only on Cloudflare's request identity, without logging raw identity data;
+- removed client-selected references and browser timing, added strict bounded schemas, a honeypot
+  signal, same-origin enforcement, server-generated references, and focused tests;
+- added a ten-second Resend timeout plus stable provider-error sanitization and privacy-safe logs;
+- recorded that Durable Object provisioning is required for globally consistent limiting; and
+- assessed Turnstile as justified but deferred activation until dashboard-owned keys exist.
+
+**Scope:** No quotation persistence, security headers, production configuration, database changes,
+credentials, or deployment were introduced.
+
 ## 2026-08-09 — Accepted temporary Undici tooling risk and added upstream watch
 
 **Purpose:** Record the verified, non-runtime Undici exposure while upstream remediation is blocked,

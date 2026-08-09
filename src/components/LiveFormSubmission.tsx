@@ -17,12 +17,14 @@ function rememberVisibleQuoteFields() {
       quoteValues[fieldName(element.id)] = element.value.trim();
     });
 
-  document.querySelectorAll<HTMLInputElement>('#quote-form input[type="checkbox"]').forEach((checkbox) => {
-    const label = checkbox.closest("label")?.querySelector("span")?.textContent?.trim();
-    if (!label || label.startsWith("I consent")) return;
-    if (checkbox.checked) quoteAddons.add(label);
-    else quoteAddons.delete(label);
-  });
+  document
+    .querySelectorAll<HTMLInputElement>('#quote-form input[type="checkbox"]')
+    .forEach((checkbox) => {
+      const label = checkbox.closest("label")?.querySelector("span")?.textContent?.trim();
+      if (!label || label.startsWith("I consent")) return;
+      if (checkbox.checked) quoteAddons.add(label);
+      else quoteAddons.delete(label);
+    });
 }
 
 function setButtonState(button: HTMLButtonElement, text: string, disabled: boolean) {
@@ -106,10 +108,8 @@ async function sendQuoteForm(button: HTMLButtonElement) {
         description,
         preferredContact: quoteValue("contactMethod", "Not specified"),
         urgency: quoteValue("urgency", "Not specified"),
-        quoteReference: "",
         files: [],
         website: "",
-        elapsedMs: 5000,
       },
     });
     setButtonState(button, "Request Sent", true);
@@ -139,10 +139,8 @@ async function sendContactForm(form: HTMLFormElement, button: HTMLButtonElement)
         description: String(data.get("message") || "General website enquiry"),
         preferredContact: String(data.get("preferredContact") || "Not specified"),
         urgency: "Not specified",
-        quoteReference: "",
         files: [],
-        website: "",
-        elapsedMs: 5000,
+        website: String(data.get("website") || ""),
       },
     });
     setButtonState(button, "Request Sent", true);
@@ -162,7 +160,9 @@ export function LiveFormSubmission() {
     };
 
     const onClick = (event: MouseEvent) => {
-      const button = (event.target as HTMLElement | null)?.closest("button") as HTMLButtonElement | null;
+      const button = (event.target as HTMLElement | null)?.closest(
+        "button",
+      ) as HTMLButtonElement | null;
       if (!button) return;
 
       if (window.location.pathname === "/quote") {

@@ -4,6 +4,26 @@ This lightweight log records verified engineering work without reconstructing un
 history. Add newest entries first. Link a pull request/commit when available and describe validation
 without including secrets or customer data.
 
+## 2026-08-09 — Accepted temporary Undici tooling risk and added upstream watch
+
+**Purpose:** Record the verified, non-runtime Undici exposure while upstream remediation is blocked,
+and detect a clean remediation without changing dependencies automatically.
+
+**Work recorded:**
+
+- recorded the five OSV advisories affecting the Nitro tooling path and the fixed Undici floor;
+- recorded that browser, deployed Worker, and emitted Nitro request-runtime output inspection found
+  no affected Undici instance;
+- documented that compatible Miniflare 4, `env-runner`, and Nitro 3 remediation routes were
+  exhausted and accepted **TEMPORARY ACCEPTED TOOLING RISK PENDING UPSTREAM FIX**;
+- added a daily, read-only npm registry metadata watch for a current-Nitro or newer-Nitro-3 clean
+  path, with a 14-day JSON report artifact and an Actions job summary; and
+- required any future dependency change to use a separate reviewed PR and a post-change OSV scan.
+
+**Scope:** No override or dependency change was introduced. No application source, production
+configuration, secrets, deployment workflow, or deployment authority changed. The vulnerability is
+not resolved.
+
 ## 2026-08-09 — Verified Cloudflare production build configuration
 
 **Purpose:** Replace the unresolved clean-checkout build assumption with the operationally verified

@@ -7,6 +7,13 @@ not infer or recreate undocumented historical releases.
 
 ### Documentation
 
+- Recorded the verified `undici@7.28.0` Nitro tooling exposure, exhausted upstream remediation
+  routes, operational constraints, non-blocking deployment decision, and temporary accepted-risk
+  disposition without describing the vulnerability as resolved.
+- Added a daily read-only upstream remediation watch that reports clean current-Nitro and newer
+  Nitro 3 paths from authoritative npm metadata; future remediation remains a separate reviewed PR
+  requiring a post-change OSV scan.
+
 - Recorded the operationally verified Cloudflare clean-checkout production sequence:
   `bun install`, the required `bun run build`, and `npx wrangler deploy`.
 - Documented that omitting the Build command caused Wrangler to fail on the missing

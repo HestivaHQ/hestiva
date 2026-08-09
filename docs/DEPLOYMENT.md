@@ -138,3 +138,40 @@ Wrangler configuration.
 - `npx wrangler versions upload` is the verified version command, not a replacement production
   release pipeline.
 - Recovery actions are in [`RECOVERY_GUIDE.md`](RECOVERY_GUIDE.md).
+
+## Temporary Undici tooling-risk disposition
+
+OSV verified five advisories (one HIGH and four MODERATE) against `undici@7.28.0`; the fixed floor
+is `undici>=7.29.0`. The affected path is:
+
+```text
+nitro@3.0.260603-beta
+  -> env-runner@0.1.16
+  -> miniflare@4.20260730.0
+  -> undici@7.28.0
+```
+
+**Current remediation status: BLOCKED UPSTREAM.** Registry diagnostics found no compatible
+Miniflare 4 release, compatible `env-runner` release, or newer Nitro 3 release that fixes the path.
+A direct Undici override is not adopted because Miniflare 4 pins Undici exactly and compatibility
+with 7.29.0 has not been established.
+
+**Risk treatment: TEMPORARY ACCEPTED TOOLING RISK PENDING UPSTREAM FIX.** The affected instance is
+part of Nitro/`env-runner` local/build Worker-emulation tooling. Build-output inspection found it in
+neither generated browser output nor the generated deployed Cloudflare Worker output (including
+emitted Nitro request-runtime modules). The separate active Cloudflare Vite/Wrangler path resolves
+Miniflare 5 with fixed Undici 7.29.0.
+
+Until remediation is available:
+
+- keep CI/build runners trusted;
+- do not expose local Miniflare/Nitro development tooling to untrusted networks unnecessarily;
+- avoid feeding untrusted input into development/build tooling;
+- continue the established OSV diagnostic after dependency changes;
+- reassess immediately if the vulnerable package appears in generated production output; and
+- reassess immediately when the upstream watch reports a clean fixed path.
+
+Quotation development is **DO NOT BLOCK**. Production deployment is **DO NOT BLOCK based on the
+current verified output exposure**. This temporary acceptance does **not** mean the vulnerability is
+resolved. Remediation requires a separate reviewed PR followed by an OSV scan, while Cloudflare
+native Git integration remains the sole production deployment authority.

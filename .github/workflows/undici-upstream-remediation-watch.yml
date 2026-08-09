@@ -1,0 +1,190 @@
+name: Hestiva Undici Upstream Remediation Watch
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "17 4 * * *"
+
+# Watch only: authoritative npm metadata is read; dependencies and deployments are never changed.
+permissions:
+  contents: read
+
+jobs:
+  watch-upstream:
+    name: Watch for a clean upstream Undici path
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Inspect authoritative npm metadata
+        env:
+          NODE_AUTH_TOKEN: ""
+        run: |
+          set -euo pipefail
+          helper_dir="$(mktemp -d)"
+          trap 'rm -rf "$helper_dir"' EXIT
+          npm install --prefix "$helper_dir" --no-audit --no-fund --ignore-scripts --save-exact semver@7
+          NODE_PATH="$helper_dir/node_modules" node <<'NODE'
+          const fs = require('node:fs');
+          const semver = require('semver');
+
+          const registrySource = 'https://registry.npmjs.org/';
+          const currentPath = {
+            nitro: '3.0.260603-beta', envRunner: '0.1.16',
+            miniflare: '4.20260730.0', undici: '7.28.0',
+          };
+          const currentNitroEnvRunnerRange = '^0.1.9';
+          const fixedUndiciFloor = '7.29.0';
+
+          async function packument(name) {
+            const response = await fetch(new URL(encodeURIComponent(name), registrySource), {
+              headers: { Accept: 'application/json' },
+            });
+            if (!response.ok) throw new Error(`npm registry request for ${name} failed: ${response.status}`);
+            const value = await response.json();
+            if (!value?.versions || !value?.time) throw new Error(`Malformed ${name} packument`);
+            return value;
+          }
+          function manifest(pack, name, version) {
+            const value = pack.versions[version];
+            if (!value || typeof pack.time[version] !== 'string') {
+              throw new Error(`Missing manifest or publication time for ${name}@${version}`);
+            }
+            return value;
+          }
+          function declaration(pkg, dependency) {
+            const dependencyValue = pkg.dependencies?.[dependency];
+            const peerValue = pkg.peerDependencies?.[dependency];
+            if (dependencyValue !== undefined && peerValue !== undefined) {
+              throw new Error(`${pkg.name}@${pkg.version} declares ${dependency} twice`);
+            }
+            const range = dependencyValue ?? peerValue;
+            if (typeof range !== 'string' || !semver.validRange(range)) {
+              throw new Error(`No valid ${dependency} declaration on ${pkg.name}@${pkg.version}`);
+            }
+            return { type: dependencyValue !== undefined ? 'dependency' : 'peerDependency', range };
+          }
+          function newest(pack, name, range) {
+            const versions = Object.keys(pack.versions)
+              .filter((version) => semver.valid(version) && semver.satisfies(version, range))
+              .sort(semver.rcompare);
+            if (!versions.length) throw new Error(`No published ${name} satisfies ${range}`);
+            return versions[0];
+          }
+          function inspectEnvRunner(version, packs) {
+            const env = manifest(packs.envRunner, 'env-runner', version);
+            const miniflareDeclaration = declaration(env, 'miniflare');
+            const miniflareVersion = newest(packs.miniflare, 'miniflare', miniflareDeclaration.range);
+            const miniflare = manifest(packs.miniflare, 'miniflare', miniflareVersion);
+            const undiciDeclaration = declaration(miniflare, 'undici');
+            const minimum = semver.minVersion(undiciDeclaration.range);
+            if (!minimum) throw new Error(`Cannot determine Undici minimum for ${undiciDeclaration.range}`);
+            return {
+              envRunnerVersion: version,
+              envRunnerPublishedAt: packs.envRunner.time[version],
+              miniflareVersion,
+              miniflarePublishedAt: packs.miniflare.time[miniflareVersion],
+              miniflareDeclaration,
+              undiciDeclaration,
+              minimumAdmittedUndici: minimum.version,
+              fixed: semver.gte(minimum, fixedUndiciFloor),
+            };
+          }
+          function inspectNitro(version, packs) {
+            const nitro = manifest(packs.nitro, 'nitro', version);
+            const envRunnerDeclaration = declaration(nitro, 'env-runner');
+            const envRunnerVersion = newest(packs.envRunner, 'env-runner', envRunnerDeclaration.range);
+            return {
+              nitroVersion: version,
+              nitroPublishedAt: packs.nitro.time[version],
+              envRunnerDeclaration,
+              ...inspectEnvRunner(envRunnerVersion, packs),
+            };
+          }
+
+          (async () => {
+            const [nitro, envRunner, miniflare] = await Promise.all(
+              ['nitro', 'env-runner', 'miniflare'].map(packument),
+            );
+            const packs = { nitro, envRunner, miniflare };
+            const currentManifest = manifest(nitro, 'nitro', currentPath.nitro);
+            if (declaration(currentManifest, 'env-runner').range !== currentNitroEnvRunnerRange) {
+              throw new Error('Current Nitro env-runner declaration no longer matches the verified baseline');
+            }
+
+            const currentNitroCandidate = Object.keys(envRunner.versions)
+              .filter((version) => semver.valid(version) && semver.satisfies(version, currentNitroEnvRunnerRange))
+              .sort(semver.compare)
+              .map((version) => inspectEnvRunner(version, packs))
+              .find((candidate) => candidate.fixed) ?? null;
+
+            let newerNitro3Candidate = null;
+            if (!currentNitroCandidate) {
+              newerNitro3Candidate = Object.keys(nitro.versions)
+                .filter((version) => semver.valid(version) && semver.major(version) === 3 && semver.gt(version, currentPath.nitro))
+                .sort(semver.compare)
+                .map((version) => inspectNitro(version, packs))
+                .find((candidate) => candidate.fixed) ?? null;
+            }
+            const report = {
+              currentPath,
+              fixedUndiciFloor,
+              currentNitroRemediationAvailable: currentNitroCandidate !== null,
+              currentNitroCandidate,
+              newerNitro3RemediationAvailable: newerNitro3Candidate !== null,
+              newerNitro3Candidate,
+              registrySource,
+              generatedAt: new Date().toISOString(),
+            };
+            fs.writeFileSync('undici-upstream-remediation-report.json', `${JSON.stringify(report, null, 2)}\n`);
+            console.log(currentNitroCandidate ? 'CURRENT NITRO CAN NOW BE REMEDIATED' :
+              newerNitro3Candidate ? 'NEW NITRO 3 REMEDIATION AVAILABLE' :
+                'NO CLEAN UPSTREAM REMEDIATION CURRENTLY AVAILABLE');
+          })().catch((error) => { console.error(error); process.exitCode = 1; });
+          NODE
+
+      - name: Validate report and write summary
+        run: |
+          set -euo pipefail
+          jq -e '
+            .currentPath == {"nitro":"3.0.260603-beta","envRunner":"0.1.16","miniflare":"4.20260730.0","undici":"7.28.0"} and
+            .fixedUndiciFloor == "7.29.0" and
+            (.currentNitroRemediationAvailable | type == "boolean") and
+            (.newerNitro3RemediationAvailable | type == "boolean") and
+            .registrySource == "https://registry.npmjs.org/" and
+            (.generatedAt | type == "string" and length > 0)
+          ' undici-upstream-remediation-report.json >/dev/null
+          current="$(jq -r 'if .currentNitroRemediationAvailable then "AVAILABLE" else "NOT AVAILABLE" end' undici-upstream-remediation-report.json)"
+          newer="$(jq -r 'if .newerNitro3RemediationAvailable then "AVAILABLE" else "NOT AVAILABLE" end' undici-upstream-remediation-report.json)"
+          action="$(jq -r 'if .currentNitroRemediationAvailable or .newerNitro3RemediationAvailable then "OPEN TARGETED REMEDIATION PR" else "WAIT FOR UPSTREAM FIX" end' undici-upstream-remediation-report.json)"
+          {
+            echo '## Undici upstream remediation watch'
+            echo
+            echo '**Current vulnerable tooling path:** `nitro@3.0.260603-beta -> env-runner@0.1.16 -> miniflare@4.20260730.0 -> undici@7.28.0`'
+            echo
+            echo '**Current exposure:** Tooling only; absent from verified production output'
+            echo
+            echo "**Current Nitro remediation:** $current"
+            echo
+            echo "**Newer Nitro 3 remediation:** $newer"
+            echo
+            echo "**Recommended action:** $action"
+            echo
+            echo 'Availability does not mean the vulnerability is resolved. Merge a separately reviewed dependency change and verify it with a post-remediation OSV scan.'
+            echo
+            echo '### Candidate metadata'
+            echo '```json'
+            jq '{currentNitroCandidate, newerNitro3Candidate}' undici-upstream-remediation-report.json
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload remediation watch report
+        uses: actions/upload-artifact@v4
+        with:
+          name: undici-upstream-remediation-report
+          path: undici-upstream-remediation-report.json
+          if-no-files-found: error
+          retention-days: 14

@@ -67,8 +67,12 @@ not be described as production. Confirm the branch deployment outcome in Cloudfl
 it for acceptance testing; the repository does not define a stable preview hostname.
 
 The existing `.github/workflows/hestiva-pr-check.yml` runs validation for pull requests targeting
-`main` (and has a legacy push trigger for one named branch). It contains no deployment step and is
-not a production path.
+`main` (and has a legacy push trigger for one named branch). In addition to the existing type,
+targeted lint/format, build, and runtime SEO checks, it enforces the Bun lockfile, checks the PR diff
+for whitespace errors, scans tracked files for likely private credentials without logging their
+values, and validates the generated Worker with Wrangler's non-deploying `--dry-run`. The known
+browser-safe Supabase anonymous/publishable variables are explicitly permitted by the secret scan.
+The workflow contains no deployment step and is not a production path.
 
 ## Wrangler configuration relationship
 

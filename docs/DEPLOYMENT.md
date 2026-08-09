@@ -14,6 +14,8 @@ Do not add a second production deployment pipeline.
 HestivaHQ/hestiva on GitHub
   -> merge/push to main
   -> Cloudflare native Git integration
+  -> bun install
+  -> bun run build
   -> npx wrangler deploy
   -> Cloudflare Worker: hestiva
   -> hestiva.co.za (custom production domain)
@@ -29,10 +31,12 @@ GitHub Actions workflow, owns production deployment.
 | ---------------------------- | ------------------------------ |
 | Repository                   | `HestivaHQ/hestiva`            |
 | Production branch            | `main`                         |
+| Dependency install command   | `bun install`                  |
 | Worker                       | `hestiva`                      |
 | Deploy command               | `npx wrangler deploy`          |
 | Version command              | `npx wrangler versions upload` |
-| Build command                | None                           |
+| Build command                | `bun run build`                |
+| Verified build environment   | Bun 1.2.15; Node.js 24.18.0    |
 | Root directory               | `/`                            |
 | Non-production branch builds | Enabled                        |
 | Build watch paths            | `*`                            |
@@ -92,14 +96,24 @@ Both generated locations are gitignored build artifacts and must not be edited o
 root file remains the human-maintained configuration input; after a repository build, the generated
 file is the immediate Wrangler deployment configuration for that output.
 
-### Production-build uncertainty
+### Verified clean-checkout build sequence
 
-The verified Cloudflare integration has no separate build command and invokes `npx wrangler deploy`.
-Repository evidence proves the generated relationship when `bun run build` is run locally, but does
-not prove, by itself, precisely how Cloudflare's native integration creates or selects generated
-output in a clean production checkout. Do not guess or “fix” either Wrangler file to remove that
-operational uncertainty. Before any future deployment-pipeline change, capture a Cloudflare native
-deployment log and confirm the build/config discovery sequence.
+Cloudflare's native Git integration performs the production sequence from the repository root (`/`):
+
+1. Install dependencies with `bun install`.
+2. Generate the framework build output with the required Build command, `bun run build`.
+3. Deploy the generated Worker with `npx wrangler deploy`.
+
+This sequence was operationally verified in Cloudflare's build environment with Bun 1.2.15 and
+Node.js 24.18.0. A deployment attempted without a Build command failed because Wrangler could not
+find `dist/server/server.js`; Cloudflare reported that the framework build needed to generate the
+entry point. After the Build command was manually set to `bun run build`, the Cloudflare deployment
+completed successfully and the production website remained operational.
+
+The Build command is therefore required. This verified result resolves the earlier uncertainty
+about how a clean production checkout generates the entry point before Wrangler deploys it; it does
+not change Cloudflare native Git integration's authority or justify editing tracked or generated
+Wrangler configuration.
 
 ## Operator guardrails
 

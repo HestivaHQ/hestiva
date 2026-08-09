@@ -8,6 +8,7 @@
     "build": "vite build",
     "build:dev": "vite build --mode development",
     "preview": "vite preview",
+    "test:form-security": "bun test src/lib/form-security.test.ts src/lib/submission-result.test.ts",
     "lint": "eslint .",
     "format": "prettier --write .",
     "verify:environment": "node scripts/validate-environment.mjs",

@@ -70,6 +70,21 @@ the owner of production runtime configuration. Diagnose runtime absence in Cloud
 failures should be investigated as code/build configuration problems rather than “fixed” by copying
 the runtime secret into CI.
 
+### Branch previews
+
+Cloudflare runtime configuration is environment-specific, so the encrypted production
+`RESEND_API_KEY` does not establish that the binding is available to a non-production branch
+preview. A branch preview without its own authorized encrypted Secret will render the site but
+will reject contact and quote delivery. This is an intentional fail-closed behavior: the browser
+must report the generic submission failure and must never claim that email was sent.
+
+An authorized Cloudflare operator must confirm the `RESEND_API_KEY` binding in the affected branch
+preview environment. If email delivery is required for preview acceptance, configure the existing
+authorized credential there as an encrypted Secret and redeploy through the native Git integration.
+Never copy it into source, `wrangler.jsonc`, build logs, or a `VITE_` variable. Privacy-safe Worker
+logs identify rejection stage and category without revealing the credential, IP address, recipient,
+or provider response body.
+
 ## Change checklist
 
 When an application change adds or removes an environment read:

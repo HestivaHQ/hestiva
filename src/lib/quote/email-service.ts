@@ -12,11 +12,18 @@ export type OutboundEmail = {
   attachments?: QuoteAttachment[];
 };
 
+export class EmailServiceError extends Error {
+  constructor(readonly category: "missing_runtime_configuration" | "provider_failure") {
+    super("Email delivery failed");
+    this.name = "EmailServiceError";
+  }
+}
+
 function getResendApiKey(): string {
   const key = process.env.RESEND_API_KEY;
 
   if (!key || key.trim() === "") {
-    throw new Error("Email service not configured");
+    throw new EmailServiceError("missing_runtime_configuration");
   }
 
   return key;
@@ -51,27 +58,17 @@ export async function sendEmailViaResend(email: OutboundEmail) {
       },
       body: JSON.stringify(emailPayload),
     });
-  } catch (fetchErr) {
-    console.error(`Fetch error sending email to ${email.to}:`, fetchErr);
-    throw new Error(`Network error contacting email provider: ${String(fetchErr)}`);
-  }
-
-  let responseBody = "";
-
-  try {
-    responseBody = await response.text();
-  } catch (textErr) {
-    console.error("Failed to read email provider response body:", textErr);
-    responseBody = "(unable to read response)";
+  } catch {
+    throw new EmailServiceError("provider_failure");
   }
 
   if (!response.ok) {
-    console.error(`Email provider error for ${email.to}: status=${response.status}, response=${responseBody}`);
-    throw new Error(`Email delivery failed: ${response.status} - ${responseBody}`);
+    console.error("email_provider_rejected", { status: response.status });
+    throw new EmailServiceError("provider_failure");
   }
 
   try {
-    return JSON.parse(responseBody);
+    return await response.json();
   } catch {
     return { success: true };
   }

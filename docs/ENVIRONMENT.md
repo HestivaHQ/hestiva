@@ -16,7 +16,15 @@
 | `RESEND_API_KEY` | Server-only secret | Authorizes HTTPS calls to Resend for contact/quote delivery | Required when a contact or quote submission sends email; the adapter throws if absent/blank | Cloudflare encrypted Secret in production; an untracked secret mechanism for local email testing | `src/lib/quote/email-service.ts` via `process.env` |
 
 `RESEND_API_KEY` is the only custom environment variable directly read by current application
-source. It must never be prefixed with `VITE_` or exposed to the browser.
+source, through `process.env.RESEND_API_KEY`. It must never be prefixed with `VITE_` or exposed to
+the browser.
+
+The value is runtime-only: the production build does not need it and must not fail when it is
+absent. The server email adapter checks it immediately before a Resend request and rejects missing
+or whitespace-only values with `Email service not configured`. Consequently, ordinary pages,
+static assets, navigation, and form entry continue to work, but contact/quote submission cannot
+deliver either message and returns an email-delivery error. The check deliberately reports only
+the configuration problem, never the credential value.
 
 `import.meta.env.DEV`, read in `src/router.tsx`, is a Vite built-in mode boolean used only to decide
 whether to display error detail. Operators do not configure it as a Hestiva runtime variable.
@@ -47,6 +55,20 @@ the application source or tracked configuration inspected for this baseline.
 `ASSETS` is a Cloudflare static-asset binding, not an environment variable. The generated Wrangler
 configuration binds the built public directory under that name. Current application source does
 not directly read the binding.
+
+## Repository validation
+
+Run `bun run verify:environment` after changing source or environment configuration. The lightweight
+static check enforces the current two source reads, requires the Resend read to remain in its server
+email adapter with missing/blank handling, rejects secret-like `VITE_` names in tracked environment
+configuration, and ensures `keep_vars` remains enabled without placing `RESEND_API_KEY` in tracked
+Wrangler variables. It checks names and structure only; it neither reads nor proves the presence of
+a Cloudflare dashboard Secret.
+
+CI cannot safely validate the production secret's value or presence because GitHub Actions is not
+the owner of production runtime configuration. Diagnose runtime absence in Cloudflare, while build
+failures should be investigated as code/build configuration problems rather than “fixed” by copying
+the runtime secret into CI.
 
 ## Change checklist
 

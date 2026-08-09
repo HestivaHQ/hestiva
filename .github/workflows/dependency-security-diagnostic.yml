@@ -1,0 +1,72 @@
+name: Hestiva Dependency Security Diagnostic
+
+on:
+  workflow_dispatch:
+
+# Diagnostic only: this workflow reads the authoritative Bun lockfile and never deploys.
+permissions:
+  contents: read
+
+jobs:
+  scan-bun-lockfile:
+    name: Measure Bun dependency vulnerabilities (non-blocking findings)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      # OSV-Scanner v2 recognizes Bun's text bun.lock directly. An explicit lockfile
+      # keeps the diagnostic scoped to the committed Bun resolution graph.
+      - name: Scan bun.lock (human-readable diagnostic)
+        id: osv-table
+        continue-on-error: true
+        uses: google/osv-scanner-action/osv-scanner-action@v2
+        with:
+          scan-args: |-
+            --lockfile=bun.lock
+
+      - name: Scan bun.lock (machine-readable diagnostic)
+        id: osv-json
+        continue-on-error: true
+        uses: google/osv-scanner-action/osv-scanner-action@v2
+        with:
+          scan-args: |-
+            --lockfile=bun.lock
+            --format=json
+            --output=osv-results.json
+
+      # OSV-Scanner returns a nonzero status when it finds vulnerabilities. Accept
+      # that measurement baseline only when it also produced a valid report; setup,
+      # parsing, network, and malformed-output failures remain blocking and visible.
+      - name: Validate diagnostic execution
+        env:
+          TABLE_OUTCOME: ${{ steps.osv-table.outcome }}
+          JSON_OUTCOME: ${{ steps.osv-json.outcome }}
+        run: |
+          test -s osv-results.json
+          jq -e 'type == "object" and (.results | type == "array")' osv-results.json >/dev/null
+
+          if [[ "$TABLE_OUTCOME" == "failure" || "$JSON_OUTCOME" == "failure" ]]; then
+            echo "::warning::OSV-Scanner reported vulnerability findings; findings are non-blocking during baseline measurement."
+          fi
+
+          {
+            echo "## Dependency security diagnostic"
+            echo
+            echo "OSV-Scanner inspected the committed \`bun.lock\` directly. No npm lockfile was generated."
+            echo
+            echo "Scanner outcomes: table=\`$TABLE_OUTCOME\`, json=\`$JSON_OUTCOME\`. A failure outcome with a valid report represents non-blocking findings."
+            echo
+            echo "See the human-readable scan log for advisory IDs, packages, versions, severities and fixes; the JSON artifact preserves all available dependency and advisory detail."
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload diagnostic report
+        if: ${{ always() && hashFiles('osv-results.json') != '' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: hestiva-osv-security-report
+          path: osv-results.json
+          if-no-files-found: error
+          retention-days: 14

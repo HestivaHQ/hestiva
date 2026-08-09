@@ -26,7 +26,7 @@ function getSubmittedAt() {
   });
 }
 
-function previewFailure(stage: PublicSubmissionError["category"] | "unexpected") {
+function previewFailure(stage: PublicSubmissionError["category"] | "validation" | "unexpected") {
   const host = getRequestHeader("host")?.toLowerCase() ?? "";
 
   // Temporary diagnostic for Cloudflare Preview URLs only. It exposes only the broad
@@ -39,14 +39,21 @@ function previewFailure(stage: PublicSubmissionError["category"] | "unexpected")
 }
 
 export const submitContactForm = createServerFn({ method: "POST" })
-  .inputValidator((data) => contactSchema.parse(data))
+  .inputValidator((data: unknown) => data)
   .handler(async ({ data }) => {
     try {
+      const parsed = contactSchema.safeParse(data);
+      if (!parsed.success) {
+        console.error({ event: "form_submission_rejected", stage: "validation" });
+        return previewFailure("validation");
+      }
+
+      const submission = parsed.data;
       assertSameOrigin(getRequestHeader("origin"), getRequestHeader("host"));
-      assertHoneypotEmpty(data.website);
+      assertHoneypotEmpty(submission.website);
       await assertRateLimit();
 
-      const attachments = validateQuoteAttachments(data.files);
+      const attachments = validateQuoteAttachments(submission.files);
       const reference = `HST-${crypto.randomUUID().slice(0, 8).toUpperCase()}`;
       const submittedAt = getSubmittedAt();
       const attachmentSummary = attachments.length
@@ -54,17 +61,17 @@ export const submitContactForm = createServerFn({ method: "POST" })
         : "None";
 
       const emailPackage = buildQuoteEmailPackage({
-        name: data.name,
-        phone: data.phone,
-        email: data.email,
-        service: data.service,
-        jobType: data.jobType,
-        multipleServices: data.multipleServices,
-        otherService: data.otherService,
-        propertyAddress: data.propertyAddress,
-        description: data.description,
-        preferredContact: data.preferredContact,
-        urgency: data.urgency,
+        name: submission.name,
+        phone: submission.phone,
+        email: submission.email,
+        service: submission.service,
+        jobType: submission.jobType,
+        multipleServices: submission.multipleServices,
+        otherService: submission.otherService,
+        propertyAddress: submission.propertyAddress,
+        description: submission.description,
+        preferredContact: submission.preferredContact,
+        urgency: submission.urgency,
         reference,
         submittedAt,
         attachmentSummary,
@@ -80,7 +87,7 @@ export const submitContactForm = createServerFn({ method: "POST" })
             attachments,
           }),
           sendEmailViaResend({
-            to: data.email,
+            to: submission.email,
             subject: emailPackage.customerSubject,
             text: emailPackage.customerText,
             html: emailPackage.customerHtml,

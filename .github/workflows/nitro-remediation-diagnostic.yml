@@ -44,7 +44,7 @@ jobs:
           async function getPackument(name) {
             const url = new URL(encodeURIComponent(name), registrySource).href;
             const response = await fetch(url, {
-              headers: { Accept: 'application/vnd.npm.install-v1+json' },
+              headers: { Accept: 'application/json' },
             });
             if (!response.ok) {
               throw new Error(`npm registry request for ${name} failed: ${response.status} ${response.statusText}`);

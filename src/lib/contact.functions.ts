@@ -39,7 +39,7 @@ function previewFailure(stage: PublicSubmissionError["category"] | "validation" 
 }
 
 export const submitContactForm = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => data)
+  .validator((data: unknown) => data)
   .handler(async ({ data }) => {
     try {
       const parsed = contactSchema.safeParse(data);

@@ -49,10 +49,13 @@ jobs:
         run: bunx eslint src/lib/site.ts src/lib/contact.functions.ts src/lib/form-security.ts src/lib/rate-limit.ts src/lib/submission-result.ts src/lib/quote/email-service.ts src/lib/quote/file-validation.ts src/routes/__root.tsx src/routes/contact.tsx src/components/Navbar.tsx src/components/Footer.tsx src/components/HeroSection.tsx src/components/LiveFormSubmission.tsx scripts/validate-environment.mjs
 
       - name: Targeted format check
-        run: bunx prettier --check src/lib/site.ts src/lib/contact.functions.ts src/lib/form-security.ts src/lib/rate-limit.ts src/lib/form-security.test.mjs src/lib/submission-result.ts src/lib/submission-result.test.mjs src/lib/quote/email-service.ts src/lib/quote/file-validation.ts src/routes/__root.tsx src/routes/contact.tsx src/components/Navbar.tsx src/components/Footer.tsx src/components/HeroSection.tsx src/components/LiveFormSubmission.tsx scripts/validate-environment.mjs docs/ARCHITECTURE.md docs/ENVIRONMENT.md docs/DEPLOYMENT.md docs/RECOVERY_GUIDE.md docs/TECHNICAL_WORK_LOG.md docs/CHANGELOG.md
+        run: bunx prettier --check src/lib/site.ts src/lib/contact.functions.ts src/lib/form-security.ts src/lib/rate-limit.ts src/lib/form-security.test.mjs src/lib/submission-result.ts src/lib/submission-result.test.mjs src/lib/quote/email-service.ts src/lib/quote/file-validation.ts src/routes/__root.tsx src/routes/contact.tsx src/components/Navbar.tsx src/components/Footer.tsx src/components/HeroSection.tsx src/components/LiveFormSubmission.tsx scripts/validate-environment.mjs scripts/diagnose-server-function-ids.mjs docs/ARCHITECTURE.md docs/ENVIRONMENT.md docs/DEPLOYMENT.md docs/RECOVERY_GUIDE.md docs/TECHNICAL_WORK_LOG.md docs/CHANGELOG.md
 
       - name: Production build
         run: bun run build
+
+      - name: Diagnose TanStack server function IDs
+        run: node scripts/diagnose-server-function-ids.mjs
 
       - name: Runtime SEO verification
         run: bun run verify:seo

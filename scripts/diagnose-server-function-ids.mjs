@@ -52,15 +52,23 @@ function collectHexIds(entries) {
 const clientFiles = await readTextFiles(await collectTextFiles(clientRoot));
 const serverFiles = await readTextFiles(await collectTextFiles(serverRoot));
 
-const manifestEntries = serverFiles.filter(({ file }) => file.includes("tanstack-start-manifest"));
-const contactEntries = serverFiles.filter(({ file }) => file.includes("contact.functions"));
+const manifestEntries = serverFiles.filter(({ file }) =>
+  file.includes("tanstack-start-manifest"),
+);
+const contactEntries = serverFiles.filter(({ file }) =>
+  file.includes("contact.functions"),
+);
 
 if (manifestEntries.length === 0) {
-  throw new Error("No generated TanStack Start server manifest was found in .output/server.");
+  throw new Error(
+    "No generated TanStack Start server manifest was found in .output/server.",
+  );
 }
 
 if (contactEntries.length === 0) {
-  throw new Error("No generated contact.functions server chunk was found in .output/server.");
+  throw new Error(
+    "No generated contact.functions server chunk was found in .output/server.",
+  );
 }
 
 const clientIds = collectHexIds(clientFiles);
@@ -68,19 +76,35 @@ const serverIds = collectHexIds(serverFiles);
 const manifestIds = collectHexIds(manifestEntries);
 const sharedIds = [...clientIds.keys()].filter((id) => serverIds.has(id)).sort();
 
-console.log(`TanStack manifest: ${manifestEntries.map(({ file }) => path.relative(".", file)).join(", ")}`);
-console.log(`Contact server chunk: ${contactEntries.map(({ file }) => path.relative(".", file)).join(", ")}`);
-console.log(`64-hex tokens: client=${clientIds.size}, server=${serverIds.size}, manifest=${manifestIds.size}, shared=${sharedIds.length}`);
+console.log(
+  `TanStack manifest: ${manifestEntries
+    .map(({ file }) => path.relative(".", file))
+    .join(", ")}`,
+);
+console.log(
+  `Contact server chunk: ${contactEntries
+    .map(({ file }) => path.relative(".", file))
+    .join(", ")}`,
+);
+console.log(
+  `64-hex tokens: client=${clientIds.size}, server=${serverIds.size}, manifest=${manifestIds.size}, shared=${sharedIds.length}`,
+);
 
 if (manifestIds.size > 0) {
   for (const [id, serverLocations] of [...manifestIds.entries()].sort()) {
     const clientLocations = clientIds.get(id);
     console.log(`manifest id ${id}`);
-    console.log(`  manifest/server: ${[...serverLocations].sort().join(", ")}`);
-    console.log(`  client: ${clientLocations ? [...clientLocations].sort().join(", ") : "NONE"}`);
+    console.log(
+      `  manifest/server: ${[...serverLocations].sort().join(", ")}`,
+    );
+    console.log(
+      `  client: ${clientLocations ? [...clientLocations].sort().join(", ") : "NONE"}`,
+    );
   }
 } else {
-  console.log("The generated TanStack manifest does not encode server-function identifiers as literal 64-hex tokens.");
+  console.log(
+    "The generated TanStack manifest does not encode server-function identifiers as literal 64-hex tokens.",
+  );
 }
 
 if (sharedIds.length > 0) {
@@ -89,7 +113,9 @@ if (sharedIds.length > 0) {
     console.log(`  ${id}`);
   }
 } else {
-  console.log("No literal 64-hex token is shared between client and server output; inspecting generated metadata hints instead.");
+  console.log(
+    "No literal 64-hex token is shared between client and server output; inspecting generated metadata hints instead.",
+  );
 }
 
 let hintCount = 0;
@@ -101,7 +127,9 @@ for (const { file, text } of [...manifestEntries, ...contactEntries]) {
 
     hintCount += 1;
     const compact = line.trim().replace(/\s+/g, " ").slice(0, 700);
-    console.log(`metadata hint ${path.relative(".", file)}:${index + 1}: ${compact}`);
+    console.log(
+      `metadata hint ${path.relative(".", file)}:${index + 1}: ${compact}`,
+    );
 
     if (hintCount >= 25) break;
   }
@@ -109,7 +137,9 @@ for (const { file, text } of [...manifestEntries, ...contactEntries]) {
 }
 
 if (hintCount === 0) {
-  console.log("No textual server-function metadata hints were found in the generated manifest/contact chunk.");
+  console.log(
+    "No textual server-function metadata hints were found in the generated manifest/contact chunk.",
+  );
 }
 
 console.log("Generated TanStack server-function metadata diagnostic completed.");

@@ -74,6 +74,10 @@ values, and validates the generated Worker with Wrangler's non-deploying `--dry-
 browser-safe Supabase anonymous/publishable variables are explicitly permitted by the secret scan.
 The workflow contains no deployment step and is not a production path.
 
+The PR gate also runs `bun run verify:environment`. This is a repository architecture check, not a
+runtime credential probe: GitHub receives no production secret. `RESEND_API_KEY` is needed only
+when the deployed Worker handles an email submission, so its absence must not block `bun run build`.
+
 ## Wrangler configuration relationship
 
 ### Tracked input
@@ -81,6 +85,12 @@ The workflow contains no deployment step and is not a production path.
 The root `wrangler.jsonc` is the tracked source configuration inspected by the Vite/TanStack/Nitro
 Cloudflare build. It supplies the Worker name, compatibility settings, `keep_vars`, configured
 public variables, and tracked `main`/assets inputs.
+
+`keep_vars: true` is intentional: a Wrangler deployment preserves dashboard-managed variables that
+are not declared by the tracked configuration, including the encrypted `RESEND_API_KEY` Secret.
+The tracked `vars` remain authoritative for the public Supabase values they declare and can overwrite
+same-named dashboard variables. Do not add the Resend secret to `vars`, disable `keep_vars`, or infer
+from a successful build that the runtime secret exists.
 
 ### Generated deployment configuration
 

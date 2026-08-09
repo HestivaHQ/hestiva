@@ -65,6 +65,20 @@ keep `main` reconciled with production.
 4. Redeploy/retry through Cloudflare native Git integration as supported, then exercise only the
    affected feature. Do not move a secret into tracked `wrangler.jsonc`, `.env`, or a `VITE_` name.
 
+For `RESEND_API_KEY`, a successful build and healthy page loads do not prove configuration: the key
+is checked only when the server sends email. The site remains browsable and users can fill forms,
+but submission fails before a Resend request is made. The surfaced server error contains “Email
+service not configured”; deployment/runtime logs may contain the error name but must never be made
+to print the value. Because general Cloudflare observability is disabled, reproduce with a
+controlled submission and use the native deployment/request diagnostics available to the authorized
+operator.
+
+If variables disappeared after deployment, confirm the deployed root/generated Wrangler structure
+still carries `keep_vars: true`, then inspect the correct Cloudflare environment. Restore the
+encrypted Secret in Cloudflare rather than adding it to tracked `vars` or GitHub Actions. A build
+failure before requests are served is not caused by this runtime-only key; inspect the build command,
+Worker entry generation, and build output first.
+
 ## Resend configuration failure
 
 Symptoms include “Email service not configured,” an HTTP error from the email provider, or a
@@ -106,6 +120,7 @@ Run from a clean branch using the existing installed dependencies:
 bunx tsc --noEmit
 bun run lint
 bunx prettier --check .
+bun run verify:environment
 bun run build
 bun run verify:seo
 git diff --check

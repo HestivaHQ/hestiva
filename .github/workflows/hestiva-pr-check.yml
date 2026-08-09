@@ -36,14 +36,17 @@ jobs:
       - name: Scan tracked files for secrets
         run: node scripts/scan-tracked-secrets.mjs
 
+      - name: Validate environment architecture
+        run: bun run verify:environment
+
       - name: Type check
         run: bunx tsc --noEmit
 
       - name: Targeted lint
-        run: bunx eslint src/lib/site.ts src/routes/__root.tsx src/components/Navbar.tsx src/components/Footer.tsx src/components/HeroSection.tsx
+        run: bunx eslint src/lib/site.ts src/routes/__root.tsx src/components/Navbar.tsx src/components/Footer.tsx src/components/HeroSection.tsx scripts/validate-environment.mjs
 
       - name: Targeted format check
-        run: bunx prettier --check src/lib/site.ts src/routes/__root.tsx src/components/Navbar.tsx src/components/Footer.tsx src/components/HeroSection.tsx
+        run: bunx prettier --check src/lib/site.ts src/routes/__root.tsx src/components/Navbar.tsx src/components/Footer.tsx src/components/HeroSection.tsx scripts/validate-environment.mjs docs/ENVIRONMENT.md docs/DEPLOYMENT.md docs/RECOVERY_GUIDE.md
 
       - name: Production build
         run: bun run build

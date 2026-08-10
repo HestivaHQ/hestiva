@@ -372,4 +372,31 @@ export const servicePages: ServicePage[] = [
       "Need for requirements to be recorded before arrival",
     ],
   ),
+  createService(
+    "cleaning-add-ons",
+    "Cleaning Add-On Services",
+    "Add-On Services",
+    "Optional tasks that can be included with a residential cleaning quotation when selected in advance.",
+    [
+      "Inside oven",
+      "Inside fridge",
+      "Laundry folding",
+      "Bed making",
+      "Linen change",
+      "Balcony or patio",
+      "Interior windows",
+      "Extra bathroom or refrigerator",
+    ],
+    [
+      "Tasks outside the standard clean",
+      "Appliance interiors",
+      "Additional rooms or fixtures",
+      "Laundry and linen support",
+      "Extra time needed for specific areas",
+    ],
+  ),
 ];
+
+export function getServicePage(slug: string) {
+  return servicePages.find((service) => service.slug === slug);
+}

@@ -14,7 +14,7 @@ export function LocationPageLayout({ location }: { location: LocationPage }) {
   const breadcrumbs = locationBreadcrumbs(location.name, `/locations/${location.slug}`);
   const gallery = locationVisualLibrary[location.name] ?? [];
   const primaryImage = gallery[0];
-  const supportingImages = gallery.slice(1, 5);
+  const supportingImages = gallery.slice(1, 3);
   const nearbyLocations = location.nearbyAreas
     .map((areaName) => locationPages.find((item) => item.name === areaName))
     .filter((item): item is LocationPage => Boolean(item));
@@ -72,25 +72,25 @@ export function LocationPageLayout({ location }: { location: LocationPage }) {
         </section>
 
         {supportingImages.length > 0 && (
-          <section aria-labelledby="local-gallery-heading" className="bg-[#FFFDF8] px-6 py-14 md:py-18">
+          <section aria-labelledby="home-gallery-heading" className="bg-[#FFFDF8] px-6 py-14 md:py-18">
             <div className="mx-auto max-w-7xl">
               <div className="mb-8 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
                 <div>
                   <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#9A7132]">
-                    {location.name} and nearby
+                    Residential Cleaning
                   </p>
                   <h2
-                    id="local-gallery-heading"
+                    id="home-gallery-heading"
                     className="mt-3 text-3xl font-semibold tracking-tight text-[#5A1425]"
                   >
-                    A glimpse of the area
+                    Care for the spaces you live in
                   </h2>
                 </div>
                 <p className="max-w-xl text-sm leading-6 text-[#695E59]">
-                  These photographs show {location.name} or its surrounding local vicinity and are included for geographic context.
+                  Residential-cleaning imagery selected to reflect practical care, tidy interiors and the kinds of home spaces Hestiva supports.
                 </p>
               </div>
-              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              <div className="grid gap-4 sm:grid-cols-2">
                 {supportingImages.map((image) => (
                   <figure
                     key={image.sourceUrl}

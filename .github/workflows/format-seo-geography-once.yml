@@ -1,0 +1,39 @@
+name: Format SEO geography once
+
+on:
+  push:
+    branches:
+      - seo/geographic-foundation
+
+permissions:
+  contents: write
+
+jobs:
+  format:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out branch
+        uses: actions/checkout@v4
+        with:
+          ref: seo/geographic-foundation
+
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.2.15
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Format SEO geography files
+        run: bunx prettier --write src/content/service-areas.ts src/content/locations.ts src/lib/site.ts src/routes/locations.tsx
+
+      - name: Remove one-time workflow and commit formatter result
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm .github/workflows/format-seo-geography-once.yml
+          git add src/content/service-areas.ts src/content/locations.ts src/lib/site.ts src/routes/locations.tsx
+          git commit -m "style: format SEO geographic foundation"
+          git push origin HEAD:seo/geographic-foundation

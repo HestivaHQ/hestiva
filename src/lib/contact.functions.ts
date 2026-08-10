@@ -12,6 +12,8 @@ import {
 } from "@/lib/form-security";
 import { checkIsolateRateLimit } from "@/lib/rate-limit";
 
+const TEMPORARY_RUNTIME_ISOLATION = true;
+
 async function assertRateLimit() {
   const identity = getRequestHeader("cf-connecting-ip")?.trim();
   if (!identity) throw new PublicSubmissionError("rate_limit");
@@ -43,6 +45,13 @@ function previewFailure(stage: PublicSubmissionError["category"] | "validation" 
 export const submitContactForm = createServerFn({ method: "POST" })
   .validator((data: unknown) => data)
   .handler(async ({ data }) => {
+    // Temporary PR-only runtime isolation. This proves whether this server function can
+    // enter its handler and serialize a response before any request-header, validation,
+    // rate-limit, template, attachment, or email logic executes.
+    if (TEMPORARY_RUNTIME_ISOLATION) {
+      return { success: false as const, diagnosticStage: "handler_entry" as const };
+    }
+
     try {
       const parsed = contactSchema.safeParse(data);
       if (!parsed.success) {

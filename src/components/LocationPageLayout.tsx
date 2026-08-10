@@ -30,22 +30,76 @@ export function LocationPageLayout({ location }: { location: LocationPage }) {
               <ArrowLeft className="w-4 h-4" />
               Back to service areas
             </Link>
-            <div className="max-w-3xl">
-              <span className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.3em] text-primary font-semibold">
-                <MapPin className="w-4 h-4" />
-                {location.region} Service Area
-              </span>
-              <h1 className="text-4xl md:text-6xl font-extrabold mt-4 text-foreground leading-tight">
-                Residential Cleaning in {location.name}
-              </h1>
-              <p className="text-lg text-muted-foreground mt-6 leading-relaxed">
-                {location.heroDescription}
-              </p>
-              <div className="mt-8">
-                <Button variant="hero" size="lg" asChild>
-                  <Link to="/quote">Request a Quote</Link>
-                </Button>
+            <div className="grid gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
+              <div className="max-w-3xl">
+                <span className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.3em] text-primary font-semibold">
+                  <MapPin className="w-4 h-4" />
+                  {location.region} Service Area
+                </span>
+                <h1 className="text-4xl md:text-6xl font-extrabold mt-4 text-foreground leading-tight">
+                  Residential Cleaning in {location.name}
+                </h1>
+                <p className="text-lg text-muted-foreground mt-6 leading-relaxed">
+                  {location.heroDescription}
+                </p>
+                <div className="mt-8">
+                  <Button variant="hero" size="lg" asChild>
+                    <Link to="/quote">Request a Quote</Link>
+                  </Button>
+                </div>
               </div>
+
+              {location.visual.src && (
+                <figure className="overflow-hidden rounded-xl border border-border bg-card shadow-lg">
+                  <img
+                    src={location.visual.src}
+                    alt={location.visual.alt}
+                    loading="eager"
+                    decoding="async"
+                    className="aspect-[4/3] w-full object-cover"
+                  />
+                  {(location.visual.credit || location.visual.license) && (
+                    <figcaption className="border-t border-border px-4 py-3 text-xs leading-5 text-muted-foreground">
+                      Local-area image
+                      {location.visual.credit && (
+                        <>
+                          {" by "}
+                          {location.visual.sourceUrl ? (
+                            <a
+                              href={location.visual.sourceUrl}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="underline underline-offset-2 hover:text-primary"
+                            >
+                              {location.visual.credit}
+                            </a>
+                          ) : (
+                            location.visual.credit
+                          )}
+                        </>
+                      )}
+                      {location.visual.license && (
+                        <>
+                          {" · "}
+                          {location.visual.licenseUrl ? (
+                            <a
+                              href={location.visual.licenseUrl}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="underline underline-offset-2 hover:text-primary"
+                            >
+                              {location.visual.license}
+                            </a>
+                          ) : (
+                            location.visual.license
+                          )}
+                        </>
+                      )}
+                      {" · Source: Wikimedia Commons"}
+                    </figcaption>
+                  )}
+                </figure>
+              )}
             </div>
           </div>
         </section>

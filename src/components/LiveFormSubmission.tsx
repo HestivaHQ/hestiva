@@ -24,8 +24,7 @@ function tomorrowDateValue() {
 }
 
 function serviceFrequencyOptions(service: string) {
-  if (service === "Move-In Cleaning" || service === "Move-Out Cleaning")
-    return ["One-time"];
+  if (service === "Move-In Cleaning" || service === "Move-Out Cleaning") return ["One-time"];
 
   if (
     service === "Regular Home Cleaning" ||
@@ -53,11 +52,7 @@ function serviceFrequencyOptions(service: string) {
   return [];
 }
 
-function replaceSelectOptions(
-  select: HTMLSelectElement,
-  options: string[],
-  placeholder: string,
-) {
+function replaceSelectOptions(select: HTMLSelectElement, options: string[], placeholder: string) {
   const current = select.value;
   select.replaceChildren();
   const first = document.createElement("option");
@@ -75,9 +70,7 @@ function replaceSelectOptions(
 
 function syncServiceFrequency() {
   const service = document.querySelector<HTMLSelectElement>("#field-service");
-  const frequency = document.querySelector<HTMLSelectElement>(
-    "#field-frequency",
-  );
+  const frequency = document.querySelector<HTMLSelectElement>("#field-frequency");
   if (!service || !frequency) return;
 
   const allowed = serviceFrequencyOptions(service.value);
@@ -172,14 +165,10 @@ function validateRequiredFields(fields: Array<[string, string]>) {
 function syncUnitAccessFields() {
   if (window.location.pathname !== "/quote") return;
   const propertyType =
-    document.querySelector<HTMLSelectElement>("#field-propertyType")?.value ||
-    "";
-  const originalFloor =
-    document.querySelector<HTMLSelectElement>("#field-unitFloor");
+    document.querySelector<HTMLSelectElement>("#field-propertyType")?.value || "";
+  const originalFloor = document.querySelector<HTMLSelectElement>("#field-unitFloor");
   const originalLabel = originalFloor?.closest("label") as HTMLElement | null;
-  const panel = document.querySelector<HTMLElement>(
-    "#quote-unit-access-fields",
-  );
+  const panel = document.querySelector<HTMLElement>("#quote-unit-access-fields");
 
   if (!propertyNeedsUnitAccess(propertyType) || !originalFloor || !originalLabel) {
     if (originalLabel) originalLabel.style.display = "";
@@ -194,12 +183,7 @@ function syncUnitAccessFields() {
   wrapper.id = "quote-unit-access-fields";
   wrapper.className = "sm:col-span-2 grid gap-6 sm:grid-cols-2";
 
-  const makeSelect = (
-    id: string,
-    labelText: string,
-    placeholder: string,
-    values: string[],
-  ) => {
+  const makeSelect = (id: string, labelText: string, placeholder: string, values: string[]) => {
     const label = document.createElement("label");
     label.className = "text-sm font-semibold text-[#4A3435]";
     label.htmlFor = id;
@@ -230,23 +214,18 @@ function syncUnitAccessFields() {
       "Ground floor",
       ...Array.from({ length: 50 }, (_, index) => `Floor ${index + 1}`),
     ]),
-    makeSelect(
-      "field-buildingAccess",
-      "How do we get to your unit?",
-      "Select one",
-      ["Elevator available", "Stairs only", "Elevator and stairs"],
-    ),
+    makeSelect("field-buildingAccess", "How do we get to your unit?", "Select one", [
+      "Elevator available",
+      "Stairs only",
+      "Elevator and stairs",
+    ]),
   );
   originalLabel.insertAdjacentElement("afterend", wrapper);
 }
 
 function syncEstateAccess() {
-  const select = document.querySelector<HTMLSelectElement>(
-    "#field-complexAccess",
-  );
-  const notice = document.querySelector<HTMLElement>(
-    "#access-code-day-notice",
-  );
+  const select = document.querySelector<HTMLSelectElement>("#field-complexAccess");
+  const notice = document.querySelector<HTMLElement>("#access-code-day-notice");
   if (!select) {
     notice?.remove();
     return;
@@ -282,12 +261,8 @@ function syncEstateAccess() {
 }
 
 function syncKeyHandover() {
-  const select = document.querySelector<HTMLSelectElement>(
-    "#field-keyHandover",
-  );
-  const existingDetails = document.querySelector<HTMLTextAreaElement>(
-    "#field-keyHandoverDetails",
-  );
+  const select = document.querySelector<HTMLSelectElement>("#field-keyHandover");
+  const existingDetails = document.querySelector<HTMLTextAreaElement>("#field-keyHandoverDetails");
   const existingLabel = existingDetails?.closest("label");
 
   if (!select) {
@@ -295,11 +270,7 @@ function syncKeyHandover() {
     return;
   }
 
-  const options = [
-    "Someone will open",
-    "Concierge or reception",
-    "To be arranged",
-  ];
+  const options = ["Someone will open", "Concierge or reception", "To be arranged"];
   const signature = options.join("|");
   if (select.dataset.optionSignature !== signature) {
     const current = select.value;
@@ -361,13 +332,9 @@ function syncRequiredChoiceField(
   labelText: string,
   detailsLabel: string,
 ) {
-  const original = document.querySelector<HTMLTextAreaElement>(
-    `#field-${field}`,
-  );
+  const original = document.querySelector<HTMLTextAreaElement>(`#field-${field}`);
   const originalLabel = original?.closest("label") as HTMLElement | null;
-  const existingWrapper = document.querySelector<HTMLElement>(
-    `#quote-${field}-choice`,
-  );
+  const existingWrapper = document.querySelector<HTMLElement>(`#quote-${field}-choice`);
 
   if (!original || !originalLabel) {
     existingWrapper?.remove();
@@ -404,18 +371,15 @@ function syncRequiredChoiceField(
   details.className = original.className;
   details.placeholder = detailsLabel;
   details.value = quoteValues[`${field}Details`] || "";
-  details.style.display =
-    select.value === "Yes — add details" ? "block" : "none";
+  details.style.display = select.value === "Yes — add details" ? "block" : "none";
   wrapper.appendChild(details);
 
   const updateValue = () => {
     quoteValues[`${field}Choice`] = select.value;
     quoteValues[`${field}Details`] = details.value.trim();
-    details.style.display =
-      select.value === "Yes — add details" ? "block" : "none";
+    details.style.display = select.value === "Yes — add details" ? "block" : "none";
     if (select.value === "None") quoteValues[field] = "None";
-    else if (select.value === "Yes — add details")
-      quoteValues[field] = details.value.trim();
+    else if (select.value === "Yes — add details") quoteValues[field] = details.value.trim();
     else quoteValues[field] = "";
     clearInlineError(select.id);
     if (details.value.trim()) clearInlineError(details.id);
@@ -431,10 +395,7 @@ function syncRequiredChoiceField(
 function syncPhotoLimitCopy() {
   document.querySelectorAll<HTMLParagraphElement>("#quote-form p").forEach((paragraph) => {
     if (paragraph.textContent?.includes("Attach up to 3 clear photos")) {
-      paragraph.textContent = paragraph.textContent.replace(
-        "Attach up to 3",
-        "Attach up to 10",
-      );
+      paragraph.textContent = paragraph.textContent.replace("Attach up to 3", "Attach up to 10");
     }
   });
 }
@@ -475,18 +436,14 @@ function syncProgressiveFields() {
     document.querySelector<HTMLSelectElement>("#field-livingAreas")?.value ||
     "";
   const storeys =
-    quoteValues.storeys ||
-    document.querySelector<HTMLSelectElement>("#field-storeys")?.value ||
-    "";
+    quoteValues.storeys || document.querySelector<HTMLSelectElement>("#field-storeys")?.value || "";
   const exactFloor =
     quoteValues.unitFloorExact ||
-    document.querySelector<HTMLSelectElement>("#field-unitFloorExact")
-      ?.value ||
+    document.querySelector<HTMLSelectElement>("#field-unitFloorExact")?.value ||
     "";
   const unitAccess =
     quoteValues.buildingAccess ||
-    document.querySelector<HTMLSelectElement>("#field-buildingAccess")
-      ?.value ||
+    document.querySelector<HTMLSelectElement>("#field-buildingAccess")?.value ||
     "";
 
   setDisabled("field-floorSize", !propertyType);
@@ -495,9 +452,7 @@ function syncProgressiveFields() {
   setDisabled("field-livingAreas", !bathrooms);
 
   const needsUnitAccess = propertyNeedsUnitAccess(propertyType);
-  const needsStoreys = Boolean(
-    document.querySelector<HTMLSelectElement>("#field-storeys"),
-  );
+  const needsStoreys = Boolean(document.querySelector<HTMLSelectElement>("#field-storeys"));
   setDisabled("field-storeys", !livingAreas);
   setDisabled("field-unitFloorExact", !livingAreas);
   setDisabled("field-buildingAccess", !exactFloor);
@@ -519,8 +474,7 @@ function syncProgressiveFields() {
   setDisabled("field-urgency", !quoteValues.flexibility);
 
   const handoverReady =
-    quoteValues.keyHandover !== "To be arranged" ||
-    Boolean(quoteValues.keyHandoverDetails);
+    quoteValues.keyHandover !== "To be arranged" || Boolean(quoteValues.keyHandoverDetails);
   setDisabled("field-keyHandover", !quoteValues.complexAccess);
   setDisabled("field-present", !quoteValues.keyHandover || !handoverReady);
   setDisabled("field-pets", !quoteValues.present);
@@ -574,10 +528,7 @@ function rememberVisibleQuoteFields() {
   document
     .querySelectorAll<HTMLInputElement>('#quote-form input[type="checkbox"]')
     .forEach((checkbox) => {
-      const label = checkbox
-        .closest("label")
-        ?.querySelector("span")
-        ?.textContent?.trim();
+      const label = checkbox.closest("label")?.querySelector("span")?.textContent?.trim();
       if (!label || label.startsWith("I consent")) return;
       if (checkbox.checked) quoteAddons.add(label);
       else quoteAddons.delete(label);
@@ -585,11 +536,7 @@ function rememberVisibleQuoteFields() {
 }
 
 function currentStepTitle() {
-  return (
-    document
-      .querySelector<HTMLHeadingElement>("#quote-form h2")
-      ?.textContent?.trim() || ""
-  );
+  return document.querySelector<HTMLHeadingElement>("#quote-form h2")?.textContent?.trim() || "";
 }
 
 function validateQuoteStep() {
@@ -609,27 +556,15 @@ function validateQuoteStep() {
     if (propertyNeedsUnitAccess(quoteValues.propertyType)) {
       required.push(
         ["field-unitFloorExact", "Please select the exact floor or level."],
-        [
-          "field-buildingAccess",
-          "Please tell us how we get to your unit.",
-        ],
+        ["field-buildingAccess", "Please tell us how we get to your unit."],
       );
     } else if (document.querySelector("#field-storeys")) {
-      required.push([
-        "field-storeys",
-        "Please select the number of storeys.",
-      ]);
+      required.push(["field-storeys", "Please select the number of storeys."]);
     }
 
     required.push(
-      [
-        "field-outdoor",
-        "Please select the balcony or patio option.",
-      ],
-      [
-        "field-estate",
-        "Please tell us whether the property is in an estate or complex.",
-      ],
+      ["field-outdoor", "Please select the balcony or patio option."],
+      ["field-estate", "Please tell us whether the property is in an estate or complex."],
     );
 
     return validateRequiredFields(required);
@@ -664,10 +599,7 @@ function validateQuoteStep() {
 
   if (step === "Access and Household Details") {
     const required: Array<[string, string]> = [
-      [
-        "field-complexAccess",
-        "Please select how access to the estate or complex will work.",
-      ],
+      ["field-complexAccess", "Please select how access to the estate or complex will work."],
       ["field-keyHandover", "Please select the key handover method."],
     ];
 
@@ -691,14 +623,8 @@ function validateQuoteStep() {
     }
 
     required.push(
-      [
-        "field-restrictionsChoice",
-        "Please select a product restrictions option.",
-      ],
-      [
-        "field-allergiesChoice",
-        "Please select an allergies or sensitivities option.",
-      ],
+      ["field-restrictionsChoice", "Please select a product restrictions option."],
+      ["field-allergiesChoice", "Please select an allergies or sensitivities option."],
     );
 
     let valid = validateRequiredFields(required);
@@ -707,21 +633,12 @@ function validateQuoteStep() {
       quoteValues.restrictionsChoice === "Yes — add details" &&
       !quoteValues.restrictionsDetails
     ) {
-      showInlineError(
-        "field-restrictionsDetails",
-        "Please add the product restriction details.",
-      );
+      showInlineError("field-restrictionsDetails", "Please add the product restriction details.");
       valid = false;
     }
 
-    if (
-      quoteValues.allergiesChoice === "Yes — add details" &&
-      !quoteValues.allergiesDetails
-    ) {
-      showInlineError(
-        "field-allergiesDetails",
-        "Please add the allergy or sensitivity details.",
-      );
+    if (quoteValues.allergiesChoice === "Yes — add details" && !quoteValues.allergiesDetails) {
+      showInlineError("field-allergiesDetails", "Please add the allergy or sensitivity details.");
       valid = false;
     }
 
@@ -733,21 +650,14 @@ function validateQuoteStep() {
       ["field-fullName", "Please enter your full name."],
       ["field-mobile", "Please enter your mobile number."],
       ["field-email", "Please enter your email address."],
-      [
-        "field-contactMethod",
-        "Please select your preferred contact method.",
-      ],
+      ["field-contactMethod", "Please select your preferred contact method."],
     ]);
   }
 
   return true;
 }
 
-function setButtonState(
-  button: HTMLButtonElement,
-  text: string,
-  disabled: boolean,
-) {
+function setButtonState(button: HTMLButtonElement, text: string, disabled: boolean) {
   button.disabled = disabled;
   button.dataset.originalText ||= button.textContent?.trim() || "Send Request";
   button.textContent = text;
@@ -783,14 +693,10 @@ async function compressQuoteImage(file: File): Promise<File> {
       canvas.toBlob(resolve, "image/jpeg", 0.82),
     );
     if (!blob || blob.size === 0 || blob.size >= file.size) return file;
-    return new File(
-      [blob],
-      `${(file.name.replace(/\.[^.]+$/, "") || "quote-photo")}.jpg`,
-      {
-        type: "image/jpeg",
-        lastModified: file.lastModified,
-      },
-    );
+    return new File([blob], `${file.name.replace(/\.[^.]+$/, "") || "quote-photo"}.jpg`, {
+      type: "image/jpeg",
+      lastModified: file.lastModified,
+    });
   } catch {
     return file;
   }
@@ -815,12 +721,8 @@ async function sendQuoteForm(button: HTMLButtonElement) {
   if (!validateQuoteStep()) return;
 
   const consent = Array.from(
-    document.querySelectorAll<HTMLInputElement>(
-      '#quote-form input[type="checkbox"]',
-    ),
-  ).find((checkbox) =>
-    checkbox.closest("label")?.textContent?.includes("I consent"),
-  );
+    document.querySelectorAll<HTMLInputElement>('#quote-form input[type="checkbox"]'),
+  ).find((checkbox) => checkbox.closest("label")?.textContent?.includes("I consent"));
   if (!consent?.checked) return;
 
   const details = [
@@ -837,10 +739,7 @@ async function sendQuoteForm(button: HTMLButtonElement) {
     ["Bathrooms", quoteValue("bathrooms")],
     ["Living areas", quoteValue("livingAreas")],
     ["Storeys", quoteValue("storeys")],
-    [
-      "Unit floor / level",
-      quoteValue("unitFloorExact", quoteValue("unitFloor")),
-    ],
+    ["Unit floor / level", quoteValue("unitFloorExact", quoteValue("unitFloor"))],
     ["Unit access", quoteValue("buildingAccess")],
     ["Outdoor area", quoteValue("outdoor")],
     ["Estate or complex", quoteValue("estate")],
@@ -873,11 +772,7 @@ async function sendQuoteForm(button: HTMLButtonElement) {
     ["Additional notes", quoteValue("notes")],
   ].filter(([, entry]) => entry);
 
-  const propertyAddress = [
-    quoteValue("address"),
-    quoteValue("suburb"),
-    quoteValue("postcode"),
-  ]
+  const propertyAddress = [quoteValue("address"), quoteValue("suburb"), quoteValue("postcode")]
     .filter(Boolean)
     .join(", ");
   setButtonState(button, "Sending…", true);
@@ -903,26 +798,18 @@ async function sendQuoteForm(button: HTMLButtonElement) {
         website: "",
       },
     });
-    if (!isSuccessfulSubmissionResult(result))
-      throw new Error("Submission was not acknowledged");
+    if (!isSuccessfulSubmissionResult(result)) throw new Error("Submission was not acknowledged");
     clearQuoteFiles();
     setButtonState(button, "Request Sent", true);
-    window.alert(
-      "Your request has been sent successfully. A confirmation email is on its way.",
-    );
+    window.alert("Your request has been sent successfully. A confirmation email is on its way.");
   } catch {
     console.error("Quote submission failed");
     setButtonState(button, button.dataset.originalText || "Send Request", false);
-    window.alert(
-      "We could not send your request. Please try again or email quotes@hestiva.co.za.",
-    );
+    window.alert("We could not send your request. Please try again or email quotes@hestiva.co.za.");
   }
 }
 
-async function sendContactForm(
-  form: HTMLFormElement,
-  button: HTMLButtonElement,
-) {
+async function sendContactForm(form: HTMLFormElement, button: HTMLButtonElement) {
   if (!form.reportValidity()) return;
   const data = new FormData(form);
   setButtonState(button, "Sending…", true);
@@ -944,17 +831,14 @@ async function sendContactForm(
         website: String(data.get("website") || ""),
       },
     });
-    if (!isSuccessfulSubmissionResult(result))
-      throw new Error("Submission was not acknowledged");
+    if (!isSuccessfulSubmissionResult(result)) throw new Error("Submission was not acknowledged");
     setButtonState(button, "Request Sent", true);
     form.reset();
     window.alert("Your request has been sent successfully.");
   } catch {
     console.error("Contact submission failed");
     setButtonState(button, button.dataset.originalText || "Send Request", false);
-    window.alert(
-      "We could not send your request. Please try again or email quotes@hestiva.co.za.",
-    );
+    window.alert("We could not send your request. Please try again or email quotes@hestiva.co.za.");
   }
 }
 
@@ -999,9 +883,7 @@ export function LiveFormSubmission() {
     const onSubmit = (event: SubmitEvent) => {
       if (window.location.pathname !== "/contact") return;
       const form = event.target as HTMLFormElement;
-      const button = form.querySelector<HTMLButtonElement>(
-        'button[type="submit"]',
-      );
+      const button = form.querySelector<HTMLButtonElement>('button[type="submit"]');
       if (!button) return;
       event.preventDefault();
       event.stopPropagation();

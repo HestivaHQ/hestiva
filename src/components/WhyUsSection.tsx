@@ -1,4 +1,3 @@
-import { motion } from "framer-motion";
 import {
   CalendarCheck,
   CheckCircle2,
@@ -50,19 +49,15 @@ export function WhyUsSection() {
             </h2>
           </div>
           <div className="mt-14 grid gap-6 md:grid-cols-3">
-            {benefits.map((benefit, index) => (
-              <motion.article
+            {benefits.map((benefit) => (
+              <article
                 key={benefit.title}
-                initial={{ opacity: 0, y: 18 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
                 className="rounded-xl border border-[#E7DCC9] bg-[#FFFDF8] p-7 text-center"
               >
                 <benefit.icon className="mx-auto h-7 w-7 text-[#9A7132]" aria-hidden="true" />
                 <h3 className="mt-5 text-xl font-semibold text-[#3B0F1A]">{benefit.title}</h3>
                 <p className="mt-3 text-sm leading-relaxed text-[#6D5B55]">{benefit.text}</p>
-              </motion.article>
+              </article>
             ))}
           </div>
         </div>

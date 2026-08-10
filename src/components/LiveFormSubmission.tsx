@@ -104,8 +104,9 @@ async function compressQuoteImage(file: File): Promise<File> {
     file.type === "image/heic" ||
     file.type === "image/heif" ||
     /\.(heic|heif)$/i.test(file.name)
-  )
+  ) {
     return file;
+  }
 
   try {
     const bitmap = await createImageBitmap(file);

@@ -3,14 +3,17 @@ import { useMemo, useState } from "react";
 import {
   ArrowLeft,
   ArrowRight,
+  Camera,
   Check,
   ChevronDown,
   Home,
+  Images,
   Info,
+  LocateFixed,
   MessageCircle,
   Send,
   ShieldCheck,
-  Upload,
+  X,
 } from "lucide-react";
 import { Footer } from "@/components/Footer";
 import { Navbar } from "@/components/Navbar";
@@ -18,6 +21,11 @@ import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { createSeoHead } from "@/lib/seo";
 import { pageBreadcrumbs } from "@/lib/breadcrumbs";
 import { createBreadcrumbList, createPageGraph, schemaScripts } from "@/lib/structured-data";
+import {
+  addQuoteFiles,
+  getQuoteFiles,
+  removeQuoteFile,
+} from "@/lib/quote/client-upload-store";
 
 const breadcrumbs = pageBreadcrumbs("Quote", "/quote");
 
@@ -53,6 +61,7 @@ const initialForm = {
   propertyType: "",
   suburb: "",
   address: "",
+  locationUrl: "",
   floorSize: "",
   bedrooms: "",
   bathrooms: "",
@@ -191,10 +200,24 @@ function QuotePage() {
   const [form, setForm] = useState(initialForm);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [summaryOpen, setSummaryOpen] = useState(false);
+  const [selectedFiles, setSelectedFiles] = useState<readonly File[]>(() => getQuoteFiles());
+  const [fileError, setFileError] = useState<string | null>(null);
 
   const update = (key: TextKey, value: string) => {
     setForm((current) => ({ ...current, [key]: value }));
     setErrors((current) => ({ ...current, [key]: "" }));
+  };
+
+  const addFiles = (fileList: FileList | null) => {
+    if (!fileList) return;
+    const result = addQuoteFiles(Array.from(fileList));
+    setSelectedFiles([...result.files]);
+    setFileError(result.error);
+  };
+
+  const removeFile = (index: number) => {
+    setSelectedFiles([...removeQuoteFile(index)]);
+    setFileError(null);
   };
 
   const validateStep = (index: number) => {
@@ -319,6 +342,10 @@ function QuotePage() {
                   update={update}
                   setForm={setForm}
                   errors={errors}
+                  selectedFiles={selectedFiles}
+                  fileError={fileError}
+                  onFilesSelected={addFiles}
+                  onRemoveFile={removeFile}
                 />
                 <div className="mt-10 flex flex-col-reverse gap-3 border-t border-[#E8DDD0] pt-6 sm:flex-row sm:justify-between">
                   <button
@@ -394,14 +421,52 @@ function StepContent({
   update,
   setForm,
   errors,
+  selectedFiles,
+  fileError,
+  onFilesSelected,
+  onRemoveFile,
 }: {
   step: number;
   form: FormData;
   update: (key: TextKey, value: string) => void;
   setForm: React.Dispatch<React.SetStateAction<FormData>>;
   errors: Record<string, string>;
+  selectedFiles: readonly File[];
+  fileError: string | null;
+  onFilesSelected: (files: FileList | null) => void;
+  onRemoveFile: (index: number) => void;
 }) {
+  const [locationStatus, setLocationStatus] = useState<string | null>(null);
   const props = { form, update, errors };
+
+  const useCurrentLocation = () => {
+    if (!navigator.geolocation) {
+      setLocationStatus("Current location is not available in this browser. Please enter your address manually.");
+      return;
+    }
+
+    setLocationStatus("Requesting permission to use your current location…");
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const latitude = position.coords.latitude.toFixed(6);
+        const longitude = position.coords.longitude.toFixed(6);
+        update("address", `Current location: ${latitude}, ${longitude}`);
+        update("locationUrl", `https://www.google.com/maps?q=${latitude},${longitude}`);
+        setLocationStatus(
+          `Current location added. Accuracy is approximately ${Math.round(position.coords.accuracy)} metres. You can still edit the address if needed.`,
+        );
+      },
+      (error) => {
+        const message =
+          error.code === error.PERMISSION_DENIED
+            ? "Location permission was not granted. You can enter the address manually or allow location access in your browser settings."
+            : "We could not determine your current location. Please try again or enter the address manually.";
+        setLocationStatus(message);
+      },
+      { enableHighAccuracy: true, timeout: 10_000, maximumAge: 60_000 },
+    );
+  };
+
   if (step === 0)
     return (
       <div className="grid gap-6 sm:grid-cols-2">
@@ -413,14 +478,28 @@ function StepContent({
           required
         />
         <TextField {...props} name="suburb" label="Suburb" autoComplete="address-level2" required />
-        <TextField
-          {...props}
-          name="address"
-          label="Full service address"
-          autoComplete="street-address"
-          required
-          wide
-        />
+        <div className="sm:col-span-2">
+          <TextField
+            {...props}
+            name="address"
+            label="Full service address"
+            autoComplete="street-address"
+            required
+          />
+          <input id="field-locationUrl" type="hidden" value={form.locationUrl} readOnly />
+          <button
+            type="button"
+            onClick={useCurrentLocation}
+            className={`${secondaryButton} mt-3 w-full sm:w-auto`}
+          >
+            <LocateFixed className="h-4 w-4" /> Use my current location
+          </button>
+          {locationStatus && (
+            <p aria-live="polite" className="mt-3 text-sm leading-6 text-[#695E59]">
+              {locationStatus}
+            </p>
+          )}
+        </div>
         <SelectField
           {...props}
           name="floorSize"
@@ -636,27 +715,70 @@ function StepContent({
     return (
       <>
         <div className="rounded-xl border border-dashed border-[#B99A61] bg-[#FBF7EF] p-6 text-center">
-          <Upload className="mx-auto h-7 w-7 text-[#9A742E]" />
+          <Images className="mx-auto h-7 w-7 text-[#9A742E]" />
           <p className="mt-3 font-semibold text-[#5A1425]">Optional reference photos</p>
           <p className="mx-auto mt-2 max-w-lg text-sm leading-6 text-[#695E59]">
-            Choose clear photos of rooms or areas needing attention. JPG, PNG or HEIC, up to 10 MB
-            each.
+            Attach up to 3 clear photos of rooms or areas needing attention. JPG, PNG, HEIC or HEIF,
+            up to 10 MB each.
           </p>
-          <label className={`${secondaryButton} mt-4 cursor-pointer`}>
-            <Upload className="h-4 w-4" /> Choose photos
-            <input
-              type="file"
-              accept="image/jpeg,image/png,image/heic"
-              multiple
-              className="sr-only"
-              onChange={(event) => {
-                event.currentTarget.value = "";
-              }}
-            />
-          </label>
-          <p className="mt-3 text-xs text-[#756963]">
-            Interface preview only. Files are not uploaded, stored or submitted.
-          </p>
+          <div className="mt-5 flex flex-col justify-center gap-3 sm:flex-row">
+            <label className={`${primaryButton} cursor-pointer`}>
+              <Camera className="h-4 w-4" /> Take a photo
+              <input
+                type="file"
+                accept="image/*,.heic,.heif"
+                capture="environment"
+                className="sr-only"
+                onChange={(event) => {
+                  onFilesSelected(event.currentTarget.files);
+                  event.currentTarget.value = "";
+                }}
+              />
+            </label>
+            <label className={`${secondaryButton} cursor-pointer`}>
+              <Images className="h-4 w-4" /> Choose photos
+              <input
+                type="file"
+                accept="image/*,.heic,.heif"
+                multiple
+                className="sr-only"
+                onChange={(event) => {
+                  onFilesSelected(event.currentTarget.files);
+                  event.currentTarget.value = "";
+                }}
+              />
+            </label>
+          </div>
+          {fileError && (
+            <p role="alert" className="mt-4 text-sm font-medium text-[#9B3349]">
+              {fileError}
+            </p>
+          )}
+          {selectedFiles.length > 0 && (
+            <ul className="mx-auto mt-5 max-w-xl space-y-2 text-left" role="list">
+              {selectedFiles.map((file, index) => (
+                <li
+                  key={`${file.name}-${file.size}-${file.lastModified}`}
+                  className="flex items-center justify-between gap-3 rounded-lg border border-[#D8CCC0] bg-white px-4 py-3"
+                >
+                  <div className="min-w-0">
+                    <p className="truncate text-sm font-semibold text-[#5A1425]">{file.name}</p>
+                    <p className="mt-1 text-xs text-[#756963]">
+                      {(file.size / (1024 * 1024)).toFixed(1)} MB
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => onRemoveFile(index)}
+                    className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-[#5A1425] transition hover:bg-[#F2E9DC] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A45B]"
+                    aria-label={`Remove ${file.name}`}
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
         <div className="mt-8 grid gap-6 sm:grid-cols-2">
           <TextArea {...props} name="attentionAreas" label="Areas needing attention" />

@@ -190,7 +190,6 @@ function QuotePage() {
   const [step, setStep] = useState(0);
   const [form, setForm] = useState(initialForm);
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [notice, setNotice] = useState(false);
   const [summaryOpen, setSummaryOpen] = useState(false);
 
   const update = (key: TextKey, value: string) => {
@@ -231,8 +230,6 @@ function QuotePage() {
     if (form.email && !/^\S+@\S+\.\S+$/.test(form.email))
       allErrors.email = "Enter a valid email address.";
     setErrors(allErrors);
-    if (Object.keys(allErrors).length) return;
-    setNotice(true);
   };
 
   const whatsappUrl = useMemo(() => {
@@ -266,13 +263,6 @@ function QuotePage() {
               Share a few details about your space, cleaning needs and preferred schedule. We’ll
               review your request and prepare a personalised quotation.
             </p>
-            <div className="mt-8 inline-flex max-w-2xl items-start gap-3 rounded-xl border border-[#C9A45B]/30 bg-white/60 p-4 text-sm leading-6 text-[#5D504B]">
-              <Info aria-hidden="true" className="mt-0.5 h-5 w-5 shrink-0 text-[#9A742E]" />
-              <p>
-                <strong className="text-[#5A1425]">No automatic price will be shown.</strong> Your
-                request will be reviewed by the Hestiva team.
-              </p>
-            </div>
           </div>
         </section>
 
@@ -330,23 +320,6 @@ function QuotePage() {
                   setForm={setForm}
                   errors={errors}
                 />
-                {notice && (
-                  <div
-                    role="status"
-                    className="mt-8 rounded-xl border border-[#C9A45B]/40 bg-[#FBF7EF] p-5 leading-7 text-[#5D504B]"
-                  >
-                    <p className="font-semibold text-[#5A1425]">
-                      Online quote submission is being prepared.
-                    </p>
-                    <p>
-                      For immediate assistance, email{" "}
-                      <a className="font-semibold underline" href="mailto:quotes@hestiva.co.za">
-                        quotes@hestiva.co.za
-                      </a>{" "}
-                      or continue via WhatsApp.
-                    </p>
-                  </div>
-                )}
                 <div className="mt-10 flex flex-col-reverse gap-3 border-t border-[#E8DDD0] pt-6 sm:flex-row sm:justify-between">
                   <button
                     type="button"
@@ -605,7 +578,6 @@ function StepContent({
             {...props}
             name="securityInstructions"
             label="Security or gate instructions"
-            hint="Please do not include alarm codes at this stage."
             wide
           />
           <TextArea {...props} name="parking" label="Parking instructions" />
@@ -650,12 +622,7 @@ function StepContent({
             options={["No", "Yes", "Not sure"]}
           />
           <TextArea {...props} name="offLimits" label="Off-limits rooms or cupboards" />
-          <TextArea
-            {...props}
-            name="fragileItems"
-            label="Fragile surfaces or items"
-            hint="General areas only—do not provide detailed valuables information."
-          />
+          <TextArea {...props} name="fragileItems" label="Fragile surfaces or items" />
           <TextArea {...props} name="restrictions" label="Product restrictions" />
           <TextArea {...props} name="allergies" label="Allergies or sensitivities" />
         </div>
@@ -672,8 +639,8 @@ function StepContent({
           <Upload className="mx-auto h-7 w-7 text-[#9A742E]" />
           <p className="mt-3 font-semibold text-[#5A1425]">Optional reference photos</p>
           <p className="mx-auto mt-2 max-w-lg text-sm leading-6 text-[#695E59]">
-            Choose clear photos of rooms or areas needing attention. Avoid people, identity
-            documents, keys, access codes and valuables. JPG, PNG or HEIC, up to 10 MB each.
+            Choose clear photos of rooms or areas needing attention. JPG, PNG or HEIC, up to 10 MB
+            each.
           </p>
           <label className={`${secondaryButton} mt-4 cursor-pointer`}>
             <Upload className="h-4 w-4" /> Choose photos
@@ -949,10 +916,6 @@ function Review({
           {errors.consent}
         </p>
       )}
-      <Notice>
-        Sensitive access details, alarm information and valuables information should not be sent
-        through WhatsApp.
-      </Notice>
     </div>
   );
 }

@@ -74,17 +74,17 @@ export function LocationPageLayout({ location }: { location: LocationPage }) {
               <div className="mb-8 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
                 <div>
                   <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#9A7132]">
-                    Around {location.name}
+                    {location.name} and nearby
                   </p>
                   <h2
                     id="local-gallery-heading"
                     className="mt-3 text-3xl font-semibold tracking-tight text-[#5A1425]"
                   >
-                    A glimpse of the local area
+                    A glimpse of the area
                   </h2>
                 </div>
                 <p className="max-w-xl text-sm leading-6 text-[#695E59]">
-                  These photographs show the actual local area and are included for geographic context.
+                  These photographs show {location.name} or its surrounding local vicinity and are included for geographic context.
                 </p>
               </div>
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">

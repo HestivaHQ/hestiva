@@ -54,9 +54,6 @@ jobs:
       - name: Production build
         run: bun run build
 
-      - name: Diagnose TanStack server function IDs
-        run: node scripts/diagnose-server-function-ids.mjs
-
       - name: Runtime SEO verification
         run: bun run verify:seo
 

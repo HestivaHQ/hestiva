@@ -1,12 +1,17 @@
 const WINDOW_MS = 15 * 60 * 1000;
 const MAX_SUBMISSIONS = 5;
 const buckets = new Map<string, { count: number; resetsAt: number }>();
-const isolateSalt = crypto.randomUUID();
+let isolateSalt: string | undefined;
+
+function getIsolateSalt() {
+  isolateSalt ??= crypto.randomUUID();
+  return isolateSalt;
+}
 
 async function hashIdentity(identity: string) {
   const bytes = await crypto.subtle.digest(
     "SHA-256",
-    new TextEncoder().encode(`${isolateSalt}|${identity}`),
+    new TextEncoder().encode(`${getIsolateSalt()}|${identity}`),
   );
   return Array.from(new Uint8Array(bytes), (byte) => byte.toString(16).padStart(2, "0")).join("");
 }

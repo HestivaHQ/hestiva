@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import { BRAND_ASSETS, SITE_NAME, TAGLINE } from "@/lib/site";
 
@@ -90,37 +89,32 @@ export function Navbar() {
         </button>
       </div>
 
-      <AnimatePresence>
-        {open && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            id="mobile-navigation"
-            className="overflow-hidden border-b border-[#C9A45B]/20 bg-[#3B0F1A]/95 backdrop-blur-md lg:hidden"
-          >
-            <div className="flex flex-col gap-4 px-6 py-5">
-              {navLinks.map((link) => (
-                <a
-                  key={link.href}
-                  href={link.href}
-                  onClick={() => setOpen(false)}
-                  className="rounded-sm py-2 text-sm font-medium uppercase tracking-wider text-[#F5F1E8]/80 transition-colors hover:text-[#C9A45B] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A45B]"
-                >
-                  {link.label}
-                </a>
-              ))}
+      {open && (
+        <div
+          id="mobile-navigation"
+          className="overflow-hidden border-b border-[#C9A45B]/20 bg-[#3B0F1A]/95 backdrop-blur-md lg:hidden"
+        >
+          <div className="flex flex-col gap-4 px-6 py-5">
+            {navLinks.map((link) => (
               <a
-                href="/#contact"
+                key={link.href}
+                href={link.href}
                 onClick={() => setOpen(false)}
-                className="mt-1 rounded-lg bg-[#C9A45B] px-5 py-3 text-center text-sm font-semibold uppercase tracking-[0.14em] text-[#3B0F1A] transition-colors duration-300 hover:bg-[#D8B970] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F5F1E8]"
+                className="rounded-sm py-2 text-sm font-medium uppercase tracking-wider text-[#F5F1E8]/80 transition-colors hover:text-[#C9A45B] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A45B]"
               >
-                Get a Quote
+                {link.label}
               </a>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+            ))}
+            <a
+              href="/#contact"
+              onClick={() => setOpen(false)}
+              className="mt-1 rounded-lg bg-[#C9A45B] px-5 py-3 text-center text-sm font-semibold uppercase tracking-[0.14em] text-[#3B0F1A] transition-colors duration-300 hover:bg-[#D8B970] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F5F1E8]"
+            >
+              Get a Quote
+            </a>
+          </div>
+        </div>
+      )}
     </nav>
   );
 }

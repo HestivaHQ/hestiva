@@ -1,4 +1,3 @@
-import { motion } from "framer-motion";
 import { ArrowRight, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -7,12 +6,7 @@ export function HeroSection() {
     <section className="relative mt-20 overflow-hidden bg-[#F8F3E8]">
       <div className="pointer-events-none absolute -left-32 top-24 h-80 w-80 rounded-full bg-[#C9A45B]/10 blur-3xl" />
       <div className="relative mx-auto grid min-h-[calc(100vh-5rem)] max-w-7xl items-center gap-12 px-6 py-16 lg:grid-cols-[0.82fr_1.18fr] lg:gap-16 lg:py-20">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-          className="max-w-2xl"
-        >
+        <div className="max-w-2xl">
           <div className="mb-7 flex items-center gap-3">
             <span className="flex h-9 w-9 items-center justify-center rounded-full border border-[#C9A45B]/40 bg-white/60">
               <Sparkles className="h-4 w-4 text-[#9A7132]" aria-hidden="true" />
@@ -50,14 +44,9 @@ export function HeroSection() {
               </a>
             </Button>
           </div>
-        </motion.div>
+        </div>
 
-        <motion.div
-          initial={{ opacity: 0, x: 30 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.8, delay: 0.15, ease: "easeOut" }}
-          className="relative mx-auto w-full max-w-2xl lg:max-w-none"
-        >
+        <div className="relative mx-auto w-full max-w-2xl lg:max-w-none">
           <div className="absolute -right-4 -top-4 h-full w-full rounded-[2rem] border border-[#C9A45B]/50 sm:-right-6 sm:-top-6" />
           <div className="relative overflow-hidden rounded-[2rem] bg-[#EDE2CF] shadow-[0_24px_60px_rgba(59,15,26,0.16)]">
             <img
@@ -70,7 +59,7 @@ export function HeroSection() {
               className="aspect-[4/3] h-full w-full object-cover lg:aspect-[5/4]"
             />
           </div>
-        </motion.div>
+        </div>
       </div>
     </section>
   );

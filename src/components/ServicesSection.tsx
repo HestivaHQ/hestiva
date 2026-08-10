@@ -1,4 +1,3 @@
-import { motion } from "framer-motion";
 import {
   Bath,
   BedDouble,
@@ -101,12 +100,7 @@ export function ServicesSection() {
       aria-labelledby="services-heading"
     >
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="mx-auto mb-16 max-w-3xl text-center lg:mb-20"
-        >
+        <div className="mx-auto mb-16 max-w-3xl text-center lg:mb-20">
           <span className="text-xs font-semibold uppercase tracking-[0.28em] text-[#9A7132]">
             Care for Every Home
           </span>
@@ -120,16 +114,12 @@ export function ServicesSection() {
             From dependable weekly care to a detailed home refresh, choose the service that suits
             your space, routine and priorities.
           </p>
-        </motion.div>
+        </div>
 
         <div className="grid items-stretch gap-6 md:grid-cols-2 lg:grid-cols-3 lg:gap-7">
-          {services.map((service, index) => (
-            <motion.article
+          {services.map((service) => (
+            <article
               key={service.title}
-              initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: Math.min(index * 0.04, 0.24) }}
               className="group h-full rounded-2xl border border-[#E7DCC9] bg-[#FFFDF8] p-7 shadow-[0_8px_24px_rgba(59,15,26,0.04)] transition-transform duration-300 hover:-translate-y-1 sm:p-8"
             >
               <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-full border border-[#C9A45B]/30 bg-[#F8F3E8]">
@@ -139,7 +129,7 @@ export function ServicesSection() {
                 {service.title}
               </h3>
               <p className="mt-3 text-[0.95rem] leading-7 text-[#6D5B55]">{service.description}</p>
-            </motion.article>
+            </article>
           ))}
         </div>
       </div>

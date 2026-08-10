@@ -302,7 +302,7 @@ function syncKeyHandover() {
   textarea.id = "field-keyHandoverDetails";
   textarea.rows = 3;
   textarea.className =
-    "mt-2 min-h-12 w-full resize-y rounded-xl border border-[#CDBFB1] bg-white px-4 py-3 text-base text-[#342C2A] shadow-sm outline-none transition placeholder:text-[#8B7E77] hover:border-[#A8938[...]
+    "mt-2 min-h-12 w-full resize-y rounded-xl border border-[#CDBFB1] bg-white px-4 py-3 text-base text-[#342C2A] shadow-sm outline-none transition placeholder:text-[#8B7E77] hover:border-[#A8938B] focus:border-[#8B7E77] focus:shadow-[0px_2px_4px_rgba(128,110,102,0.25)] focus:ring-0 disabled:cursor-not-allowed disabled:bg-[#F5F5F5] disabled:opacity-50";
   textarea.placeholder = "Tell us how the key or access will be handed over.";
   textarea.value = quoteValues.keyHandoverDetails || "";
   textarea.addEventListener("input", () => {
@@ -436,9 +436,7 @@ function syncProgressiveFields() {
     document.querySelector<HTMLSelectElement>("#field-livingAreas")?.value ||
     "";
   const storeys =
-    quoteValues.storeys ||
-    document.querySelector<HTMLSelectElement>("#field-storeys")?.value ||
-    "";
+    quoteValues.storeys || document.querySelector<HTMLSelectElement>("#field-storeys")?.value || "";
   const exactFloor =
     quoteValues.unitFloorExact ||
     document.querySelector<HTMLSelectElement>("#field-unitFloorExact")?.value ||
@@ -711,7 +709,11 @@ async function fileToBase64(original: File) {
   for (let offset = 0; offset < bytes.length; offset += 0x8000) {
     binary += String.fromCharCode(...bytes.subarray(offset, offset + 0x8000));
   }
-  return { name: file.name, type: file.type || "application/octet-stream", base64: btoa(binary) };
+  return {
+    name: file.name,
+    type: file.type || "application/octet-stream",
+    base64: btoa(binary),
+  };
 }
 
 async function sendQuoteForm(button: HTMLButtonElement) {

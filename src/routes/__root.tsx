@@ -2,7 +2,6 @@ import { Outlet, Link, createRootRoute, HeadContent, Scripts } from "@tanstack/r
 
 import appCss from "../styles.css?url";
 import { LiveFormSubmission } from "@/components/LiveFormSubmission";
-import { ServerFunctionProbe } from "@/components/ServerFunctionProbe";
 import { BRAND_ASSETS } from "@/lib/site";
 
 function NotFoundComponent() {
@@ -75,7 +74,6 @@ function RootComponent() {
         Skip to main content
       </a>
       <LiveFormSubmission />
-      <ServerFunctionProbe />
       <div id="main-content" tabIndex={-1}>
         <Outlet />
       </div>

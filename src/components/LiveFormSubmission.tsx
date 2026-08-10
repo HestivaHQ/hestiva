@@ -14,6 +14,62 @@ function propertyNeedsUnitAccess(type: string) {
   return type === "Apartment" || type === "Townhouse";
 }
 
+function tomorrowDateValue() {
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  const year = tomorrow.getFullYear();
+  const month = String(tomorrow.getMonth() + 1).padStart(2, "0");
+  const day = String(tomorrow.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
+function serviceFrequencyOptions(service: string) {
+  if (service === "Move-In Cleaning" || service === "Move-Out Cleaning") return ["One-time"];
+  if (service === "Deep Cleaning") return ["One-time", "Monthly", "Custom"];
+  return ["One-time", "Weekly", "Every two weeks", "Monthly", "Custom"];
+}
+
+function replaceSelectOptions(select: HTMLSelectElement, options: string[], placeholder: string) {
+  const current = select.value;
+  select.replaceChildren();
+  const first = document.createElement("option");
+  first.value = "";
+  first.textContent = placeholder;
+  select.appendChild(first);
+  for (const value of options) {
+    const option = document.createElement("option");
+    option.value = value;
+    option.textContent = value;
+    select.appendChild(option);
+  }
+  select.value = options.includes(current) ? current : "";
+}
+
+function syncServiceFrequency() {
+  const service = document.querySelector<HTMLSelectElement>("#field-service");
+  const frequency = document.querySelector<HTMLSelectElement>("#field-frequency");
+  if (!service || !frequency) return;
+
+  const allowed = serviceFrequencyOptions(service.value);
+  const signature = `${service.value}:${allowed.join("|")}`;
+  if (frequency.dataset.optionSignature !== signature) {
+    replaceSelectOptions(frequency, allowed, service.value ? "Select frequency" : "Select service first");
+    frequency.dataset.optionSignature = signature;
+    quoteValues.frequency = frequency.value;
+  }
+  frequency.disabled = !service.value;
+}
+
+function syncDateRules() {
+  const minimum = tomorrowDateValue();
+  for (const id of ["field-preferredDate", "field-alternativeDate"]) {
+    const input = document.querySelector<HTMLInputElement>(`#${id}`);
+    if (!input) continue;
+    input.min = minimum;
+    if (input.value && input.value < minimum) input.value = "";
+  }
+}
+
 function syncUnitAccessFields() {
   if (window.location.pathname !== "/quote") return;
   const propertyType =
@@ -43,13 +99,12 @@ function syncUnitAccessFields() {
     const select = document.createElement("select");
     select.id = id;
     select.className = originalFloor.className;
-    select.innerHTML = `<option value="">${placeholder}</option>${values
-      .map((value) => `<option value="${value}">${value}</option>`)
-      .join("")}`;
+    replaceSelectOptions(select, values, placeholder);
     const key = fieldName(id);
     select.value = quoteValues[key] || "";
     select.addEventListener("change", () => {
       quoteValues[key] = select.value;
+      syncProgressiveFields();
     });
     label.appendChild(select);
     return label;
@@ -58,16 +113,150 @@ function syncUnitAccessFields() {
   wrapper.append(
     makeSelect("field-unitFloorExact", "Exact unit floor / level", "Select exact floor", [
       "Ground floor",
-      ...Array.from({ length: 50 }, (_, i) => `Floor ${i + 1}`),
+      ...Array.from({ length: 50 }, (_, index) => `Floor ${index + 1}`),
     ]),
     makeSelect("field-buildingAccess", "Access to the unit", "Select access type", [
       "Elevator available",
       "Stairs only",
       "Elevator and stairs",
-      "Not sure",
     ]),
   );
   originalLabel.insertAdjacentElement("afterend", wrapper);
+}
+
+function syncEstateAccess() {
+  const select = document.querySelector<HTMLSelectElement>("#field-complexAccess");
+  if (!select) return;
+  if (!Array.from(select.options).some((option) => option.value === "Access code")) {
+    const option = document.createElement("option");
+    option.value = "Access code";
+    option.textContent = "Access code";
+    select.appendChild(option);
+  }
+
+  let notice = document.querySelector<HTMLElement>("#access-code-day-notice");
+  if (select.value === "Access code") {
+    if (!notice) {
+      notice = document.createElement("p");
+      notice.id = "access-code-day-notice";
+      notice.className = "sm:col-span-2 text-sm leading-6 text-[#695E59]";
+      notice.textContent =
+        "You can send Hestiva the access code on the day of the visit once the booking is confirmed.";
+      select.closest("label")?.insertAdjacentElement("afterend", notice);
+    }
+  } else {
+    notice?.remove();
+  }
+}
+
+function syncRequiredChoiceField(
+  field: "restrictions" | "allergies",
+  labelText: string,
+  detailsLabel: string,
+) {
+  const original = document.querySelector<HTMLTextAreaElement>(`#field-${field}`);
+  const originalLabel = original?.closest("label") as HTMLElement | null;
+  if (!original || !originalLabel) return;
+  originalLabel.style.display = "none";
+
+  let wrapper = document.querySelector<HTMLElement>(`#quote-${field}-choice`);
+  if (!wrapper) {
+    wrapper = document.createElement("div");
+    wrapper.id = `quote-${field}-choice`;
+    wrapper.className = "text-sm font-semibold text-[#4A3435]";
+    wrapper.innerHTML = `<label for="field-${field}Choice">${labelText} <span aria-hidden="true" class="text-[#9B3349]">*</span></label>`;
+
+    const select = document.createElement("select");
+    select.id = `field-${field}Choice`;
+    select.className = original.className.replace("resize-y", "");
+    replaceSelectOptions(select, ["None", "Yes — add details"], "Select an option");
+    wrapper.appendChild(select);
+
+    const details = document.createElement("textarea");
+    details.id = `field-${field}Details`;
+    details.rows = 3;
+    details.className = original.className;
+    details.placeholder = detailsLabel;
+    details.style.display = "none";
+    wrapper.appendChild(details);
+
+    const updateValue = () => {
+      details.style.display = select.value === "Yes — add details" ? "block" : "none";
+      if (select.value === "None") quoteValues[field] = "None";
+      else if (select.value === "Yes — add details") quoteValues[field] = details.value.trim();
+      else quoteValues[field] = "";
+      syncProgressiveFields();
+    };
+    select.addEventListener("change", updateValue);
+    details.addEventListener("input", updateValue);
+    originalLabel.insertAdjacentElement("afterend", wrapper);
+  }
+}
+
+function syncPhotoLimitCopy() {
+  document.querySelectorAll<HTMLParagraphElement>("#quote-form p").forEach((paragraph) => {
+    if (paragraph.textContent?.includes("Attach up to 3 clear photos")) {
+      paragraph.textContent = paragraph.textContent.replace("Attach up to 3", "Attach up to 10");
+    }
+  });
+}
+
+function setDisabled(id: string, disabled: boolean) {
+  const element = document.querySelector<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>(
+    `#${id}`,
+  );
+  if (element) element.disabled = disabled;
+}
+
+function syncProgressiveFields() {
+  const propertyType = quoteValues.propertyType ||
+    document.querySelector<HTMLSelectElement>("#field-propertyType")?.value || "";
+  const floorSize = quoteValues.floorSize ||
+    document.querySelector<HTMLSelectElement>("#field-floorSize")?.value || "";
+  const bedrooms = quoteValues.bedrooms ||
+    document.querySelector<HTMLSelectElement>("#field-bedrooms")?.value || "";
+  const bathrooms = quoteValues.bathrooms ||
+    document.querySelector<HTMLSelectElement>("#field-bathrooms")?.value || "";
+  const livingAreas = quoteValues.livingAreas ||
+    document.querySelector<HTMLSelectElement>("#field-livingAreas")?.value || "";
+
+  setDisabled("field-floorSize", !propertyType);
+  setDisabled("field-bedrooms", !floorSize);
+  setDisabled("field-bathrooms", !bedrooms);
+  setDisabled("field-livingAreas", !bathrooms);
+  setDisabled("field-storeys", !livingAreas);
+  setDisabled("field-unitFloorExact", !livingAreas);
+  setDisabled("field-buildingAccess", !quoteValues.unitFloorExact);
+  setDisabled("field-frequency", !quoteValues.service);
+  setDisabled("field-condition", !quoteValues.frequency);
+  setDisabled("field-preferredTime", !quoteValues.preferredDate);
+  setDisabled("field-flexibility", !quoteValues.preferredTime);
+  setDisabled("field-urgency", !quoteValues.flexibility);
+  setDisabled("field-keyHandover", !quoteValues.complexAccess);
+  setDisabled("field-present", !quoteValues.keyHandover);
+  setDisabled("field-pets", !quoteValues.present);
+  setDisabled("field-petTemperament", !quoteValues.petType);
+  setDisabled("field-allergiesChoice", !quoteValues.restrictionsChoice);
+}
+
+function syncQuoteEnhancements() {
+  if (window.location.pathname !== "/quote") return;
+  syncUnitAccessFields();
+  syncServiceFrequency();
+  syncDateRules();
+  syncEstateAccess();
+  syncRequiredChoiceField(
+    "restrictions",
+    "Product restrictions",
+    "Tell us which products or ingredients should not be used.",
+  );
+  syncRequiredChoiceField(
+    "allergies",
+    "Allergies or sensitivities",
+    "Tell us about the allergy or sensitivity.",
+  );
+  syncPhotoLimitCopy();
+  syncProgressiveFields();
 }
 
 function rememberVisibleQuoteFields() {
@@ -87,6 +276,55 @@ function rememberVisibleQuoteFields() {
       if (checkbox.checked) quoteAddons.add(label);
       else quoteAddons.delete(label);
     });
+}
+
+function currentStepTitle() {
+  return document.querySelector<HTMLHeadingElement>("#quote-form h2")?.textContent?.trim() || "";
+}
+
+function validateQuoteStep() {
+  const step = currentStepTitle();
+  if (step === "Your Home") {
+    const property = document.querySelector<HTMLSelectElement>("#field-propertyType");
+    if (!property?.value) {
+      property?.focus();
+      return false;
+    }
+  }
+
+  if (step === "Preferred Visit") {
+    const minimum = tomorrowDateValue();
+    for (const id of ["field-preferredDate", "field-alternativeDate"]) {
+      const input = document.querySelector<HTMLInputElement>(`#${id}`);
+      if (input?.value && input.value < minimum) {
+        input.setCustomValidity("Choose a date from tomorrow onwards.");
+        input.reportValidity();
+        input.setCustomValidity("");
+        return false;
+      }
+    }
+  }
+
+  if (step === "Access and Household Details") {
+    for (const field of ["restrictions", "allergies"] as const) {
+      const select = document.querySelector<HTMLSelectElement>(`#field-${field}Choice`);
+      const details = document.querySelector<HTMLTextAreaElement>(`#field-${field}Details`);
+      if (!select?.value) {
+        select?.setCustomValidity("Please select an option.");
+        select?.reportValidity();
+        select?.setCustomValidity("");
+        return false;
+      }
+      if (select.value === "Yes — add details" && !details?.value.trim()) {
+        details?.setCustomValidity("Please add the details.");
+        details?.reportValidity();
+        details?.setCustomValidity("");
+        return false;
+      }
+    }
+  }
+
+  return true;
 }
 
 function setButtonState(button: HTMLButtonElement, text: string, disabled: boolean) {
@@ -146,6 +384,8 @@ async function fileToBase64(original: File) {
 
 async function sendQuoteForm(button: HTMLButtonElement) {
   rememberVisibleQuoteFields();
+  if (!validateQuoteStep()) return;
+
   const consent = Array.from(
     document.querySelectorAll<HTMLInputElement>('#quote-form input[type="checkbox"]'),
   ).find((checkbox) => checkbox.closest("label")?.textContent?.includes("I consent"));
@@ -272,21 +512,31 @@ export function LiveFormSubmission() {
     const remember = () => {
       if (window.location.pathname === "/quote") {
         rememberVisibleQuoteFields();
-        window.setTimeout(syncUnitAccessFields, 0);
+        window.setTimeout(syncQuoteEnhancements, 0);
       }
     };
-    const observer = new MutationObserver(syncUnitAccessFields);
+
+    const observer = new MutationObserver(syncQuoteEnhancements);
     const quoteRoot = document.getElementById("quote-form");
     if (quoteRoot) observer.observe(quoteRoot, { childList: true, subtree: true });
-    syncUnitAccessFields();
+    syncQuoteEnhancements();
 
     const onClick = (event: MouseEvent) => {
       const button = (event.target as HTMLElement | null)?.closest(
         "button",
       ) as HTMLButtonElement | null;
       if (!button) return;
+
       if (window.location.pathname === "/quote") {
         rememberVisibleQuoteFields();
+        syncQuoteEnhancements();
+
+        if (button.textContent?.includes("Continue") && !validateQuoteStep()) {
+          event.preventDefault();
+          event.stopPropagation();
+          return;
+        }
+
         if (button.textContent?.includes("Send Request")) {
           event.preventDefault();
           event.stopPropagation();
@@ -294,6 +544,7 @@ export function LiveFormSubmission() {
         }
       }
     };
+
     const onSubmit = (event: SubmitEvent) => {
       if (window.location.pathname !== "/contact") return;
       const form = event.target as HTMLFormElement;

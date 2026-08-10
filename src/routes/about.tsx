@@ -9,6 +9,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { Footer } from "@/components/Footer";
+import { FounderSection } from "@/components/FounderSection";
 import { Navbar } from "@/components/Navbar";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { createSeoHead } from "@/lib/seo";
@@ -160,6 +161,8 @@ function AboutPage() {
             </div>
           </div>
         </section>
+
+        <FounderSection />
 
         <section aria-labelledby="principles-heading" className="bg-[#FFFDF8] px-6 py-20 md:py-28">
           <div className="mx-auto max-w-7xl">

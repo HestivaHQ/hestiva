@@ -26,18 +26,6 @@ function getSubmittedAt() {
   });
 }
 
-function isCloudflarePreview() {
-  return (getRequestHeader("host")?.toLowerCase() ?? "").endsWith(".workers.dev");
-}
-
-function previewFailure(stage: PublicSubmissionError["category"] | "validation" | "unexpected") {
-  if (isCloudflarePreview()) {
-    return { success: false as const, diagnosticStage: stage };
-  }
-
-  return { success: false as const };
-}
-
 export const submitContactForm = createServerFn({ method: "POST" })
   .validator((data: unknown) => data)
   .handler(async ({ data }) => {
@@ -45,7 +33,7 @@ export const submitContactForm = createServerFn({ method: "POST" })
       const parsed = contactSchema.safeParse(data);
       if (!parsed.success) {
         console.error({ event: "form_submission_rejected", stage: "validation" });
-        return previewFailure("validation");
+        return { success: false as const };
       }
 
       const submission = parsed.data;
@@ -101,10 +89,10 @@ export const submitContactForm = createServerFn({ method: "POST" })
     } catch (error) {
       if (error instanceof PublicSubmissionError) {
         console.error({ event: "form_submission_rejected", stage: error.category });
-        return previewFailure(error.category);
+        return { success: false as const };
       }
 
       console.error({ event: "form_submission_rejected", stage: "unexpected" });
-      return previewFailure("unexpected");
+      return { success: false as const };
     }
   });

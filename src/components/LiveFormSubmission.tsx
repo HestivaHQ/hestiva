@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { submitContactForm } from "@/lib/contact.functions";
+import { isSuccessfulSubmissionResult } from "@/lib/submission-result";
 
 const quoteValues: Record<string, string> = {};
 const quoteAddons = new Set<string>();
@@ -17,12 +18,14 @@ function rememberVisibleQuoteFields() {
       quoteValues[fieldName(element.id)] = element.value.trim();
     });
 
-  document.querySelectorAll<HTMLInputElement>('#quote-form input[type="checkbox"]').forEach((checkbox) => {
-    const label = checkbox.closest("label")?.querySelector("span")?.textContent?.trim();
-    if (!label || label.startsWith("I consent")) return;
-    if (checkbox.checked) quoteAddons.add(label);
-    else quoteAddons.delete(label);
-  });
+  document
+    .querySelectorAll<HTMLInputElement>('#quote-form input[type="checkbox"]')
+    .forEach((checkbox) => {
+      const label = checkbox.closest("label")?.querySelector("span")?.textContent?.trim();
+      if (!label || label.startsWith("I consent")) return;
+      if (checkbox.checked) quoteAddons.add(label);
+      else quoteAddons.delete(label);
+    });
 }
 
 function setButtonState(button: HTMLButtonElement, text: string, disabled: boolean) {
@@ -93,7 +96,7 @@ async function sendQuoteForm(button: HTMLButtonElement) {
 
   setButtonState(button, "Sending…", true);
   try {
-    await submitContactForm({
+    const result = await submitContactForm({
       data: {
         name,
         phone,
@@ -106,16 +109,15 @@ async function sendQuoteForm(button: HTMLButtonElement) {
         description,
         preferredContact: quoteValue("contactMethod", "Not specified"),
         urgency: quoteValue("urgency", "Not specified"),
-        quoteReference: "",
         files: [],
         website: "",
-        elapsedMs: 5000,
       },
     });
+    if (!isSuccessfulSubmissionResult(result)) throw new Error("Submission was not acknowledged");
     setButtonState(button, "Request Sent", true);
     window.alert("Your request has been sent successfully. A confirmation email is on its way.");
-  } catch (error) {
-    console.error("Quote submission failed", error);
+  } catch {
+    console.error("Quote submission failed");
     setButtonState(button, button.dataset.originalText || "Send Request", false);
     window.alert("We could not send your request. Please try again or email quotes@hestiva.co.za.");
   }
@@ -126,7 +128,7 @@ async function sendContactForm(form: HTMLFormElement, button: HTMLButtonElement)
   const data = new FormData(form);
   setButtonState(button, "Sending…", true);
   try {
-    await submitContactForm({
+    const result = await submitContactForm({
       data: {
         name: String(data.get("fullName") || ""),
         phone: String(data.get("mobile") || ""),
@@ -139,17 +141,16 @@ async function sendContactForm(form: HTMLFormElement, button: HTMLButtonElement)
         description: String(data.get("message") || "General website enquiry"),
         preferredContact: String(data.get("preferredContact") || "Not specified"),
         urgency: "Not specified",
-        quoteReference: "",
         files: [],
-        website: "",
-        elapsedMs: 5000,
+        website: String(data.get("website") || ""),
       },
     });
+    if (!isSuccessfulSubmissionResult(result)) throw new Error("Submission was not acknowledged");
     setButtonState(button, "Request Sent", true);
     form.reset();
     window.alert("Your request has been sent successfully.");
-  } catch (error) {
-    console.error("Contact submission failed", error);
+  } catch {
+    console.error("Contact submission failed");
     setButtonState(button, button.dataset.originalText || "Send Request", false);
     window.alert("We could not send your request. Please try again or email quotes@hestiva.co.za.");
   }
@@ -162,7 +163,9 @@ export function LiveFormSubmission() {
     };
 
     const onClick = (event: MouseEvent) => {
-      const button = (event.target as HTMLElement | null)?.closest("button") as HTMLButtonElement | null;
+      const button = (event.target as HTMLElement | null)?.closest(
+        "button",
+      ) as HTMLButtonElement | null;
       if (!button) return;
 
       if (window.location.pathname === "/quote") {

@@ -131,6 +131,12 @@ Wrangler configuration.
 
 ## Operator guardrails
 
+- The current five-per-15-minute form throttle is isolate-scoped and best effort. Before claiming
+  global reliability, provision and review a Durable Object binding/migration and its deployment.
+- Before enabling Turnstile, create its widget for production and preview hosts, configure the
+  public site key, store its secret as an encrypted Worker secret, and deploy server-side
+  verification. Neither prerequisite was added to production by this hardening change.
+
 - Do not run a manual local production deploy as a routine release path.
 - Do not commit `.output/`, `.wrangler/`, dashboard values, tokens, or secrets.
 - Validate a PR before merging; then monitor the authoritative Cloudflare deployment in its

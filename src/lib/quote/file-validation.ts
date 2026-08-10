@@ -20,8 +20,10 @@ function sniffMime(bytes: Uint8Array): string | null {
   if (bytes.length < 4) return null;
 
   if (bytes[0] === 0xff && bytes[1] === 0xd8 && bytes[2] === 0xff) return "image/jpeg";
-  if (bytes[0] === 0x89 && bytes[1] === 0x50 && bytes[2] === 0x4e && bytes[3] === 0x47) return "image/png";
-  if (bytes[0] === 0x25 && bytes[1] === 0x50 && bytes[2] === 0x44 && bytes[3] === 0x46) return "application/pdf";
+  if (bytes[0] === 0x89 && bytes[1] === 0x50 && bytes[2] === 0x4e && bytes[3] === 0x47)
+    return "image/png";
+  if (bytes[0] === 0x25 && bytes[1] === 0x50 && bytes[2] === 0x44 && bytes[3] === 0x46)
+    return "application/pdf";
 
   if (bytes[0] === 0x50 && bytes[1] === 0x4b && bytes[2] === 0x03 && bytes[3] === 0x04) {
     return "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
@@ -57,19 +59,19 @@ export function validateQuoteAttachments(files: UploadedQuoteFile[]): QuoteAttac
     try {
       buffer = Uint8Array.from(atob(file.base64), (char) => char.charCodeAt(0));
     } catch {
-      console.warn("Skipping file with invalid base64:", file.name);
+      console.warn({ event: "attachment_rejected", category: "invalid_encoding" });
       continue;
     }
 
     if (buffer.byteLength === 0 || buffer.byteLength > MAX_BYTES) {
-      console.warn("Skipping file outside size limits:", file.name, buffer.byteLength);
+      console.warn({ event: "attachment_rejected", category: "size" });
       continue;
     }
 
     const sniffedMime = sniffMime(buffer);
 
     if (!sniffedMime || !ALLOWED_MIME.has(sniffedMime)) {
-      console.warn("Skipping file with disallowed or unverifiable content type:", file.name);
+      console.warn({ event: "attachment_rejected", category: "content_type" });
       continue;
     }
 

@@ -59,8 +59,9 @@ handles submissions, and calls the exported server function.
 `src/lib/contact.functions.ts` defines the `POST` TanStack Start server function. On the server it:
 
 1. validates input with Zod;
-2. performs the existing honeypot/minimum-time checks;
-3. hashes the request IP before the existing rate-limit stub logs it;
+2. rejects cross-origin requests and treats the honeypot only as a supplemental bot signal;
+3. applies a deterministic five-submissions-per-15-minutes throttle keyed only from Cloudflare's
+   `CF-Connecting-IP`, using an isolate-salted hash and never logging or retaining the raw address;
 4. validates attachment metadata/content;
 5. builds the administrative and customer email packages; and
 6. invokes the Resend adapter.
@@ -94,8 +95,22 @@ with `fetch`.
   crosses from the browser.
 - Zod and attachment validation constrain accepted server-function payloads. These controls do not
   replace authentication or authorization.
-- The honeypot and elapsed-time checks are implemented. The named rate-limit function is currently
-  a permissive stub and must not be represented as production rate limiting.
+- Strict Zod validation bounds every string, allows at most three attachments, caps each encoded
+  attachment at 14 MiB (10 MiB decoded), and rejects unknown fields. TanStack's server-function
+  abstraction does not expose a dependable raw `Content-Length` check here, so field boundaries are
+  the payload control.
+- Browser timing is no longer submitted or trusted. The honeypot is only a signal; same-origin and
+  server-side validation are authoritative controls.
+- The five-per-15-minute throttle is server-enforced but scoped to one Worker isolate. It is useful
+  best-effort resistance, **not globally reliable Cloudflare rate limiting**. Globally consistent
+  enforcement requires a separately provisioned Durable Object binding and migration; none was
+  invented in this change.
+- Turnstile is justified for this public email-generating endpoint, but activation requires a
+  Cloudflare widget/site key and encrypted secret. Operators must create a widget for production
+  and preview hostnames, expose only the site key, store the secret as a Worker secret, and add
+  server-side Siteverify enforcement in a follow-up. No fail-open placeholder is present.
+- Resend requests abort after 10 seconds. Provider bodies and network details are not returned to
+  clients; structured logs contain event/stage/category/status-class fields without customer PII.
 - No authentication or authorization layer is visible in the website source.
 - Supabase publishable/anonymous values are intended to be public; security for any future client
   access would depend on database authorization/RLS, which this baseline does not validate.

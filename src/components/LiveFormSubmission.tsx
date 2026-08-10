@@ -38,6 +38,10 @@ function quoteValue(name: string, fallback = "") {
   return quoteValues[name]?.trim() || fallback;
 }
 
+function isCloudflarePreviewClient() {
+  return window.location.hostname.endsWith(".workers.dev");
+}
+
 async function sendQuoteForm(button: HTMLButtonElement) {
   rememberVisibleQuoteFields();
 
@@ -94,10 +98,23 @@ async function sendQuoteForm(button: HTMLButtonElement) {
     ? details.map(([label, entry]) => `${label}: ${entry}`).join("\n")
     : "Residential cleaning quotation requested through the Hestiva website.";
 
-  setButtonState(button, "Sending…", true);
-  try {
-    const result = await submitContactForm({
-      data: {
+  const submissionData = isCloudflarePreviewClient()
+    ? {
+        name: name || "Preview Test",
+        phone: phone || "0680000000",
+        email: email || "quotes@hestiva.co.za",
+        service: "Residential Cleaning Quote",
+        jobType: "House",
+        multipleServices: [] as string[],
+        otherService: "",
+        propertyAddress: "Preview test address",
+        description: "Minimal Cloudflare preview payload test.",
+        preferredContact: "Email",
+        urgency: "Not specified",
+        files: [],
+        website: "",
+      }
+    : {
         name,
         phone,
         email,
@@ -111,8 +128,11 @@ async function sendQuoteForm(button: HTMLButtonElement) {
         urgency: quoteValue("urgency", "Not specified"),
         files: [],
         website: "",
-      },
-    });
+      };
+
+  setButtonState(button, "Sending…", true);
+  try {
+    const result = await submitContactForm({ data: submissionData });
     if (!isSuccessfulSubmissionResult(result)) throw new Error("Submission was not acknowledged");
     setButtonState(button, "Request Sent", true);
     window.alert("Your request has been sent successfully. A confirmation email is on its way.");

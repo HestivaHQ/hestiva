@@ -1,9 +1,6 @@
 name: Hestiva PR Check
 
 on:
-  push:
-    branches:
-      - agent/hestiva-rebrand
   pull_request:
     branches:
       - main

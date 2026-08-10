@@ -1,15 +1,10 @@
-import { motion } from "framer-motion";
 import { Heart, Home, Sparkles } from "lucide-react";
 
 export function AboutSection() {
   return (
     <section id="about" className="bg-[#F8F3E8] py-24" aria-labelledby="about-heading">
       <div className="mx-auto grid max-w-7xl gap-12 px-6 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
-        <motion.div
-          initial={{ opacity: 0, x: -20 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true }}
-        >
+        <div>
           <span className="text-xs font-semibold uppercase tracking-[0.3em] text-[#9A7132]">
             About Hestiva
           </span>
@@ -28,7 +23,7 @@ export function AboutSection() {
             Our promise is simple: dependable home care that feels personal, considered and
             consistently exceptional.
           </p>
-        </motion.div>
+        </div>
         <div className="grid gap-4 sm:grid-cols-3 lg:grid-cols-1">
           {[
             { icon: Heart, label: "Care in every detail" },

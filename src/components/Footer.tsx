@@ -36,7 +36,6 @@ export function Footer() {
             Thoughtful residential cleaning for beautifully cared-for homes.
           </p>
         </div>
-
         <nav aria-label="Footer navigation">
           <h2 className="text-xs font-semibold uppercase tracking-[0.18em] text-[#D8B970]">
             Explore
@@ -51,7 +50,6 @@ export function Footer() {
             ))}
           </ul>
         </nav>
-
         <div>
           <h2 className="text-xs font-semibold uppercase tracking-[0.18em] text-[#D8B970]">
             Contact
@@ -75,13 +73,12 @@ export function Footer() {
           </ul>
         </div>
       </div>
-
       <div className="border-t border-[#F5F1E8]/10">
         <div className="mx-auto flex max-w-7xl flex-col gap-3 px-6 py-4 text-xs text-[#F5F1E8]/55 sm:flex-row sm:items-center sm:justify-between">
           <p>
             © {new Date().getFullYear()} {SITE_NAME}. All rights reserved.
           </p>
-          <nav aria-label="Legal">
+          <nav aria-label="Legal and credits">
             <ul className="flex flex-wrap gap-x-5 gap-y-2">
               <li>
                 <Link to="/privacy" className={linkStyles}>
@@ -92,6 +89,11 @@ export function Footer() {
                 <Link to="/terms" className={linkStyles}>
                   Terms of Service
                 </Link>
+              </li>
+              <li>
+                <a href="/terms#image-credits" className={linkStyles}>
+                  Image Credits
+                </a>
               </li>
             </ul>
           </nav>

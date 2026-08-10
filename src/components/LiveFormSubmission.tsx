@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { submitContactForm } from "@/lib/contact.functions";
 import { isSuccessfulSubmissionResult } from "@/lib/submission-result";
+import { clearQuoteFiles, getQuoteFiles } from "@/lib/quote/client-upload-store";
 
 const quoteValues: Record<string, string> = {};
 const quoteAddons = new Set<string>();
@@ -38,6 +39,22 @@ function quoteValue(name: string, fallback = "") {
   return quoteValues[name]?.trim() || fallback;
 }
 
+async function fileToBase64(file: File) {
+  const bytes = new Uint8Array(await file.arrayBuffer());
+  let binary = "";
+  const chunkSize = 0x8000;
+
+  for (let offset = 0; offset < bytes.length; offset += chunkSize) {
+    binary += String.fromCharCode(...bytes.subarray(offset, offset + chunkSize));
+  }
+
+  return {
+    name: file.name,
+    type: file.type || "application/octet-stream",
+    base64: btoa(binary),
+  };
+}
+
 async function sendQuoteForm(button: HTMLButtonElement) {
   rememberVisibleQuoteFields();
 
@@ -49,12 +66,18 @@ async function sendQuoteForm(button: HTMLButtonElement) {
   const details = [
     ["Property type", quoteValue("propertyType")],
     ["Suburb", quoteValue("suburb")],
+    ["Postal code", quoteValue("postcode")],
     ["Address", quoteValue("address")],
+    ["GPS latitude", quoteValue("latitude")],
+    ["GPS longitude", quoteValue("longitude")],
+    ["GPS accuracy (metres)", quoteValue("locationAccuracy")],
+    ["GPS map", quoteValue("locationUrl")],
     ["Floor size", quoteValue("floorSize")],
     ["Bedrooms", quoteValue("bedrooms")],
     ["Bathrooms", quoteValue("bathrooms")],
     ["Living areas", quoteValue("livingAreas")],
     ["Storeys", quoteValue("storeys")],
+    ["Unit floor / level", quoteValue("unitFloor")],
     ["Outdoor area", quoteValue("outdoor")],
     ["Estate or complex", quoteValue("estate")],
     ["Frequency", quoteValue("frequency")],
@@ -74,7 +97,6 @@ async function sendQuoteForm(button: HTMLButtonElement) {
     ["Pets", quoteValue("pets")],
     ["Pet type", quoteValue("petType")],
     ["Pet temperament", quoteValue("petTemperament")],
-    ["Cameras", quoteValue("cameras")],
     ["Off-limits areas", quoteValue("offLimits")],
     ["Fragile items", quoteValue("fragileItems")],
     ["Product restrictions", quoteValue("restrictions")],
@@ -89,13 +111,16 @@ async function sendQuoteForm(button: HTMLButtonElement) {
   const name = quoteValue("fullName");
   const phone = quoteValue("mobile");
   const email = quoteValue("email");
-  const propertyAddress = [quoteValue("address"), quoteValue("suburb")].filter(Boolean).join(", ");
+  const propertyAddress = [quoteValue("address"), quoteValue("suburb"), quoteValue("postcode")]
+    .filter(Boolean)
+    .join(", ");
   const description = details.length
     ? details.map(([label, entry]) => `${label}: ${entry}`).join("\n")
     : "Residential cleaning quotation requested through the Hestiva website.";
 
   setButtonState(button, "Sending…", true);
   try {
+    const files = await Promise.all(getQuoteFiles().map(fileToBase64));
     const result = await submitContactForm({
       data: {
         name,
@@ -109,11 +134,12 @@ async function sendQuoteForm(button: HTMLButtonElement) {
         description,
         preferredContact: quoteValue("contactMethod", "Not specified"),
         urgency: quoteValue("urgency", "Not specified"),
-        files: [],
+        files,
         website: "",
       },
     });
     if (!isSuccessfulSubmissionResult(result)) throw new Error("Submission was not acknowledged");
+    clearQuoteFiles();
     setButtonState(button, "Request Sent", true);
     window.alert("Your request has been sent successfully. A confirmation email is on its way.");
   } catch {

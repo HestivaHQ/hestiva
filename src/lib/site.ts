@@ -78,7 +78,7 @@ export const siteConfig: SiteConfig = {
     ],
     legalName: null,
     registrationNumber: null,
-    address: "2962 Dunlin Drive, Riverlea, Johannesburg, 2093, South Africa",
+    address: null,
     operatingHours: null,
   },
   assets: {

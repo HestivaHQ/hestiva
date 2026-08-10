@@ -16,7 +16,7 @@ const linkStyles =
 export function Footer() {
   return (
     <footer className="border-t border-[#C9A45B]/30 bg-[#3B0F1A] text-[#F5F1E8]">
-      <div className="mx-auto grid max-w-7xl gap-8 px-6 py-9 sm:grid-cols-2 lg:grid-cols-[1.25fr_1fr_1fr_1.15fr] lg:gap-10">
+      <div className="mx-auto grid max-w-7xl gap-8 px-6 py-9 sm:grid-cols-2 lg:grid-cols-[1.25fr_1fr_1fr] lg:gap-10">
         <div>
           <Link
             to="/"
@@ -73,25 +73,6 @@ export function Footer() {
               </a>
             </li>
           </ul>
-        </div>
-
-        <div>
-          <h2 className="text-xs font-semibold uppercase tracking-[0.18em] text-[#D8B970]">
-            Business address
-          </h2>
-          <address className="mt-4 text-sm not-italic leading-6 text-[#F5F1E8]/75">
-            2962 Dunlin Drive
-            <br />
-            Riverlea
-            <br />
-            Johannesburg
-            <br />
-            2093
-          </address>
-          <p className="mt-2 text-xs leading-5 text-[#F5F1E8]/55">
-            Business address only; visits are by prior arrangement and it may not be a walk-in
-            location.
-          </p>
         </div>
       </div>
 

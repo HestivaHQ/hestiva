@@ -1,5 +1,5 @@
 import { createFileRoute, Link, Outlet, useRouterState } from "@tanstack/react-router";
-import { ArrowRight, Check, Home, MapPin, MessageCircle, Navigation } from "lucide-react";
+import { ArrowRight, Check, MapPin, MessageCircle, Navigation } from "lucide-react";
 import { Footer } from "@/components/Footer";
 import { Navbar } from "@/components/Navbar";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
@@ -308,50 +308,6 @@ function LocationsOverview() {
                 </li>
               ))}
             </ul>
-          </div>
-        </section>
-
-        <section aria-labelledby="business-address-heading" className="px-6 py-20 md:py-28">
-          <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[1fr_1.1fr] lg:items-center">
-            <div className="relative flex min-h-72 items-center justify-center overflow-hidden rounded-3xl border border-[#C9A45B]/30 bg-[#F7F0E3]">
-              <div
-                aria-hidden="true"
-                className="absolute h-52 w-52 rounded-full border border-[#C9A45B]/30"
-              />
-              <div className="relative text-center text-[#8A6729]">
-                <MapPin aria-hidden="true" className="mx-auto h-10 w-10" />
-                <span className="mt-4 block text-xs font-semibold uppercase tracking-[0.24em]">
-                  Riverlea, Johannesburg
-                </span>
-              </div>
-            </div>
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#9A742E]">
-                Hestiva business address
-              </p>
-              <h2
-                id="business-address-heading"
-                className="mt-4 text-3xl font-semibold tracking-tight text-[#5A1425] md:text-5xl"
-              >
-                Our home base
-              </h2>
-              <address className="mt-6 flex gap-4 text-lg not-italic leading-8 text-[#514946]">
-                <Home aria-hidden="true" className="mt-1 h-5 w-5 shrink-0 text-[#9A742E]" />
-                <span>
-                  2962 Dunlin Drive
-                  <br />
-                  Riverlea
-                  <br />
-                  Johannesburg
-                  <br />
-                  2093
-                </span>
-              </address>
-              <p className="mt-6 max-w-xl leading-7 text-[#695E59]">
-                This is Hestiva’s business address. It is not presented as a walk-in customer
-                location, so please contact us before planning a visit.
-              </p>
-            </div>
           </div>
         </section>
 

@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, Clock3, Mail, MapPin, MessageCircle, Phone, Send } from "lucide-react";
+import { ArrowRight, Clock3, Mail, MessageCircle, Phone, Send } from "lucide-react";
 import { Footer } from "@/components/Footer";
 import { Navbar } from "@/components/Navbar";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
@@ -116,7 +116,7 @@ function ContactPage() {
                 Choose the easiest way to reach us.
               </h2>
             </div>
-            <div className="mt-14 grid gap-px overflow-hidden rounded-lg border border-[#C9A45B]/30 bg-[#C9A45B]/30 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="mt-14 grid gap-px overflow-hidden rounded-lg border border-[#C9A45B]/30 bg-[#C9A45B]/30 sm:grid-cols-2 lg:grid-cols-3">
               <ContactCard icon={Phone} title="Phone and WhatsApp">
                 <a
                   href={phoneLink}
@@ -140,20 +140,6 @@ function ContactPage() {
                 >
                   info@hestiva.co.za
                 </a>
-              </ContactCard>
-              <ContactCard icon={MapPin} title="Business address">
-                <address className="not-italic leading-7 text-[#6D5B55]">
-                  2962 Dunlin Drive
-                  <br />
-                  Riverlea
-                  <br />
-                  Johannesburg
-                  <br />
-                  2093
-                </address>
-                <p className="mt-4 text-sm leading-6 text-[#5F4B46]">
-                  This is our business address and is not necessarily a walk-in customer location.
-                </p>
               </ContactCard>
             </div>
           </div>

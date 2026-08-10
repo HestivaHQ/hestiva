@@ -1,4 +1,4 @@
-const MAX_FILES = 3;
+const MAX_FILES = 10;
 const MAX_FILE_BYTES = 10 * 1024 * 1024;
 
 const ACCEPTED_MIME_TYPES = new Set([

@@ -50,7 +50,7 @@ export const contactSchema = z
     description: z.string().trim().min(2).max(5000),
     preferredContact: z.enum(["Phone", "Phone Call", "WhatsApp", "Email", "Not specified"]),
     urgency: z.string().trim().min(2).max(50),
-    files: z.array(fileSchema).max(3).optional().default([]),
+    files: z.array(fileSchema).max(10).optional().default([]),
     website: z.string().max(200).optional().default(""),
   })
   .strict();

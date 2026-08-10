@@ -26,6 +26,8 @@ export function Footer() {
             <img
               src={BRAND_ASSETS.logoWhite}
               alt={`${SITE_NAME} logo`}
+              width={1536}
+              height={1024}
               className="h-12 w-auto max-w-[180px] object-contain"
             />
           </Link>

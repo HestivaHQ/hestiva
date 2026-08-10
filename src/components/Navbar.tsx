@@ -46,6 +46,8 @@ export function Navbar() {
           <img
             src={BRAND_ASSETS.logoWhite}
             alt={`${SITE_NAME} logo`}
+            width={1536}
+            height={1024}
             className={`w-auto max-w-[180px] object-contain transition-[height] duration-300 ${scrolled ? "h-10 md:h-12" : "h-11 md:h-14"}`}
           />
           <span className="sr-only">{TAGLINE}</span>

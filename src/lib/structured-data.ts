@@ -35,6 +35,9 @@ export function createHomepageGraph(description: string): JsonLd {
         logo: canonicalUrl(BRAND_ASSETS.logoPrimary),
         image: canonicalUrl(BRAND_ASSETS.socialImage),
         description,
+        ...(siteConfig.business.email ? { email: siteConfig.business.email } : {}),
+        ...(siteConfig.business.phone ? { telephone: siteConfig.business.phone } : {}),
+        ...(siteConfig.business.address ? { address: siteConfig.business.address } : {}),
         areaServed: siteConfig.business.serviceAreas.map((name) => ({
           "@type": "Place",
           name,

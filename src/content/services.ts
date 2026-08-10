@@ -355,7 +355,7 @@ export const servicePages: ServicePage[] = [
     "eco-conscious-cleaning",
     "Eco-Conscious Cleaning",
     "Eco-Conscious Cleaning",
-    "A residential cleaning option for households that want product preferences, restrictions and sensitivities considered during quoting.",
+    "Residential cleaning with product preferences, restrictions and sensitivities recorded during quoting.",
     [
       "Preference-led product planning",
       "Reusable cloths where suitable",

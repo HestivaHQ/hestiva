@@ -66,13 +66,18 @@ async function sendQuoteForm(button: HTMLButtonElement) {
   const details = [
     ["Property type", quoteValue("propertyType")],
     ["Suburb", quoteValue("suburb")],
+    ["Postal code", quoteValue("postcode")],
     ["Address", quoteValue("address")],
+    ["GPS latitude", quoteValue("latitude")],
+    ["GPS longitude", quoteValue("longitude")],
+    ["GPS accuracy (metres)", quoteValue("locationAccuracy")],
     ["GPS map", quoteValue("locationUrl")],
     ["Floor size", quoteValue("floorSize")],
     ["Bedrooms", quoteValue("bedrooms")],
     ["Bathrooms", quoteValue("bathrooms")],
     ["Living areas", quoteValue("livingAreas")],
     ["Storeys", quoteValue("storeys")],
+    ["Unit floor / level", quoteValue("unitFloor")],
     ["Outdoor area", quoteValue("outdoor")],
     ["Estate or complex", quoteValue("estate")],
     ["Frequency", quoteValue("frequency")],
@@ -92,7 +97,6 @@ async function sendQuoteForm(button: HTMLButtonElement) {
     ["Pets", quoteValue("pets")],
     ["Pet type", quoteValue("petType")],
     ["Pet temperament", quoteValue("petTemperament")],
-    ["Cameras", quoteValue("cameras")],
     ["Off-limits areas", quoteValue("offLimits")],
     ["Fragile items", quoteValue("fragileItems")],
     ["Product restrictions", quoteValue("restrictions")],
@@ -107,7 +111,9 @@ async function sendQuoteForm(button: HTMLButtonElement) {
   const name = quoteValue("fullName");
   const phone = quoteValue("mobile");
   const email = quoteValue("email");
-  const propertyAddress = [quoteValue("address"), quoteValue("suburb")].filter(Boolean).join(", ");
+  const propertyAddress = [quoteValue("address"), quoteValue("suburb"), quoteValue("postcode")]
+    .filter(Boolean)
+    .join(", ");
   const description = details.length
     ? details.map(([label, entry]) => `${label}: ${entry}`).join("\n")
     : "Residential cleaning quotation requested through the Hestiva website.";

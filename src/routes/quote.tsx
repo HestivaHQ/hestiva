@@ -1,10 +1,9 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { createFileRoute } from "@tanstack/react-router";
+import { useMemo, useRef, useState } from "react";
 import {
   ArrowLeft,
   ArrowRight,
   Camera,
-  Check,
   ChevronDown,
   Home,
   Images,
@@ -26,6 +25,7 @@ import {
   getQuoteFiles,
   removeQuoteFile,
 } from "@/lib/quote/client-upload-store";
+import { reverseGeocodeLocation } from "@/lib/location.functions";
 
 const breadcrumbs = pageBreadcrumbs("Quote", "/quote");
 
@@ -61,12 +61,17 @@ const initialForm = {
   propertyType: "",
   suburb: "",
   address: "",
+  postcode: "",
+  latitude: "",
+  longitude: "",
+  locationAccuracy: "",
   locationUrl: "",
   floorSize: "",
   bedrooms: "",
   bathrooms: "",
   livingAreas: "",
   storeys: "",
+  unitFloor: "",
   outdoor: "",
   estate: "",
   service: "",
@@ -87,7 +92,6 @@ const initialForm = {
   pets: "",
   petType: "",
   petTemperament: "",
-  cameras: "",
   offLimits: "",
   fragileItems: "",
   restrictions: "",
@@ -110,10 +114,7 @@ type TextKey = Exclude<keyof FormData, "addons" | "consent">;
 const selectOptions = {
   propertyType: ["Apartment", "Townhouse", "House", "Duplex", "Other"],
   floorSize: ["Under 80 m²", "80–150 m²", "151–250 m²", "Over 250 m²", "Not sure"],
-  bedrooms: ["Studio", "1", "2", "3", "4", "5+"],
-  bathrooms: ["1", "2", "3", "4", "5+"],
   livingAreas: ["1", "2", "3", "4+"],
-  storeys: ["1 storey", "2 storeys", "3 storeys", "4+ storeys"],
   outdoor: ["None", "Balcony", "Patio", "Both"],
   estate: ["No", "Yes — estate", "Yes — complex", "Yes — gated community"],
   service: [
@@ -142,7 +143,46 @@ const selectOptions = {
     "Vacant property",
     "Move-in or move-out condition",
   ],
-};
+} as const;
+
+function bedroomOptions(propertyType: string): readonly string[] {
+  if (propertyType === "Apartment") return ["Studio", "1", "2", "3", "4", "5+", "Other"];
+  return ["1", "2", "3", "4", "5+", "Other"];
+}
+
+function bathroomOptions(bedrooms: string): readonly string[] {
+  if (bedrooms === "Studio" || bedrooms === "1") return ["1", "2"];
+  if (bedrooms === "2") return ["1", "2", "3"];
+  if (bedrooms === "3") return ["1", "2", "3", "4"];
+  if (bedrooms === "4" || bedrooms === "5+" || bedrooms === "Other")
+    return ["1", "2", "3", "4", "5+", "Other"];
+  return [];
+}
+
+function storeyOptions(propertyType: string): readonly string[] {
+  if (propertyType === "Apartment" || propertyType === "Duplex") return [];
+  if (propertyType === "Townhouse") return ["1 storey", "2 storeys", "3 storeys", "4+ storeys", "Not sure"];
+  return ["1 storey", "2 storeys", "3 storeys", "4+ storeys", "Not sure"];
+}
+
+function unitFloorOptions(propertyType: string): readonly string[] {
+  if (propertyType === "Apartment") {
+    return [
+      "Ground floor",
+      "1st floor",
+      "2nd floor",
+      "3rd floor",
+      "4th floor",
+      "5th–9th floor",
+      "10th floor or above",
+      "Not sure",
+    ];
+  }
+  if (propertyType === "Townhouse") {
+    return ["Ground-level unit", "1st floor", "2nd floor", "3rd floor or above", "Not sure"];
+  }
+  return [];
+}
 
 const addons = [
   "Inside oven",
@@ -204,7 +244,23 @@ function QuotePage() {
   const [fileError, setFileError] = useState<string | null>(null);
 
   const update = (key: TextKey, value: string) => {
-    setForm((current) => ({ ...current, [key]: value }));
+    setForm((current) => {
+      const next = { ...current, [key]: value };
+
+      if (key === "propertyType") {
+        if (!bedroomOptions(value).includes(current.bedrooms)) next.bedrooms = "";
+        if (value === "Apartment") next.storeys = "";
+        else if (value === "Duplex") next.storeys = "2 storeys";
+        else if (!storeyOptions(value).includes(current.storeys)) next.storeys = "";
+        if (!unitFloorOptions(value).includes(current.unitFloor)) next.unitFloor = "";
+      }
+
+      if (key === "bedrooms" && !bathroomOptions(value).includes(current.bathrooms)) {
+        next.bathrooms = "";
+      }
+
+      return next;
+    });
     setErrors((current) => ({ ...current, [key]: "" }));
   };
 
@@ -437,6 +493,9 @@ function StepContent({
   onRemoveFile: (index: number) => void;
 }) {
   const [locationStatus, setLocationStatus] = useState<string | null>(null);
+  const [locationBusy, setLocationBusy] = useState(false);
+  const cameraInputRef = useRef<HTMLInputElement>(null);
+  const galleryInputRef = useRef<HTMLInputElement>(null);
   const props = { form, update, errors };
 
   const useCurrentLocation = () => {
@@ -445,29 +504,54 @@ function StepContent({
       return;
     }
 
+    setLocationBusy(true);
     setLocationStatus("Requesting permission to use your current location…");
     navigator.geolocation.getCurrentPosition(
-      (position) => {
-        const latitude = position.coords.latitude.toFixed(6);
-        const longitude = position.coords.longitude.toFixed(6);
-        update("address", `Current location: ${latitude}, ${longitude}`);
-        update("locationUrl", `https://www.google.com/maps?q=${latitude},${longitude}`);
-        setLocationStatus(
-          `Current location added. Accuracy is approximately ${Math.round(position.coords.accuracy)} metres. You can still edit the address if needed.`,
-        );
+      async (position) => {
+        const latitude = position.coords.latitude;
+        const longitude = position.coords.longitude;
+        const latitudeText = latitude.toFixed(6);
+        const longitudeText = longitude.toFixed(6);
+        update("latitude", latitudeText);
+        update("longitude", longitudeText);
+        update("locationAccuracy", String(Math.round(position.coords.accuracy)));
+        update("locationUrl", `https://www.google.com/maps?q=${latitudeText},${longitudeText}`);
+
+        try {
+          setLocationStatus("Location found. Finding the nearest mapped address…");
+          const result = await reverseGeocodeLocation({ data: { latitude, longitude } });
+          if (result.address) update("address", result.address);
+          if (result.suburb) update("suburb", result.suburb);
+          if (result.postcode) update("postcode", result.postcode);
+          setLocationStatus(
+            "Location found and the address fields were filled automatically. Please check and correct them if needed. Your GPS coordinates will still be saved with the quote.",
+          );
+        } catch {
+          setLocationStatus(
+            "Your GPS coordinates were saved, but the address could not be filled automatically. Please enter or correct the address manually.",
+          );
+        } finally {
+          setLocationBusy(false);
+        }
       },
       (error) => {
         const message =
           error.code === error.PERMISSION_DENIED
-            ? "Location permission was not granted. You can enter the address manually or allow location access in your browser settings."
+            ? "Location permission was not granted. You can enter the address manually or allow location access in Chrome settings."
             : "We could not determine your current location. Please try again or enter the address manually.";
         setLocationStatus(message);
+        setLocationBusy(false);
       },
-      { enableHighAccuracy: true, timeout: 10_000, maximumAge: 60_000 },
+      { enableHighAccuracy: true, timeout: 12_000, maximumAge: 60_000 },
     );
   };
 
-  if (step === 0)
+  if (step === 0) {
+    const bedrooms = bedroomOptions(form.propertyType);
+    const bathrooms = bathroomOptions(form.bedrooms);
+    const storeys = storeyOptions(form.propertyType);
+    const unitFloors = unitFloorOptions(form.propertyType);
+
     return (
       <div className="grid gap-6 sm:grid-cols-2">
         <SelectField
@@ -477,29 +561,46 @@ function StepContent({
           options={selectOptions.propertyType}
           required
         />
-        <TextField {...props} name="suburb" label="Suburb" autoComplete="address-level2" required />
-        <div className="sm:col-span-2">
-          <TextField
-            {...props}
-            name="address"
-            label="Full service address"
-            autoComplete="street-address"
-            required
-          />
-          <input id="field-locationUrl" type="hidden" value={form.locationUrl} readOnly />
+
+        <div className="sm:col-span-2 rounded-xl border border-[#D8CCC0] bg-[#FBF7EF] p-4 sm:p-5">
+          <p className="text-sm font-semibold text-[#4A3435]">Current location (optional)</p>
+          <p className="mt-1 text-sm leading-6 text-[#695E59]">
+            Use your phone&apos;s location to fill the address below. You can edit the address before continuing.
+          </p>
           <button
             type="button"
             onClick={useCurrentLocation}
-            className={`${secondaryButton} mt-3 w-full sm:w-auto`}
+            disabled={locationBusy}
+            className={`${secondaryButton} mt-3 w-full sm:w-auto disabled:cursor-wait disabled:opacity-60`}
           >
-            <LocateFixed className="h-4 w-4" /> Use my current location
+            <LocateFixed className="h-4 w-4" />
+            {locationBusy ? "Finding location…" : "Use my current location"}
           </button>
           {locationStatus && (
             <p aria-live="polite" className="mt-3 text-sm leading-6 text-[#695E59]">
               {locationStatus}
             </p>
           )}
+          <p className="mt-2 text-xs text-[#756963]">
+            Address lookup data © OpenStreetMap contributors.
+          </p>
         </div>
+
+        <TextField {...props} name="suburb" label="Suburb" autoComplete="address-level2" required />
+        <TextField {...props} name="postcode" label="Postal code (optional)" autoComplete="postal-code" />
+        <TextField
+          {...props}
+          name="address"
+          label="Full service address"
+          autoComplete="street-address"
+          required
+          wide
+        />
+        <input id="field-latitude" type="hidden" value={form.latitude} readOnly />
+        <input id="field-longitude" type="hidden" value={form.longitude} readOnly />
+        <input id="field-locationAccuracy" type="hidden" value={form.locationAccuracy} readOnly />
+        <input id="field-locationUrl" type="hidden" value={form.locationUrl} readOnly />
+
         <SelectField
           {...props}
           name="floorSize"
@@ -511,15 +612,17 @@ function StepContent({
           {...props}
           name="bedrooms"
           label="Bedrooms"
-          options={selectOptions.bedrooms}
+          options={bedrooms}
           required
+          placeholder={form.propertyType ? "Select bedrooms" : "Select property type first"}
         />
         <SelectField
           {...props}
           name="bathrooms"
           label="Bathrooms"
-          options={selectOptions.bathrooms}
+          options={bathrooms}
           required
+          placeholder={form.bedrooms ? "Select bathrooms" : "Select bedrooms first"}
         />
         <SelectField
           {...props}
@@ -527,7 +630,27 @@ function StepContent({
           label="Living areas"
           options={selectOptions.livingAreas}
         />
-        <SelectField {...props} name="storeys" label="Storeys" options={selectOptions.storeys} />
+
+        {storeys.length > 0 && (
+          <SelectField {...props} name="storeys" label="Storeys in the home" options={storeys} />
+        )}
+        {form.propertyType === "Duplex" && (
+          <div className="text-sm font-semibold text-[#4A3435]">
+            Storeys in the home
+            <div className={`${inputClass} flex items-center bg-[#FBF7EF]`}>2 storeys</div>
+            <input id="field-storeys" type="hidden" value="2 storeys" readOnly />
+          </div>
+        )}
+        {unitFloors.length > 0 && (
+          <SelectField
+            {...props}
+            name="unitFloor"
+            label="Unit floor / level"
+            options={unitFloors}
+            placeholder="Select the floor or level"
+          />
+        )}
+
         <SelectField
           {...props}
           name="outdoor"
@@ -542,6 +665,8 @@ function StepContent({
         />
       </div>
     );
+  }
+
   if (step === 1)
     return (
       <div className="grid gap-6 sm:grid-cols-2">
@@ -569,6 +694,7 @@ function StepContent({
         />
       </div>
     );
+
   if (step === 2)
     return (
       <fieldset>
@@ -600,6 +726,7 @@ function StepContent({
         </div>
       </fieldset>
     );
+
   if (step === 3)
     return (
       <>
@@ -643,6 +770,7 @@ function StepContent({
         </Notice>
       </>
     );
+
   if (step === 4)
     return (
       <>
@@ -694,12 +822,6 @@ function StepContent({
               />
             </>
           )}
-          <SelectField
-            {...props}
-            name="cameras"
-            label="Cameras on the property"
-            options={["No", "Yes", "Not sure"]}
-          />
           <TextArea {...props} name="offLimits" label="Off-limits rooms or cupboards" />
           <TextArea {...props} name="fragileItems" label="Fragile surfaces or items" />
           <TextArea {...props} name="restrictions" label="Product restrictions" />
@@ -711,6 +833,7 @@ function StepContent({
         </Notice>
       </>
     );
+
   if (step === 5)
     return (
       <>
@@ -722,32 +845,42 @@ function StepContent({
             up to 10 MB each.
           </p>
           <div className="mt-5 flex flex-col justify-center gap-3 sm:flex-row">
-            <label className={`${primaryButton} cursor-pointer`}>
+            <button
+              type="button"
+              onClick={() => cameraInputRef.current?.click()}
+              className={primaryButton}
+            >
               <Camera className="h-4 w-4" /> Take a photo
-              <input
-                type="file"
-                accept="image/*,.heic,.heif"
-                capture="environment"
-                className="sr-only"
-                onChange={(event) => {
-                  onFilesSelected(event.currentTarget.files);
-                  event.currentTarget.value = "";
-                }}
-              />
-            </label>
-            <label className={`${secondaryButton} cursor-pointer`}>
+            </button>
+            <input
+              ref={cameraInputRef}
+              type="file"
+              accept="image/*"
+              capture="environment"
+              hidden
+              onChange={(event) => {
+                onFilesSelected(event.currentTarget.files);
+                event.currentTarget.value = "";
+              }}
+            />
+            <button
+              type="button"
+              onClick={() => galleryInputRef.current?.click()}
+              className={secondaryButton}
+            >
               <Images className="h-4 w-4" /> Choose photos
-              <input
-                type="file"
-                accept="image/*,.heic,.heif"
-                multiple
-                className="sr-only"
-                onChange={(event) => {
-                  onFilesSelected(event.currentTarget.files);
-                  event.currentTarget.value = "";
-                }}
-              />
-            </label>
+            </button>
+            <input
+              ref={galleryInputRef}
+              type="file"
+              accept="image/*,.heic,.heif"
+              multiple
+              hidden
+              onChange={(event) => {
+                onFilesSelected(event.currentTarget.files);
+                event.currentTarget.value = "";
+              }}
+            />
           </div>
           {fileError && (
             <p role="alert" className="mt-4 text-sm font-medium text-[#9B3349]">
@@ -789,6 +922,7 @@ function StepContent({
         </div>
       </>
     );
+
   if (step === 6)
     return (
       <div className="grid gap-6 sm:grid-cols-2">
@@ -818,6 +952,7 @@ function StepContent({
         />
       </div>
     );
+
   return <Review form={form} setForm={setForm} errors={errors} />;
 }
 
@@ -863,6 +998,7 @@ function TextField({
     </label>
   );
 }
+
 function SelectField({
   form,
   update,
@@ -872,7 +1008,8 @@ function SelectField({
   options,
   required,
   wide,
-}: FieldProps & { options: readonly string[] }) {
+  placeholder = "Select an option",
+}: FieldProps & { options: readonly string[]; placeholder?: string }) {
   const id = `field-${name}`;
   return (
     <label
@@ -893,7 +1030,7 @@ function SelectField({
         aria-invalid={!!errors[name]}
         className={inputClass}
       >
-        <option value="">Select an option</option>
+        <option value="">{placeholder}</option>
         {options.map((option) => (
           <option key={option}>{option}</option>
         ))}
@@ -904,6 +1041,7 @@ function SelectField({
     </label>
   );
 }
+
 function TextArea({ form, update, name, label, hint, wide }: FieldProps & { hint?: string }) {
   const id = `field-${name}`;
   return (
@@ -923,6 +1061,7 @@ function TextArea({ form, update, name, label, hint, wide }: FieldProps & { hint
     </label>
   );
 }
+
 type FieldProps = {
   form: FormData;
   update: (key: TextKey, value: string) => void;
@@ -948,11 +1087,13 @@ function Summary({ form }: { form: FormData }) {
     ["Suburb", form.suburb],
     ["Bedrooms", form.bedrooms],
     ["Bathrooms", form.bathrooms],
+    ["Unit floor", form.unitFloor],
     ["Service", form.service],
     ["Frequency", form.frequency],
     ["Add-ons", form.addons.length ? `${form.addons.length} selected` : "None selected"],
     ["Preferred date", form.preferredDate],
-  ];
+  ].filter(([, value]) => value);
+
   return (
     <div className="rounded-2xl border border-[#C9A45B]/30 bg-[#F7F0E3] p-6 shadow-[0_16px_40px_rgba(70,37,29,0.06)]">
       <div className="flex items-center gap-3">
@@ -963,9 +1104,7 @@ function Summary({ form }: { form: FormData }) {
         {rows.map(([label, value]) => (
           <div key={label} className="flex justify-between gap-4 py-3 text-sm">
             <dt className="text-[#756963]">{label}</dt>
-            <dd className="max-w-[55%] text-right font-medium text-[#443937]">
-              {value || "Not added"}
-            </dd>
+            <dd className="max-w-[55%] text-right font-medium text-[#443937]">{value}</dd>
           </div>
         ))}
       </dl>
@@ -991,6 +1130,8 @@ function Review({
     ["Suburb", form.suburb],
     ["Bedrooms", form.bedrooms],
     ["Bathrooms", form.bathrooms],
+    ["Storeys", form.storeys],
+    ["Unit floor / level", form.unitFloor],
     ["Selected service", form.service],
     ["Frequency", form.frequency],
     ["Home condition", form.condition],
@@ -998,7 +1139,8 @@ function Review({
     ["Preferred date", form.preferredDate],
     ["Preferred time", form.preferredTime],
     ["Contact method", form.contactMethod],
-  ];
+  ].filter(([, value]) => value);
+
   return (
     <div>
       <p className="leading-7 text-[#695E59]">
@@ -1010,7 +1152,7 @@ function Review({
             <dt className="text-xs font-semibold uppercase tracking-wider text-[#8C7043]">
               {label}
             </dt>
-            <dd className="mt-2 text-sm font-medium">{value || "Not added"}</dd>
+            <dd className="mt-2 text-sm font-medium">{value}</dd>
           </div>
         ))}
       </dl>

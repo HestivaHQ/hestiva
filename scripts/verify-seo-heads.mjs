@@ -17,7 +17,7 @@ const INVALID_CASES = [
   "/not-a-real-page",
 ];
 const QUERY_CASES = ["/services/deep-cleaning?utm_source=test&utm_medium=seo"];
-const TRAILING_SLASH_CASES = ["/services/deep-cleaning/", "/locations/johannesburg/"];
+const TRAILING_SLASH_CASES = ["/services/deep-cleaning/", "/locations/sandton/"];
 const STATIC_BREADCRUMB_LABELS = new Map([
   ["/about", "About"],
   ["/contact", "Contact"],

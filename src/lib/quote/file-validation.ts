@@ -9,12 +9,37 @@ export type UploadedQuoteFile = {
 const ALLOWED_MIME = new Set([
   "image/jpeg",
   "image/png",
+  "image/heic",
+  "image/heif",
   "application/pdf",
   "application/msword",
   "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
 ]);
 
 const MAX_BYTES = 10 * 1024 * 1024;
+
+function ascii(bytes: Uint8Array, start: number, length: number) {
+  return String.fromCharCode(...bytes.slice(start, start + length));
+}
+
+function sniffIsoImageMime(bytes: Uint8Array): string | null {
+  if (bytes.length < 12 || ascii(bytes, 4, 4) !== "ftyp") return null;
+
+  const brands = new Set<string>();
+  for (let offset = 8; offset + 4 <= Math.min(bytes.length, 40); offset += 4) {
+    brands.add(ascii(bytes, offset, 4));
+  }
+
+  if (["heic", "heix", "hevc", "hevx"].some((brand) => brands.has(brand))) {
+    return "image/heic";
+  }
+
+  if (["mif1", "msf1"].some((brand) => brands.has(brand))) {
+    return "image/heif";
+  }
+
+  return null;
+}
 
 function sniffMime(bytes: Uint8Array): string | null {
   if (bytes.length < 4) return null;
@@ -24,6 +49,9 @@ function sniffMime(bytes: Uint8Array): string | null {
     return "image/png";
   if (bytes[0] === 0x25 && bytes[1] === 0x50 && bytes[2] === 0x44 && bytes[3] === 0x46)
     return "application/pdf";
+
+  const isoImageMime = sniffIsoImageMime(bytes);
+  if (isoImageMime) return isoImageMime;
 
   if (bytes[0] === 0x50 && bytes[1] === 0x4b && bytes[2] === 0x03 && bytes[3] === 0x04) {
     return "application/vnd.openxmlformats-officedocument.wordprocessingml.document";

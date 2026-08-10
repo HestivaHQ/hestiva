@@ -81,7 +81,7 @@ export function Footer() {
           <p>
             © {new Date().getFullYear()} {SITE_NAME}. All rights reserved.
           </p>
-          <nav aria-label="Legal">
+          <nav aria-label="Legal and credits">
             <ul className="flex flex-wrap gap-x-5 gap-y-2">
               <li>
                 <Link to="/privacy" className={linkStyles}>
@@ -91,6 +91,11 @@ export function Footer() {
               <li>
                 <Link to="/terms" className={linkStyles}>
                   Terms of Service
+                </Link>
+              </li>
+              <li>
+                <Link to="/image-credits" className={linkStyles}>
+                  Image Credits
                 </Link>
               </li>
             </ul>

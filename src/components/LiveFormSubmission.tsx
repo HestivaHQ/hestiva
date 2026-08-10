@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { submitContactForm } from "@/lib/contact.functions";
 import { isSuccessfulSubmissionResult } from "@/lib/submission-result";
+import { clearQuoteFiles, getQuoteFiles } from "@/lib/quote/client-upload-store";
 
 const quoteValues: Record<string, string> = {};
 const quoteAddons = new Set<string>();
@@ -38,6 +39,22 @@ function quoteValue(name: string, fallback = "") {
   return quoteValues[name]?.trim() || fallback;
 }
 
+async function fileToBase64(file: File) {
+  const bytes = new Uint8Array(await file.arrayBuffer());
+  let binary = "";
+  const chunkSize = 0x8000;
+
+  for (let offset = 0; offset < bytes.length; offset += chunkSize) {
+    binary += String.fromCharCode(...bytes.subarray(offset, offset + chunkSize));
+  }
+
+  return {
+    name: file.name,
+    type: file.type || "application/octet-stream",
+    base64: btoa(binary),
+  };
+}
+
 async function sendQuoteForm(button: HTMLButtonElement) {
   rememberVisibleQuoteFields();
 
@@ -50,6 +67,7 @@ async function sendQuoteForm(button: HTMLButtonElement) {
     ["Property type", quoteValue("propertyType")],
     ["Suburb", quoteValue("suburb")],
     ["Address", quoteValue("address")],
+    ["GPS map", quoteValue("locationUrl")],
     ["Floor size", quoteValue("floorSize")],
     ["Bedrooms", quoteValue("bedrooms")],
     ["Bathrooms", quoteValue("bathrooms")],
@@ -96,6 +114,7 @@ async function sendQuoteForm(button: HTMLButtonElement) {
 
   setButtonState(button, "Sending…", true);
   try {
+    const files = await Promise.all(getQuoteFiles().map(fileToBase64));
     const result = await submitContactForm({
       data: {
         name,
@@ -109,11 +128,12 @@ async function sendQuoteForm(button: HTMLButtonElement) {
         description,
         preferredContact: quoteValue("contactMethod", "Not specified"),
         urgency: quoteValue("urgency", "Not specified"),
-        files: [],
+        files,
         website: "",
       },
     });
     if (!isSuccessfulSubmissionResult(result)) throw new Error("Submission was not acknowledged");
+    clearQuoteFiles();
     setButtonState(button, "Request Sent", true);
     window.alert("Your request has been sent successfully. A confirmation email is on its way.");
   } catch {

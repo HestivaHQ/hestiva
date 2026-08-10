@@ -85,7 +85,7 @@ const createService = (
   title,
   shortTitle,
   metaTitle: `${title} Johannesburg & Midrand | Hestiva`,
-  metaDescription: `${description} Available across Hestiva's Johannesburg and Midrand service areas. Request a personalised quote.`,
+  metaDescription: `${description} Available across Johannesburg and Midrand.`,
   heroDescription: description,
   overview: `${title} is delivered with a clear checklist, careful attention to the home and a scope confirmed before the booking. Hestiva focuses on practical residential cleaning without promising services or equipment outside the agreed quotation.`,
   services,

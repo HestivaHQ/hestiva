@@ -10,6 +10,75 @@ function fieldName(id: string) {
   return id.startsWith("field-") ? id.slice("field-".length) : id;
 }
 
+function propertyNeedsUnitAccess(propertyType: string) {
+  return propertyType === "Apartment" || propertyType === "Townhouse";
+}
+
+function syncUnitAccessFields() {
+  if (window.location.pathname !== "/quote") return;
+  const propertyType = document.querySelector<HTMLSelectElement>("#field-propertyType")?.value || "";
+  const originalFloor = document.querySelector<HTMLSelectElement>("#field-unitFloor");
+  const originalLabel = originalFloor?.closest("label") as HTMLElement | null;
+  let panel = document.querySelector<HTMLElement>("#quote-unit-access-fields");
+
+  if (!propertyNeedsUnitAccess(propertyType) || !originalLabel) {
+    if (originalLabel) originalLabel.style.display = "";
+    panel?.remove();
+    return;
+  }
+
+  originalLabel.style.display = "none";
+  if (panel) return;
+
+  panel = document.createElement("div");
+  panel.id = "quote-unit-access-fields";
+  panel.className = "sm:col-span-2 grid gap-6 sm:grid-cols-2";
+
+  const floorLabel = document.createElement("label");
+  floorLabel.className = "text-sm font-semibold text-[#4A3435]";
+  floorLabel.htmlFor = "field-unitFloorExact";
+  floorLabel.textContent = "Exact unit floor / level";
+
+  const floorSelect = document.createElement("select");
+  floorSelect.id = "field-unitFloorExact";
+  floorSelect.className = originalFloor.className;
+  const floorValues = ["Ground floor", ...Array.from({ length: 50 }, (_, index) => `Floor ${index + 1}`)];
+  floorSelect.innerHTML = `<option value="">Select exact floor</option>${floorValues
+    .map((value) => `<option value="${value}">${value}</option>`)
+    .join("")}`;
+  floorSelect.value = quoteValues.unitFloorExact || "";
+  floorSelect.addEventListener("change", () => {
+    quoteValues.unitFloorExact = floorSelect.value;
+  });
+  floorLabel.appendChild(floorSelect);
+
+  const accessLabel = document.createElement("label");
+  accessLabel.className = "text-sm font-semibold text-[#4A3435]";
+  accessLabel.htmlFor = "field-buildingAccess";
+  accessLabel.textContent = "Access to the unit";
+
+  const accessSelect = document.createElement("select");
+  accessSelect.id = "field-buildingAccess";
+  accessSelect.className = originalFloor.className;
+  accessSelect.innerHTML = [
+    ["", "Select access type"],
+    ["Elevator available", "Elevator available"],
+    ["Stairs only", "Stairs only"],
+    ["Elevator and stairs", "Elevator and stairs"],
+    ["Not sure", "Not sure"],
+  ]
+    .map(([value, label]) => `<option value="${value}">${label}</option>`)
+    .join("");
+  accessSelect.value = quoteValues.buildingAccess || "";
+  accessSelect.addEventListener("change", () => {
+    quoteValues.buildingAccess = accessSelect.value;
+  });
+  accessLabel.appendChild(accessSelect);
+
+  panel.append(floorLabel, accessLabel);
+  originalLabel.insertAdjacentElement("afterend", panel);
+}
+
 function rememberVisibleQuoteFields() {
   document
     .querySelectorAll<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>(
@@ -77,7 +146,8 @@ async function sendQuoteForm(button: HTMLButtonElement) {
     ["Bathrooms", quoteValue("bathrooms")],
     ["Living areas", quoteValue("livingAreas")],
     ["Storeys", quoteValue("storeys")],
-    ["Unit floor / level", quoteValue("unitFloor")],
+    ["Unit floor / level", quoteValue("unitFloorExact", quoteValue("unitFloor"))],
+    ["Unit access", quoteValue("buildingAccess")],
     ["Outdoor area", quoteValue("outdoor")],
     ["Estate or complex", quoteValue("estate")],
     ["Frequency", quoteValue("frequency")],
@@ -185,8 +255,16 @@ async function sendContactForm(form: HTMLFormElement, button: HTMLButtonElement)
 export function LiveFormSubmission() {
   useEffect(() => {
     const remember = () => {
-      if (window.location.pathname === "/quote") rememberVisibleQuoteFields();
+      if (window.location.pathname === "/quote") {
+        rememberVisibleQuoteFields();
+        window.setTimeout(syncUnitAccessFields, 0);
+      }
     };
+
+    const observer = new MutationObserver(() => syncUnitAccessFields());
+    const quoteRoot = document.getElementById("quote-form");
+    if (quoteRoot) observer.observe(quoteRoot, { childList: true, subtree: true });
+    syncUnitAccessFields();
 
     const onClick = (event: MouseEvent) => {
       const button = (event.target as HTMLElement | null)?.closest(
@@ -219,6 +297,7 @@ export function LiveFormSubmission() {
     document.addEventListener("click", onClick, true);
     document.addEventListener("submit", onSubmit, true);
     return () => {
+      observer.disconnect();
       document.removeEventListener("input", remember, true);
       document.removeEventListener("change", remember, true);
       document.removeEventListener("click", onClick, true);

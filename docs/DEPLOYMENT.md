@@ -129,6 +129,29 @@ about how a clean production checkout generates the entry point before Wrangler 
 not change Cloudflare native Git integration's authority or justify editing tracked or generated
 Wrangler configuration.
 
+### Post-hardening production smoke verification — 2026-08-10
+
+The deployment baseline was re-verified after merging PR #68 (`security: harden public form
+submissions`) into `main` as merge commit `d4ee614ff5661e7a5033671b39aea1bd8fd66704`.
+Cloudflare's native Git integration deployed the merged production state without introducing a
+second deployment path.
+
+The live `hestiva.co.za` quotation flow was then exercised with the normal full quote payload. The
+server-function request returned HTTP `200 OK`, the administrative quotation email was delivered,
+and the customer confirmation email was delivered. This verifies the complete production path from
+browser submission through the deployed Cloudflare Worker to the existing Resend runtime secret and
+email provider.
+
+The preceding preview failure was traced to `src/lib/rate-limit.ts` calling `crypto.randomUUID()` at
+module initialization time. Importing that module caused the server-function request to fail before
+its handler executed. The permanent fix lazily creates the per-isolate salt only when the rate-limit
+path runs. This change preserves the existing best-effort isolate-scoped throttle while avoiding
+runtime work during module evaluation.
+
+This smoke verification confirms the current build/deploy configuration and runtime wiring; it does
+not convert GitHub Actions into deployment authority, expose runtime secret values, or prove that a
+future Cloudflare dashboard configuration change is safe without a new verification.
+
 ## Operator guardrails
 
 - The current five-per-15-minute form throttle is isolate-scoped and best effort. Before claiming

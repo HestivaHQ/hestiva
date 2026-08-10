@@ -1,3 +1,5 @@
+import { approvedServiceAreas } from "@/content/service-areas";
+
 export type OptionalBusinessDetails = {
   domain: string | null;
   email: string | null;
@@ -38,7 +40,7 @@ export const SITE_NAME = "Hestiva";
 export const COMPANY_NAME = "Hestiva";
 export const SITE_URL = "https://www.hestiva.co.za";
 export const TAGLINE = "Grace in Every Detail";
-export const DEFAULT_SERVICE_AREA = "Randburg to Centurion";
+export const DEFAULT_SERVICE_AREA = "Johannesburg North, Randburg, Johannesburg West and Midrand";
 
 export const BRAND_ASSETS = {
   logoPrimary: "/brand/logo/hestiva-burgundy.png",
@@ -60,22 +62,13 @@ export const siteConfig: SiteConfig = {
   businessType: "Residential Cleaning Company",
   defaultTitle: `${SITE_NAME} | Residential Cleaning`,
   defaultDescription:
-    "Professional home cleaning for apartments, townhouses and homes across Randburg, Midrand, Centurion and selected surrounding areas.",
+    "Professional home cleaning across selected Johannesburg North, Randburg, Rosebank, Roodepoort, Midrand, Waterfall and Kyalami areas.",
   business: {
     domain: SITE_URL,
     email: "info@hestiva.co.za",
     phone: "+27684231614",
     whatsApp: "+27684231614",
-    serviceAreas: [
-      "Randburg",
-      "Bryanston",
-      "Fourways",
-      "North Riding",
-      "Midrand",
-      "Waterfall",
-      "Kyalami",
-      "Centurion",
-    ],
+    serviceAreas: approvedServiceAreas,
     legalName: null,
     registrationNumber: null,
     address: null,

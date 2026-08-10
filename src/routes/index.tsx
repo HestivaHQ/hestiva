@@ -11,20 +11,21 @@ import { createSeoHead } from "@/lib/seo";
 import { createHomepageGraph, schemaScripts } from "@/lib/structured-data";
 
 const description =
-  "Thoughtful residential cleaning and home care with warmth, respect and exceptional attention to detail.";
+  "Professional residential cleaning across Johannesburg and Midrand, including regular, deep, move-in and move-out cleaning tailored to your home.";
 
 export const Route = createFileRoute("/")({
   component: Index,
   head: () => ({
     ...createSeoHead({
-      title: `${SITE_NAME} | Premium Residential Cleaning`,
+      title: `Home Cleaning Johannesburg & Midrand | ${SITE_NAME}`,
       description,
       path: "/",
       keywords: [
-        "residential cleaning",
-        "home cleaning",
-        "house cleaning",
-        "cleaning services Gauteng",
+        "home cleaning Johannesburg",
+        "residential cleaning Johannesburg",
+        "house cleaning Johannesburg",
+        "home cleaning Midrand",
+        "cleaning services Sandton",
         "Hestiva",
       ],
     }),

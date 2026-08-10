@@ -1,3 +1,4 @@
+import { Link } from "@tanstack/react-router";
 import { ArrowRight, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -12,36 +13,36 @@ export function HeroSection() {
               <Sparkles className="h-4 w-4 text-[#9A7132]" aria-hidden="true" />
             </span>
             <span className="text-xs font-semibold uppercase tracking-[0.28em] text-[#9A7132]">
-              Grace in Every Detail.
+              Residential Cleaning · Johannesburg & Midrand
             </span>
           </div>
 
           <h1 className="mb-7 text-4xl font-semibold leading-[1.06] tracking-[-0.035em] text-[#3B0F1A] sm:text-5xl lg:text-[4rem]">
-            A Cleaner Home. More Time for What Matters.
+            Professional Home Cleaning, Thoughtfully Done.
           </h1>
 
           <p className="mb-10 max-w-xl text-lg leading-[1.75] text-[#3B0F1A]/85 sm:text-xl">
-            Thoughtful residential cleaning for busy households that value care, consistency and
-            attention to detail.
+            Regular, deep, move-in and move-out cleaning for homes across our Johannesburg and
+            Midrand service areas, delivered with care, consistency and attention to detail.
           </p>
 
           <div className="flex flex-col gap-4 sm:flex-row">
             <Button variant="hero" size="lg" asChild>
-              <a
-                href="#contact"
+              <Link
+                to="/quote"
                 className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#3B0F1A] focus-visible:ring-offset-4 focus-visible:ring-offset-[#F8F3E8]"
               >
                 Request Your Quote
                 <ArrowRight className="h-4 w-4" aria-hidden="true" />
-              </a>
+              </Link>
             </Button>
             <Button variant="heroOutline" size="lg" asChild>
-              <a
-                href="#services"
+              <Link
+                to="/services"
                 className="border-[#3B0F1A] text-[#3B0F1A] hover:bg-[#3B0F1A] hover:text-[#F8F3E8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#3B0F1A] focus-visible:ring-offset-4 focus-visible:ring-offset-[#F8F3E8]"
               >
                 Explore Services
-              </a>
+              </Link>
             </Button>
           </div>
         </div>

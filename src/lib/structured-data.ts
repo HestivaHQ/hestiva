@@ -5,6 +5,7 @@ import type { BreadcrumbItem } from "@/lib/breadcrumbs";
 export const SCHEMA_CONTEXT = "https://schema.org" as const;
 export const WEBSITE_ID = `${SITE_URL}/#website`;
 export const BUSINESS_ID = `${SITE_URL}/#business`;
+const HOMEPAGE_TITLE = `Home Cleaning Johannesburg & Midrand | ${SITE_NAME}`;
 
 type JsonLd = Record<string, unknown>;
 type Faq = { question: string; answer: string };
@@ -43,7 +44,7 @@ export function createHomepageGraph(description: string): JsonLd {
           name,
         })),
       },
-      createWebPage("/", `${SITE_NAME} | Premium Residential Cleaning`, description),
+      createWebPage("/", HOMEPAGE_TITLE, description),
     ],
   };
 }

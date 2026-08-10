@@ -18,18 +18,8 @@ const trustPoints = [
   "Straightforward communication from enquiry to completion",
 ];
 
-const linkedServiceAreas = locationPages.filter((location) =>
-  [
-    "kempton-park",
-    "johannesburg",
-    "pretoria",
-    "centurion",
-    "midrand",
-    "sandton",
-    "roodepoort",
-    "randburg",
-  ].includes(location.slug),
-);
+const coreServiceAreaNames = new Set(["Sandton", "Randburg", "Rosebank", "Roodepoort", "Midrand"]);
+const linkedServiceAreas = locationPages.filter((location) => coreServiceAreaNames.has(location.name));
 
 function buildWhatsAppLink(service: ServicePage) {
   const message = `Hi Hestiva, I would like a quote for ${service.title}.`;
@@ -168,16 +158,21 @@ export function ServicePageLayout({ service }: { service: ServicePage }) {
                     <MapPin className="w-4 h-4" /> Service Areas
                   </div>
                   <h2 className="text-2xl md:text-3xl font-bold text-foreground mt-3">
-                    {service.shortTitle} across our Gauteng footprint
+                    {service.shortTitle} across Johannesburg and Midrand
                   </h2>
                   <p className="text-muted-foreground mt-3 max-w-3xl leading-relaxed">
-                    Availability is confirmed using your exact address, travel distance and our
-                    schedule.
+                    Explore our main service hubs below, or view all approved areas. Exact
+                    availability is confirmed using your address, requested date and cleaning scope.
                   </p>
                 </div>
-                <Button variant="hero" size="lg" asChild>
-                  <Link to="/quote">Check Availability</Link>
-                </Button>
+                <div className="flex flex-col gap-3 sm:flex-row">
+                  <Button variant="outline" size="lg" asChild>
+                    <Link to="/locations">View All Areas</Link>
+                  </Button>
+                  <Button variant="hero" size="lg" asChild>
+                    <Link to="/quote">Check Availability</Link>
+                  </Button>
+                </div>
               </div>
               <div className="mt-6 flex flex-wrap gap-2">
                 {linkedServiceAreas.map((area) => (
@@ -188,7 +183,7 @@ export function ServicePageLayout({ service }: { service: ServicePage }) {
                     className="rounded-full border border-border px-3 py-1 text-xs text-muted-foreground hover:border-primary hover:text-primary transition-colors"
                     aria-label={`View Hestiva cleaning services in ${area.name}`}
                   >
-                    {area.name}
+                    Cleaning in {area.name}
                   </Link>
                 ))}
               </div>

@@ -5,7 +5,7 @@ import { Footer } from "@/components/Footer";
 import { Navbar } from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
 import { locationVisualLibrary } from "@/content/location-visuals";
-import type { LocationPage } from "@/content/locations";
+import { locationPages, type LocationPage } from "@/content/locations";
 import { servicePages } from "@/content/services";
 import { locationBreadcrumbs } from "@/lib/breadcrumbs";
 
@@ -15,6 +15,9 @@ export function LocationPageLayout({ location }: { location: LocationPage }) {
   const gallery = locationVisualLibrary[location.name] ?? [];
   const primaryImage = gallery[0];
   const supportingImages = gallery.slice(1, 5);
+  const nearbyLocations = location.nearbyAreas
+    .map((areaName) => locationPages.find((item) => item.name === areaName))
+    .filter((item): item is LocationPage => Boolean(item));
 
   return (
     <div className="min-h-screen bg-[#F8F3E8] text-[#5F4B46]">
@@ -214,13 +217,16 @@ export function LocationPageLayout({ location }: { location: LocationPage }) {
                   Tell Hestiva about your home, preferred service and timing, and we will help you choose the right cleaning option.
                 </p>
                 <div className="mt-5 flex flex-wrap gap-2">
-                  {location.nearbyAreas.map((area) => (
-                    <span
-                      key={area}
-                      className="rounded-full border border-[#D9C8AD] bg-[#F8F3E8] px-3 py-1 text-xs text-[#695E59]"
+                  {nearbyLocations.map((area) => (
+                    <Link
+                      key={area.slug}
+                      to="/locations/$locationSlug"
+                      params={{ locationSlug: area.slug }}
+                      className="rounded-full border border-[#D9C8AD] bg-[#F8F3E8] px-3 py-1 text-xs text-[#695E59] transition-colors hover:border-[#C9A45B] hover:text-[#5A1425]"
+                      aria-label={`View Hestiva residential cleaning in nearby ${area.name}`}
                     >
-                      Nearby: {area}
-                    </span>
+                      Cleaning in {area.name}
+                    </Link>
                   ))}
                 </div>
               </div>

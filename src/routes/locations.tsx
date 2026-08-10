@@ -1,66 +1,26 @@
 import { createFileRoute, Link, Outlet, useRouterState } from "@tanstack/react-router";
 import { ArrowRight, Check, MapPin, MessageCircle, Navigation } from "lucide-react";
+import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { Footer } from "@/components/Footer";
 import { Navbar } from "@/components/Navbar";
-import { Breadcrumbs } from "@/components/Breadcrumbs";
-import { createSeoHead } from "@/lib/seo";
-import { locationBreadcrumbs } from "@/lib/breadcrumbs";
+import { serviceAreaClusters } from "@/content/service-areas";
 import { locationPages } from "@/content/locations";
+import { locationBreadcrumbs } from "@/lib/breadcrumbs";
+import { createSeoHead } from "@/lib/seo";
 import { SITE_NAME } from "@/lib/site";
 import { createBreadcrumbList, createPageGraph, schemaScripts } from "@/lib/structured-data";
 
-const serviceAreas = [
-  "Johannesburg",
-  "Riverlea",
-  "Randburg",
-  "Roodepoort",
-  "Sandton",
-  "Midrand",
-  "Centurion",
-  "Pretoria",
-] as const;
-
-const overviewAreas = [
-  ...serviceAreas.map((name) => ({
-    name,
-    location: locationPages.find((location) => location.name === name),
-  })),
-  ...locationPages
-    .filter((location) => !serviceAreas.some((name) => name === location.name))
-    .map((location) => ({ name: location.name, location })),
-];
-
-const areaGroups = [
-  {
-    title: "Johannesburg West",
-    areas: ["Riverlea", "Roodepoort", "Surrounding suburbs by confirmation"],
-  },
-  {
-    title: "Johannesburg North",
-    areas: ["Randburg", "Sandton", "Surrounding suburbs by confirmation"],
-  },
-  {
-    title: "Midrand and Centurion",
-    areas: ["Midrand", "Centurion", "Nearby estates and residential areas by confirmation"],
-  },
-  {
-    title: "Pretoria",
-    areas: ["Selected Pretoria suburbs by confirmation"],
-  },
-] as const;
-
 const bookingNotes = [
   "Exact service availability depends on your address.",
-  "Some areas may require additional travel time or cost.",
+  "Some addresses may require additional travel planning.",
   "Estate and complex access details should be provided in advance.",
   "Preferred dates are not confirmed until Hestiva accepts the booking.",
-  "Recurring cleaning availability may differ by area.",
+  "Recurring cleaning availability may differ by area and schedule.",
 ] as const;
 
 const quoteEmail = "mailto:quotes@hestiva.co.za?subject=Hestiva%20address%20and%20quote%20request";
 const whatsAppUrl =
   "https://wa.me/27684231614?text=Hello%20Hestiva%2C%20I%27d%20like%20to%20check%20cleaning%20availability%20for%20my%20address.";
-
 const breadcrumbs = locationBreadcrumbs();
 
 export const Route = createFileRoute("/locations")({
@@ -70,7 +30,7 @@ export const Route = createFileRoute("/locations")({
 
     const title = `Areas We Serve | ${SITE_NAME} Residential Cleaning`;
     const description =
-      "Check Hestiva residential cleaning availability across selected Johannesburg, Midrand, Centurion and Pretoria areas.";
+      "Explore Hestiva residential cleaning service areas across Sandton, Randburg, Rosebank, Roodepoort, Midrand, Waterfall, Kyalami and surrounding approved suburbs.";
 
     return {
       ...createSeoHead({ title, description, path: "/locations" }),
@@ -106,10 +66,6 @@ function LocationsOverview() {
             aria-hidden="true"
             className="absolute -right-36 top-16 h-[30rem] w-[30rem] rounded-full border border-[#C9A45B]/20"
           />
-          <div
-            aria-hidden="true"
-            className="absolute -right-12 top-40 h-72 w-72 rounded-full border border-[#C9A45B]/25"
-          />
           <div className="relative mx-auto max-w-7xl">
             <Breadcrumbs
               items={breadcrumbs}
@@ -121,17 +77,17 @@ function LocationsOverview() {
               <MapPin aria-hidden="true" className="h-4 w-4" /> Areas We Serve
             </p>
             <h1 className="max-w-5xl text-4xl font-semibold leading-[1.08] tracking-[-0.03em] text-[#5A1425] sm:text-6xl md:text-7xl">
-              Thoughtful home cleaning across Johannesburg and nearby areas.
+              Home cleaning across our Johannesburg and Midrand service corridor.
             </h1>
             <p className="mt-7 max-w-3xl text-lg leading-8 text-[#695E59] md:text-xl">
-              Hestiva serves households across selected parts of Johannesburg and surrounding areas,
-              with each booking confirmed according to travel distance, availability and service
-              requirements.
+              Hestiva currently serves 66 approved areas across Sandton and Johannesburg North,
+              Randburg, Rosebank and central-north Johannesburg, Roodepoort and Johannesburg West,
+              plus Midrand, Waterfall and Kyalami.
             </p>
             <div className="mt-10 flex flex-col gap-4 sm:flex-row">
-              <a href={quoteEmail} className={primaryButton}>
+              <Link to="/quote" className={primaryButton}>
                 Request a Quote <ArrowRight aria-hidden="true" className="h-4 w-4" />
-              </a>
+              </Link>
               <a href="mailto:info@hestiva.co.za" className={secondaryButton}>
                 Contact Hestiva
               </a>
@@ -139,132 +95,90 @@ function LocationsOverview() {
           </div>
         </section>
 
-        <section aria-labelledby="footprint-heading" className="px-6 py-20 md:py-28">
-          <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-[0.85fr_1.15fr] lg:items-start">
-            <div className="lg:sticky lg:top-28">
-              <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#9A742E]">
-                Current service area
-              </p>
-              <h2
-                id="footprint-heading"
-                className="mt-4 text-3xl font-semibold tracking-tight text-[#5A1425] md:text-5xl"
-              >
-                Our current service footprint
-              </h2>
-              <p className="mt-6 max-w-xl leading-7 text-[#695E59]">
-                These are the main areas within our current footprint, rather than a promise of full
-                coverage in every suburb. We confirm availability using your exact address, travel
-                distance and our schedule.
-              </p>
-            </div>
-            <ul
-              className="grid gap-x-8 gap-y-1 border-y border-[#C9A45B]/30 py-4 sm:grid-cols-2"
-              role="list"
-            >
-              {overviewAreas.map(({ name, location }) => (
-                <li
-                  key={name}
-                  className="flex items-center gap-4 border-b border-[#E6D9C8] py-5 text-lg font-medium text-[#514946] last:border-b-0 sm:[&:nth-last-child(-n+2)]:border-b-0"
-                >
-                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#F3E8D5] text-[#8A6729]">
-                    <MapPin aria-hidden="true" className="h-4 w-4" />
-                  </span>
-                  {location ? (
-                    <Link
-                      to="/locations/$locationSlug"
-                      params={{ locationSlug: location.slug }}
-                      className="rounded-sm transition-colors hover:text-[#711C31] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A45B]"
-                    >
-                      {name}
-                    </Link>
-                  ) : (
-                    name
-                  )}
-                </li>
-              ))}
-            </ul>
-          </div>
-        </section>
-
-        <section
-          aria-labelledby="groups-heading"
-          className="border-y border-[#E6D9C8] bg-white px-6 py-20 md:py-28"
-        >
+        <section aria-labelledby="clusters-heading" className="px-6 py-20 md:py-28">
           <div className="mx-auto max-w-7xl">
-            <div className="max-w-2xl">
+            <div className="max-w-3xl">
               <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#9A742E]">
-                Area groups
+                Current service footprint
               </p>
               <h2
-                id="groups-heading"
+                id="clusters-heading"
                 className="mt-4 text-3xl font-semibold tracking-tight text-[#5A1425] md:text-5xl"
               >
-                Where our teams currently travel
+                Choose your area
               </h2>
               <p className="mt-5 leading-7 text-[#695E59]">
-                Use these groups as a guide. Nearby residential areas are considered individually
-                when you request a quotation.
+                Each suburb below has its own Hestiva service-area page. Exact availability is still
+                confirmed against your address, requested date and cleaning requirements.
               </p>
             </div>
-            <div className="mt-14 grid gap-x-12 gap-y-10 md:grid-cols-2">
-              {areaGroups.map((group) => (
-                <article key={group.title} className="border-t border-[#C9A45B]/50 pt-7">
+
+            <div className="mt-14 grid gap-10 lg:grid-cols-2">
+              {serviceAreaClusters.map((cluster) => (
+                <article
+                  key={cluster.name}
+                  className="rounded-3xl border border-[#C9A45B]/30 bg-white p-7 shadow-[0_18px_60px_rgba(70,42,33,0.05)] sm:p-9"
+                >
                   <div className="flex items-start gap-4">
-                    <Navigation
-                      aria-hidden="true"
-                      className="mt-1 h-5 w-5 shrink-0 text-[#9A742E]"
-                    />
+                    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#F3E8D5] text-[#8A6729]">
+                      <Navigation aria-hidden="true" className="h-5 w-5" />
+                    </span>
                     <div>
-                      <h3 className="text-2xl font-semibold text-[#5A1425]">{group.title}</h3>
-                      <ul className="mt-5 space-y-3" role="list">
-                        {group.areas.map((area) => {
-                          const location = locationPages.find(({ name }) => name === area);
-                          return (
-                            <li key={area} className="flex gap-3 leading-7 text-[#695E59]">
-                              <span
-                                aria-hidden="true"
-                                className="mt-3 h-1.5 w-1.5 shrink-0 rounded-full bg-[#C9A45B]"
-                              />
-                              {location ? (
-                                <Link
-                                  to="/locations/$locationSlug"
-                                  params={{ locationSlug: location.slug }}
-                                  className="underline-offset-4 hover:underline"
-                                >
-                                  {area}
-                                </Link>
-                              ) : (
-                                area
-                              )}
-                            </li>
-                          );
-                        })}
-                      </ul>
+                      <h3 className="text-2xl font-semibold text-[#5A1425]">{cluster.name}</h3>
+                      <p className="mt-2 text-sm leading-6 text-[#695E59]">
+                        {cluster.areas.length} approved service areas
+                      </p>
                     </div>
                   </div>
+
+                  <ul className="mt-7 grid gap-x-6 gap-y-3 sm:grid-cols-2" role="list">
+                    {cluster.areas.map((area) => {
+                      const location = locationPages.find(({ name }) => name === area);
+                      if (!location) return null;
+
+                      return (
+                        <li key={area} className="flex items-center gap-3 text-[#514946]">
+                          <span
+                            aria-hidden="true"
+                            className="h-1.5 w-1.5 shrink-0 rounded-full bg-[#C9A45B]"
+                          />
+                          <Link
+                            to="/locations/$locationSlug"
+                            params={{ locationSlug: location.slug }}
+                            className="rounded-sm underline-offset-4 transition-colors hover:text-[#711C31] hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A45B]"
+                          >
+                            {area}
+                          </Link>
+                        </li>
+                      );
+                    })}
+                  </ul>
                 </article>
               ))}
             </div>
           </div>
         </section>
 
-        <section aria-labelledby="address-check-heading" className="px-6 py-20 md:py-28">
+        <section
+          aria-labelledby="address-check-heading"
+          className="border-y border-[#E6D9C8] bg-white px-6 py-20 md:py-28"
+        >
           <div className="mx-auto max-w-5xl rounded-3xl border border-[#C9A45B]/30 bg-[#F7F0E3] px-7 py-14 text-center shadow-[0_18px_60px_rgba(70,42,33,0.06)] sm:px-12 md:py-20">
             <MapPin aria-hidden="true" className="mx-auto h-8 w-8 text-[#9A742E]" />
             <h2
               id="address-check-heading"
               className="mt-5 text-3xl font-semibold tracking-tight text-[#5A1425] md:text-5xl"
             >
-              Not sure whether we cover your area?
+              Ready to check your address?
             </h2>
             <p className="mx-auto mt-5 max-w-2xl text-lg leading-8 text-[#695E59]">
-              Send us your suburb or full address and we’ll confirm availability before preparing
-              your quotation.
+              Start the quote and enter your address or use your current location. Hestiva will use
+              the property and access details you provide when reviewing the request.
             </p>
             <div className="mt-9 flex flex-col justify-center gap-4 sm:flex-row">
-              <a href={quoteEmail} className={primaryButton}>
-                Check My Address <ArrowRight aria-hidden="true" className="h-4 w-4" />
-              </a>
+              <Link to="/quote" className={primaryButton}>
+                Start My Quote <ArrowRight aria-hidden="true" className="h-4 w-4" />
+              </Link>
               <a
                 href={whatsAppUrl}
                 target="_blank"
@@ -278,10 +192,7 @@ function LocationsOverview() {
           </div>
         </section>
 
-        <section
-          aria-labelledby="booking-notes-heading"
-          className="bg-[#F2E9DC] px-6 py-20 md:py-24"
-        >
+        <section aria-labelledby="booking-notes-heading" className="bg-[#F2E9DC] px-6 py-20 md:py-24">
           <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-2 lg:gap-20">
             <div>
               <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#9A742E]">
@@ -294,7 +205,7 @@ function LocationsOverview() {
                 Travel and booking notes
               </h2>
               <p className="mt-5 max-w-lg leading-7 text-[#695E59]">
-                A few helpful details allow us to plan the right time and travel for your home.
+                A few details help Hestiva plan the right visit for your home.
               </p>
             </div>
             <ul className="space-y-4" role="list">
@@ -311,56 +222,24 @@ function LocationsOverview() {
           </div>
         </section>
 
-        <section
-          aria-labelledby="closing-heading"
-          className="border-t border-[#C9A45B]/25 bg-[#F7F0E3] px-6 py-20 text-center md:py-28"
-        >
+        <section className="border-t border-[#C9A45B]/25 bg-[#F7F0E3] px-6 py-20 text-center md:py-28">
           <div className="mx-auto max-w-4xl">
             <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#9A742E]">
               Your home, beautifully cared for
             </p>
-            <h2
-              id="closing-heading"
-              className="mt-5 text-3xl font-semibold tracking-tight text-[#5A1425] md:text-5xl"
-            >
-              Ready to check availability for your home?
+            <h2 className="mt-5 text-3xl font-semibold tracking-tight text-[#5A1425] md:text-5xl">
+              Tell us where you are and what your home needs.
             </h2>
             <p className="mx-auto mt-5 max-w-2xl text-lg leading-8 text-[#695E59]">
-              Tell us where you are and what type of cleaning you need, and we’ll confirm whether we
-              can assist.
+              Complete the quote flow with your property, service, timing and access details so the
+              request arrives with the information needed for review.
             </p>
             <div className="mt-9 flex flex-col justify-center gap-4 sm:flex-row">
-              <a href={quoteEmail} className={primaryButton}>
+              <Link to="/quote" className={primaryButton}>
                 Request Your Quote <ArrowRight aria-hidden="true" className="h-4 w-4" />
-              </a>
-              <a
-                href={whatsAppUrl}
-                target="_blank"
-                rel="noreferrer"
-                className={secondaryButton}
-                aria-label="WhatsApp Hestiva on 068 423 1614"
-              >
-                <MessageCircle aria-hidden="true" className="h-4 w-4" /> WhatsApp 068 423 1614
-              </a>
-            </div>
-            <div className="mt-12 flex flex-col items-center justify-center gap-x-8 gap-y-3 border-t border-[#C9A45B]/30 pt-8 text-sm text-[#695E59] sm:flex-row sm:flex-wrap">
-              <a
-                href="tel:+27684231614"
-                className="rounded-sm hover:text-[#5A1425] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A45B]"
-              >
-                Phone: 068 423 1614
-              </a>
-              <a
-                href="mailto:quotes@hestiva.co.za"
-                className="rounded-sm hover:text-[#5A1425] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A45B]"
-              >
-                Quotes: quotes@hestiva.co.za
-              </a>
-              <a
-                href="mailto:info@hestiva.co.za"
-                className="rounded-sm hover:text-[#5A1425] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A45B]"
-              >
-                General enquiries: info@hestiva.co.za
+              </Link>
+              <a href={quoteEmail} className={secondaryButton}>
+                Email Quotes
               </a>
             </div>
           </div>

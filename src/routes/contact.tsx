@@ -245,14 +245,14 @@ function ContactPage() {
                 </a>
               </div>
               <p id="form-availability" className="mt-5 text-sm leading-6 text-[#5F4B46]">
-                Online submission is not yet available. To send your request now, please email
+                Online submission is available. You can also send your request by email to
                 <a
                   href="mailto:quotes@hestiva.co.za"
                   className="mx-1 font-semibold text-[#3B0F1A] underline decoration-[#C9A45B] underline-offset-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A45B]"
                 >
                   quotes@hestiva.co.za
                 </a>
-                or use WhatsApp.
+                or use WhatsApp if you prefer.
               </p>
             </form>
           </div>

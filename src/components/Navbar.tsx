@@ -52,7 +52,7 @@ export function Navbar() {
           <span className="sr-only">{TAGLINE}</span>
         </a>
 
-        <div className="hidden items-center gap-8 md:flex xl:gap-10">
+        <div className="hidden items-center gap-8 lg:flex xl:gap-10">
           {navLinks.map((link) => (
             <a
               key={link.href}
@@ -76,7 +76,7 @@ export function Navbar() {
 
         <button
           type="button"
-          className="rounded-md p-2 text-[#F5F1E8] transition-colors hover:bg-[#F5F1E8]/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A45B] md:hidden"
+          className="rounded-md p-2 text-[#F5F1E8] transition-colors hover:bg-[#F5F1E8]/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A45B] lg:hidden"
           onClick={() => setOpen((current) => !current)}
           aria-label={open ? "Close navigation menu" : "Open navigation menu"}
           aria-expanded={open}
@@ -97,7 +97,7 @@ export function Navbar() {
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             id="mobile-navigation"
-            className="overflow-hidden border-b border-[#C9A45B]/20 bg-[#3B0F1A]/95 backdrop-blur-md md:hidden"
+            className="overflow-hidden border-b border-[#C9A45B]/20 bg-[#3B0F1A]/95 backdrop-blur-md lg:hidden"
           >
             <div className="flex flex-col gap-4 px-6 py-5">
               {navLinks.map((link) => (

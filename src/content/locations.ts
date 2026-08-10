@@ -31,44 +31,71 @@ const clusterCopy: Record<
   { hero: string; overview: string; propertyTypes: string[]; visualContext: string }
 > = {
   "Sandton / Johannesburg North": {
-    hero:
-      "Thoughtful residential cleaning with clear access planning, flexible service choices and careful attention to the details of your home.",
+    hero: "Thoughtful residential cleaning with clear access planning, flexible service choices and careful attention to the details of your home.",
     overview:
       "Hestiva supports homes across Johannesburg North with regular, deep, move-in and move-out cleaning shaped around the property, access requirements and selected add-ons.",
-    propertyTypes: ["Family homes", "Apartments", "Townhouses", "Estate and complex homes", "Move-in and move-out homes"],
+    propertyTypes: [
+      "Family homes",
+      "Apartments",
+      "Townhouses",
+      "Estate and complex homes",
+      "Move-in and move-out homes",
+    ],
     visualContext: "Johannesburg North residential context with a polished urban or suburban feel",
   },
   Randburg: {
-    hero:
-      "Reliable home cleaning for busy households, recurring routines and one-off resets across the Randburg service area.",
+    hero: "Reliable home cleaning for busy households, recurring routines and one-off resets across the Randburg service area.",
     overview:
       "Hestiva provides flexible residential cleaning across Randburg and its surrounding suburbs, with the quote process capturing the home layout, service frequency and any details that affect the visit.",
-    propertyTypes: ["Family homes", "Apartments", "Townhouses", "Residential rental properties", "Recurring-cleaning households"],
+    propertyTypes: [
+      "Family homes",
+      "Apartments",
+      "Townhouses",
+      "Residential rental properties",
+      "Recurring-cleaning households",
+    ],
     visualContext: "believable Randburg residential streetscape, apartment or townhouse setting",
   },
   "Rosebank / Central-North Johannesburg": {
-    hero:
-      "Residential cleaning planned around the way you use your home, with simple booking details and a clear service scope.",
+    hero: "Residential cleaning planned around the way you use your home, with simple booking details and a clear service scope.",
     overview:
       "Hestiva serves households across Rosebank and central-north Johannesburg with practical cleaning options for everyday upkeep, deeper cleaning and moving periods.",
-    propertyTypes: ["Apartments", "Family homes", "Townhouses", "Residential rental properties", "Homes preparing for guests or events"],
-    visualContext: "central-north Johannesburg residential context with an urban-neighbourhood feel",
+    propertyTypes: [
+      "Apartments",
+      "Family homes",
+      "Townhouses",
+      "Residential rental properties",
+      "Homes preparing for guests or events",
+    ],
+    visualContext:
+      "central-north Johannesburg residential context with an urban-neighbourhood feel",
   },
   "Roodepoort / Johannesburg West": {
-    hero:
-      "Practical residential cleaning for homes across Johannesburg West, from recurring upkeep to deeper one-off cleaning.",
+    hero: "Practical residential cleaning for homes across Johannesburg West, from recurring upkeep to deeper one-off cleaning.",
     overview:
       "Hestiva supports households across the Roodepoort and Johannesburg West corridor with property-specific cleaning scopes, clear access information and optional add-ons where needed.",
-    propertyTypes: ["Family homes", "Townhouses", "Apartments", "Multi-room homes", "Move-in and move-out homes"],
+    propertyTypes: [
+      "Family homes",
+      "Townhouses",
+      "Apartments",
+      "Multi-room homes",
+      "Move-in and move-out homes",
+    ],
     visualContext: "Johannesburg West residential setting with a familiar suburban-home feel",
   },
   "Midrand / Waterfall / Kyalami": {
-    hero:
-      "Flexible residential cleaning with access, scheduling and property details captured before the visit.",
+    hero: "Flexible residential cleaning with access, scheduling and property details captured before the visit.",
     overview:
       "Hestiva provides home cleaning across Midrand, Waterfall and Kyalami for apartments, townhouses, complexes and family homes, with each request scoped through the online quote flow.",
-    propertyTypes: ["Apartments", "Townhouses", "Family homes", "Estate and complex homes", "Recurring-cleaning households"],
-    visualContext: "Midrand, Waterfall or Kyalami residential context with apartment, townhouse or estate-style cues",
+    propertyTypes: [
+      "Apartments",
+      "Townhouses",
+      "Family homes",
+      "Estate and complex homes",
+      "Recurring-cleaning households",
+    ],
+    visualContext:
+      "Midrand, Waterfall or Kyalami residential context with apartment, townhouse or estate-style cues",
   },
 };
 

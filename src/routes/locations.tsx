@@ -192,7 +192,10 @@ function LocationsOverview() {
           </div>
         </section>
 
-        <section aria-labelledby="booking-notes-heading" className="bg-[#F2E9DC] px-6 py-20 md:py-24">
+        <section
+          aria-labelledby="booking-notes-heading"
+          className="bg-[#F2E9DC] px-6 py-20 md:py-24"
+        >
           <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-2 lg:gap-20">
             <div>
               <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#9A742E]">

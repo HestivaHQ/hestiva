@@ -53,7 +53,11 @@ function syncServiceFrequency() {
   const allowed = serviceFrequencyOptions(service.value);
   const signature = `${service.value}:${allowed.join("|")}`;
   if (frequency.dataset.optionSignature !== signature) {
-    replaceSelectOptions(frequency, allowed, service.value ? "Select frequency" : "Select service first");
+    replaceSelectOptions(
+      frequency,
+      allowed,
+      service.value ? "Select frequency" : "Select service first",
+    );
     frequency.dataset.optionSignature = signature;
     quoteValues.frequency = frequency.value;
   }
@@ -202,23 +206,33 @@ function syncPhotoLimitCopy() {
 }
 
 function setDisabled(id: string, disabled: boolean) {
-  const element = document.querySelector<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>(
-    `#${id}`,
-  );
+  const element = document.querySelector<
+    HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+  >(`#${id}`);
   if (element) element.disabled = disabled;
 }
 
 function syncProgressiveFields() {
-  const propertyType = quoteValues.propertyType ||
-    document.querySelector<HTMLSelectElement>("#field-propertyType")?.value || "";
-  const floorSize = quoteValues.floorSize ||
-    document.querySelector<HTMLSelectElement>("#field-floorSize")?.value || "";
-  const bedrooms = quoteValues.bedrooms ||
-    document.querySelector<HTMLSelectElement>("#field-bedrooms")?.value || "";
-  const bathrooms = quoteValues.bathrooms ||
-    document.querySelector<HTMLSelectElement>("#field-bathrooms")?.value || "";
-  const livingAreas = quoteValues.livingAreas ||
-    document.querySelector<HTMLSelectElement>("#field-livingAreas")?.value || "";
+  const propertyType =
+    quoteValues.propertyType ||
+    document.querySelector<HTMLSelectElement>("#field-propertyType")?.value ||
+    "";
+  const floorSize =
+    quoteValues.floorSize ||
+    document.querySelector<HTMLSelectElement>("#field-floorSize")?.value ||
+    "";
+  const bedrooms =
+    quoteValues.bedrooms ||
+    document.querySelector<HTMLSelectElement>("#field-bedrooms")?.value ||
+    "";
+  const bathrooms =
+    quoteValues.bathrooms ||
+    document.querySelector<HTMLSelectElement>("#field-bathrooms")?.value ||
+    "";
+  const livingAreas =
+    quoteValues.livingAreas ||
+    document.querySelector<HTMLSelectElement>("#field-livingAreas")?.value ||
+    "";
 
   setDisabled("field-floorSize", !propertyType);
   setDisabled("field-bedrooms", !floorSize);

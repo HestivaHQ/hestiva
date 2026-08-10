@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { locationPages } from "@/content/locations";
 import { servicePages, type ServicePage } from "@/content/services";
 
-const PHONE_NUMBER = "+27767816550";
+const PHONE_NUMBER = "+27684231614";
 
 const trustPoints = [
   "Clear cleaning scope before the booking is confirmed",

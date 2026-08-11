@@ -16,10 +16,12 @@ function syncReviewQuantity(quantity: string) {
     if (term.textContent?.trim() !== "Selected add-ons") return;
     const value = term.parentElement?.querySelector<HTMLElement>("dd");
     if (!value) return;
-    value.textContent = value.textContent?.replace(
+    const current = value.textContent || "";
+    const next = current.replace(
       /Extra refrigerator(?: × \d+)?/,
       `Extra refrigerator × ${quantity}`,
-    ) || value.textContent;
+    );
+    if (next !== current) value.textContent = next;
   });
 }
 
@@ -58,7 +60,7 @@ export function ExtraRefrigeratorQuantity() {
 
       if (!checkbox.checked) {
         existing?.remove();
-        labelText.textContent = ADDON_LABEL;
+        if (labelText.textContent !== ADDON_LABEL) labelText.textContent = ADDON_LABEL;
         lastRenderedQuantity = "1";
         return;
       }
@@ -101,12 +103,13 @@ export function ExtraRefrigeratorQuantity() {
         input.value = quantity;
         const previousLabel = `${ADDON_LABEL} × ${lastRenderedQuantity}`;
         const nextLabel = `${ADDON_LABEL} × ${quantity}`;
-        synchronizeAddonSet(checkbox, labelText, previousLabel, nextLabel);
+        if (nextLabel !== previousLabel) {
+          synchronizeAddonSet(checkbox, labelText, previousLabel, nextLabel);
+        }
         lastRenderedQuantity = quantity;
         syncReviewQuantity(quantity);
       };
 
-      labelText.textContent = `${ADDON_LABEL} × 1`;
       synchronizeAddonSet(checkbox, labelText, ADDON_LABEL, `${ADDON_LABEL} × 1`);
       input.addEventListener("change", applyQuantity);
       input.addEventListener("blur", applyQuantity);

@@ -97,13 +97,20 @@ export function Navbar() {
         className={`mx-auto flex max-w-7xl items-center justify-between px-6 transition-[height] duration-300 ${scrolled ? "h-16 md:h-[4.5rem]" : "h-[4.5rem] md:h-20"}`}
       >
         <Link to="/" className="flex items-center gap-3" aria-label={`${SITE_NAME} home`}>
-          <img
-            src={BRAND_ASSETS.logoWhite}
-            alt={`${SITE_NAME} logo`}
-            width={1536}
-            height={1024}
-            className={`w-auto max-w-[180px] object-contain transition-[height] duration-300 ${scrolled ? "h-10 md:h-12" : "h-11 md:h-14"}`}
-          />
+          <picture>
+            <source
+              type="image/webp"
+              srcSet="/brand/logo/hestiva-white-144.webp 144w, /brand/logo/hestiva-white-288.webp 288w"
+              sizes="(min-width: 768px) 84px, 72px"
+            />
+            <img
+              src={BRAND_ASSETS.logoWhite}
+              alt={`${SITE_NAME} logo`}
+              width={1536}
+              height={1024}
+              className={`w-auto max-w-[180px] object-contain transition-[height] duration-300 ${scrolled ? "h-10 md:h-12" : "h-11 md:h-14"}`}
+            />
+          </picture>
           <span className="sr-only">{TAGLINE}</span>
         </Link>
 

@@ -1,15 +1,69 @@
+import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
 import { BRAND_ASSETS, SITE_NAME, TAGLINE } from "@/lib/site";
 
 const navLinks = [
-  { label: "Services", href: "/services" },
-  { label: "Apartment Cleaning", href: "/services/apartment-cleaning" },
-  { label: "Areas", href: "/locations" },
+  { label: "Services", to: "/services" },
+  { label: "Apartment Cleaning", to: "/services/apartment-cleaning" },
+  { label: "Areas", to: "/locations" },
   { label: "Why Hestiva", href: "/#why-us" },
-  { label: "About", href: "/about" },
-  { label: "Contact", href: "/contact" },
-];
+  { label: "About", to: "/about" },
+  { label: "Contact", to: "/contact" },
+] as const;
+
+const desktopLinkClass =
+  "group relative py-2 text-xs font-medium uppercase tracking-[0.16em] text-[#F5F1E8]/80 transition-colors duration-300 hover:text-[#F5F1E8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A45B] focus-visible:ring-offset-4 focus-visible:ring-offset-[#3B0F1A]";
+const mobileLinkClass =
+  "rounded-sm py-2 text-sm font-medium uppercase tracking-wider text-[#F5F1E8]/80 transition-colors hover:text-[#C9A45B] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A45B]";
+
+function DesktopNavLink({ link }: { link: (typeof navLinks)[number] }) {
+  const content = (
+    <>
+      {link.label}
+      <span
+        aria-hidden="true"
+        className="absolute inset-x-0 bottom-0 h-px origin-left scale-x-0 bg-[#C9A45B] transition-transform duration-300 ease-out group-hover:scale-x-100 group-focus-visible:scale-x-100"
+      />
+    </>
+  );
+
+  if ("to" in link) {
+    return (
+      <Link to={link.to} className={desktopLinkClass}>
+        {content}
+      </Link>
+    );
+  }
+
+  return (
+    <a href={link.href} className={desktopLinkClass}>
+      {content}
+    </a>
+  );
+}
+
+function MobileNavLink({
+  link,
+  onNavigate,
+}: {
+  link: (typeof navLinks)[number];
+  onNavigate: () => void;
+}) {
+  if ("to" in link) {
+    return (
+      <Link to={link.to} onClick={onNavigate} className={mobileLinkClass}>
+        {link.label}
+      </Link>
+    );
+  }
+
+  return (
+    <a href={link.href} onClick={onNavigate} className={mobileLinkClass}>
+      {link.label}
+    </a>
+  );
+}
 
 export function Navbar() {
   const [open, setOpen] = useState(false);
@@ -42,7 +96,7 @@ export function Navbar() {
       <div
         className={`mx-auto flex max-w-7xl items-center justify-between px-6 transition-[height] duration-300 ${scrolled ? "h-16 md:h-[4.5rem]" : "h-[4.5rem] md:h-20"}`}
       >
-        <a href="/" className="flex items-center gap-3" aria-label={`${SITE_NAME} home`}>
+        <Link to="/" className="flex items-center gap-3" aria-label={`${SITE_NAME} home`}>
           <img
             src={BRAND_ASSETS.logoWhite}
             alt={`${SITE_NAME} logo`}
@@ -51,28 +105,18 @@ export function Navbar() {
             className={`w-auto max-w-[180px] object-contain transition-[height] duration-300 ${scrolled ? "h-10 md:h-12" : "h-11 md:h-14"}`}
           />
           <span className="sr-only">{TAGLINE}</span>
-        </a>
+        </Link>
 
         <div className="hidden items-center gap-8 lg:flex xl:gap-10">
           {navLinks.map((link) => (
-            <a
-              key={link.href}
-              href={link.href}
-              className="group relative py-2 text-xs font-medium uppercase tracking-[0.16em] text-[#F5F1E8]/80 transition-colors duration-300 hover:text-[#F5F1E8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A45B] focus-visible:ring-offset-4 focus-visible:ring-offset-[#3B0F1A]"
-            >
-              {link.label}
-              <span
-                aria-hidden="true"
-                className="absolute inset-x-0 bottom-0 h-px origin-left scale-x-0 bg-[#C9A45B] transition-transform duration-300 ease-out group-hover:scale-x-100 group-focus-visible:scale-x-100"
-              />
-            </a>
+            <DesktopNavLink key={"to" in link ? link.to : link.href} link={link} />
           ))}
-          <a
-            href="/quote"
+          <Link
+            to="/quote"
             className="rounded-lg bg-[#C9A45B] px-5 py-3 text-xs font-semibold uppercase tracking-[0.14em] text-[#3B0F1A] shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#D8B970] hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F5F1E8] focus-visible:ring-offset-2 focus-visible:ring-offset-[#3B0F1A]"
           >
             Get a Quote
-          </a>
+          </Link>
         </div>
 
         <button
@@ -98,22 +142,19 @@ export function Navbar() {
         >
           <div className="flex flex-col gap-4 px-6 py-5">
             {navLinks.map((link) => (
-              <a
-                key={link.href}
-                href={link.href}
-                onClick={() => setOpen(false)}
-                className="rounded-sm py-2 text-sm font-medium uppercase tracking-wider text-[#F5F1E8]/80 transition-colors hover:text-[#C9A45B] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A45B]"
-              >
-                {link.label}
-              </a>
+              <MobileNavLink
+                key={"to" in link ? link.to : link.href}
+                link={link}
+                onNavigate={() => setOpen(false)}
+              />
             ))}
-            <a
-              href="/quote"
+            <Link
+              to="/quote"
               onClick={() => setOpen(false)}
               className="mt-1 rounded-lg bg-[#C9A45B] px-5 py-3 text-center text-sm font-semibold uppercase tracking-[0.14em] text-[#3B0F1A] transition-colors duration-300 hover:bg-[#D8B970] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F5F1E8]"
             >
               Get a Quote
-            </a>
+            </Link>
           </div>
         </div>
       )}

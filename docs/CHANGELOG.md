@@ -26,6 +26,7 @@ This is the append-only technical change history for implemented repository and 
 - Lazy-loaded the large quote/contact `LiveFormSubmission` controller only on `/quote` and `/contact`, reducing unnecessary JavaScript on normal SEO landing pages while preserving form behaviour (PR #97).
 - Changed standard internal global Navbar destinations to TanStack Router `Link` so primary navigation no longer forces full-document reloads, while preserving the `/#why-us` hash link as a normal anchor (PR #108).
 - Added a manual production Lighthouse diagnostic workflow covering the homepage, Services page, and Quote page with three runs per URL and 30-day filesystem report artifacts; no score threshold is enforced before a verified baseline exists.
+- Recorded the first production Lighthouse baseline and responded to its image-transfer bottleneck by adding responsive WebP delivery for the homepage hero, service imagery, and shared white logo while preserving approved PNG fallbacks; post-deployment Lighthouse verification remains required before claiming measured production improvement (PR #110).
 
 ## 2026-08-10
 

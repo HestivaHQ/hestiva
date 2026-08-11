@@ -97,6 +97,25 @@ network error while contact/quote submission fails.
 5. If unresolved, preserve status/error metadata with secrets and message content redacted and
    escalate to the authorized Resend/Cloudflare operators.
 
+## Public form throttling during testing or incidents
+
+Contact and Quote use separate best-effort five-submissions-per-15-minutes buckets within each
+Cloudflare Worker isolate. Both buckets are derived only from `CF-Connecting-IP`, with channel
+separation applied on the server before the existing isolate-salted hash is calculated.
+
+If one public form rejects repeated valid test submissions while the other still works:
+
+1. Treat rate limiting as a possible cause before changing Resend credentials or form validation.
+2. Confirm which flow was exercised: Contact activity should consume only the `contact` bucket and
+   residential Quote activity only the `quote` bucket.
+3. Do not disable or increase the production throttle merely to complete QA. Allow the 15-minute
+   window to reset or use an approved separate test path/IP when operationally appropriate.
+4. If Contact activity exhausts Quote capacity, or Quote activity exhausts Contact capacity, treat
+   that as a regression in the server-side channel classification and repair it through a reviewed
+   PR.
+5. Remember that the current buckets are isolate-local, not globally consistent. Do not infer a
+   distributed Cloudflare rate-limit guarantee from a successful or failed single-isolate test.
+
 ## Supabase configuration failure
 
 No current application source uses Supabase. First prove the symptom originates from an actual

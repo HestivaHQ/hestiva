@@ -2,6 +2,19 @@
 
 This append-only log records verified engineering and material operational work without reconstructing unsupported history. Add newest entries first. Link pull requests/commits when available and describe validation without including secrets or customer data.
 
+## 2026-08-11 — Aligned bathroom quote values with Slice 5M contract
+
+**Purpose:** Remove the unsupported bathroom `Other` value from the website quote flow so the customer-facing selector matches the approved Website ↔ HestivaOS Slice 5M business rule.
+
+**Work recorded:**
+
+- changed the bathroom option logic so all supported paths terminate at the canonical `1`, `2`, `3`, `4`, `5+` value set;
+- preserved the existing bedroom-dependent narrowing for smaller homes;
+- left bedroom `Other` untouched because Issue #73 only resolves the bathroom vocabulary in this slice; and
+- made no structured handoff, identity, endpoint, security, pricing, photo-storage, or HestivaOS integration changes.
+
+**Scope:** Focused quote-flow catalogue alignment only. No architecture boundary, email infrastructure, deployment configuration, or cross-repository transport contract changed.
+
 ## 2026-08-11 — Adopted repository documentation governance and backfilled verified history
 
 **Purpose:** Make engineering documentation part of the Hestiva website Definition of Done and close the verified historical gap after the original documentation baseline.

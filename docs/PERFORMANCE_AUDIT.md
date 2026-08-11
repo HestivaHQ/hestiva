@@ -52,12 +52,39 @@ The workflow:
 
 No performance threshold is introduced before a verified baseline exists. After the first successful production run is reviewed, stable budgets may be proposed in a separate focused change if the measurements justify them.
 
+## Verified production Lighthouse baseline
+
+GitHub Actions run `31456227764` audited production from `main` commit `3e74a04137b42b5171cc2ecc20c20a45a9b76c08` with three mobile Lighthouse runs per URL. Median values were:
+
+| Page | Performance | FCP | LCP | Total transfer | TBT | CLS |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| Homepage | 72 | 2.407 s | 16.621 s | 5.328 MB | 0 ms | 0 |
+| Services | 78 | 2.462 s | 5.052 s | 9.692 MB | 0 ms | 0 |
+| Quote | 94 | 2.535 s | 2.535 s | 3.014 MB | 0 ms | 0 |
+
+The Services runs were volatile: the three performance scores were 66, 78, and 96, and one LCP run reached 25.875 seconds. The transfer size remained 9.692 MB in all three runs.
+
+The reports did not support another JavaScript-architecture rewrite: median TBT was 0 ms on all three audited pages and CLS was 0. The material remaining issue was image transfer size. The homepage hero PNG was roughly 2.32 MB while rendered much smaller on the mobile audit viewport, and service PNGs were roughly multi-megabyte originals rendered around service-card widths. The shared white logo was also substantially oversized for its rendered dimensions.
+
+## Evidence-backed image-delivery response
+
+PR #110 introduces responsive WebP delivery while retaining the approved PNG originals as browser fallbacks:
+
+- the homepage hero has 480, 768, and 1200 pixel WebP derivatives and uses `srcset`/`sizes` while preserving high fetch priority;
+- service images use the existing 480, 768, and 1200 pixel WebP derivatives already present under `public/images/services/`, with the original PNG retained as fallback;
+- Navbar and Footer use 144 and 288 pixel transparent WebP derivatives of the white logo, with the original PNG retained as fallback; and
+- service-image lazy/eager loading behaviour remains unchanged.
+
+The generated hero derivatives are approximately 27.7 KB, 54.2 KB, and 97.2 KB. The generated white-logo derivatives are approximately 1.8 KB and 3.8 KB. Existing 480-pixel service WebPs are roughly 12-27 KB and 1200-pixel versions are roughly 41-124 KB, depending on the image.
+
+A second production Lighthouse run is required after deployment before claiming a production performance improvement. The source and asset changes establish a strong transfer-size expectation, but production scores and Core Web Vitals are not recorded as improved until measured.
+
 ## Dependency observations
 
 `framer-motion` remains declared in `package.json` even though repository source search no longer finds application imports. Removing the unused declaration and lockfile entry is optional dependency hygiene, but it is not treated as a browser-runtime performance fix because unused code is not currently imported into application source. A future dependency-cleanup PR may remove it with a regenerated, verified Bun lockfile.
 
 ## Audit conclusion
 
-The material application-owned initial-load issue identified during the earlier audit—the globally imported quote/contact controller—has been corrected. Route-level code splitting is functioning, hero/service image loading semantics are intentional, and no evidence supports a risky framework-level rewrite merely to chase the shared runtime chunk.
+The material application-owned initial-load issue identified during the earlier audit—the globally imported quote/contact controller—has been corrected. Route-level code splitting is functioning, and no evidence supports a risky framework-level rewrite merely to chase the shared runtime chunk.
 
-Global client-side internal navigation is also corrected through PR #108. Performance work should now use production Lighthouse evidence and real transfer/runtime behaviour to identify any remaining material problems. Further source refactoring should be evidence-led rather than speculative.
+Global client-side internal navigation is corrected through PR #108. The first production Lighthouse baseline then identified image transfer as the material evidence-backed bottleneck, leading to responsive WebP delivery in PR #110. Further performance work should be driven by the post-deployment Lighthouse comparison rather than speculative source refactoring.

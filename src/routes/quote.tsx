@@ -155,7 +155,7 @@ function bathroomOptions(bedrooms: string): readonly string[] {
   if (bedrooms === "2") return ["1", "2", "3"];
   if (bedrooms === "3") return ["1", "2", "3", "4"];
   if (bedrooms === "4" || bedrooms === "5+" || bedrooms === "Other")
-    return ["1", "2", "3", "4", "5+", "Other"];
+    return ["1", "2", "3", "4", "5+"];
   return [];
 }
 

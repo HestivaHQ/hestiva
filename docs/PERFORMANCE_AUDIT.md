@@ -77,7 +77,27 @@ PR #110 introduces responsive WebP delivery while retaining the approved PNG ori
 
 The generated hero derivatives are approximately 27.7 KB, 54.2 KB, and 97.2 KB. The generated white-logo derivatives are approximately 1.8 KB and 3.8 KB. Existing 480-pixel service WebPs are roughly 12-27 KB and 1200-pixel versions are roughly 41-124 KB, depending on the image.
 
-A second production Lighthouse run is required after deployment before claiming a production performance improvement. The source and asset changes establish a strong transfer-size expectation, but production scores and Core Web Vitals are not recorded as improved until measured.
+A second production Lighthouse run was completed after deployment, as recorded below.
+
+## Verified post-WebP production comparison
+
+GitHub Actions run `31457228551` audited production from merged `main` commit `4f6002d8f7b0a76cddf07837377387afcdec7a66` using the same three-run mobile method. Median values were:
+
+| Page | Performance | LCP | Total transfer |
+| --- | ---: | ---: | ---: |
+| Homepage | 93 | 2.70 s | 2.54 MB |
+| Services | 93 | 2.70 s | 2.61 MB |
+| Quote | 94 | 2.53 s | 2.50 MB |
+
+Compared with the original baseline, homepage performance increased from 72 to 93, homepage median LCP fell from 16.621 s to 2.70 s, and transfer fell from 5.328 MB to 2.54 MB. Services performance increased from 78 to 93, median LCP fell from 5.052 s to 2.70 s, and transfer fell from 9.692 MB to 2.61 MB. Quote performance remained effectively unchanged while transfer decreased.
+
+One homepage run remained anomalous with a long render delay despite the optimized hero being selected at roughly 54 KB; this is recorded as run-to-run volatility rather than evidence that the multi-megabyte hero returned.
+
+## Favicon follow-up
+
+The post-WebP reports exposed a separate static-asset defect: `favicon-16.png` and `favicon-32.png` were each stored as 1254×1254 PNGs even though the HTML declares them as 16×16 and 32×32 icons. GitHub Actions verified the original sizes at 1,143,225 bytes and 1,157,806 bytes. PR #111 resizes the same artwork to the declared dimensions and writes optimized PNGs at the same public paths, producing 657-byte and 1,864-byte files respectively.
+
+This favicon change removes roughly 2.30 MB of avoidable transfer without changing favicon URLs, metadata semantics, routing, or visual branding intent. A final production Lighthouse run is still required after deployment before the performance audit is closed.
 
 ## Dependency observations
 

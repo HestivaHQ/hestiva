@@ -2,6 +2,21 @@
 
 This append-only log records verified engineering and material operational work without reconstructing unsupported history. Add newest entries first. Link pull requests/commits when available and describe validation without including secrets or customer data.
 
+## 2026-08-11 — Added Extra refrigerator quantity handling
+
+**Purpose:** Implement the Slice 5M decision that Extra Refrigerator is quantity-based and defaults to quantity `1` without inventing the future shared handoff schema.
+
+**Work recorded:**
+
+- added a quote-only browser enhancement that exposes a positive-integer quantity control when the existing `Extra refrigerator` add-on is selected;
+- defaulted the control to `1` and prevented values below `1` from surviving the control;
+- kept the selected quantity visible in the final quote review;
+- encoded the selected quantity into the existing add-on label consumed by the current email submission controller so the administrative quote retains the quantity;
+- route-gated the enhancement to `/quote` through the existing lazy-loading pattern; and
+- made no pricing, structured payload-schema, quote-identity, endpoint, security-token, photo-storage, or HestivaOS ingestion changes.
+
+**Scope:** Focused website quote-flow quantity behaviour using the current browser/email submission path. The future structured Website ↔ HestivaOS quantity representation remains unresolved.
+
 ## 2026-08-11 — Converted eco-friendly products to a quote preference
 
 **Purpose:** Implement the Slice 5M product decision that eco-friendly products are a customer Yes/No preference rather than a chargeable/selectable add-on.

@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { isValidEmailAddress, isValidPhoneNumber } from "@/lib/contact-validation";
 
 const MAX_ATTACHMENT_BASE64_LENGTH = 14 * 1024 * 1024;
 const services = [
@@ -36,13 +37,8 @@ const fileSchema = z
 export const contactSchema = z
   .object({
     name: z.string().trim().min(2).max(120),
-    phone: z
-      .string()
-      .trim()
-      .min(7)
-      .max(30)
-      .regex(/^\+?[0-9 ()-]+$/),
-    email: z.string().trim().email().max(254),
+    phone: z.string().trim().max(30).refine(isValidPhoneNumber),
+    email: z.string().trim().max(254).refine(isValidEmailAddress),
     service: z.enum(services),
     jobType: z.string().trim().max(80).optional().default(""),
     multipleServices: z.array(z.string().trim().min(1).max(80)).max(20).optional().default([]),

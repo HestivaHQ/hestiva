@@ -67,6 +67,8 @@ export function ExtraRefrigeratorQuantity() {
       }
 
       if (existing) {
+        const nextLabel = `${ADDON_LABEL} × ${lastRenderedQuantity}`;
+        if (labelText.textContent?.trim() !== nextLabel) labelText.textContent = nextLabel;
         syncReviewQuantity(lastRenderedQuantity);
         return;
       }

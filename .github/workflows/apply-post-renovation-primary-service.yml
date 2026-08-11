@@ -1,0 +1,79 @@
+name: Apply post-renovation primary-service alignment
+
+on:
+  push:
+    branches:
+      - agent/post-renovation-primary-service
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: agent/post-renovation-primary-service
+      - name: Apply catalogue and documentation changes
+        shell: python
+        run: |
+          from pathlib import Path
+
+          quote = Path('src/routes/quote.tsx')
+          text = quote.read_text()
+          service_marker = '    "Eco-Friendly Cleaning",\n    "Add-on Services",'
+          service_replacement = '    "Eco-Friendly Cleaning",\n    "Post-Renovation Cleaning",\n    "Add-on Services",'
+          if service_marker not in text:
+              raise SystemExit('Primary-service insertion marker not found')
+          text = text.replace(service_marker, service_replacement, 1)
+          addon_marker = '  "Pet-hair treatment",\n  "Post-renovation dust removal",\n];'
+          addon_replacement = '  "Pet-hair treatment",\n];'
+          if addon_marker not in text:
+              raise SystemExit('Post-renovation add-on marker not found')
+          text = text.replace(addon_marker, addon_replacement, 1)
+          quote.write_text(text)
+
+          security = Path('src/lib/form-security.ts')
+          text = security.read_text()
+          service_marker = '  "Eco-Friendly Cleaning",\n  "Add-on Services",'
+          service_replacement = '  "Eco-Friendly Cleaning",\n  "Post-Renovation Cleaning",\n  "Add-on Services",'
+          if service_marker not in text:
+              raise SystemExit('Server service enum insertion marker not found')
+          security.write_text(text.replace(service_marker, service_replacement, 1))
+
+          architecture = Path('docs/ARCHITECTURE.md')
+          text = architecture.read_text()
+          anchor = '## Public quote and contact workflow'
+          entry = '''## Slice 5M quote catalogue alignment\n\n- `Post-Renovation Cleaning` is a primary service in the website quote flow and server-side submission enum.\n- The former `Post-renovation dust removal` add-on is removed from the selectable add-on catalogue.\n- `Recently renovated` remains a separate Home Condition and may be selected alongside `Post-Renovation Cleaning`.\n- This catalogue alignment does not implement Website ↔ HestivaOS transport, pricing, shared identity, or Accept/Decline actions.\n\n'''
+          if anchor not in text:
+              raise SystemExit('Architecture insertion marker not found')
+          architecture.write_text(text.replace(anchor, entry + anchor, 1))
+
+          log = Path('docs/TECHNICAL_WORK_LOG.md')
+          text = log.read_text()
+          marker = '## 2026-08-11 — Closed the production performance audit after final verification'
+          entry = '''## 2026-08-11 — Moved Post-Renovation Cleaning to the primary-service catalogue\n\n**Purpose:** Align the standalone website quote catalogue with the approved Slice 5M business rule that Post-Renovation Cleaning is a primary service rather than an add-on.\n\n**Work recorded:**\n\n- added `Post-Renovation Cleaning` to the quote flow primary-service selector;\n- added the same value to the server-side allowed service enum so current email submission accepts the new primary-service value;\n- removed `Post-renovation dust removal` from the selectable add-on list;\n- preserved `Recently renovated` as a separate Home Condition that may coexist with the primary service; and\n- made no Website ↔ HestivaOS endpoint, structured payload, pricing, shared-reference, Accept/Decline, or persistence change.\n\n**Scope:** Focused website catalogue alignment only.\n\n'''
+          if marker not in text:
+              raise SystemExit('Technical work log insertion marker not found')
+          log.write_text(text.replace(marker, entry + marker, 1))
+
+          changelog = Path('docs/CHANGELOG.md')
+          text = changelog.read_text()
+          marker = '### Quote catalogue alignment\n\n'
+          entry = '- Moved `Post-Renovation Cleaning` into the primary-service quote catalogue and server validation, removed the legacy `Post-renovation dust removal` add-on, and preserved `Recently renovated` as a separate Home Condition without implementing the future Website ↔ HestivaOS transport layer.\n'
+          if marker not in text:
+              raise SystemExit('Changelog insertion marker not found')
+          changelog.write_text(text.replace(marker, marker + entry, 1))
+
+      - name: Format changed text files
+        run: npx prettier --write src/routes/quote.tsx src/lib/form-security.ts docs/ARCHITECTURE.md docs/TECHNICAL_WORK_LOG.md docs/CHANGELOG.md
+      - name: Commit final changes and remove helper
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/routes/quote.tsx src/lib/form-security.ts docs/ARCHITECTURE.md docs/TECHNICAL_WORK_LOG.md docs/CHANGELOG.md
+          git rm .github/workflows/apply-post-renovation-primary-service.yml
+          git commit -m "feat: align post-renovation service catalogue"
+          git push origin HEAD:agent/post-renovation-primary-service

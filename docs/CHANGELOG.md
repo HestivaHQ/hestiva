@@ -4,6 +4,11 @@ This is the append-only technical change history for implemented repository and 
 
 ## 2026-08-11
 
+### Quote catalogue alignment
+
+- Removed the unsupported bathroom `Other` option from the quote flow so bathroom values align with the approved Slice 5M `1`, `2`, `3`, `4`, `5+` business rule.
+- Preserved the existing bedroom-dependent narrowing for smaller homes and made no Website ↔ HestivaOS transport, identity, security, pricing, or storage changes.
+
 ### Documentation governance
 
 - Adopted repository-wide documentation as part of the Definition of Done through root `AGENTS.md`.

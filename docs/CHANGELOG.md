@@ -28,6 +28,7 @@ This is the append-only technical change history for implemented repository and 
 - Added a manual production Lighthouse diagnostic workflow covering the homepage, Services page, and Quote page with three runs per URL and 30-day filesystem report artifacts; no score threshold is enforced before a verified baseline exists.
 - Recorded the first production Lighthouse baseline and responded to its image-transfer bottleneck by adding responsive WebP delivery for the homepage hero, service imagery, and shared white logo while preserving approved PNG fallbacks; the later production run verified material improvement in homepage and Services performance (PR #110).
 - Verified the post-WebP production improvement, then corrected the two remaining oversized favicon files from 1254×1254 source images to true 16×16 and 32×32 optimized PNGs, reducing them from roughly 2.30 MB combined to 2,521 bytes while preserving their existing public paths (PR #111).
+- Closed the performance audit after final production run `31495511555` verified median performance scores of 93/95/93 for Homepage/Services/Quote and reduced transfer to 240 KB/308 KB/196 KB respectively, with no further evidence-backed application performance change required.
 
 ## 2026-08-10
 

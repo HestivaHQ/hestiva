@@ -26,6 +26,11 @@ const LazyAddonQuantityEnhancements = lazy(() =>
     default: module.AddonQuantityEnhancements,
   })),
 );
+const LazyPostRenovationFrequencyEnhancement = lazy(() =>
+  import("@/components/PostRenovationFrequencyEnhancement").then((module) => ({
+    default: module.PostRenovationFrequencyEnhancement,
+  })),
+);
 
 function NotFoundComponent() {
   return (
@@ -92,6 +97,7 @@ function RootComponent() {
   const needsFormSubmission = pathname === "/quote" || pathname === "/contact";
   const needsContactValidation = pathname === "/quote" || pathname === "/contact";
   const needsAddonQuantityEnhancements = pathname === "/quote";
+  const needsPostRenovationFrequencyEnhancement = pathname === "/quote";
 
   return (
     <>
@@ -114,6 +120,11 @@ function RootComponent() {
       {needsAddonQuantityEnhancements && (
         <Suspense fallback={null}>
           <LazyAddonQuantityEnhancements />
+        </Suspense>
+      )}
+      {needsPostRenovationFrequencyEnhancement && (
+        <Suspense fallback={null}>
+          <LazyPostRenovationFrequencyEnhancement />
         </Suspense>
       )}
       <div id="main-content" tabIndex={-1}>

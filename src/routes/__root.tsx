@@ -16,9 +16,9 @@ const LazyFormSubmission = lazy(() =>
     default: module.LiveFormSubmission,
   })),
 );
-const LazyExtraRefrigeratorQuantity = lazy(() =>
-  import("@/components/ExtraRefrigeratorQuantity").then((module) => ({
-    default: module.ExtraRefrigeratorQuantity,
+const LazyAddonQuantityEnhancements = lazy(() =>
+  import("@/components/AddonQuantityEnhancements").then((module) => ({
+    default: module.AddonQuantityEnhancements,
   })),
 );
 
@@ -85,7 +85,7 @@ function RootShell({ children }: { children: React.ReactNode }) {
 function RootComponent() {
   const pathname = useRouterState({ select: (state) => state.location.pathname });
   const needsFormSubmission = pathname === "/quote" || pathname === "/contact";
-  const needsExtraRefrigeratorQuantity = pathname === "/quote";
+  const needsAddonQuantityEnhancements = pathname === "/quote";
 
   return (
     <>
@@ -100,9 +100,9 @@ function RootComponent() {
           <LazyFormSubmission />
         </Suspense>
       )}
-      {needsExtraRefrigeratorQuantity && (
+      {needsAddonQuantityEnhancements && (
         <Suspense fallback={null}>
-          <LazyExtraRefrigeratorQuantity />
+          <LazyAddonQuantityEnhancements />
         </Suspense>
       )}
       <div id="main-content" tabIndex={-1}>

@@ -14,7 +14,7 @@ export function LocationPageLayout({ location }: { location: LocationPage }) {
   const breadcrumbs = locationBreadcrumbs(location.name, `/locations/${location.slug}`);
   const gallery = locationVisualLibrary[location.name] ?? [];
   const primaryImage = gallery[0];
-  const supportingImages = gallery.slice(1, 5);
+  const supportingImages = gallery.slice(1, 3);
   const nearbyLocations = location.nearbyAreas
     .map((areaName) => locationPages.find((item) => item.name === areaName))
     .filter((item): item is LocationPage => Boolean(item));
@@ -77,23 +77,23 @@ export function LocationPageLayout({ location }: { location: LocationPage }) {
               <div className="mb-8 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
                 <div>
                   <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#9A7132]">
-                    {location.name} and nearby
+                    Residential interiors
                   </p>
                   <h2
                     id="local-gallery-heading"
                     className="mt-3 text-3xl font-semibold tracking-tight text-[#5A1425]"
                   >
-                    A glimpse of the area
+                    Homes, beautifully cared for
                   </h2>
                 </div>
                 <p className="max-w-xl text-sm leading-6 text-[#695E59]">
-                  These photographs show {location.name} or its surrounding local vicinity and are included for geographic context.
+                  Clean, well-kept residential interiors that reflect the kinds of home spaces Hestiva is designed to care for.
                 </p>
               </div>
-              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              <div className="grid gap-4 sm:grid-cols-2">
                 {supportingImages.map((image) => (
                   <figure
-                    key={image.sourceUrl}
+                    key={image.src}
                     className="overflow-hidden rounded-2xl border border-[#E2D3BD] bg-[#F8F3E8]"
                   >
                     <img

@@ -25,7 +25,9 @@ const validSubmission = {
 describe("public form security", () => {
   test("accepts valid bounded submissions and contact formats", () => {
     expect(contactSchema.parse(validSubmission).email).toBe("customer@example.com");
-    expect(contactSchema.safeParse({ ...validSubmission, phone: "082 123 4567" }).success).toBe(true);
+    expect(contactSchema.safeParse({ ...validSubmission, phone: "082 123 4567" }).success).toBe(
+      true,
+    );
     expect(contactSchema.safeParse({ ...validSubmission, phone: "+44 7700 900123" }).success).toBe(
       true,
     );

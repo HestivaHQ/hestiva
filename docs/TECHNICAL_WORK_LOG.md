@@ -2,6 +2,34 @@
 
 This append-only log records verified engineering and material operational work without reconstructing unsupported history. Add newest entries first. Link pull requests/commits when available and describe validation without including secrets or customer data.
 
+## 2026-08-11 — Added production Lighthouse diagnostics
+
+**Purpose:** Move performance work from speculative source refactoring to repeatable production measurement after the source-level audit found no further evidence-backed application-runtime rewrite.
+
+**Work recorded:**
+
+- added `lighthouserc.cjs` with three production URLs: the homepage, Services page, and Quote page;
+- configured three Lighthouse runs per URL to reduce normal run-to-run variance;
+- added the manual `.github/workflows/hestiva-performance-check.yml` diagnostic workflow using Lighthouse CI 0.15.1;
+- configured filesystem report export and 30-day GitHub Actions artifact retention instead of public temporary report storage;
+- deliberately introduced no score assertions or blocking thresholds before a verified production baseline exists; and
+- updated the performance/documentation records without changing application runtime, deployment authority, pricing, quote transport, or Website ↔ HestivaOS architecture.
+
+**Scope:** Diagnostic repository workflow and performance documentation only. The workflow is manual and non-blocking until production measurements justify a separate threshold decision.
+
+## 2026-08-11 — Completed global Navbar client-routing optimization
+
+**Verified source:** merged PR #108.
+
+**Work recorded:**
+
+- replaced normal internal global Navbar document-navigation anchors with TanStack Router `Link` on desktop and mobile;
+- retained `/#why-us` as a normal hash anchor so section navigation semantics remain intact;
+- preserved mobile-menu close behaviour, scroll behaviour, styling, accessibility states, and logo dimensions; and
+- completed the source-level performance audit without introducing speculative framework/shared-runtime refactoring.
+
+**Verification:** PR #108 passed the full Hestiva PR Check and merged into `main`.
+
 ## 2026-08-11 — Added Balcony / Patio Cleaning quantity handling
 
 **Purpose:** Implement the Slice 5M decision that Balcony / Patio Cleaning may use quantity when multiple areas exist, while preserving the already-approved Extra refrigerator quantity behaviour and avoiding the unresolved future structured handoff schema.

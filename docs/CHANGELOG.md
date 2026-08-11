@@ -24,6 +24,8 @@ This is the append-only technical change history for implemented repository and 
 
 - Replaced the earlier geographic location-gallery implementation with 198 unique Pexels people-free residential interior images: exactly three images for each of 66 approved location pages, guarded against duplicate photo IDs (PR #96).
 - Lazy-loaded the large quote/contact `LiveFormSubmission` controller only on `/quote` and `/contact`, reducing unnecessary JavaScript on normal SEO landing pages while preserving form behaviour (PR #97).
+- Changed standard internal global Navbar destinations to TanStack Router `Link` so primary navigation no longer forces full-document reloads, while preserving the `/#why-us` hash link as a normal anchor (PR #108).
+- Added a manual production Lighthouse diagnostic workflow covering the homepage, Services page, and Quote page with three runs per URL and 30-day filesystem report artifacts; no score threshold is enforced before a verified baseline exists.
 
 ## 2026-08-10
 

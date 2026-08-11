@@ -4,6 +4,11 @@ This is the append-only technical change history for implemented repository and 
 
 ## 2026-08-11
 
+### Public form validation
+
+- Added one shared browser/server phone and email validation policy for the public quote/contact flows: South African local numbers must compact to 10 digits beginning with `0`, international numbers require a leading `+` and 8–15 digits, and email values use bounded practical local-part and DNS-style domain checks. The enhancement is route-gated to `/quote` and `/contact` and does not normalize, persist, or match HestivaOS customer records.
+- Added ADR-0002 to preserve the validation policy and its separation from future Website ↔ HestivaOS matching/normalization work.
+
 ### Quote catalogue alignment
 
 - Moved `Post-Renovation Cleaning` into the primary-service quote catalogue and server validation, removed the legacy `Post-renovation dust removal` add-on, and preserved `Recently renovated` as a separate Home Condition without implementing the future Website ↔ HestivaOS transport layer.

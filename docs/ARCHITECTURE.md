@@ -60,13 +60,15 @@ Most route and component code participates in SSR and then hydrates on the clien
 
 Browser-only quote/contact orchestration is implemented in `src/components/LiveFormSubmission.tsx`. It contains DOM enhancement/validation, quote-file compression/submission helpers, and contact/quote submission handling. The controller is not imported synchronously into the global application bundle: `src/routes/__root.tsx` dynamically imports and mounts it only when the current route is `/quote` or `/contact`.
 
+`src/components/ContactValidationEnhancements.tsx` is a separate route-gated browser enhancement mounted only on `/quote` and `/contact`. It applies immediate phone/email feedback and input bounds without changing submitted values. `src/lib/contact-validation.ts` owns the shared phone/email validation semantics used by that browser enhancement and by the authoritative Zod server schema. South African local numbers must compact to 10 digits beginning with `0`; international numbers require a leading `+` and 8–15 digits. Email validation is capped at 254 characters and requires one practical local part plus a dotted DNS-style domain. These rules validate contact data only; they do not normalize, persist, or match customers for HestivaOS.
+
 `src/components/AddonQuantityEnhancements.tsx` is a quote-only browser enhancement. It is dynamically imported by `src/routes/__root.tsx` only on `/quote`, applies the approved positive-integer quantity controls with default `1` to `Extra refrigerator` and `Balcony / Patio Cleaning`, keeps selected quantities visible in the review UI, and encodes them into the existing add-on labels consumed by the current submission controller. It does not define the future structured Website ↔ HestivaOS quantity schema.
 
 The current quote catalogue treats `Post-Renovation Cleaning` as a primary service in the customer-facing selector and in the server-side allowed service enum. The former `Post-renovation dust removal` add-on is not selectable. `Recently renovated` remains a separate Home Condition and may coexist with the primary service. This catalogue alignment does not implement Website ↔ HestivaOS transport, pricing, shared quote identity, persistence, or Accept/Decline actions.
 
 `src/lib/contact.functions.ts` defines the `POST` TanStack Start server function. On the server it:
 
-1. validates input with Zod;
+1. validates input with Zod, including the shared phone/email policy;
 2. rejects cross-origin requests and treats the honeypot only as a supplemental bot signal;
 3. applies a deterministic five-submissions-per-15-minutes throttle keyed only from Cloudflare's `CF-Connecting-IP`, using an isolate-salted hash and never logging or retaining the raw address;
 4. validates attachment metadata/content;
@@ -96,6 +98,7 @@ Resend is actively used for contact and quote emails. The server function sends 
 - Cloudflare terminates public traffic and provides Worker runtime variables/secrets.
 - The Worker/TanStack server-function boundary protects `RESEND_API_KEY`; only non-secret form data crosses from the browser.
 - Zod and attachment validation constrain accepted server-function payloads. These controls do not replace authentication or authorization.
+- Phone and email values are checked in the browser for immediate feedback and revalidated with the same shared helpers at the server boundary; browser validation is convenience only and cannot bypass authoritative server rejection.
 - Strict Zod validation bounds strings/collections, allows at most 10 attachments, caps each encoded attachment at 14 MiB, and rejects unknown fields. Attachment validation separately caps decoded files at 10 MiB and checks content signatures.
 - Browser timing is not submitted or trusted. The honeypot is only a signal; same-origin and server-side validation are authoritative controls.
 - The five-per-15-minute throttle is server-enforced but scoped to one Worker isolate. It is useful best-effort resistance, **not globally reliable Cloudflare rate limiting**. Globally consistent enforcement requires a separately provisioned Durable Object binding and migration.

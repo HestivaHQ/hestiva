@@ -2,6 +2,22 @@
 
 This append-only log records verified engineering and material operational work without reconstructing unsupported history. Add newest entries first. Link pull requests/commits when available and describe validation without including secrets or customer data.
 
+## 2026-08-11 — Strengthened public phone and email validation
+
+**Purpose:** Align the standalone website's public contact data quality with the approved Slice 5M requirement for stronger phone/email validation while keeping HestivaOS matching and normalization out of scope.
+
+**Work recorded:**
+
+- added `src/lib/contact-validation.ts` as the shared browser/server validation source for public phone and email values;
+- accepted South African local phone numbers only when their compact form is exactly 10 digits beginning with `0`, and accepted international numbers only with an explicit leading `+` and 8–15 digits;
+- replaced the previous permissive server phone regex and separate email rule with shared helper refinements at the Zod server boundary;
+- added route-gated `/quote` and `/contact` browser validation through `ContactValidationEnhancements`, including immediate feedback and input-length bounds without rewriting submitted values;
+- expanded form-security tests with valid South African/international phone examples and rejected malformed phone/email examples;
+- recorded the durable validation policy in ADR-0002; and
+- made no HestivaOS customer matching, contact normalization, persistence, shared quote identity, pricing, Accept/Decline, or transport change.
+
+**Scope:** Public website contact-data validation only. Server validation remains authoritative.
+
 ## 2026-08-11 — Moved Post-Renovation Cleaning to the primary-service catalogue
 
 **Purpose:** Align the standalone website quote catalogue with the approved Slice 5M business rule that Post-Renovation Cleaning is a primary service rather than an add-on.

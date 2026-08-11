@@ -2,6 +2,20 @@
 
 This append-only log records verified engineering and material operational work without reconstructing unsupported history. Add newest entries first. Link pull requests/commits when available and describe validation without including secrets or customer data.
 
+## 2026-08-11 — Repaired Post-Renovation Cleaning quote completion path
+
+**Purpose:** Fix a launch-readiness blocker discovered after Post-Renovation Cleaning was promoted to a primary service: the existing frequency controller did not recognize the new service and therefore exposed no selectable frequency values.
+
+**Work recorded:**
+
+- verified that `Post-Renovation Cleaning` was present in the quote primary-service selector and server enum but absent from `LiveFormSubmission`'s service-frequency mapping;
+- added a `/quote`-only browser enhancement that restores `One-time` and `Custom` frequency choices for Post-Renovation Cleaning;
+- preserved the existing quote state, required-field progression, email submission path, and server-side service validation;
+- kept the repair route-gated so ordinary landing pages do not load it; and
+- made no pricing, HestivaOS transport, persistence, shared quote identity, Accept/Decline, or authentication change.
+
+**Scope:** Launch-blocker repair for the standalone quote flow only.
+
 ## 2026-08-11 — Strengthened public phone and email validation
 
 **Purpose:** Align the standalone website's public contact data quality with the approved Slice 5M requirement for stronger phone/email validation while keeping HestivaOS matching and normalization out of scope.

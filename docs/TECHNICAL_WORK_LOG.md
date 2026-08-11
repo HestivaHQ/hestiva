@@ -2,6 +2,20 @@
 
 This append-only log records verified engineering and material operational work without reconstructing unsupported history. Add newest entries first. Link pull requests/commits when available and describe validation without including secrets or customer data.
 
+## 2026-08-11 — Moved Post-Renovation Cleaning to the primary-service catalogue
+
+**Purpose:** Align the standalone website quote catalogue with the approved Slice 5M business rule that Post-Renovation Cleaning is a primary service rather than an add-on.
+
+**Work recorded:**
+
+- added `Post-Renovation Cleaning` to the quote-flow primary-service selector;
+- added the same value to the server-side allowed service enum so the current email submission path accepts the new primary-service value;
+- removed `Post-renovation dust removal` from the selectable add-on list;
+- preserved `Recently renovated` as a separate Home Condition that may coexist with the primary service; and
+- made no Website ↔ HestivaOS endpoint, structured payload, pricing, shared-reference, Accept/Decline, persistence, or authentication change.
+
+**Scope:** Focused website catalogue alignment only.
+
 ## 2026-08-11 — Closed the production performance audit after final verification
 
 **Purpose:** Record the final production measurement after the favicon correction and formally close the evidence-backed website performance audit.

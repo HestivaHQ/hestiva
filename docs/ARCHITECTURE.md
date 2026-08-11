@@ -19,9 +19,9 @@ Browser -> hestiva.co.za -> Cloudflare Worker -> TanStack Start SSR/router
 ## Repository structure
 
 - `src/routes/` contains TanStack file routes. `src/routeTree.gen.ts` is generated routing output and is not a hand-maintained route registry.
-- `src/routes/__root.tsx` defines the HTML shell, common head assets, not-found UI, outlet, and the route-gated lazy loading boundary for the client form controller.
+- `src/routes/__root.tsx` defines the HTML shell, common head assets, not-found UI, outlet, and route-gated lazy loading boundaries for browser-only form/quote enhancements.
 - `src/router.tsx` creates the router and common error UI.
-- `src/components/` contains shared page sections, navigation, layouts, form wiring, and UI primitives.
+- `src/components/` contains shared page sections, navigation, layouts, form wiring, browser-only quote enhancements, and UI primitives.
 - `src/content/services.ts` is the typed service catalogue.
 - `src/content/service-areas.ts` is the authoritative approved service-area source. It currently contains 66 areas across five Johannesburg/Midrand clusters.
 - `src/content/locations.ts` defines the generated location-page content model for the approved service areas.
@@ -48,6 +48,8 @@ The current SEO geography is intentionally driven from `src/content/service-area
 Most route and component code participates in SSR and then hydrates on the client.
 
 Browser-only quote/contact orchestration is implemented in `src/components/LiveFormSubmission.tsx`. It contains DOM enhancement/validation, quote-file compression/submission helpers, and contact/quote submission handling. The controller is not imported synchronously into the global application bundle: `src/routes/__root.tsx` dynamically imports and mounts it only when the current route is `/quote` or `/contact`.
+
+`src/components/ExtraRefrigeratorQuantity.tsx` is a quote-only browser enhancement. It is dynamically imported by `src/routes/__root.tsx` only on `/quote`, watches the existing Extra refrigerator add-on control, exposes a positive-integer quantity input with default `1`, keeps that quantity visible in the review UI, and encodes the selected quantity into the existing add-on label consumed by the current submission controller. It does not define the future structured Website ↔ HestivaOS quantity schema.
 
 `src/lib/contact.functions.ts` defines the `POST` TanStack Start server function. On the server it:
 

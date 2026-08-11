@@ -114,7 +114,18 @@ type TextKey = Exclude<keyof FormData, "addons" | "consent">;
 
 const selectOptions = {
   propertyType: ["Apartment", "Townhouse", "House", "Duplex", "Other"],
-  floorSize: ["Under 80 m²", "80–150 m²", "151–250 m²", "Over 250 m²", "Not sure"],
+  floorSize: [
+    "Under 40 m²",
+    "40–59 m²",
+    "60–79 m²",
+    "80–99 m²",
+    "100–129 m²",
+    "130–169 m²",
+    "170–219 m²",
+    "220–299 m²",
+    "300+ m²",
+    "Not sure",
+  ],
   livingAreas: ["1", "2", "3", "4+"],
   outdoor: ["None", "Balcony", "Patio", "Both"],
   estate: ["No", "Yes — estate", "Yes — complex", "Yes — gated community"],

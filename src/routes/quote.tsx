@@ -131,6 +131,7 @@ const selectOptions = {
     "Interior Window Cleaning",
     "Laundry Folding",
     "Eco-Friendly Cleaning",
+    "Post-Renovation Cleaning",
     "Add-on Services",
     "Not sure",
   ],
@@ -199,7 +200,6 @@ const addons = [
   "Extra bathroom",
   "Extra refrigerator",
   "Pet-hair treatment",
-  "Post-renovation dust removal",
 ];
 
 const requiredByStep: Partial<Record<number, TextKey[]>> = {

@@ -1,3 +1,5 @@
+import { approvedServiceAreas } from "@/content/service-areas";
+
 export type LocationGalleryImage = {
   src: string;
   alt: string;
@@ -7,313 +9,243 @@ export type LocationGalleryImage = {
   licenseUrl: string;
 };
 
-const sandton: LocationGalleryImage[] = [
-  {
-    src: "https://commons.wikimedia.org/wiki/Special:FilePath/Sandton%20Skyline.jpg?width=1400",
-    alt: "Sandton skyline in Johannesburg",
-    credit: "Wikiguy1101",
-    sourceUrl: "https://commons.wikimedia.org/wiki/File:Sandton_Skyline.jpg",
-    license: "CC BY-SA 4.0",
-    licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/",
-  },
-  {
-    src: "https://commons.wikimedia.org/wiki/Special:FilePath/Sandton.jpg?width=1400",
-    alt: "Sandton City and surrounding buildings in Johannesburg",
-    credit: "Jeff Attaway",
-    sourceUrl: "https://commons.wikimedia.org/wiki/File:Sandton.jpg",
-    license: "CC BY 2.0",
-    licenseUrl: "https://creativecommons.org/licenses/by/2.0/",
-  },
-  {
-    src: "https://commons.wikimedia.org/wiki/Special:FilePath/Johannesburg%20Sandton.jpg?width=1400",
-    alt: "View of Sandton in Johannesburg",
-    credit: "Ibrahim maca",
-    sourceUrl: "https://commons.wikimedia.org/wiki/File:Johannesburg_Sandton.jpg",
-    license: "CC BY-SA 4.0",
-    licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/",
-  },
-  {
-    src: "https://commons.wikimedia.org/wiki/Special:FilePath/Nelson%20Mandela%20Square%2C%20Sandton%20City%20Johannesburg.jpg?width=1400",
-    alt: "Nelson Mandela Square in Sandton City, Johannesburg",
-    credit: "Mmaua1",
-    sourceUrl:
-      "https://commons.wikimedia.org/wiki/File:Nelson_Mandela_Square,_Sandton_City_Johannesburg.jpg",
-    license: "CC BY-SA 4.0",
-    licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/",
-  },
-  {
-    src: "https://commons.wikimedia.org/wiki/Special:FilePath/Sandton-convention-centre.jpg?width=1400",
-    alt: "Sandton Convention Centre in Johannesburg",
-    credit: "TomLeVineCopyEditor",
-    sourceUrl: "https://commons.wikimedia.org/wiki/File:Sandton-convention-centre.jpg",
-    license: "CC BY-SA 4.0",
-    licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/",
-  },
-];
+const INTERIORS_PER_LOCATION = 3;
 
-const morningside: LocationGalleryImage = {
-  src: "https://commons.wikimedia.org/wiki/Special:FilePath/Morningside%2C%20Sandton%2C%202196%2C%20South%20Africa%20-%20panoramio.jpg?width=1400",
-  alt: "Morningside in Sandton, Johannesburg",
-  credit: "stone wu",
-  sourceUrl:
-    "https://commons.wikimedia.org/wiki/File:Morningside,_Sandton,_2196,_South_Africa_-_panoramio.jpg",
-  license: "CC BY-SA 3.0",
-  licenseUrl: "https://creativecommons.org/licenses/by-sa/3.0/",
-};
+const interiorPhotoIds = [
+  276746,
+  7546648,
+  6980724,
+  34688219,
+  8584020,
+  35419464,
+  34887637,
+  31737858,
+  36816986,
+  280239,
+  37192234,
+  2343469,
+  8089172,
+  8583841,
+  29012619,
+  27164969,
+  6758284,
+  12277020,
+  8082565,
+  7214166,
+  28586197,
+  7173666,
+  28542161,
+  6970061,
+  36777534,
+  8135496,
+  8146330,
+  2030037,
+  19239905,
+  8082324,
+  7511695,
+  7195739,
+  15062127,
+  6077368,
+  7511693,
+  8146214,
+  29353199,
+  11296142,
+  6297086,
+  7046002,
+  34173960,
+  6903157,
+  34574606,
+  30767888,
+  6782479,
+  15456211,
+  19980080,
+  6934170,
+  3754698,
+  8135118,
+  31184400,
+  6957081,
+  12329135,
+  6899357,
+  15743371,
+  29887333,
+  10919431,
+  33599113,
+  33753437,
+  6903210,
+  8082195,
+  7031840,
+  7005268,
+  27623999,
+  6890406,
+  27359993,
+  7534282,
+  8186477,
+  6835116,
+  18033166,
+  34992776,
+  34993898,
+  13009887,
+  34992768,
+  7168051,
+  4221389,
+  14598479,
+  4119832,
+  8583537,
+  29304261,
+  5998031,
+  12700479,
+  27164978,
+  17158647,
+  24461264,
+  3935326,
+  260046,
+  38907413,
+  30937879,
+  14596477,
+  31594912,
+  19737859,
+  29012624,
+  31594915,
+  28542208,
+  6981124,
+  31658573,
+  5546845,
+  7546716,
+  28542159,
+  7167986,
+  7027775,
+  4469169,
+  12119203,
+  24245796,
+  12700443,
+  12700475,
+  6035357,
+  7027798,
+  11125417,
+  5900805,
+  4713251,
+  7028125,
+  7027978,
+  10099319,
+  10628390,
+  7601270,
+  7027761,
+  16501691,
+  3935337,
+  12908605,
+  11125354,
+  8186486,
+  12700526,
+  11125427,
+  24245789,
+  12700461,
+  4713242,
+  6035308,
+  12700379,
+  15667601,
+  12908649,
+  7027760,
+  8031880,
+  16641322,
+  4030049,
+  19227244,
+  5178081,
+  15062129,
+  7601106,
+  4469164,
+  7028065,
+  5008409,
+  6835067,
+  5900821,
+  4119847,
+  10099093,
+  4940609,
+  8186492,
+  10099314,
+  15580493,
+  7027985,
+  15409439,
+  7601087,
+  16641357,
+  8031970,
+  10628386,
+  4940602,
+  5698005,
+  36777602,
+  14715828,
+  7168093,
+  14495969,
+  12119218,
+  12700528,
+  8031895,
+  8186476,
+  36777518,
+  5900807,
+  6035347,
+  10486199,
+  4030033,
+  7168011,
+  7168103,
+  7027765,
+  4469145,
+  36777874,
+  5353874,
+  15242036,
+  14715772,
+  15668080,
+  3773571,
+  10486289,
+  7167982,
+  4320378,
+  11018251,
+  5502212,
+  12700517,
+  4119846,
+  8031915,
+  6835162,
+  3935349,
+  3935327,
+  11018255,
+  10099332,
+  8583535,
+  18041826,
+  4529503,
+] as const;
 
-const rosebankPrimary: LocationGalleryImage = {
-  src: "https://commons.wikimedia.org/wiki/Special:FilePath/Rosebank%2C%20Johannesburg%2C%20South%20Africa%20%28Unsplash%29.jpg?width=1400",
-  alt: "Rosebank in Johannesburg, South Africa",
-  credit: "Mpho Mojapelo",
-  sourceUrl:
-    "https://commons.wikimedia.org/wiki/File:Rosebank,_Johannesburg,_South_Africa_(Unsplash).jpg",
-  license: "CC0 1.0",
-  licenseUrl: "https://creativecommons.org/publicdomain/zero/1.0/",
-};
+const expectedPhotoCount = approvedServiceAreas.length * INTERIORS_PER_LOCATION;
 
-const rosebankStreet: LocationGalleryImage = {
-  src: "https://commons.wikimedia.org/wiki/Special:FilePath/Street%20corner%20in%20Rosebank.jpg?width=1400",
-  alt: "Jellicoe and Keyes Avenue street corner in Rosebank",
-  credit: "Ossewa",
-  sourceUrl: "https://commons.wikimedia.org/wiki/File:Street_corner_in_Rosebank.jpg",
-  license: "CC BY-SA 4.0",
-  licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/",
-};
-
-const parkhurst: LocationGalleryImage = {
-  src: "https://commons.wikimedia.org/wiki/Special:FilePath/Aerial%20view%20of%20P72%20at%2072%206th%20Street%2C%20Parkhurst%2C%20Johannesburg%2C%20South%20Africa.jpg?width=1400",
-  alt: "Aerial view of a building in Parkhurst, Johannesburg",
-  credit: "ChiefofBeans",
-  sourceUrl:
-    "https://commons.wikimedia.org/wiki/File:Aerial_view_of_P72_at_72_6th_Street,_Parkhurst,_Johannesburg,_South_Africa.jpg",
-  license: "CC0 1.0",
-  licenseUrl: "https://creativecommons.org/publicdomain/zero/1.0/",
-};
-
-const melville: LocationGalleryImage = {
-  src: "https://commons.wikimedia.org/wiki/Special:FilePath/SA%20on%20the%20move%20in%20Melville.jpg?width=1400",
-  alt: "Street scene in Melville, Johannesburg",
-  credit: "Margherita Nel",
-  sourceUrl: "https://commons.wikimedia.org/wiki/File:SA_on_the_move_in_Melville.jpg",
-  license: "CC BY-SA 4.0",
-  licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/",
-};
-
-const northcliff: LocationGalleryImage = {
-  src: "https://commons.wikimedia.org/wiki/Special:FilePath/Northcliff%20%28South%20Africa%29.jpg?width=1400",
-  alt: "Northcliff in Johannesburg",
-  credit: "TapticInfo",
-  sourceUrl: "https://commons.wikimedia.org/wiki/File:Northcliff_(South_Africa).jpg",
-  license: "CC BY-SA 4.0",
-  licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/",
-};
-
-const roodepoort: LocationGalleryImage = {
-  src: "https://commons.wikimedia.org/wiki/Special:FilePath/Roodepoort%20Location.jpg?width=1400",
-  alt: "Roodepoort in Johannesburg West",
-  credit: "Arelebogeng",
-  sourceUrl: "https://commons.wikimedia.org/wiki/File:Roodepoort_Location.jpg",
-  license: "CC BY-SA 4.0",
-  licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/",
-};
-
-const littleFalls: LocationGalleryImage = {
-  src: "https://commons.wikimedia.org/wiki/Special:FilePath/Little%20Falls%20-%20panoramio.jpg?width=1400",
-  alt: "Little Falls in Johannesburg West",
-  credit: "Norwin Lederer",
-  sourceUrl: "https://commons.wikimedia.org/wiki/File:Little_Falls_-_panoramio.jpg",
-  license: "CC BY-SA 3.0",
-  licenseUrl: "https://creativecommons.org/licenses/by-sa/3.0/",
-};
-
-const mainReefRoodepoort: LocationGalleryImage = {
-  src: "https://commons.wikimedia.org/wiki/Special:FilePath/Main%20Reef%20Roodepoort.jpg?width=1400",
-  alt: "Main Reef Road in Roodepoort, Johannesburg West",
-  credit: "Samuel Molepo",
-  sourceUrl: "https://commons.wikimedia.org/wiki/File:Main_Reef_Roodepoort.jpg",
-  license: "CC BY-SA 3.0",
-  licenseUrl: "https://creativecommons.org/licenses/by-sa/3.0/",
-};
-
-const midrand: LocationGalleryImage[] = [
-  {
-    src: "https://commons.wikimedia.org/wiki/Special:FilePath/Johhanesburg%20Water-Midrand%20Tower-001.jpg?width=1400",
-    alt: "Johannesburg Water tower landmark in Midrand",
-    credit: "NJR ZA",
-    sourceUrl:
-      "https://commons.wikimedia.org/wiki/File:Johhanesburg_Water-Midrand_Tower-001.jpg",
-    license: "CC BY-SA 3.0",
-    licenseUrl: "https://creativecommons.org/licenses/by-sa/3.0/",
-  },
-  {
-    src: "https://commons.wikimedia.org/wiki/Special:FilePath/Grand%20Central%20Airport-001.jpg?width=1400",
-    alt: "Grand Central Airport in Midrand",
-    credit: "NJR ZA",
-    sourceUrl: "https://commons.wikimedia.org/wiki/File:Grand_Central_Airport-001.jpg",
-    license: "CC BY-SA 3.0",
-    licenseUrl: "https://creativecommons.org/licenses/by-sa/3.0/",
-  },
-  {
-    src: "https://commons.wikimedia.org/wiki/Special:FilePath/Gallagher%20Convention%20Centre-001.jpg?width=1400",
-    alt: "Gallagher Convention Centre in Midrand",
-    credit: "NJR ZA",
-    sourceUrl: "https://commons.wikimedia.org/wiki/File:Gallagher_Convention_Centre-001.jpg",
-    license: "CC BY-SA 3.0",
-    licenseUrl: "https://creativecommons.org/licenses/by-sa/3.0/",
-  },
-  {
-    src: "https://commons.wikimedia.org/wiki/Special:FilePath/Midrand%20Conference%20Centre%20Exterior.jpg?width=1400",
-    alt: "Midrand Conference Centre exterior",
-    credit: "The Digital Brand shop",
-    sourceUrl:
-      "https://commons.wikimedia.org/wiki/File:Midrand_Conference_Centre_Exterior.jpg",
-    license: "CC BY-SA 4.0",
-    licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/",
-  },
-  {
-    src: "https://commons.wikimedia.org/wiki/Special:FilePath/Christ%20Church%20Midrand.jpg?width=1400",
-    alt: "Christ Church building in Midrand",
-    credit: "smithadri",
-    sourceUrl: "https://commons.wikimedia.org/wiki/File:Christ_Church_Midrand.jpg",
-    license: "CC BY 2.0",
-    licenseUrl: "https://creativecommons.org/licenses/by/2.0/",
-  },
-];
-
-const noordwyk: LocationGalleryImage = {
-  src: "https://commons.wikimedia.org/wiki/Special:FilePath/St%20Sergius%20Russian%20Orthodox%20Church%2C%20Noordwyk%2C%20Midrand.jpg?width=1400",
-  alt: "St Sergius Russian Orthodox Church in Noordwyk, Midrand",
-  credit: "Ossewa",
-  sourceUrl:
-    "https://commons.wikimedia.org/wiki/File:St_Sergius_Russian_Orthodox_Church,_Noordwyk,_Midrand.jpg",
-  license: "CC BY-SA 4.0",
-  licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/",
-};
-
-const vornaValley: LocationGalleryImage = {
-  src: "https://commons.wikimedia.org/wiki/Special:FilePath/Vorna%20Valley%20Vlei.jpg?width=1400",
-  alt: "Vorna Valley Vlei in Midrand",
-  credit: "JustFeline",
-  sourceUrl: "https://commons.wikimedia.org/wiki/File:Vorna_Valley_Vlei.jpg",
-  license: "CC BY-SA 4.0",
-  licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/",
-};
-
-const glenAustin: LocationGalleryImage = {
-  src: "https://commons.wikimedia.org/wiki/Special:FilePath/Glen%20Austin%20Bird%20Sanctuary%20and%20Bullfrog%20Reserve.jpg?width=1400",
-  alt: "Glen Austin Bird Sanctuary and Bullfrog Reserve in Midrand",
-  credit: "Ossewa",
-  sourceUrl:
-    "https://commons.wikimedia.org/wiki/File:Glen_Austin_Bird_Sanctuary_and_Bullfrog_Reserve.jpg",
-  license: "CC BY-SA 4.0",
-  licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/",
-};
-
-function rotate(images: LocationGalleryImage[], offset: number) {
-  if (images.length === 0) return [];
-  const normalised = ((offset % images.length) + images.length) % images.length;
-  return [...images.slice(normalised), ...images.slice(0, normalised)].slice(0, 5);
+if (interiorPhotoIds.length !== expectedPhotoCount) {
+  throw new Error(
+    `Location interior library must contain exactly ${expectedPhotoCount} photos; found ${interiorPhotoIds.length}.`,
+  );
 }
 
-const northPool = [morningside, ...sandton];
-const randburgPool = [northcliff, parkhurst, rosebankStreet, rosebankPrimary, melville];
-const centralNorthPool = [rosebankPrimary, rosebankStreet, parkhurst, melville, northcliff];
-const westPool = [roodepoort, littleFalls, mainReefRoodepoort, northcliff, melville];
-const midrandPool = [vornaValley, noordwyk, glenAustin, ...midrand];
-
-const vicinityGroups: Record<string, string[]> = {
-  "Sandton / Johannesburg North": [
-    "Bryanston",
-    "Rivonia",
-    "Sandown",
-    "Hyde Park",
-    "Parkmore",
-    "Fourways",
-    "Lonehill",
-    "Sunninghill",
-    "Paulshof",
-    "Douglasdale",
-    "Dainfern",
-  ],
-  Randburg: [
-    "Randburg",
-    "Ferndale",
-    "Blairgowrie",
-    "Linden",
-    "Robindale",
-    "Bromhof",
-    "Boskruin",
-    "North Riding",
-    "Honeydew",
-    "Olivedale",
-    "Randpark Ridge",
-  ],
-  "Rosebank / Central-North Johannesburg": [
-    "Parkwood",
-    "Greenside",
-    "Emmarentia",
-    "Melrose",
-    "Saxonwold",
-    "Houghton",
-    "Parkview",
-    "Illovo",
-    "Craighall Park",
-    "Westcliff",
-  ],
-  "Roodepoort / Johannesburg West": [
-    "Weltevreden Park",
-    "Constantia Kloof",
-    "Ruimsig",
-    "Florida",
-    "Florida Park",
-    "Helderkruin",
-    "Wilro Park",
-    "Strubens Valley",
-    "Radiokop",
-    "Allen's Nek",
-    "Roodekrans",
-  ],
-  "Midrand / Waterfall / Kyalami": [
-    "Waterfall",
-    "Kyalami",
-    "Halfway Gardens",
-    "Halfway House",
-    "Carlswald",
-    "Barbeque Downs",
-    "Crowthorne",
-    "Blue Hills",
-    "Kyalami Estate",
-    "Waterfall Estate",
-    "Summerset",
-  ],
-};
-
-export const locationVisualLibrary: Record<string, LocationGalleryImage[]> = {
-  Sandton: sandton,
-  Morningside: rotate(northPool, 0),
-  Rosebank: centralNorthPool,
-  Parkhurst: rotate(centralNorthPool, 2),
-  Melville: rotate(centralNorthPool, 3),
-  Northcliff: randburgPool,
-  Roodepoort: westPool,
-  "Little Falls": rotate(westPool, 1),
-  Midrand: midrand,
-  Noordwyk: rotate(midrandPool, 1),
-  "Vorna Valley": rotate(midrandPool, 0),
-  "Glen Austin": rotate(midrandPool, 2),
-};
-
-const poolsByGroup: Record<string, LocationGalleryImage[]> = {
-  "Sandton / Johannesburg North": northPool,
-  Randburg: randburgPool,
-  "Rosebank / Central-North Johannesburg": centralNorthPool,
-  "Roodepoort / Johannesburg West": westPool,
-  "Midrand / Waterfall / Kyalami": midrandPool,
-};
-
-for (const [groupName, names] of Object.entries(vicinityGroups)) {
-  const pool = poolsByGroup[groupName];
-  names.forEach((name, index) => {
-    if (!locationVisualLibrary[name]) locationVisualLibrary[name] = rotate(pool, index);
-  });
+if (new Set<number>(interiorPhotoIds).size !== interiorPhotoIds.length) {
+  throw new Error("Location interior library contains a duplicate Pexels photo ID.");
 }
+
+function pexelsImage(photoId: number): LocationGalleryImage {
+  return {
+    src: `https://images.pexels.com/photos/${photoId}/pexels-photo-${photoId}.jpeg?auto=compress&cs=tinysrgb&w=1400`,
+    alt: "Clean, well-kept residential interior",
+    credit: "Pexels",
+    sourceUrl: `https://www.pexels.com/photo/${photoId}/`,
+    license: "Pexels License",
+    licenseUrl: "https://www.pexels.com/license/",
+  };
+}
+
+export const locationVisualLibrary: Record<string, LocationGalleryImage[]> = Object.fromEntries(
+  approvedServiceAreas.map((area, areaIndex) => {
+    const start = areaIndex * INTERIORS_PER_LOCATION;
+    const images = interiorPhotoIds
+      .slice(start, start + INTERIORS_PER_LOCATION)
+      .map((photoId) => pexelsImage(photoId));
+
+    if (images.length !== INTERIORS_PER_LOCATION) {
+      throw new Error(`${area} must have exactly ${INTERIORS_PER_LOCATION} interior photos.`);
+    }
+
+    return [area, images];
+  }),
+);

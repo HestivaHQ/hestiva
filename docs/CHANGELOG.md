@@ -6,6 +6,7 @@ This is the append-only technical change history for implemented repository and 
 
 ### Quote catalogue alignment
 
+- Added quantity handling for the `Extra refrigerator` add-on with default quantity `1`; the quote-only browser enhancement preserves the selected quantity in the existing add-on submission text without defining the future structured Website ↔ HestivaOS quantity schema.
 - Converted `Eco-friendly products` from an add-on into a separate optional Yes/No quote preference and preserved that preference in the existing administrative quote details without introducing the future structured Website ↔ HestivaOS handoff contract.
 - Renamed the quote add-on `Balcony or patio` to the approved Slice 5M catalogue name `Balcony / Patio Cleaning` while keeping the outdoor-area property field separate and making no quantity, pricing, transport, identity, or handoff changes.
 - Removed the unsupported bathroom `Other` option from the quote flow so bathroom values align with the approved Slice 5M `1`, `2`, `3`, `4`, `5+` business rule.
@@ -16,7 +17,7 @@ This is the append-only technical change history for implemented repository and 
 - Adopted repository-wide documentation as part of the Definition of Done through root `AGENTS.md`.
 - Added append-only architecture decision records under `docs/decisions/` and accepted ADR-0001 for the documentation policy.
 - Added `scripts/validate_documentation.py` and wired it into the normal PR quality gate so meaningful implementation/configuration changes require a `docs/` companion change.
-- Backfilled verified 2026-08-10 through 2026-08-11 work from merged PR records without reconstructing unsupported history.
+- Backfilled verified 2026-08-10 through 2026-08-11 work from merged pull-request records without reconstructing unsupported history.
 
 ### Performance and location visuals
 

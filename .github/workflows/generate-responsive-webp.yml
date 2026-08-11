@@ -1,0 +1,81 @@
+name: Generate responsive WebP assets
+
+on:
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  generate:
+    name: Generate responsive WebP assets
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Pillow
+        run: python -m pip install --disable-pip-version-check "Pillow==11.3.0"
+
+      - name: Generate derivatives
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          from PIL import Image
+
+          ROOT = Path("public")
+          OUT = Path("optimized-assets/public")
+          WIDTHS = (480, 768, 1200)
+
+          def render(src: Path, relative_dir: Path, stem: str, widths=WIDTHS, quality=82):
+              image = Image.open(src).convert("RGB")
+              for width in widths:
+                  if width > image.width:
+                      continue
+                  height = round(image.height * width / image.width)
+                  resized = image.resize((width, height), Image.Resampling.LANCZOS)
+                  dest_dir = OUT / relative_dir
+                  dest_dir.mkdir(parents=True, exist_ok=True)
+                  dest = dest_dir / f"{stem}-{width}.webp"
+                  resized.save(dest, "WEBP", quality=quality, method=6)
+                  print(f"{src} -> {dest} ({width}x{height})")
+
+          render(
+              ROOT / "images/home/hero-hestiva-living-room.png",
+              Path("images/home"),
+              "hero-hestiva-living-room",
+          )
+
+          for src in sorted((ROOT / "images/services").glob("*.png")):
+              render(src, Path("images/services"), src.stem)
+
+          logo = Image.open(ROOT / "brand/logo/hestiva-white.png").convert("RGBA")
+          for width in (144, 288):
+              height = round(logo.height * width / logo.width)
+              resized = logo.resize((width, height), Image.Resampling.LANCZOS)
+              dest_dir = OUT / "brand/logo"
+              dest_dir.mkdir(parents=True, exist_ok=True)
+              dest = dest_dir / f"hestiva-white-{width}.webp"
+              resized.save(dest, "WEBP", quality=90, method=6)
+              print(f"logo -> {dest} ({width}x{height})")
+          PY
+
+      - name: Summarize generated sizes
+        run: |
+          find optimized-assets/public -type f -printf '%p %s bytes\n' | sort
+
+      - name: Upload optimized assets
+        uses: actions/upload-artifact@v4
+        with:
+          name: hestiva-responsive-webp-assets
+          path: optimized-assets/public
+          retention-days: 7
+          if-no-files-found: error

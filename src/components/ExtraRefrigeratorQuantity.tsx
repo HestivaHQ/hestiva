@@ -51,6 +51,7 @@ export function ExtraRefrigeratorQuantity() {
       const existing = document.getElementById(CONTROL_ID);
       if (!checkbox) {
         existing?.remove();
+        syncReviewQuantity(lastRenderedQuantity);
         return;
       }
 
@@ -84,7 +85,7 @@ export function ExtraRefrigeratorQuantity() {
       input.type = "number";
       input.min = "1";
       input.step = "1";
-      input.value = "1";
+      input.value = lastRenderedQuantity;
       input.inputMode = "numeric";
       input.className =
         "mt-2 min-h-12 w-32 rounded-xl border border-[#CDBFB1] bg-white px-4 py-3 text-base text-[#342C2A] shadow-sm outline-none transition hover:border-[#A89380] focus:border-[#5A1425] focus:ring-2 focus:ring-[#C9A45B]/45";
@@ -110,10 +111,14 @@ export function ExtraRefrigeratorQuantity() {
         syncReviewQuantity(quantity);
       };
 
-      synchronizeAddonSet(checkbox, labelText, ADDON_LABEL, `${ADDON_LABEL} × 1`);
+      const currentLabel = labelText.textContent?.trim() || ADDON_LABEL;
+      const nextLabel = `${ADDON_LABEL} × ${lastRenderedQuantity}`;
+      if (currentLabel !== nextLabel) {
+        synchronizeAddonSet(checkbox, labelText, currentLabel, nextLabel);
+      }
       input.addEventListener("change", applyQuantity);
       input.addEventListener("blur", applyQuantity);
-      syncReviewQuantity("1");
+      syncReviewQuantity(lastRenderedQuantity);
     };
 
     const onChange = () => {

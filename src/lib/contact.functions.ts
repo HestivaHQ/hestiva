@@ -20,8 +20,20 @@ const CONTACT_ENQUIRY_TYPES = new Set([
   "Feedback",
 ]);
 
-function submissionChannel(service: string) {
+type SubmissionChannel = "contact" | "quote";
+type SubmissionFailureCategory =
+  "validation" | "bot" | "origin" | "rate_limit" | "delivery" | "unexpected";
+
+function submissionChannel(service: string): SubmissionChannel {
   return CONTACT_ENQUIRY_TYPES.has(service) ? "contact" : "quote";
+}
+
+function adminRecipient(channel: SubmissionChannel) {
+  return channel === "contact" ? "info@hestiva.co.za" : "quotes@hestiva.co.za";
+}
+
+function failed(category: SubmissionFailureCategory) {
+  return { success: false as const, category };
 }
 
 async function assertRateLimit(service: string) {
@@ -45,10 +57,11 @@ export const submitContactForm = createServerFn({ method: "POST" })
       const parsed = contactSchema.safeParse(data);
       if (!parsed.success) {
         console.error({ event: "form_submission_rejected", stage: "validation" });
-        return { success: false as const };
+        return failed("validation");
       }
 
       const submission = parsed.data;
+      const channel = submissionChannel(submission.service);
       assertSameOrigin(getRequestHeader("origin"), getRequestHeader("host"));
       assertHoneypotEmpty(submission.website);
       await assertRateLimit(submission.service);
@@ -80,7 +93,7 @@ export const submitContactForm = createServerFn({ method: "POST" })
       try {
         await Promise.all([
           sendEmailViaResend({
-            to: "quotes@hestiva.co.za",
+            to: adminRecipient(channel),
             subject: emailPackage.adminSubject,
             text: emailPackage.adminText,
             html: emailPackage.adminHtml,
@@ -101,10 +114,10 @@ export const submitContactForm = createServerFn({ method: "POST" })
     } catch (error) {
       if (error instanceof PublicSubmissionError) {
         console.error({ event: "form_submission_rejected", stage: error.category });
-        return { success: false as const };
+        return failed(error.category);
       }
 
       console.error({ event: "form_submission_rejected", stage: "unexpected" });
-      return { success: false as const };
+      return failed("unexpected");
     }
   });

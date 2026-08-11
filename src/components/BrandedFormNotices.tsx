@@ -4,6 +4,30 @@ function noticeTone(message: string) {
   return /sent successfully|confirmation email/i.test(message) ? "success" : "error";
 }
 
+function currentFailureCategory() {
+  const target = globalThis as typeof globalThis & { __hestivaFormFailureCategory?: string };
+  const category = target.__hestivaFormFailureCategory;
+  delete target.__hestivaFormFailureCategory;
+  return category;
+}
+
+function failureMessage(category: string | undefined) {
+  switch (category) {
+    case "validation":
+      return "Some of the submitted details were not accepted. Please review the form and try again.";
+    case "origin":
+      return "The request could not be verified as coming from Hestiva. Please refresh the page and try again.";
+    case "rate_limit":
+      return "Too many requests were sent recently. Please wait a few minutes and try again.";
+    case "delivery":
+      return "Hestiva could not deliver your message right now. Please try again or email info@hestiva.co.za.";
+    case "bot":
+    case "unexpected":
+    default:
+      return "We could not send your request. Please try again or email info@hestiva.co.za.";
+  }
+}
+
 function showNotice(message: string) {
   document.getElementById("hestiva-form-notice")?.remove();
 
@@ -44,12 +68,30 @@ function showNotice(message: string) {
   window.setTimeout(() => wrapper.remove(), tone === "success" ? 8000 : 12000);
 }
 
+function alignContactFallbackEmail() {
+  if (window.location.pathname !== "/contact") return;
+  const link = document.querySelector<HTMLAnchorElement>(
+    '#enquiry-form a[href="mailto:quotes@hestiva.co.za"]',
+  );
+  if (!link) return;
+  link.href = "mailto:info@hestiva.co.za";
+  link.textContent = "info@hestiva.co.za";
+}
+
 export function BrandedFormNotices() {
   useEffect(() => {
     if (window.location.pathname !== "/quote" && window.location.pathname !== "/contact") return;
 
+    alignContactFallbackEmail();
     const originalAlert = window.alert;
-    window.alert = (message?: unknown) => showNotice(String(message ?? ""));
+    window.alert = (message?: unknown) => {
+      const text = String(message ?? "");
+      if (/could not send your request/i.test(text)) {
+        showNotice(failureMessage(currentFailureCategory()));
+        return;
+      }
+      showNotice(text);
+    };
 
     return () => {
       window.alert = originalAlert;

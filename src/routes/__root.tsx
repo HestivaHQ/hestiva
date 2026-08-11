@@ -11,6 +11,11 @@ import { lazy, Suspense } from "react";
 import appCss from "../styles.css?url";
 import { BRAND_ASSETS } from "@/lib/site";
 
+const LazyContactValidationEnhancements = lazy(() =>
+  import("@/components/ContactValidationEnhancements").then((module) => ({
+    default: module.ContactValidationEnhancements,
+  })),
+);
 const LazyFormSubmission = lazy(() =>
   import("@/components/LiveFormSubmission").then((module) => ({
     default: module.LiveFormSubmission,
@@ -85,6 +90,7 @@ function RootShell({ children }: { children: React.ReactNode }) {
 function RootComponent() {
   const pathname = useRouterState({ select: (state) => state.location.pathname });
   const needsFormSubmission = pathname === "/quote" || pathname === "/contact";
+  const needsContactValidation = pathname === "/quote" || pathname === "/contact";
   const needsAddonQuantityEnhancements = pathname === "/quote";
 
   return (
@@ -95,6 +101,11 @@ function RootComponent() {
       >
         Skip to main content
       </a>
+      {needsContactValidation && (
+        <Suspense fallback={null}>
+          <LazyContactValidationEnhancements />
+        </Suspense>
+      )}
       {needsFormSubmission && (
         <Suspense fallback={null}>
           <LazyFormSubmission />

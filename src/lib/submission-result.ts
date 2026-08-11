@@ -1,12 +1,6 @@
 export type SuccessfulSubmissionResult = Readonly<{ success: true }>;
 export type SubmissionFailureCategory =
-  | "validation"
-  | "bot"
-  | "origin"
-  | "rate_limit"
-  | "delivery"
-  | "unexpected"
-  | "framework";
+  "validation" | "bot" | "origin" | "rate_limit" | "delivery" | "unexpected" | "framework";
 
 const FAILURE_CATEGORIES = new Set<SubmissionFailureCategory>([
   "validation",
@@ -22,7 +16,10 @@ let lastFailureCategory: SubmissionFailureCategory | undefined;
 
 function rememberFailureCategory(value: Record<string, unknown>) {
   const category = value.category;
-  if (typeof category === "string" && FAILURE_CATEGORIES.has(category as SubmissionFailureCategory)) {
+  if (
+    typeof category === "string" &&
+    FAILURE_CATEGORIES.has(category as SubmissionFailureCategory)
+  ) {
     lastFailureCategory = category as SubmissionFailureCategory;
     return;
   }

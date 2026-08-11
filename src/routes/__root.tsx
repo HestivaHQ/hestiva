@@ -1,8 +1,21 @@
-import { Outlet, Link, createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
+import {
+  Outlet,
+  Link,
+  createRootRoute,
+  HeadContent,
+  Scripts,
+  useRouterState,
+} from "@tanstack/react-router";
+import { lazy, Suspense } from "react";
 
 import appCss from "../styles.css?url";
-import { LiveFormSubmission } from "@/components/LiveFormSubmission";
 import { BRAND_ASSETS } from "@/lib/site";
+
+const LazyFormSubmission = lazy(() =>
+  import("@/components/LiveFormSubmission").then((module) => ({
+    default: module.LiveFormSubmission,
+  })),
+);
 
 function NotFoundComponent() {
   return (
@@ -65,6 +78,9 @@ function RootShell({ children }: { children: React.ReactNode }) {
 }
 
 function RootComponent() {
+  const pathname = useRouterState({ select: (state) => state.location.pathname });
+  const needsFormSubmission = pathname === "/quote" || pathname === "/contact";
+
   return (
     <>
       <a
@@ -73,7 +89,11 @@ function RootComponent() {
       >
         Skip to main content
       </a>
-      <LiveFormSubmission />
+      {needsFormSubmission && (
+        <Suspense fallback={null}>
+          <LazyFormSubmission />
+        </Suspense>
+      )}
       <div id="main-content" tabIndex={-1}>
         <Outlet />
       </div>

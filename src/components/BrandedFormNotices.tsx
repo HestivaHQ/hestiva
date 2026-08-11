@@ -1,17 +1,11 @@
 import { useEffect } from "react";
+import { consumeSubmissionFailureCategory } from "@/lib/submission-result";
 
 function noticeTone(message: string) {
   return /sent successfully|confirmation email/i.test(message) ? "success" : "error";
 }
 
-function currentFailureCategory() {
-  const target = globalThis as typeof globalThis & { __hestivaFormFailureCategory?: string };
-  const category = target.__hestivaFormFailureCategory;
-  delete target.__hestivaFormFailureCategory;
-  return category;
-}
-
-function failureMessage(category: string | undefined) {
+function failureMessage(category: ReturnType<typeof consumeSubmissionFailureCategory>) {
   switch (category) {
     case "validation":
       return "Some of the submitted details were not accepted. Please review the form and try again.";
@@ -22,7 +16,11 @@ function failureMessage(category: string | undefined) {
     case "delivery":
       return "Hestiva could not deliver your message right now. Please try again or email info@hestiva.co.za.";
     case "bot":
+      return "The request was blocked by Hestiva's anti-spam check. Please refresh the page, complete the form again, and retry.";
+    case "framework":
+      return "The website could not complete the submission request. Please refresh the page and try again or email info@hestiva.co.za.";
     case "unexpected":
+      return "An unexpected website error prevented the request from being sent. Please try again or email info@hestiva.co.za.";
     default:
       return "We could not send your request. Please try again or email info@hestiva.co.za.";
   }
@@ -87,7 +85,7 @@ export function BrandedFormNotices() {
     window.alert = (message?: unknown) => {
       const text = String(message ?? "");
       if (/could not send your request/i.test(text)) {
-        showNotice(failureMessage(currentFailureCategory()));
+        showNotice(failureMessage(consumeSubmissionFailureCategory()));
         return;
       }
       showNotice(text);

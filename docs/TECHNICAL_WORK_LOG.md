@@ -2,6 +2,23 @@
 
 This append-only log records verified engineering and material operational work without reconstructing unsupported history. Add newest entries first. Link pull requests/commits when available and describe validation without including secrets or customer data.
 
+## 2026-08-11 — Added responsive WebP delivery for measured image bottlenecks
+
+**Purpose:** Act on the first verified production Lighthouse baseline, which showed image transfer—not JavaScript blocking—as the material remaining performance bottleneck on the homepage and Services page.
+
+**Work recorded:**
+
+- reviewed manual production Lighthouse run `31456227764` from `main` commit `3e74a04137b42b5171cc2ecc20c20a45a9b76c08` using three mobile runs each for the homepage, Services, and Quote pages;
+- recorded median homepage performance `72`, FCP `2.407 s`, LCP `16.621 s`, transfer `5.328 MB`, TBT `0 ms`, and CLS `0`;
+- recorded median Services performance `78`, FCP `2.462 s`, LCP `5.052 s`, transfer `9.692 MB`, TBT `0 ms`, and CLS `0`, including the observed run-to-run LCP volatility;
+- generated 480, 768, and 1200 pixel WebP derivatives from the approved homepage hero PNG and 144/288 pixel WebP derivatives from the approved transparent white logo without replacing the originals;
+- wired the homepage hero to responsive WebP `srcset`/`sizes` with the original PNG fallback while preserving high fetch priority;
+- wired `ServiceImage` to the existing responsive WebP derivatives already tracked for `/images/services/`, retaining service PNG fallbacks and existing lazy/eager semantics;
+- wired Navbar and Footer to responsive white-logo WebPs with the original PNG fallback; and
+- introduced no runtime image proxy, image CDN dependency, application-framework rewrite, pricing change, quote transport change, or Website ↔ HestivaOS integration change.
+
+**Verification state:** Source/asset implementation is complete on PR #110. A post-deployment Lighthouse comparison is still required before claiming a measured production performance improvement.
+
 ## 2026-08-11 — Added production Lighthouse diagnostics
 
 **Purpose:** Move performance work from speculative source refactoring to repeatable production measurement after the source-level audit found no further evidence-backed application-runtime rewrite.

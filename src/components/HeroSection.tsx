@@ -50,15 +50,22 @@ export function HeroSection() {
         <div className="relative mx-auto w-full max-w-2xl lg:max-w-none">
           <div className="absolute -right-4 -top-4 h-full w-full rounded-[2rem] border border-[#C9A45B]/50 sm:-right-6 sm:-top-6" />
           <div className="relative overflow-hidden rounded-[2rem] bg-[#EDE2CF] shadow-[0_24px_60px_rgba(59,15,26,0.16)]">
-            <img
-              src="/images/home/hero-hestiva-living-room.png"
-              alt="Bright, beautifully maintained living room prepared for a family to enjoy"
-              width={1920}
-              height={1080}
-              fetchPriority="high"
-              decoding="async"
-              className="aspect-[4/3] h-full w-full object-cover lg:aspect-[5/4]"
-            />
+            <picture>
+              <source
+                type="image/webp"
+                srcSet="/images/home/hero-hestiva-living-room-480.webp 480w, /images/home/hero-hestiva-living-room-768.webp 768w, /images/home/hero-hestiva-living-room-1200.webp 1200w"
+                sizes="(min-width: 1280px) 720px, (min-width: 1024px) 58vw, calc(100vw - 3rem)"
+              />
+              <img
+                src="/images/home/hero-hestiva-living-room.png"
+                alt="Bright, beautifully maintained living room prepared for a family to enjoy"
+                width={1920}
+                height={1080}
+                fetchPriority="high"
+                decoding="async"
+                className="aspect-[4/3] h-full w-full object-cover lg:aspect-[5/4]"
+              />
+            </picture>
           </div>
         </div>
       </div>

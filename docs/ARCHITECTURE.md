@@ -30,6 +30,17 @@ Browser -> hestiva.co.za -> Cloudflare Worker -> TanStack Start SSR/router
 - `public/` contains static discovery, brand, and image assets.
 - `supabase/` contains Supabase project configuration and migrations. These files establish a database history but are not evidence that the current website runtime queries Supabase.
 
+## Static image delivery
+
+Approved source PNG assets remain tracked under `public/` as visual-source and browser-fallback files. Performance-critical website surfaces prefer responsive WebP derivatives where available rather than transferring those full-resolution PNGs to every viewport.
+
+- The homepage hero uses 480, 768, and 1200 pixel WebP derivatives selected through `srcset`/`sizes`, while the original PNG remains the `<img>` fallback and the hero keeps intentional high fetch priority.
+- `src/components/ServiceImage.tsx` uses the existing 480, 768, and 1200 pixel WebP derivatives for images under `/images/services/`, while retaining the service PNG as fallback. Existing lazy/eager and fetch-priority semantics are preserved.
+- Navbar and Footer use 144 and 288 pixel transparent WebP derivatives of the white logo with the original white PNG retained as fallback.
+- Add-on and other imagery without an approved responsive derivative set continues to use its existing source rather than generating unverified URLs at runtime.
+
+The responsive derivatives are static Cloudflare `ASSETS`; there is no runtime image-resizing service, image proxy, or new external image dependency in this architecture.
+
 ## Routing and SEO information architecture
 
 The implemented public route families include:

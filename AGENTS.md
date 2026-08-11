@@ -1,20 +1,31 @@
 # Hestiva website engineering standards
 
-These rules apply to every file in this repository. Documentation is part of the Definition of Done: implementation, configuration, operational state, and their authoritative documentation must not knowingly diverge.
+These rules apply to every file in this repository. Documentation is part of the Definition of
+Done: implementation, configuration, operational state, and their authoritative documentation must
+not knowingly diverge.
 
 ## Documentation principles
 
-- Record only state verified from code, configuration, tests, merged pull requests, deployment evidence, or an explicitly verified operator action. Never invent implementation details, production state, credentials, URLs, commands, customer facts, or decisions.
-- Preserve engineering history. Append dated entries to historical records; do not rewrite earlier work to make the past resemble the present.
-- ADRs are append-only historical records. A later durable decision supersedes an earlier ADR with a new ADR instead of rewriting the accepted record.
+- Record only state verified from code, configuration, tests, merged pull requests, deployment
+  evidence, or an explicitly verified operator action. Never invent implementation details,
+  production state, credentials, URLs, commands, customer facts, or decisions.
+- Preserve engineering history. Append dated entries to historical records; do not rewrite earlier
+  work to make the past resemble the present.
+- ADRs are append-only historical records. A later durable decision supersedes an earlier ADR with a
+  new ADR instead of rewriting the accepted record.
 - Prefer updating an existing authoritative document over creating competing documentation.
 - Never store secrets or credentials. Document variable names and safe operational procedures only.
 - Distinguish verified current state, planned work, historical state, and unresolved uncertainty.
-- Material manual production/dashboard actions are engineering work when they alter operational state. Record them in the technical work log and update the affected operational document even when no application code changes.
+- Material manual production/dashboard actions are engineering work when they alter operational
+  state. Record them in the technical work log and update the affected operational document even
+  when no application code changes.
 
 ## Required update matrix
 
-For every meaningful implementation, configuration, or operational change, inspect all rows that apply and update every affected document. `docs/TECHNICAL_WORK_LOG.md` and `docs/CHANGELOG.md` are mandatory for every implementation/configuration change and for material verified operational changes.
+For every meaningful implementation, configuration, or operational change, inspect all rows that
+apply and update every affected document. `docs/TECHNICAL_WORK_LOG.md` and `docs/CHANGELOG.md` are
+mandatory for every implementation/configuration change and for material verified operational
+changes.
 
 | Change | Required documentation |
 | --- | --- |
@@ -32,10 +43,14 @@ For every meaningful implementation, configuration, or operational change, inspe
 
 ## Historical document rules
 
-- `docs/TECHNICAL_WORK_LOG.md` records verified engineering work, validation, scope, and operational actions. Add newest entries first.
-- `docs/CHANGELOG.md` records implemented technical changes in concise dated form. It must not describe planned work as shipped.
-- `docs/decisions/` preserves durable decisions and their rationale. Accepted ADRs are not silently rewritten after later implementation changes.
-- Historical gaps may be backfilled only from authoritative evidence. If evidence is insufficient, record the gap rather than reconstructing details from memory.
+- `docs/TECHNICAL_WORK_LOG.md` records verified engineering work, validation, scope, and operational
+  actions. Add newest entries first.
+- `docs/CHANGELOG.md` records implemented technical changes in concise dated form. It must not
+  describe planned work as shipped.
+- `docs/decisions/` preserves durable decisions and their rationale. Accepted ADRs are not silently
+  rewritten after later implementation changes.
+- Historical gaps may be backfilled only from authoritative evidence. If evidence is insufficient,
+  record the gap rather than reconstructing details from memory.
 
 ## Implementation and PR checklist
 
@@ -43,9 +58,12 @@ Before declaring work complete:
 
 1. Reconcile the implementation/configuration/operational change against the matrix above.
 2. Update affected current-state documents and append the technical work log and changelog.
-3. Add or supersede an ADR when the work introduces a durable architectural or operational decision.
-4. Run repository validation, documentation validation, formatting/lint/type/build checks that apply, `git diff --check`, and the tracked-secret scan.
-5. Review the complete diff and confirm no stale, contradictory, speculative, or duplicated documentation remains.
+3. Add or supersede an ADR when the work introduces a durable architectural or operational
+   decision.
+4. Run repository validation, documentation validation, formatting/lint/type/build checks that
+   apply, `git diff --check`, and the tracked-secret scan.
+5. Review the complete diff and confirm no stale, contradictory, speculative, or duplicated
+   documentation remains.
 
 Every implementation PR body should state:
 
@@ -54,4 +72,6 @@ Every implementation PR body should state:
 - **Files changed:** complete or accurately categorized list.
 - **No stale documentation remains:** an affirmative statement based on review.
 
-Documentation-only typo/formatting corrections, comment-only code changes, and license-only changes do not require artificial historical entries. They must never be used to conceal a meaningful implementation change.
+Documentation-only typo/formatting corrections, comment-only code changes, and license-only changes
+do not require artificial historical entries. They must never be used to conceal a meaningful
+implementation change.

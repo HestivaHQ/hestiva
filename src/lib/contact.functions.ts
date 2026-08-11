@@ -21,7 +21,13 @@ const CONTACT_ENQUIRY_TYPES = new Set([
 ]);
 
 type SubmissionChannel = "contact" | "quote";
-type SubmissionFailureCategory = "validation" | "bot" | "origin" | "rate_limit" | "delivery" | "unexpected";
+type SubmissionFailureCategory =
+  | "validation"
+  | "bot"
+  | "origin"
+  | "rate_limit"
+  | "delivery"
+  | "unexpected";
 
 function submissionChannel(service: string): SubmissionChannel {
   return CONTACT_ENQUIRY_TYPES.has(service) ? "contact" : "quote";

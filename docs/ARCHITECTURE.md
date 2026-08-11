@@ -64,6 +64,8 @@ Browser-only quote/contact orchestration is implemented in `src/components/LiveF
 
 `src/components/AddonQuantityEnhancements.tsx` is a quote-only browser enhancement. It is dynamically imported by `src/routes/__root.tsx` only on `/quote`, applies the approved positive-integer quantity controls with default `1` to `Extra refrigerator` and `Balcony / Patio Cleaning`, keeps selected quantities visible in the review UI, and encodes them into the existing add-on labels consumed by the current submission controller. It does not define the future structured Website ↔ HestivaOS quantity schema.
 
+`src/components/PostRenovationFrequencyEnhancement.tsx` is a quote-only launch repair mounted only on `/quote`. It restores `One-time` and `Custom` choices when `Post-Renovation Cleaning` is selected, because the older `LiveFormSubmission` frequency switch does not yet contain that newly-added primary-service value. The enhancement preserves the existing quote state/submission path and exists to keep the service completable without changing pricing or Website ↔ HestivaOS transport.
+
 The current quote catalogue treats `Post-Renovation Cleaning` as a primary service in the customer-facing selector and in the server-side allowed service enum. The former `Post-renovation dust removal` add-on is not selectable. `Recently renovated` remains a separate Home Condition and may coexist with the primary service. This catalogue alignment does not implement Website ↔ HestivaOS transport, pricing, shared quote identity, persistence, or Accept/Decline actions.
 
 `src/lib/contact.functions.ts` defines the `POST` TanStack Start server function. On the server it:

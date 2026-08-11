@@ -4,6 +4,10 @@ This is the append-only technical change history for implemented repository and 
 
 ## 2026-08-11
 
+### Launch-readiness repairs
+
+- Repaired the Post-Renovation Cleaning quote path so selecting that primary service exposes `One-time` and `Custom` frequency choices instead of leaving the required Frequency field empty and blocking quote completion. The repair is `/quote`-only and does not change pricing, submission transport, persistence, or Website ↔ HestivaOS integration.
+
 ### Public form validation
 
 - Added one shared browser/server phone and email validation policy for the public quote/contact flows: South African local numbers must compact to 10 digits beginning with `0`, international numbers require a leading `+` and 8–15 digits, and email values use bounded practical local-part and DNS-style domain checks. The enhancement is route-gated to `/quote` and `/contact` and does not normalize, persist, or match HestivaOS customer records.

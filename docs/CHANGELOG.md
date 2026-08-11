@@ -6,6 +6,9 @@ This is the append-only technical change history for implemented repository and 
 
 ### Launch-readiness repairs
 
+- Split the public form throttle into separate Contact and Quote buckets so repeated quote activity cannot exhaust the Contact form's per-isolate allowance; kept the same five-submissions-per-15-minutes best-effort limit for each channel.
+- Replaced browser-native `window.alert()` submission dialogs on `/quote` and `/contact` with Hestiva-branded in-page success/error notices, removing the browser/hostname notification header while preserving submission semantics.
+- Added regression coverage for the exact Contact-page payload shape and for independent Contact/Quote rate-limit buckets.
 - Repaired the Post-Renovation Cleaning quote path so selecting that primary service exposes `One-time` and `Custom` frequency choices instead of leaving the required Frequency field empty and blocking quote completion. The repair is `/quote`-only and does not change pricing, submission transport, persistence, or Website ↔ HestivaOS integration.
 
 ### Public form validation

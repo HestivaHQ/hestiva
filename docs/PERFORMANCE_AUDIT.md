@@ -97,7 +97,23 @@ One homepage run remained anomalous with a long render delay despite the optimiz
 
 The post-WebP reports exposed a separate static-asset defect: `favicon-16.png` and `favicon-32.png` were each stored as 1254×1254 PNGs even though the HTML declares them as 16×16 and 32×32 icons. GitHub Actions verified the original sizes at 1,143,225 bytes and 1,157,806 bytes. PR #111 resizes the same artwork to the declared dimensions and writes optimized PNGs at the same public paths, producing 657-byte and 1,864-byte files respectively.
 
-This favicon change removes roughly 2.30 MB of avoidable transfer without changing favicon URLs, metadata semantics, routing, or visual branding intent. A final production Lighthouse run is still required after deployment before the performance audit is closed.
+This favicon change removes roughly 2.30 MB of avoidable transfer without changing favicon URLs, metadata semantics, routing, or visual branding intent.
+
+## Final production verification and audit closure
+
+GitHub Actions run `31495511555` audited production from merged `main` commit `e87a1794ffab3a27b25daef70bc90f4dd554cbe7` after the favicon correction, using the same three-run mobile method. Median values were:
+
+| Page | Performance | FCP | LCP | Total transfer | TBT | CLS |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| Homepage | 93 | 2.40 s | 2.72 s | 240 KB | 0 ms | 0 |
+| Services | 95 | 2.34 s | 2.41 s | 308 KB | 0 ms | 0 |
+| Quote | 93 | 2.55 s | 2.55 s | 196 KB | 0 ms | 0 |
+
+Compared with the original verified baseline, total transfer fell from 5.328 MB to 240 KB on the homepage, from 9.692 MB to 308 KB on Services, and from 3.014 MB to 196 KB on Quote. The median homepage and Services performance scores remained in the low-to-mid 90s after the favicon fix.
+
+One homepage run scored materially lower because of a temporary Total Blocking Time spike rather than renewed image-transfer growth. The median homepage transfer remained 240 KB and the other two homepage runs scored 93, so the run is recorded as measurement volatility rather than evidence of an unresolved static-asset regression.
+
+The evidence-backed performance audit is therefore **closed**. The measured application-owned bottlenecks identified in this audit were corrected, deployed, and re-measured in production. Further performance changes require new production evidence rather than speculative refactoring.
 
 ## Dependency observations
 
@@ -107,4 +123,4 @@ This favicon change removes roughly 2.30 MB of avoidable transfer without changi
 
 The material application-owned initial-load issue identified during the earlier audit—the globally imported quote/contact controller—has been corrected. Route-level code splitting is functioning, and no evidence supports a risky framework-level rewrite merely to chase the shared runtime chunk.
 
-Global client-side internal navigation is corrected through PR #108. The first production Lighthouse baseline then identified image transfer as the material evidence-backed bottleneck, leading to responsive WebP delivery in PR #110. Further performance work should be driven by the post-deployment Lighthouse comparison rather than speculative source refactoring.
+Global client-side internal navigation is corrected through PR #108. The first production Lighthouse baseline then identified image transfer as the material evidence-backed bottleneck, leading to responsive WebP delivery in PR #110 and the favicon correction in PR #111. Final production run `31495511555` verified median performance scores of 93, 95, and 93 for the homepage, Services, and Quote pages respectively, with transfer reduced to 240 KB, 308 KB, and 196 KB. The performance audit is closed; future optimization work must be driven by new production evidence rather than speculative source refactoring.

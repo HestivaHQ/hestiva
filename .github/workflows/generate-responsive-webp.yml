@@ -6,15 +6,17 @@ on:
       - main
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   generate:
     name: Generate responsive WebP assets
     runs-on: ubuntu-24.04
     steps:
-      - name: Check out repository
+      - name: Check out feature branch
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -32,18 +34,16 @@ jobs:
           from PIL import Image
 
           ROOT = Path("public")
-          OUT = Path("optimized-assets/public")
           WIDTHS = (480, 768, 1200)
 
           def render(src: Path, relative_dir: Path, stem: str, widths=WIDTHS, quality=82):
               image = Image.open(src).convert("RGB")
+              dest_dir = ROOT / relative_dir
               for width in widths:
                   if width > image.width:
                       continue
                   height = round(image.height * width / image.width)
                   resized = image.resize((width, height), Image.Resampling.LANCZOS)
-                  dest_dir = OUT / relative_dir
-                  dest_dir.mkdir(parents=True, exist_ok=True)
                   dest = dest_dir / f"{stem}-{width}.webp"
                   resized.save(dest, "WEBP", quality=quality, method=6)
                   print(f"{src} -> {dest} ({width}x{height})")
@@ -61,21 +61,21 @@ jobs:
           for width in (144, 288):
               height = round(logo.height * width / logo.width)
               resized = logo.resize((width, height), Image.Resampling.LANCZOS)
-              dest_dir = OUT / "brand/logo"
-              dest_dir.mkdir(parents=True, exist_ok=True)
-              dest = dest_dir / f"hestiva-white-{width}.webp"
+              dest = ROOT / "brand/logo" / f"hestiva-white-{width}.webp"
               resized.save(dest, "WEBP", quality=90, method=6)
               print(f"logo -> {dest} ({width}x{height})")
           PY
 
       - name: Summarize generated sizes
         run: |
-          find optimized-assets/public -type f -printf '%p %s bytes\n' | sort
+          find public/images/home public/images/services public/brand/logo -type f -name '*.webp' -printf '%p %s bytes\n' | sort
 
-      - name: Upload optimized assets
-        uses: actions/upload-artifact@v4
-        with:
-          name: hestiva-responsive-webp-assets
-          path: optimized-assets/public
-          retention-days: 7
-          if-no-files-found: error
+      - name: Commit generated derivatives and remove temporary workflow
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/images/home/*.webp public/images/services/*.webp public/brand/logo/*.webp
+          git rm .github/workflows/generate-responsive-webp.yml
+          git commit -m "perf: add responsive WebP derivatives"
+          git push origin "HEAD:${{ github.head_ref }}"

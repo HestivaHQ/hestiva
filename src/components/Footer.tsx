@@ -23,13 +23,20 @@ export function Footer() {
             aria-label={`${SITE_NAME} home`}
             className="inline-flex rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D8B970] focus-visible:ring-offset-4 focus-visible:ring-offset-[#3B0F1A]"
           >
-            <img
-              src={BRAND_ASSETS.logoWhite}
-              alt={`${SITE_NAME} logo`}
-              width={1536}
-              height={1024}
-              className="h-12 w-auto max-w-[180px] object-contain"
-            />
+            <picture>
+              <source
+                type="image/webp"
+                srcSet="/brand/logo/hestiva-white-144.webp 144w, /brand/logo/hestiva-white-288.webp 288w"
+                sizes="72px"
+              />
+              <img
+                src={BRAND_ASSETS.logoWhite}
+                alt={`${SITE_NAME} logo`}
+                width={1536}
+                height={1024}
+                className="h-12 w-auto max-w-[180px] object-contain"
+              />
+            </picture>
           </Link>
           <p className="mt-3 font-serif text-base text-[#D8B970]">{TAGLINE}</p>
           <p className="mt-2 max-w-xs text-sm leading-6 text-[#F5F1E8]/65">

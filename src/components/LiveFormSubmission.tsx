@@ -746,6 +746,7 @@ async function sendQuoteForm(button: HTMLButtonElement) {
     ["Frequency", quoteValue("frequency")],
     ["Home condition", quoteValue("condition")],
     ["Selected add-ons", Array.from(quoteAddons).join(", ")],
+    ["Eco-friendly products", quoteValue("ecoFriendlyProducts")],
     ["Preferred date", quoteValue("preferredDate")],
     ["Alternative date", quoteValue("alternativeDate")],
     ["Preferred time", quoteValue("preferredTime")],

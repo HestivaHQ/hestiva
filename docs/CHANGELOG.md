@@ -6,6 +6,7 @@ This is the append-only technical change history for implemented repository and 
 
 ### Quote catalogue alignment
 
+- Converted `Eco-friendly products` from an add-on into a separate optional Yes/No quote preference and preserved that preference in the existing administrative quote details without introducing the future structured Website ↔ HestivaOS handoff contract.
 - Renamed the quote add-on `Balcony or patio` to the approved Slice 5M catalogue name `Balcony / Patio Cleaning` while keeping the outdoor-area property field separate and making no quantity, pricing, transport, identity, or handoff changes.
 - Removed the unsupported bathroom `Other` option from the quote flow so bathroom values align with the approved Slice 5M `1`, `2`, `3`, `4`, `5+` business rule.
 - Preserved the existing bedroom-dependent narrowing for smaller homes and made no Website ↔ HestivaOS transport, identity, security, pricing, or storage changes.

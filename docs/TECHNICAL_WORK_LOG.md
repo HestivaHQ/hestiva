@@ -2,6 +2,20 @@
 
 This append-only log records verified engineering and material operational work without reconstructing unsupported history. Add newest entries first. Link pull requests/commits when available and describe validation without including secrets or customer data.
 
+## 2026-08-11 — Converted eco-friendly products to a quote preference
+
+**Purpose:** Implement the Slice 5M product decision that eco-friendly products are a customer Yes/No preference rather than a chargeable/selectable add-on.
+
+**Work recorded:**
+
+- removed `Eco-friendly products` from the quote add-on list;
+- added a separate optional `Use eco-friendly products?` Yes/No selector in the Personalise Your Service step;
+- included the selected preference in the customer-facing quote summary and final review;
+- preserved the preference through the existing quote submission bridge so it appears as a distinct line in the current administrative quote details; and
+- made no shared payload-schema, quote-identity, pricing, endpoint, token/security, photo-storage, or HestivaOS handoff changes.
+
+**Scope:** Focused website quote-flow product semantics and existing email-presentation transport only. No cross-repository structured integration contract or architecture boundary changed.
+
 ## 2026-08-11 — Aligned Balcony / Patio Cleaning add-on naming
 
 **Purpose:** Replace the ambiguous website add-on label `Balcony or patio` with the approved Slice 5M catalogue name `Balcony / Patio Cleaning`.

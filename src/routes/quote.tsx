@@ -78,6 +78,7 @@ const initialForm = {
   frequency: "",
   condition: "",
   addons: [] as string[],
+  ecoFriendlyProducts: "",
   preferredDate: "",
   alternativeDate: "",
   preferredTime: "",
@@ -198,7 +199,6 @@ const addons = [
   "Extra bathroom",
   "Extra refrigerator",
   "Pet-hair treatment",
-  "Eco-friendly products",
   "Post-renovation dust removal",
 ];
 
@@ -697,34 +697,45 @@ function StepContent({
 
   if (step === 2)
     return (
-      <fieldset>
-        <legend className="text-sm leading-6 text-[#695E59]">
-          Choose any extras you would like us to consider. You can leave all unchecked.
-        </legend>
-        <div className="mt-5 grid gap-3 sm:grid-cols-2">
-          {addons.map((addon) => (
-            <label
-              key={addon}
-              className="flex min-h-12 cursor-pointer items-center gap-3 rounded-xl border border-[#D8CCC0] p-4 transition hover:border-[#C9A45B] has-[:checked]:border-[#5A1425] has-[:checked]:bg-[#FBF7EF]"
-            >
-              <input
-                type="checkbox"
-                checked={form.addons.includes(addon)}
-                onChange={() =>
-                  setForm((current) => ({
-                    ...current,
-                    addons: current.addons.includes(addon)
-                      ? current.addons.filter((item) => item !== addon)
-                      : [...current.addons, addon],
-                  }))
-                }
-                className="h-5 w-5 accent-[#5A1425]"
-              />
-              <span className="text-sm font-medium">{addon}</span>
-            </label>
-          ))}
+      <>
+        <fieldset>
+          <legend className="text-sm leading-6 text-[#695E59]">
+            Choose any extras you would like us to consider. You can leave all unchecked.
+          </legend>
+          <div className="mt-5 grid gap-3 sm:grid-cols-2">
+            {addons.map((addon) => (
+              <label
+                key={addon}
+                className="flex min-h-12 cursor-pointer items-center gap-3 rounded-xl border border-[#D8CCC0] p-4 transition hover:border-[#C9A45B] has-[:checked]:border-[#5A1425] has-[:checked]:bg-[#FBF7EF]"
+              >
+                <input
+                  type="checkbox"
+                  checked={form.addons.includes(addon)}
+                  onChange={() =>
+                    setForm((current) => ({
+                      ...current,
+                      addons: current.addons.includes(addon)
+                        ? current.addons.filter((item) => item !== addon)
+                        : [...current.addons, addon],
+                    }))
+                  }
+                  className="h-5 w-5 accent-[#5A1425]"
+                />
+                <span className="text-sm font-medium">{addon}</span>
+              </label>
+            ))}
+          </div>
+        </fieldset>
+        <div className="mt-8 max-w-md">
+          <SelectField
+            {...props}
+            name="ecoFriendlyProducts"
+            label="Use eco-friendly products?"
+            options={["Yes", "No"]}
+            placeholder="Select yes or no"
+          />
         </div>
-      </fieldset>
+      </>
     );
 
   if (step === 3)
@@ -1091,6 +1102,7 @@ function Summary({ form }: { form: FormData }) {
     ["Service", form.service],
     ["Frequency", form.frequency],
     ["Add-ons", form.addons.length ? `${form.addons.length} selected` : "None selected"],
+    ["Eco-friendly products", form.ecoFriendlyProducts],
     ["Preferred date", form.preferredDate],
   ].filter(([, value]) => value);
 
@@ -1136,6 +1148,7 @@ function Review({
     ["Frequency", form.frequency],
     ["Home condition", form.condition],
     ["Selected add-ons", form.addons.join(", ") || "None selected"],
+    ["Eco-friendly products", form.ecoFriendlyProducts],
     ["Preferred date", form.preferredDate],
     ["Preferred time", form.preferredTime],
     ["Contact method", form.contactMethod],

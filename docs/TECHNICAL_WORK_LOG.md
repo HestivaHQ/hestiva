@@ -2,6 +2,21 @@
 
 This append-only log records verified engineering and material operational work without reconstructing unsupported history. Add newest entries first. Link pull requests/commits when available and describe validation without including secrets or customer data.
 
+## 2026-08-11 — Added Balcony / Patio Cleaning quantity handling
+
+**Purpose:** Implement the Slice 5M decision that Balcony / Patio Cleaning may use quantity when multiple areas exist, while preserving the already-approved Extra refrigerator quantity behaviour and avoiding the unresolved future structured handoff schema.
+
+**Work recorded:**
+
+- replaced the refrigerator-specific quantity enhancer with one quote-only add-on quantity enhancement shared by the approved quantity-based add-ons;
+- retained positive-integer quantity handling with default `1` for `Extra refrigerator`;
+- added the same positive-integer quantity handling with default `1` for `Balcony / Patio Cleaning`;
+- kept selected quantities visible in the final quote review and encoded them into the existing add-on labels consumed by the current email submission controller;
+- preserved the `/quote`-only lazy-loading boundary; and
+- made no pricing, structured payload-schema, quote-identity, endpoint, security-token, photo-storage, or HestivaOS ingestion changes.
+
+**Scope:** Focused website quote-flow quantity behaviour using the current browser/email submission path. The future structured Website ↔ HestivaOS quantity representation remains unresolved.
+
 ## 2026-08-11 — Added Extra refrigerator quantity handling
 
 **Purpose:** Implement the Slice 5M decision that Extra Refrigerator is quantity-based and defaults to quantity `1` without inventing the future shared handoff schema.

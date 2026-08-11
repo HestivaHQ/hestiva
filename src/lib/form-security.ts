@@ -20,6 +20,7 @@ const services = [
   "Interior Window Cleaning",
   "Laundry Folding",
   "Eco-Friendly Cleaning",
+  "Post-Renovation Cleaning",
   "Add-on Services",
   "Not sure",
 ] as const;

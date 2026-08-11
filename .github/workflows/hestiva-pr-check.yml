@@ -30,6 +30,12 @@ jobs:
       - name: Check pull request diff integrity
         run: git diff --check "${{ github.event.pull_request.base.sha || github.event.before }}" HEAD
 
+      - name: Validate documentation policy script
+        run: python3 -m py_compile scripts/validate_documentation.py
+
+      - name: Enforce documentation companion changes
+        run: python3 scripts/validate_documentation.py "${{ github.event.pull_request.base.sha || github.event.before }}" HEAD
+
       - name: Scan tracked files for secrets
         run: node scripts/scan-tracked-secrets.mjs
 
@@ -46,7 +52,7 @@ jobs:
         run: bunx eslint src/lib/site.ts src/lib/contact.functions.ts src/lib/form-security.ts src/lib/rate-limit.ts src/lib/submission-result.ts src/lib/quote/email-service.ts src/lib/quote/file-validation.ts src/routes/__root.tsx src/routes/contact.tsx src/components/Navbar.tsx src/components/Footer.tsx src/components/HeroSection.tsx src/components/LiveFormSubmission.tsx scripts/validate-environment.mjs
 
       - name: Targeted format check
-        run: bunx prettier --check src/lib/site.ts src/lib/contact.functions.ts src/lib/form-security.ts src/lib/rate-limit.ts src/lib/form-security.test.mjs src/lib/submission-result.ts src/lib/submission-result.test.mjs src/lib/quote/email-service.ts src/lib/quote/file-validation.ts src/routes/__root.tsx src/routes/contact.tsx src/components/Navbar.tsx src/components/Footer.tsx src/components/HeroSection.tsx src/components/LiveFormSubmission.tsx scripts/validate-environment.mjs docs/ARCHITECTURE.md docs/ENVIRONMENT.md docs/DEPLOYMENT.md docs/RECOVERY_GUIDE.md docs/TECHNICAL_WORK_LOG.md docs/CHANGELOG.md
+        run: bunx prettier --check AGENTS.md src/lib/site.ts src/lib/contact.functions.ts src/lib/form-security.ts src/lib/rate-limit.ts src/lib/form-security.test.mjs src/lib/submission-result.ts src/lib/submission-result.test.mjs src/lib/quote/email-service.ts src/lib/quote/file-validation.ts src/routes/__root.tsx src/routes/contact.tsx src/components/Navbar.tsx src/components/Footer.tsx src/components/HeroSection.tsx src/components/LiveFormSubmission.tsx scripts/validate-environment.mjs docs/README.md docs/ARCHITECTURE.md docs/ENVIRONMENT.md docs/DEPLOYMENT.md docs/RECOVERY_GUIDE.md docs/TECHNICAL_WORK_LOG.md docs/CHANGELOG.md docs/decisions/README.md docs/decisions/ADR-0001-repository-documentation-policy.md
 
       - name: Production build
         run: bun run build

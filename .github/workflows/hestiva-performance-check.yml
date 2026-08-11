@@ -1,0 +1,36 @@
+name: Hestiva Production Performance Check
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  lighthouse:
+    name: Lighthouse production baseline
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Collect Lighthouse reports
+        run: npx --yes @lhci/cli@0.15.1 collect --config=./lighthouserc.cjs
+
+      - name: Export Lighthouse reports
+        run: npx --yes @lhci/cli@0.15.1 upload --target=filesystem --outputDir=./lighthouse-reports
+
+      - name: Upload Lighthouse reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: hestiva-production-lighthouse
+          path: lighthouse-reports/
+          if-no-files-found: error
+          retention-days: 30

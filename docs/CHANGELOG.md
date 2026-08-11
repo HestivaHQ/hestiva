@@ -6,6 +6,7 @@ This is the append-only technical change history for implemented repository and 
 
 ### Quote catalogue alignment
 
+- Extended the quote-only add-on quantity enhancement so `Balcony / Patio Cleaning` can carry a positive-integer quantity with default `1` when multiple areas exist, alongside the existing `Extra refrigerator` quantity behaviour, without defining the future structured Website ↔ HestivaOS quantity schema.
 - Added quantity handling for the `Extra refrigerator` add-on with default quantity `1`; the quote-only browser enhancement preserves the selected quantity in the existing add-on submission text without defining the future structured Website ↔ HestivaOS quantity schema.
 - Converted `Eco-friendly products` from an add-on into a separate optional Yes/No quote preference and preserved that preference in the existing administrative quote details without introducing the future structured Website ↔ HestivaOS handoff contract.
 - Renamed the quote add-on `Balcony or patio` to the approved Slice 5M catalogue name `Balcony / Patio Cleaning` while keeping the outdoor-area property field separate and making no quantity, pricing, transport, identity, or handoff changes.

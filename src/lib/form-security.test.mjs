@@ -23,12 +23,23 @@ const validSubmission = {
 };
 
 describe("public form security", () => {
-  test("accepts a valid bounded submission", () => {
+  test("accepts valid bounded submissions and contact formats", () => {
     expect(contactSchema.parse(validSubmission).email).toBe("customer@example.com");
+    expect(contactSchema.safeParse({ ...validSubmission, phone: "082 123 4567" }).success).toBe(true);
+    expect(contactSchema.safeParse({ ...validSubmission, phone: "+44 7700 900123" }).success).toBe(
+      true,
+    );
   });
 
-  test("rejects invalid, oversized, and unexpected values", () => {
+  test("rejects invalid contact details, oversized values, and unexpected fields", () => {
     expect(contactSchema.safeParse({ ...validSubmission, email: "invalid" }).success).toBe(false);
+    expect(contactSchema.safeParse({ ...validSubmission, email: "a..b@example.com" }).success).toBe(
+      false,
+    );
+    expect(contactSchema.safeParse({ ...validSubmission, phone: "1234567" }).success).toBe(false);
+    expect(contactSchema.safeParse({ ...validSubmission, phone: "+27 CALL HESTIVA" }).success).toBe(
+      false,
+    );
     expect(
       contactSchema.safeParse({ ...validSubmission, description: "x".repeat(5001) }).success,
     ).toBe(false);

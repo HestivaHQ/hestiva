@@ -2,6 +2,19 @@
 
 This append-only log records verified engineering and material operational work without reconstructing unsupported history. Add newest entries first. Link pull requests/commits when available and describe validation without including secrets or customer data.
 
+## 2026-08-11 — Aligned Balcony / Patio Cleaning add-on naming
+
+**Purpose:** Replace the ambiguous website add-on label `Balcony or patio` with the approved Slice 5M catalogue name `Balcony / Patio Cleaning`.
+
+**Work recorded:**
+
+- changed only the customer-facing add-on value used by the quote flow from `Balcony or patio` to `Balcony / Patio Cleaning`;
+- preserved the existing outdoor-area property field, which remains a separate non-chargeable property fact;
+- made no quantity-model, pricing, payload-schema, identity, endpoint, security, photo-storage, or HestivaOS handoff changes; and
+- left the remaining unresolved/approved catalogue changes for separate focused slices.
+
+**Scope:** Focused quote-flow catalogue alignment only. No architecture boundary, email infrastructure, deployment configuration, or cross-repository transport contract changed.
+
 ## 2026-08-11 — Aligned bathroom quote values with Slice 5M contract
 
 **Purpose:** Remove the unsupported bathroom `Other` value from the website quote flow so the customer-facing selector matches the approved Website ↔ HestivaOS Slice 5M business rule.

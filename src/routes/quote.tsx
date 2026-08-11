@@ -193,7 +193,7 @@ const addons = [
   "Ironing",
   "Bed making",
   "Linen change",
-  "Balcony or patio",
+  "Balcony / Patio Cleaning",
   "Garage sweep",
   "Extra bathroom",
   "Extra refrigerator",

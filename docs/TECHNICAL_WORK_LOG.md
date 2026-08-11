@@ -2,6 +2,22 @@
 
 This append-only log records verified engineering and material operational work without reconstructing unsupported history. Add newest entries first. Link pull requests/commits when available and describe validation without including secrets or customer data.
 
+## 2026-08-11 — Corrected oversized favicon assets after post-WebP production measurement
+
+**Purpose:** Remove the remaining evidence-backed static-asset waste identified after responsive WebP delivery materially improved production Lighthouse results.
+
+**Work recorded:**
+
+- reviewed production Lighthouse run `31457228551` from merged `main` commit `4f6002d8f7b0a76cddf07837377387afcdec7a66`;
+- recorded post-WebP median homepage performance `93`, LCP `2.70 s`, and transfer `2.54 MB`, compared with baseline `72`, `16.621 s`, and `5.328 MB`;
+- recorded post-WebP median Services performance `93`, LCP `2.70 s`, and transfer `2.61 MB`, compared with baseline `78`, `5.052 s`, and `9.692 MB`;
+- verified the remaining `favicon-16.png` and `favicon-32.png` files were incorrectly stored at `1254×1254` despite being declared as 16×16 and 32×32 browser icons;
+- resized the existing favicon artwork to the declared dimensions and saved optimized PNGs without changing favicon paths or HTML references;
+- reduced `favicon-16.png` from `1,143,225` bytes to `657` bytes and `favicon-32.png` from `1,157,806` bytes to `1,864` bytes; and
+- introduced no runtime dependency, routing, SEO policy, quote-flow, pricing, deployment-authority, or Website ↔ HestivaOS integration change.
+
+**Verification state:** Binary dimensions and byte sizes were verified in GitHub Actions. Full repository CI and a final production Lighthouse comparison remain required before closing the performance audit.
+
 ## 2026-08-11 — Added responsive WebP delivery for measured image bottlenecks
 
 **Purpose:** Act on the first verified production Lighthouse baseline, which showed image transfer—not JavaScript blocking—as the material remaining performance bottleneck on the homepage and Services page.

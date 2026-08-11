@@ -12,10 +12,22 @@ import {
 } from "@/lib/form-security";
 import { checkIsolateRateLimit } from "@/lib/rate-limit";
 
-async function assertRateLimit() {
+const CONTACT_ENQUIRY_TYPES = new Set([
+  "Request a Quote",
+  "General Enquiry",
+  "Existing Booking",
+  "Service Area Check",
+  "Feedback",
+]);
+
+function submissionChannel(service: string) {
+  return CONTACT_ENQUIRY_TYPES.has(service) ? "contact" : "quote";
+}
+
+async function assertRateLimit(service: string) {
   const identity = getRequestHeader("cf-connecting-ip")?.trim();
   if (!identity) throw new PublicSubmissionError("rate_limit");
-  assertRateLimitAllowed(await checkIsolateRateLimit(identity));
+  assertRateLimitAllowed(await checkIsolateRateLimit(`${submissionChannel(service)}|${identity}`));
 }
 
 function getSubmittedAt() {
@@ -39,7 +51,7 @@ export const submitContactForm = createServerFn({ method: "POST" })
       const submission = parsed.data;
       assertSameOrigin(getRequestHeader("origin"), getRequestHeader("host"));
       assertHoneypotEmpty(submission.website);
-      await assertRateLimit();
+      await assertRateLimit(submission.service);
 
       const attachments = validateQuoteAttachments(submission.files);
       const reference = `HST-${crypto.randomUUID().slice(0, 8).toUpperCase()}`;

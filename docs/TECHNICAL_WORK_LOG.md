@@ -2,6 +2,21 @@
 
 This append-only log records verified engineering and material operational work without reconstructing unsupported history. Add newest entries first. Link pull requests/commits when available and describe validation without including secrets or customer data.
 
+## 2026-08-11 — Repaired Contact form launch behaviour and public form feedback
+
+**Purpose:** Address the launch-readiness failure where Contact submissions could be rejected after repeated Quote QA activity and replace browser-hostname alert dialogs with branded Hestiva notices.
+
+**Work recorded:**
+
+- verified that Contact and Quote used the same isolate-local five-submissions-per-15-minutes rate-limit bucket even though they are separate customer journeys;
+- preserved the same per-channel limit while separating server-side `contact` and `quote` keys using the existing Cloudflare-provided request identity and service vocabulary, without introducing a new client-trusted channel field;
+- added regression coverage proving the exact Contact-page payload passes the authoritative schema and that exhausting the Contact bucket does not exhaust the Quote bucket;
+- added `/quote` and `/contact`-only `BrandedFormNotices` so existing submission success/error messages render in-page under Hestiva branding instead of browser-native `window.alert()` dialogs that display the site hostname;
+- updated architecture and recovery guidance and accepted ADR-0003 for the durable rate-limit channel decision; and
+- made no change to the existing Resend recipient/sender path, five-per-15-minute per-channel limit, HestivaOS integration, pricing, persistence, shared quote identity, or authentication.
+
+**Scope:** Public website Contact/Quote launch UX and best-effort abuse-control isolation only. Production re-verification is required after deployment before the Contact incident is considered closed.
+
 ## 2026-08-11 — Repaired Post-Renovation Cleaning quote completion path
 
 **Purpose:** Fix a launch-readiness blocker discovered after Post-Renovation Cleaning was promoted to a primary service: the existing frequency controller did not recognize the new service and therefore exposed no selectable frequency values.

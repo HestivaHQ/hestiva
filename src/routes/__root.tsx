@@ -11,6 +11,11 @@ import { lazy, Suspense } from "react";
 import appCss from "../styles.css?url";
 import { BRAND_ASSETS } from "@/lib/site";
 
+const LazyBrandedFormNotices = lazy(() =>
+  import("@/components/BrandedFormNotices").then((module) => ({
+    default: module.BrandedFormNotices,
+  })),
+);
 const LazyContactValidationEnhancements = lazy(() =>
   import("@/components/ContactValidationEnhancements").then((module) => ({
     default: module.ContactValidationEnhancements,
@@ -96,6 +101,7 @@ function RootComponent() {
   const pathname = useRouterState({ select: (state) => state.location.pathname });
   const needsFormSubmission = pathname === "/quote" || pathname === "/contact";
   const needsContactValidation = pathname === "/quote" || pathname === "/contact";
+  const needsBrandedFormNotices = pathname === "/quote" || pathname === "/contact";
   const needsAddonQuantityEnhancements = pathname === "/quote";
   const needsPostRenovationFrequencyEnhancement = pathname === "/quote";
 
@@ -107,6 +113,11 @@ function RootComponent() {
       >
         Skip to main content
       </a>
+      {needsBrandedFormNotices && (
+        <Suspense fallback={null}>
+          <LazyBrandedFormNotices />
+        </Suspense>
+      )}
       {needsContactValidation && (
         <Suspense fallback={null}>
           <LazyContactValidationEnhancements />

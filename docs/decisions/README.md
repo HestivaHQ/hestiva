@@ -14,3 +14,4 @@ This directory contains append-only Architecture Decision Records (ADRs) for dur
 
 - [ADR-0001: Repository documentation policy](ADR-0001-repository-documentation-policy.md) — **Accepted.** Documentation is part of the website repository Definition of Done and is enforced by CI.
 - [ADR-0002: Public contact validation policy](ADR-0002-public-contact-validation-policy.md) — **Accepted.** Quote and contact phone/email validation use one shared browser/server policy while HestivaOS matching remains separate integration work.
+- [ADR-0003: Separate public form rate-limit channels](ADR-0003-separate-public-form-rate-limit-channels.md) — **Accepted.** Contact and Quote retain independent best-effort per-isolate throttle buckets while sharing the same server submission boundary.

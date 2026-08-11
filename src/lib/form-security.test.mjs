@@ -22,9 +22,26 @@ const validSubmission = {
   website: "",
 };
 
+const contactPageSubmission = {
+  name: "Contact Test",
+  phone: "082 123 4567",
+  email: "contact@example.com",
+  service: "Service Area Check",
+  jobType: "",
+  multipleServices: [],
+  otherService: "",
+  propertyAddress: "Fourways",
+  description: "Please confirm whether you service my suburb.",
+  preferredContact: "WhatsApp",
+  urgency: "Not specified",
+  files: [],
+  website: "",
+};
+
 describe("public form security", () => {
   test("accepts valid bounded submissions and contact formats", () => {
     expect(contactSchema.parse(validSubmission).email).toBe("customer@example.com");
+    expect(contactSchema.safeParse(contactPageSubmission).success).toBe(true);
     expect(contactSchema.safeParse({ ...validSubmission, phone: "082 123 4567" }).success).toBe(
       true,
     );
@@ -65,6 +82,18 @@ describe("public form security", () => {
     }
     expect(await checkIsolateRateLimit(identity, 1_000)).toBe(false);
     expect(() => assertRateLimitAllowed(false)).toThrow("Please wait and try again later");
+  });
+
+  test("keeps contact and quote rate-limit buckets independent", async () => {
+    const identity = crypto.randomUUID();
+    const contactKey = `contact|${identity}`;
+    const quoteKey = `quote|${identity}`;
+
+    for (let count = 0; count < rateLimitPolicy.maxSubmissions; count += 1) {
+      expect(await checkIsolateRateLimit(contactKey, 2_000)).toBe(true);
+    }
+    expect(await checkIsolateRateLimit(contactKey, 2_000)).toBe(false);
+    expect(await checkIsolateRateLimit(quoteKey, 2_000)).toBe(true);
   });
 
   test("times out provider fetch and never exposes its raw response", async () => {

@@ -49,7 +49,7 @@ Most route and component code participates in SSR and then hydrates on the clien
 
 Browser-only quote/contact orchestration is implemented in `src/components/LiveFormSubmission.tsx`. It contains DOM enhancement/validation, quote-file compression/submission helpers, and contact/quote submission handling. The controller is not imported synchronously into the global application bundle: `src/routes/__root.tsx` dynamically imports and mounts it only when the current route is `/quote` or `/contact`.
 
-`src/components/ExtraRefrigeratorQuantity.tsx` is a quote-only browser enhancement. It is dynamically imported by `src/routes/__root.tsx` only on `/quote`, watches the existing Extra refrigerator add-on control, exposes a positive-integer quantity input with default `1`, keeps that quantity visible in the review UI, and encodes the selected quantity into the existing add-on label consumed by the current submission controller. It does not define the future structured Website ↔ HestivaOS quantity schema.
+`src/components/AddonQuantityEnhancements.tsx` is a quote-only browser enhancement. It is dynamically imported by `src/routes/__root.tsx` only on `/quote`, applies the approved positive-integer quantity controls with default `1` to `Extra refrigerator` and `Balcony / Patio Cleaning`, keeps selected quantities visible in the review UI, and encodes them into the existing add-on labels consumed by the current submission controller. It does not define the future structured Website ↔ HestivaOS quantity schema.
 
 `src/lib/contact.functions.ts` defines the `POST` TanStack Start server function. On the server it:
 

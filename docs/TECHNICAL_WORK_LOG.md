@@ -2,6 +2,22 @@
 
 This append-only log records verified engineering and material operational work without reconstructing unsupported history. Add newest entries first. Link pull requests/commits when available and describe validation without including secrets or customer data.
 
+## 2026-08-11 — Closed the production performance audit after final verification
+
+**Purpose:** Record the final production measurement after the favicon correction and formally close the evidence-backed website performance audit.
+
+**Work recorded:**
+
+- reviewed successful Lighthouse production run `31495511555` from merged `main` commit `e87a1794ffab3a27b25daef70bc90f4dd554cbe7` using the same three-run mobile method as the earlier measurements;
+- recorded median homepage performance `93`, FCP `2.40 s`, LCP `2.72 s`, transfer `240 KB`, TBT `0 ms`, and CLS `0`;
+- recorded median Services performance `95`, FCP `2.34 s`, LCP `2.41 s`, transfer `308 KB`, TBT `0 ms`, and CLS `0`;
+- recorded median Quote performance `93`, FCP/LCP `2.55 s`, transfer `196 KB`, TBT `0 ms`, and CLS `0`;
+- confirmed transfer fell from the original baseline of `5.328 MB`, `9.692 MB`, and `3.014 MB` to `240 KB`, `308 KB`, and `196 KB` respectively;
+- retained one lower homepage run as documented measurement volatility because the anomaly was a temporary blocking-time spike rather than a return of oversized static-asset transfer; and
+- formally closed the performance audit without introducing any new runtime code, dependency, deployment, pricing, quote-flow, or Website ↔ HestivaOS integration change.
+
+**Verification:** GitHub Actions run `31495511555` completed successfully and uploaded the production Lighthouse artifact for `main` commit `e87a1794ffab3a27b25daef70bc90f4dd554cbe7`.
+
 ## 2026-08-11 — Corrected oversized favicon assets after post-WebP production measurement
 
 **Purpose:** Remove the remaining evidence-backed static-asset waste identified after responsive WebP delivery materially improved production Lighthouse results.

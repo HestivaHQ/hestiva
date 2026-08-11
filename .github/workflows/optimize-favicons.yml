@@ -1,0 +1,55 @@
+name: Optimize favicon assets
+
+on:
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  optimize:
+    name: Optimize favicon assets
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out feature branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Pillow
+        run: python -m pip install --disable-pip-version-check "Pillow==11.3.0"
+
+      - name: Resize and optimize favicons
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          from PIL import Image
+
+          base = Path("public/brand/favicon")
+          targets = [("favicon-16.png", 16), ("favicon-32.png", 32)]
+          for name, size in targets:
+              path = base / name
+              image = Image.open(path).convert("RGBA")
+              print(f"before {name}: {image.size} {path.stat().st_size} bytes")
+              resized = image.resize((size, size), Image.Resampling.LANCZOS)
+              resized.save(path, "PNG", optimize=True, compress_level=9)
+              print(f"after {name}: {resized.size} {path.stat().st_size} bytes")
+          PY
+
+      - name: Commit optimized favicons and remove temporary workflow
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/brand/favicon/favicon-16.png public/brand/favicon/favicon-32.png
+          git rm .github/workflows/optimize-favicons.yml
+          git commit -m "perf: optimize favicon assets"
+          git push origin "HEAD:${{ github.head_ref }}"

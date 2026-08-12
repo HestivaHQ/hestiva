@@ -4,6 +4,15 @@ This is the append-only technical change history for implemented repository and 
 
 ## 2026-08-12
 
+### Quote routing and validation UX correction
+
+- Routed the Contact-page `Request a Quote` CTA to the dedicated `/quote` journey after production QA confirmed it incorrectly scrolled to the general Contact enquiry form; verified the major global Navbar, homepage and service-page quote CTAs already target `/quote`.
+- Aligned the visible quote form's required markers and error summary with the core fields already enforced by the progressive quote-flow enhancement, including home-layout, visit-planning, access/household and conditional pet details.
+- Changed past-date handling so preferred and alternative dates earlier than tomorrow produce an explicit `Please choose a date from tomorrow onwards.` error instead of being silently discarded, and exposed tomorrow as the browser date minimum.
+- Added visible focused feedback when final contact consent is missing instead of silently returning, and made DOM-generated inline errors idempotent to avoid repeated MutationObserver churn.
+- Preserved pricing, `HOM-` reference generation, server-side schema validation, email routing, rate limiting, honeypot protection, file handling and Website ↔ HestivaOS integration boundaries.
+- Production QA remains required after deployment before these customer-facing UX corrections are considered verified live.
+
 ### Homent favicon performance correction
 
 - Re-measured the migrated Homent production site with Lighthouse run `31624786999` and verified that page-level application performance remained healthy while transfer size regressed to roughly 2.5 MB because the replacement favicon files were oversized.

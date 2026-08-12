@@ -36,8 +36,8 @@ export type SiteConfig = {
   assets: BrandAssets;
 };
 
-export const SITE_NAME = "Hestiva";
-export const COMPANY_NAME = "Hestiva";
+export const SITE_NAME = "Homent";
+export const COMPANY_NAME = "Homent";
 export const SITE_URL = "https://www.hestiva.co.za";
 export const TAGLINE = "Grace in Every Detail";
 export const DEFAULT_SERVICE_AREA = "Johannesburg North, Randburg, Johannesburg West and Midrand";

@@ -307,7 +307,7 @@ export function ServicePageLayout({ service }: { service: ServicePage }) {
                   <Link to="/quote">Request Your Quote</Link>
                 </Button>
                 <Button variant="outline" size="lg" asChild>
-                  <a href="mailto:quotes@hestiva.co.za">Email Quotes</a>
+                  <a href="mailto:quotes@homent.co.za">Email Quotes</a>
                 </Button>
               </div>
             </div>

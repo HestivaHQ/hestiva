@@ -26,7 +26,7 @@ export function ContactSection() {
               Request a Quote <ArrowRight className="h-4 w-4" aria-hidden="true" />
             </a>
             <a
-              href="mailto:info@hestiva.co.za"
+              href="mailto:info@homent.co.za"
               className="inline-flex items-center justify-center gap-2 rounded-lg border border-[#C9A45B]/60 px-6 py-3 font-semibold text-[#F5F1E8] transition-colors hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A45B]"
             >
               <Mail className="h-4 w-4" aria-hidden="true" /> Contact Homent

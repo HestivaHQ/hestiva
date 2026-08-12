@@ -2,6 +2,23 @@
 
 This append-only log records verified engineering and material operational work without reconstructing unsupported history. Add newest entries first. Link pull requests/commits when available and describe validation without including secrets or customer data.
 
+## 2026-08-12 — Corrected quote routing and validation feedback
+
+**Purpose:** Resolve production QA findings where quote intent could be sent to the general Contact form and where required quote information, invalid past dates, or missing final consent did not always produce clear customer feedback.
+
+**Work recorded:**
+
+- verified the Contact-page hero `Request a Quote` CTA pointed to `#enquiry-form` while the dedicated quote journey is `/quote`, and changed that CTA to a TanStack Router `/quote` link;
+- swept the main global quote-intent surfaces and confirmed the Navbar, homepage quote CTA, service-page quote CTA and service availability CTA already target `/quote`, so those working links were left unchanged;
+- reconciled the visible React required-field configuration with the core progressively required quote fields already enforced by `LiveFormSubmission`, adding visible markers/error-summary coverage for home layout, visit planning, access/household and conditional pet details;
+- set preferred/alternative visit dates to a minimum of tomorrow and replaced silent past-date clearing with an explicit inline `Please choose a date from tomorrow onwards.` rejection;
+- replaced the final consent guard's silent return with a visible focused consent error; and
+- made DOM-generated inline errors idempotent so repeated quote `MutationObserver` synchronization does not recreate an unchanged warning.
+
+**Preserved boundaries:** No pricing, `HOM-` reference, server validation, Resend/email routing, rate limiting, Contact honeypot, photo/file handling, persistence, or Website ↔ HestivaOS integration contract changed.
+
+**Verification state:** Source investigation and CTA sweep are complete on PR #128. The full Hestiva PR Check and post-deployment production QA are required before the customer-facing correction is considered complete.
+
 ## 2026-08-12 — Corrected Homent favicon transfer regression
 
 **Purpose:** Resolve the post-cutover production transfer regression identified by Homent Lighthouse run `31624786999` without reopening speculative application-runtime optimisation.

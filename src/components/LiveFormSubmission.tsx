@@ -94,8 +94,8 @@ function syncDateRules() {
     if (!input) continue;
     input.min = minimum;
     if (input.value && input.value < minimum) {
-      input.value = "";
-      quoteValues[fieldName(id)] = "";
+      quoteValues[fieldName(id)] = input.value;
+      showInlineError(id, "Please choose a date from tomorrow onwards.");
     }
   }
 }
@@ -121,6 +121,11 @@ function clearInlineError(id: string) {
 function showInlineError(id: string, message: string) {
   const element = document.querySelector<HTMLElement>(`#${id}`);
   if (!element) return;
+  const existing = document.querySelector<HTMLElement>(`#quote-error-${id}`);
+  if (existing?.textContent === message) {
+    element.setAttribute("aria-invalid", "true");
+    return;
+  }
   clearInlineError(id);
   element.setAttribute("aria-invalid", "true");
   const error = document.createElement("p");
@@ -723,7 +728,22 @@ async function sendQuoteForm(button: HTMLButtonElement) {
   const consent = Array.from(
     document.querySelectorAll<HTMLInputElement>('#quote-form input[type="checkbox"]'),
   ).find((checkbox) => checkbox.closest("label")?.textContent?.includes("I consent"));
-  if (!consent?.checked) return;
+  if (!consent?.checked) {
+    if (consent) {
+      document.querySelector("#quote-error-consent")?.remove();
+      consent.setAttribute("aria-invalid", "true");
+      const error = document.createElement("p");
+      error.id = "quote-error-consent";
+      error.className = "mt-2 text-sm font-normal text-[#9B3349]";
+      error.setAttribute("role", "alert");
+      error.textContent = "Please confirm that Homent may contact you.";
+      consent.closest("label")?.insertAdjacentElement("afterend", error);
+      consent.focus();
+    }
+    return;
+  }
+  document.querySelector("#quote-error-consent")?.remove();
+  consent.removeAttribute("aria-invalid");
 
   const details = [
     ["Property type", quoteValue("propertyType")],

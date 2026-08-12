@@ -197,6 +197,15 @@ function unitFloorOptions(propertyType: string): readonly string[] {
   return [];
 }
 
+function tomorrowDateValue() {
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  const year = tomorrow.getFullYear();
+  const month = String(tomorrow.getMonth() + 1).padStart(2, "0");
+  const day = String(tomorrow.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
 const addons = [
   "Inside oven",
   "Inside fridge",
@@ -214,9 +223,20 @@ const addons = [
 ];
 
 const requiredByStep: Partial<Record<number, TextKey[]>> = {
-  0: ["propertyType", "suburb", "address", "floorSize", "bedrooms", "bathrooms"],
+  0: [
+    "propertyType",
+    "suburb",
+    "address",
+    "floorSize",
+    "bedrooms",
+    "bathrooms",
+    "livingAreas",
+    "outdoor",
+    "estate",
+  ],
   1: ["service", "frequency", "condition"],
-  3: ["preferredDate", "preferredTime"],
+  3: ["preferredDate", "preferredTime", "flexibility", "urgency"],
+  4: ["complexAccess", "keyHandover", "present", "pets"],
   6: ["fullName", "mobile", "email", "contactMethod"],
 };
 
@@ -227,11 +247,23 @@ const labelByKey: Partial<Record<keyof FormData, string>> = {
   floorSize: "Approximate floor size",
   bedrooms: "Bedrooms",
   bathrooms: "Bathrooms",
+  livingAreas: "Living areas",
+  outdoor: "Balcony or patio",
+  estate: "Estate or complex",
   service: "Primary service",
   frequency: "Frequency",
   condition: "Home condition",
   preferredDate: "Preferred date",
+  alternativeDate: "Alternative date",
   preferredTime: "Preferred time",
+  flexibility: "Flexibility",
+  urgency: "Urgency",
+  complexAccess: "Estate or complex access",
+  keyHandover: "Key handover method",
+  present: "Will someone be present?",
+  pets: "Pets",
+  petType: "Pet type",
+  petTemperament: "Pet temperament",
   fullName: "Full name",
   mobile: "Mobile number",
   email: "Email address",
@@ -272,7 +304,17 @@ function QuotePage() {
 
       return next;
     });
-    setErrors((current) => ({ ...current, [key]: "" }));
+    setErrors((current) => {
+      const next = { ...current, [key]: "" };
+      if (
+        (key === "preferredDate" || key === "alternativeDate") &&
+        value &&
+        value < tomorrowDateValue()
+      ) {
+        next[key] = "Please choose a date from tomorrow onwards.";
+      }
+      return next;
+    });
   };
 
   const addFiles = (fileList: FileList | null) => {
@@ -292,10 +334,33 @@ function QuotePage() {
     for (const key of requiredByStep[index] ?? []) {
       if (!form[key].trim()) nextErrors[key] = `${labelByKey[key]} is required.`;
     }
+
+    if (index === 3) {
+      const minimum = tomorrowDateValue();
+      if (form.preferredDate && form.preferredDate < minimum) {
+        nextErrors.preferredDate = "Please choose a date from tomorrow onwards.";
+      }
+      if (form.alternativeDate && form.alternativeDate < minimum) {
+        nextErrors.alternativeDate = "Please choose a date from tomorrow onwards.";
+      }
+    }
+
+    if (index === 4 && form.pets.startsWith("Yes")) {
+      if (!form.petType.trim()) nextErrors.petType = "Pet type is required.";
+      if (!form.petTemperament.trim()) nextErrors.petTemperament = "Pet temperament is required.";
+    }
+
     if (index === 6 && form.email && !/^\S+@\S+\.\S+$/.test(form.email)) {
       nextErrors.email = "Enter a valid email address.";
     }
+
     setErrors(nextErrors);
+    const firstError = Object.keys(nextErrors)[0];
+    if (firstError) {
+      window.requestAnimationFrame(() => {
+        document.getElementById(`field-${firstError}`)?.focus();
+      });
+    }
     return Object.keys(nextErrors).length === 0;
   };
 
@@ -640,6 +705,7 @@ function StepContent({
           name="livingAreas"
           label="Living areas"
           options={selectOptions.livingAreas}
+          required
         />
 
         {storeys.length > 0 && (
@@ -667,12 +733,14 @@ function StepContent({
           name="outdoor"
           label="Balcony or patio"
           options={selectOptions.outdoor}
+          required
         />
         <SelectField
           {...props}
           name="estate"
           label="Estate or complex"
           options={selectOptions.estate}
+          required
         />
       </div>
     );
@@ -772,6 +840,7 @@ function StepContent({
               "Flexible this week",
               "Fully flexible",
             ]}
+            required
           />
           <SelectField
             {...props}
@@ -783,6 +852,7 @@ function StepContent({
               "Within one week",
               "As soon as possible",
             ]}
+            required
           />
           <TextArea {...props} name="recurringNotes" label="Recurring-cleaning notes" wide />
         </div>
@@ -802,6 +872,7 @@ function StepContent({
             name="complexAccess"
             label="Estate or complex access"
             options={["Not applicable", "Visitor sign-in", "Access arranged by resident", "Other"]}
+            required
           />
           <TextArea
             {...props}
@@ -815,18 +886,21 @@ function StepContent({
             name="keyHandover"
             label="Key handover method"
             options={["Someone will open", "Concierge or reception", "To be arranged", "Other"]}
+            required
           />
           <SelectField
             {...props}
             name="present"
             label="Will someone be present?"
             options={["Yes", "No", "Not sure"]}
+            required
           />
           <SelectField
             {...props}
             name="pets"
             label="Pets"
             options={["No pets", "Yes, pets will be home", "Yes, pets will be away"]}
+            required
           />
           {form.pets.startsWith("Yes") && (
             <>
@@ -835,12 +909,14 @@ function StepContent({
                 name="petType"
                 label="Pet type"
                 options={["Dog", "Cat", "Dog and cat", "Bird", "Other"]}
+                required
               />
               <SelectField
                 {...props}
                 name="petTemperament"
                 label="Pet temperament"
                 options={["Friendly", "Shy", "Protective", "Reactive", "Not sure"]}
+                required
               />
             </>
           )}
@@ -1008,6 +1084,7 @@ function TextField({
         value={form[name]}
         onChange={(e) => update(name, e.target.value)}
         autoComplete={autoComplete}
+        min={type === "date" ? tomorrowDateValue() : undefined}
         aria-invalid={!!errors[name]}
         aria-describedby={errors[name] ? `${id}-error` : undefined}
         className={inputClass}

@@ -91,10 +91,10 @@ function ContactPage() {
               toward a cleaner, calmer home.
             </p>
             <div className="mt-10 flex flex-col gap-4 sm:flex-row">
-              <a href="#enquiry-form" className={primaryButton}>
+              <Link to="/quote" className={primaryButton}>
                 Request a Quote
                 <ArrowRight aria-hidden="true" className="h-4 w-4" />
-              </a>
+              </Link>
               <a href={whatsappLink} className={secondaryButton}>
                 <MessageCircle aria-hidden="true" className="h-5 w-5" />
                 WhatsApp Homent

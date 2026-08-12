@@ -6,7 +6,7 @@ export function AboutSection() {
       <div className="mx-auto grid max-w-7xl gap-12 px-6 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
         <div>
           <span className="text-xs font-semibold uppercase tracking-[0.3em] text-[#9A7132]">
-            About Hestiva
+            About Homent
           </span>
           <h2
             id="about-heading"
@@ -15,7 +15,7 @@ export function AboutSection() {
             The quiet luxury of a beautifully cared-for home
           </h2>
           <p className="mt-6 leading-relaxed text-[#5F4B46]">
-            Hestiva was created for people who value their time, their space and the comfort of a
+            Homent was created for people who value their time, their space and the comfort of a
             home cared for with intention. We bring warmth, discretion and exacting attention to the
             everyday ritual of cleaning.
           </p>

@@ -23,16 +23,16 @@ export type ServiceImageData = {
 const serviceImageAltText: Record<string, string> = {
   "regular-home-cleaning": "Professional cleaner carrying out routine home cleaning",
   "deep-cleaning": "Professional cleaner performing detailed deep cleaning",
-  "move-in-cleaning": "Hestiva cleaners preparing an empty home for move-in",
-  "move-out-cleaning": "Hestiva cleaners cleaning an empty home after move-out",
+  "move-in-cleaning": "Homent cleaners preparing an empty home for move-in",
+  "move-out-cleaning": "Homent cleaners cleaning an empty home after move-out",
   "kitchen-cleaning": "Professional cleaner wiping a residential kitchen counter",
   "bathroom-sanitisation": "Professional bathroom sanitisation in a modern bathroom",
   "bedroom-cleaning": "Professional cleaner cleaning a bedside surface",
   "living-area-cleaning": "Professional cleaner vacuuming a modern living room",
   "interior-window-cleaning": "Professional cleaner washing the inside of a residential window",
   "laundry-folding": "Professional cleaner folding clean household laundry",
-  "apartment-cleaning": "Hestiva cleaner working in a modern apartment",
-  "eco-conscious-cleaning": "Hestiva cleaner using eco-conscious cleaning products",
+  "apartment-cleaning": "Homent cleaner working in a modern apartment",
+  "eco-conscious-cleaning": "Homent cleaner using eco-conscious cleaning products",
 };
 
 export const visualAddOns = [
@@ -84,10 +84,10 @@ const createService = (
   slug,
   title,
   shortTitle,
-  metaTitle: `${title} Johannesburg & Midrand | Hestiva`,
+  metaTitle: `${title} Johannesburg & Midrand | Homent`,
   metaDescription: `${description} Serving Johannesburg and Midrand.`,
   heroDescription: description,
-  overview: `${title} is delivered with a clear checklist, careful attention to the home and a scope confirmed before the booking. Hestiva focuses on practical residential cleaning without promising services or equipment outside the agreed quotation.`,
+  overview: `${title} is delivered with a clear checklist, careful attention to the home and a scope confirmed before the booking. Homent focuses on practical residential cleaning without promising services or equipment outside the agreed quotation.`,
   services,
   commonProblems,
   image: serviceImageAltText[slug]

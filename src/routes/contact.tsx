@@ -127,18 +127,18 @@ function ContactPage() {
               </ContactCard>
               <ContactCard icon={Mail} title="Quote requests">
                 <a
-                  href="mailto:quotes@hestiva.co.za"
+                  href="mailto:quotes@homent.co.za"
                   className="break-all font-semibold text-[#3B0F1A] underline decoration-[#C9A45B] underline-offset-4 transition hover:text-[#531628] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A45B]"
                 >
-                  quotes@hestiva.co.za
+                  quotes@homent.co.za
                 </a>
               </ContactCard>
               <ContactCard icon={Mail} title="General enquiries">
                 <a
-                  href="mailto:info@hestiva.co.za"
+                  href="mailto:info@homent.co.za"
                   className="break-all font-semibold text-[#3B0F1A] underline decoration-[#C9A45B] underline-offset-4 transition hover:text-[#531628] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A45B]"
                 >
-                  info@hestiva.co.za
+                  info@homent.co.za
                 </a>
               </ContactCard>
             </div>
@@ -233,10 +233,10 @@ function ContactPage() {
               <p id="form-availability" className="mt-5 text-sm leading-6 text-[#5F4B46]">
                 Online submission is available. You can also send your request by email to
                 <a
-                  href="mailto:quotes@hestiva.co.za"
+                  href="mailto:quotes@homent.co.za"
                   className="mx-1 font-semibold text-[#3B0F1A] underline decoration-[#C9A45B] underline-offset-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A45B]"
                 >
-                  quotes@hestiva.co.za
+                  quotes@homent.co.za
                 </a>
                 or use WhatsApp if you prefer.
               </p>

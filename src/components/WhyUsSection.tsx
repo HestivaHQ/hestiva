@@ -42,7 +42,7 @@ export function WhyUsSection() {
         <div className="mx-auto max-w-7xl px-6">
           <div className="mx-auto max-w-2xl text-center">
             <span className="text-xs font-semibold uppercase tracking-[0.3em] text-[#9A7132]">
-              Why Hestiva
+              Why Homent
             </span>
             <h2 id="why-heading" className="mt-3 text-4xl font-semibold text-[#3B0F1A] md:text-5xl">
               A higher standard of home cleaning
@@ -104,7 +104,7 @@ export function WhyUsSection() {
             </h2>
             <p className="mt-5 leading-relaxed text-[#5F4B46]">
               We understand the trust involved in welcoming someone into your home. Thoughtful
-              protocols, respectful conduct and careful quality checks guide every Hestiva visit.
+              protocols, respectful conduct and careful quality checks guide every Homent visit.
             </p>
           </div>
           <div className="rounded-2xl border border-[#C9A45B]/30 bg-[#F8F3E8] p-8">
@@ -141,7 +141,7 @@ export function WhyUsSection() {
             {[
               "The attention to detail made our whole home feel renewed.",
               "Professional, thoughtful and wonderfully consistent every time.",
-              "Hestiva makes coming home feel like a genuine luxury.",
+              "Homent makes coming home feel like a genuine luxury.",
             ].map((quote) => (
               <figure
                 key={quote}
@@ -149,7 +149,7 @@ export function WhyUsSection() {
               >
                 <blockquote className="leading-relaxed text-[#F5F1E8]/85">“{quote}”</blockquote>
                 <figcaption className="mt-5 text-xs font-semibold uppercase tracking-[0.2em] text-[#C9A45B]">
-                  Hestiva client
+                  Homent client
                 </figcaption>
               </figure>
             ))}

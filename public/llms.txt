@@ -1,21 +1,21 @@
-# Hestiva
+# Homent
 
 > Thoughtful residential cleaning for busy households that value care, consistency and attention to detail.
 
-Hestiva provides residential cleaning services for homes and apartments in Johannesburg and surrounding service areas. The website explains available services, areas served and how to request a personalised quotation.
+Homent provides residential cleaning services for homes and apartments in Johannesburg and surrounding service areas. The website explains available services, areas served and how to request a personalised quotation.
 
 ## Pages
 
-- [Home](/): Hestiva overview, services and enquiry options.
+- [Home](/): Homent overview, services and enquiry options.
 - [Services](/services): Residential cleaning services.
 - [Locations](/locations): Current service-area information.
-- [About](/about): Information about Hestiva.
+- [About](/about): Information about Homent.
 - [Contact](/contact): Contact details and enquiry options.
 - [Request a Quote](/quote): Residential cleaning quote request form.
 - [Sitemap](/sitemap.xml): Search-engine sitemap.
 
 ## Contact
 
-- Website: https://www.hestiva.co.za
-- Quote enquiries: quotes@hestiva.co.za
-- General enquiries: info@hestiva.co.za
+- Website: https://www.homent.co.za
+- Quote enquiries: quotes@homent.co.za
+- General enquiries: info@homent.co.za

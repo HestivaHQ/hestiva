@@ -49,7 +49,7 @@ function toSouthAfricanInternationalNumber(phone: string) {
 
 function buildClientChatUrl(phone: string, reference: string) {
   const number = toSouthAfricanInternationalNumber(phone);
-  const message = `Hi, we received your Hestiva quote request ${reference}. We would like to confirm a few details.`;
+  const message = `Hi, we received your Homent quote request ${reference}. We would like to confirm a few details.`;
   return `https://wa.me/${number}?text=${encodeURIComponent(message)}`;
 }
 
@@ -87,7 +87,7 @@ function emailShell(title: string, preheader: string, body: string) {
           <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:720px;background:#ffffff;border-radius:14px;overflow:hidden;border:1px solid #eadfd5;">
             <tr>
               <td style="background:#3b0d16;color:#ffffff;padding:22px 26px;">
-                <div style="font-size:12px;letter-spacing:1.8px;text-transform:uppercase;color:#d5ac62;font-weight:700;">Hestiva</div>
+                <div style="font-size:12px;letter-spacing:1.8px;text-transform:uppercase;color:#d5ac62;font-weight:700;">Homent</div>
                 <h1 style="margin:8px 0 0;font-size:24px;line-height:1.25;">${escapeHtml(title)}</h1>
               </td>
             </tr>
@@ -96,9 +96,9 @@ function emailShell(title: string, preheader: string, body: string) {
             </tr>
             <tr>
               <td style="padding:18px 26px;background:#fbf8f3;border-top:1px solid #eadfd5;color:#7a675d;font-size:12px;line-height:1.6;">
-                Hestiva (Pty) Ltd<br />
+                Homent (Pty) Ltd<br />
                 Grace in Every Detail.<br />
-                Website: www.hestiva.co.za | Email: quotes@hestiva.co.za | Phone: 076 781 6550
+                Website: www.homent.co.za | Email: quotes@homent.co.za | Phone: 068 423 1614
               </td>
             </tr>
           </table>
@@ -125,9 +125,9 @@ export function buildQuoteEmailPackage(data: QuoteEmailData): QuoteEmailPackage 
   const serviceDisplay = getServiceDisplay(data);
   const clientChatUrl = buildClientChatUrl(data.phone, data.reference);
 
-  const adminSubject = `New Hestiva Quote Request ${data.reference} - ${data.name}`;
+  const adminSubject = `New Homent Quote Request ${data.reference} - ${data.name}`;
   const adminText = [
-    "NEW HESTIVA WEBSITE QUOTE REQUEST",
+    "NEW HOMENT WEBSITE QUOTE REQUEST",
     "",
     `Reference Number: ${data.reference}`,
     `Submitted: ${data.submittedAt}`,
@@ -157,9 +157,9 @@ export function buildQuoteEmailPackage(data: QuoteEmailData): QuoteEmailPackage 
 
   const adminHtml = emailShell(
     `New Quote Request ${data.reference}`,
-    `New Hestiva website quote request from ${data.name}`,
+    `New Homent website quote request from ${data.name}`,
     `
-      <p style="margin:0 0 18px;color:#55443c;font-size:15px;line-height:1.6;">A new quote request was submitted through the Hestiva website.</p>
+      <p style="margin:0 0 18px;color:#55443c;font-size:15px;line-height:1.6;">A new quote request was submitted through the Homent website.</p>
       <div style="background:#fff8e8;border:1px solid #d5ac62;border-radius:10px;padding:14px 16px;margin-bottom:20px;">
         <div style="font-size:12px;text-transform:uppercase;letter-spacing:1.4px;color:#8b5e2f;font-weight:700;">Reference Number</div>
         <div style="font-size:22px;color:#351019;font-weight:800;margin-top:4px;">${escapeHtml(data.reference)}</div>
@@ -183,14 +183,14 @@ export function buildQuoteEmailPackage(data: QuoteEmailData): QuoteEmailPackage 
         ${detailRow("Description", data.description)}
         ${detailRow("Uploaded Files", data.attachmentSummary)}
         ${detailRow("Submitted", data.submittedAt)}
-      </table>`
+      </table>`,
   );
 
-  const customerSubject = `Quote Request Received ${data.reference} - Hestiva`;
+  const customerSubject = `Quote Request Received ${data.reference} - Homent`;
   const customerText = [
     `Hi ${data.name},`,
     "",
-    "Thank you for contacting Hestiva.",
+    "Thank you for contacting Homent.",
     "",
     "We have received your quote request and our team will review the details.",
     `Reference Number: ${data.reference}`,
@@ -204,20 +204,20 @@ export function buildQuoteEmailPackage(data: QuoteEmailData): QuoteEmailPackage 
     "",
     "Our team will contact you to confirm the details and advise on the next step.",
     "",
-    "Contact Number: 076 781 6550",
-    "Email: quotes@hestiva.co.za",
-    "Website: www.hestiva.co.za",
+    "Contact Number: 068 423 1614",
+    "Email: quotes@homent.co.za",
+    "Website: www.homent.co.za",
     "",
     "Kind regards,",
-    "The Hestiva Team",
+    "The Homent Team",
   ].filter(Boolean).join("\n");
 
   const customerHtml = emailShell(
     "Quote Request Received",
-    `Your quote request ${data.reference} was received by Hestiva.`,
+    `Your quote request ${data.reference} was received by Homent.`,
     `
       <p style="margin:0 0 14px;color:#55443c;font-size:15px;line-height:1.6;">Hi ${escapeHtml(data.name)},</p>
-      <p style="margin:0 0 18px;color:#55443c;font-size:15px;line-height:1.6;">Thank you for contacting Hestiva. We have received your quote request and our team will review the details.</p>
+      <p style="margin:0 0 18px;color:#55443c;font-size:15px;line-height:1.6;">Thank you for contacting Homent. We have received your quote request and our team will review the details.</p>
       <div style="background:#fff8e8;border:1px solid #d5ac62;border-radius:10px;padding:14px 16px;margin-bottom:20px;">
         <div style="font-size:12px;text-transform:uppercase;letter-spacing:1.4px;color:#8b5e2f;font-weight:700;">Reference Number</div>
         <div style="font-size:22px;color:#351019;font-weight:800;margin-top:4px;">${escapeHtml(data.reference)}</div>
@@ -233,7 +233,7 @@ export function buildQuoteEmailPackage(data: QuoteEmailData): QuoteEmailPackage 
       <div style="margin-top:22px;background:#fbf8f3;border:1px solid #eadfd5;border-radius:10px;padding:14px 16px;color:#55443c;font-size:14px;line-height:1.6;">
         <strong>What happens next:</strong><br />
         Our team will contact you to confirm the details and advise on the next step.
-      </div>`
+      </div>`,
   );
 
   return { adminSubject, adminText, adminHtml, customerSubject, customerText, customerHtml };

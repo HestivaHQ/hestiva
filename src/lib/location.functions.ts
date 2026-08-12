@@ -86,7 +86,7 @@ export const reverseGeocodeLocation = createServerFn({ method: "POST" })
       headers: {
         Accept: "application/json",
         "Accept-Language": "en-ZA,en;q=0.9",
-        "User-Agent": "HestivaWebsite/1.0 (https://www.hestiva.co.za; info@hestiva.co.za)",
+        "User-Agent": "HomentWebsite/1.0 (https://www.homent.co.za; info@homent.co.za)",
       },
     });
 

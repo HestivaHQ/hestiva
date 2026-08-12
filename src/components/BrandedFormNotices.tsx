@@ -10,19 +10,19 @@ function failureMessage(category: ReturnType<typeof consumeSubmissionFailureCate
     case "validation":
       return "Some of the submitted details were not accepted. Please review the form and try again.";
     case "origin":
-      return "The request could not be verified as coming from Hestiva. Please refresh the page and try again.";
+      return "The request could not be verified as coming from Homent. Please refresh the page and try again.";
     case "rate_limit":
       return "Too many requests were sent recently. Please wait a few minutes and try again.";
     case "delivery":
-      return "Hestiva could not deliver your message right now. Please try again or email info@hestiva.co.za.";
+      return "Homent could not deliver your message right now. Please try again or email info@homent.co.za.";
     case "bot":
-      return "The request was blocked by Hestiva's anti-spam check. Please refresh the page, complete the form again, and retry.";
+      return "The request was blocked by Homent's anti-spam check. Please refresh the page, complete the form again, and retry.";
     case "framework":
-      return "The website could not complete the submission request. Please refresh the page and try again or email info@hestiva.co.za.";
+      return "The website could not complete the submission request. Please refresh the page and try again or email info@homent.co.za.";
     case "unexpected":
-      return "An unexpected website error prevented the request from being sent. Please try again or email info@hestiva.co.za.";
+      return "An unexpected website error prevented the request from being sent. Please try again or email info@homent.co.za.";
     default:
-      return "We could not send your request. Please try again or email info@hestiva.co.za.";
+      return "We could not send your request. Please try again or email info@homent.co.za.";
   }
 }
 
@@ -44,7 +44,7 @@ function showNotice(message: string) {
   const copy = document.createElement("div");
   const title = document.createElement("p");
   title.className = "text-sm font-semibold uppercase tracking-[0.14em] text-[#3B0F1A]";
-  title.textContent = tone === "success" ? "Hestiva — Request received" : "Hestiva — Request not sent";
+  title.textContent = tone === "success" ? "Homent — Request received" : "Homent — Request not sent";
 
   const body = document.createElement("p");
   body.className = "mt-2 text-sm leading-6 text-[#5F4B46]";
@@ -69,11 +69,11 @@ function showNotice(message: string) {
 function alignContactFallbackEmail() {
   if (window.location.pathname !== "/contact") return;
   const link = document.querySelector<HTMLAnchorElement>(
-    '#enquiry-form a[href="mailto:quotes@hestiva.co.za"]',
+    '#enquiry-form a[href="mailto:quotes@hestiva.co.za"], #enquiry-form a[href="mailto:quotes@homent.co.za"]',
   );
   if (!link) return;
-  link.href = "mailto:info@hestiva.co.za";
-  link.textContent = "info@hestiva.co.za";
+  link.href = "mailto:info@homent.co.za";
+  link.textContent = "info@homent.co.za";
 }
 
 export function BrandedFormNotices() {

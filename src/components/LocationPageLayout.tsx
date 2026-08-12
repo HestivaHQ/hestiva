@@ -87,7 +87,7 @@ export function LocationPageLayout({ location }: { location: LocationPage }) {
                   </h2>
                 </div>
                 <p className="max-w-xl text-sm leading-6 text-[#695E59]">
-                  Clean, well-kept residential interiors that reflect the kinds of home spaces Hestiva is designed to care for.
+                  Clean, well-kept residential interiors that reflect the kinds of home spaces Homent is designed to care for.
                 </p>
               </div>
               <div className="grid gap-4 sm:grid-cols-2">
@@ -189,7 +189,7 @@ export function LocationPageLayout({ location }: { location: LocationPage }) {
                 {location.name} Cleaning FAQs
               </h2>
               <p className="mt-4 text-[#695E59]">
-                Helpful answers for households considering Hestiva cleaning services in {location.name}.
+                Helpful answers for households considering Homent cleaning services in {location.name}.
               </p>
             </div>
             <div className="space-y-4">
@@ -214,7 +214,7 @@ export function LocationPageLayout({ location }: { location: LocationPage }) {
                   Need home cleaning in {location.name}?
                 </h2>
                 <p className="mt-3 max-w-2xl text-[#695E59]">
-                  Tell Hestiva about your home, preferred service and timing, and we will help you choose the right cleaning option.
+                  Tell Homent about your home, preferred service and timing, and we will help you choose the right cleaning option.
                 </p>
                 <div className="mt-5 flex flex-wrap gap-2">
                   {nearbyLocations.map((area) => (
@@ -223,7 +223,7 @@ export function LocationPageLayout({ location }: { location: LocationPage }) {
                       to="/locations/$locationSlug"
                       params={{ locationSlug: area.slug }}
                       className="rounded-full border border-[#D9C8AD] bg-[#F8F3E8] px-3 py-1 text-xs text-[#695E59] transition-colors hover:border-[#C9A45B] hover:text-[#5A1425]"
-                      aria-label={`View Hestiva residential cleaning in nearby ${area.name}`}
+                      aria-label={`View Homent residential cleaning in nearby ${area.name}`}
                     >
                       Cleaning in {area.name}
                     </Link>

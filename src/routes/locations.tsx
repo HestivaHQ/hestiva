@@ -14,13 +14,13 @@ const bookingNotes = [
   "Exact service availability depends on your address.",
   "Some addresses may require additional travel planning.",
   "Estate and complex access details should be provided in advance.",
-  "Preferred dates are not confirmed until Hestiva accepts the booking.",
+  "Preferred dates are not confirmed until Homent accepts the booking.",
   "Recurring cleaning availability may differ by area and schedule.",
 ] as const;
 
-const quoteEmail = "mailto:quotes@hestiva.co.za?subject=Hestiva%20address%20and%20quote%20request";
+const quoteEmail = "mailto:quotes@homent.co.za?subject=Homent%20address%20and%20quote%20request";
 const whatsAppUrl =
-  "https://wa.me/27684231614?text=Hello%20Hestiva%2C%20I%27d%20like%20to%20check%20cleaning%20availability%20for%20my%20address.";
+  "https://wa.me/27684231614?text=Hello%20Homent%2C%20I%27d%20like%20to%20check%20cleaning%20availability%20for%20my%20address.";
 const breadcrumbs = locationBreadcrumbs();
 
 export const Route = createFileRoute("/locations")({
@@ -30,7 +30,7 @@ export const Route = createFileRoute("/locations")({
 
     const title = `Areas We Serve | ${SITE_NAME} Residential Cleaning`;
     const description =
-      "Explore Hestiva residential cleaning service areas across Sandton, Randburg, Rosebank, Roodepoort, Midrand, Waterfall, Kyalami and surrounding approved suburbs.";
+      "Explore Homent residential cleaning service areas across Sandton, Randburg, Rosebank, Roodepoort, Midrand, Waterfall, Kyalami and surrounding approved suburbs.";
 
     return {
       ...createSeoHead({ title, description, path: "/locations" }),
@@ -80,7 +80,7 @@ function LocationsOverview() {
               Home cleaning across our Johannesburg and Midrand service corridor.
             </h1>
             <p className="mt-7 max-w-3xl text-lg leading-8 text-[#695E59] md:text-xl">
-              Hestiva currently serves 66 approved areas across Sandton and Johannesburg North,
+              Homent currently serves 66 approved areas across Sandton and Johannesburg North,
               Randburg, Rosebank and central-north Johannesburg, Roodepoort and Johannesburg West,
               plus Midrand, Waterfall and Kyalami.
             </p>
@@ -88,8 +88,8 @@ function LocationsOverview() {
               <Link to="/quote" className={primaryButton}>
                 Request a Quote <ArrowRight aria-hidden="true" className="h-4 w-4" />
               </Link>
-              <a href="mailto:info@hestiva.co.za" className={secondaryButton}>
-                Contact Hestiva
+              <a href="mailto:info@homent.co.za" className={secondaryButton}>
+                Contact Homent
               </a>
             </div>
           </div>
@@ -108,7 +108,7 @@ function LocationsOverview() {
                 Choose your area
               </h2>
               <p className="mt-5 leading-7 text-[#695E59]">
-                Each suburb below has its own Hestiva service-area page. Exact availability is still
+                Each suburb below has its own Homent service-area page. Exact availability is still
                 confirmed against your address, requested date and cleaning requirements.
               </p>
             </div>
@@ -172,7 +172,7 @@ function LocationsOverview() {
               Ready to check your address?
             </h2>
             <p className="mx-auto mt-5 max-w-2xl text-lg leading-8 text-[#695E59]">
-              Start the quote and enter your address or use your current location. Hestiva will use
+              Start the quote and enter your address or use your current location. Homent will use
               the property and access details you provide when reviewing the request.
             </p>
             <div className="mt-9 flex flex-col justify-center gap-4 sm:flex-row">
@@ -184,7 +184,7 @@ function LocationsOverview() {
                 target="_blank"
                 rel="noreferrer"
                 className={secondaryButton}
-                aria-label="WhatsApp Hestiva on 068 423 1614"
+                aria-label="WhatsApp Homent on 068 423 1614"
               >
                 <MessageCircle aria-hidden="true" className="h-4 w-4" /> WhatsApp 068 423 1614
               </a>
@@ -208,7 +208,7 @@ function LocationsOverview() {
                 Travel and booking notes
               </h2>
               <p className="mt-5 max-w-lg leading-7 text-[#695E59]">
-                A few details help Hestiva plan the right visit for your home.
+                A few details help Homent plan the right visit for your home.
               </p>
             </div>
             <ul className="space-y-4" role="list">

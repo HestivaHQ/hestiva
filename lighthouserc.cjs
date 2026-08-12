@@ -3,9 +3,9 @@ module.exports = {
     collect: {
       numberOfRuns: 3,
       url: [
-        "https://www.hestiva.co.za/",
-        "https://www.hestiva.co.za/services",
-        "https://www.hestiva.co.za/quote",
+        "https://www.homent.co.za/",
+        "https://www.homent.co.za/services",
+        "https://www.homent.co.za/quote",
       ],
       settings: {
         maxWaitForLoad: 90000,

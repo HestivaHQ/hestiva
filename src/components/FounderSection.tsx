@@ -10,11 +10,11 @@ export function FounderSection() {
             id="founder-heading"
             className="max-w-3xl text-3xl font-semibold tracking-tight text-[#3B0F1A] md:text-5xl"
           >
-            A simple idea behind Hestiva.
+            A simple idea behind Homent.
           </h2>
           <div className="mt-6 max-w-2xl space-y-5 text-lg leading-8 text-[#5F4B46]">
             <p>
-              Hestiva was founded by Smangaliso Nkosi with a simple idea: professional home cleaning
+              Homent was founded by Smangaliso Nkosi with a simple idea: professional home cleaning
               should feel reliable, respectful and easy to arrange.
             </p>
             <p>
@@ -23,7 +23,7 @@ export function FounderSection() {
               takes pride in doing the job properly.
             </p>
             <p>
-              As Hestiva grows, those principles remain at the heart of the business: dependable
+              As Homent grows, those principles remain at the heart of the business: dependable
               service, respect for every home and a consistently high standard of care.
             </p>
           </div>

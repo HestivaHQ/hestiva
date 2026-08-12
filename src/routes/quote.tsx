@@ -32,9 +32,9 @@ const breadcrumbs = pageBreadcrumbs("Quote", "/quote");
 export const Route = createFileRoute("/quote")({
   component: QuotePage,
   head: () => {
-    const title = "Request a Residential Cleaning Quote | Hestiva";
+    const title = "Request a Residential Cleaning Quote | Homent";
     const description =
-      "Tell Hestiva about your Johannesburg home and cleaning needs to request a personalised residential cleaning quotation.";
+      "Tell Homent about your Johannesburg home and cleaning needs to request a personalised residential cleaning quotation.";
     const path = "/quote";
     return {
       ...createSeoHead({ title, description, path }),
@@ -316,14 +316,14 @@ function QuotePage() {
       .forEach((key) => {
         if (!form[key].trim()) allErrors[key] = `${labelByKey[key]} is required.`;
       });
-    if (!form.consent) allErrors.consent = "Please confirm that Hestiva may contact you.";
+    if (!form.consent) allErrors.consent = "Please confirm that Homent may contact you.";
     if (form.email && !/^\S+@\S+\.\S+$/.test(form.email))
       allErrors.email = "Enter a valid email address.";
     setErrors(allErrors);
   };
 
   const whatsappUrl = useMemo(() => {
-    const message = `Hello Hestiva,\n\nI would like help with a residential cleaning quotation.\n\nName: ${form.fullName}\nSuburb: ${form.suburb}\nProperty type: ${form.propertyType}\nBedrooms: ${form.bedrooms}\nBathrooms: ${form.bathrooms}\nService: ${form.service}\nFrequency: ${form.frequency}\nPreferred date: ${form.preferredDate}\nAdditional notes: ${form.notes}`;
+    const message = `Hello Homent,\n\nI would like help with a residential cleaning quotation.\n\nName: ${form.fullName}\nSuburb: ${form.suburb}\nProperty type: ${form.propertyType}\nBedrooms: ${form.bedrooms}\nBathrooms: ${form.bathrooms}\nService: ${form.service}\nFrequency: ${form.frequency}\nPreferred date: ${form.preferredDate}\nAdditional notes: ${form.notes}`;
     return `https://wa.me/27684231614?text=${encodeURIComponent(message)}`;
   }, [form]);
 
@@ -787,7 +787,7 @@ function StepContent({
           <TextArea {...props} name="recurringNotes" label="Recurring-cleaning notes" wide />
         </div>
         <Notice>
-          Preferred dates and times are requests only and are confirmed after Hestiva reviews
+          Preferred dates and times are requests only and are confirmed after Homent reviews
           availability and location.
         </Notice>
       </>
@@ -1188,7 +1188,7 @@ function Review({
           className="mt-1 h-5 w-5 shrink-0 accent-[#5A1425]"
         />
         <span>
-          I consent to Hestiva contacting me about this enquiry and acknowledge the{" "}
+          I consent to Homent contacting me about this enquiry and acknowledge the{" "}
           <a href="/terms" className="font-semibold text-[#5A1425] underline underline-offset-4">
             Terms of Service
           </a>{" "}

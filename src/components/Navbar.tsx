@@ -7,7 +7,7 @@ const navLinks = [
   { label: "Services", to: "/services" },
   { label: "Apartment Cleaning", to: "/services/apartment-cleaning" },
   { label: "Areas", to: "/locations" },
-  { label: "Why Hestiva", href: "/#why-us" },
+  { label: "Why Homent", href: "/#why-us" },
   { label: "About", to: "/about" },
   { label: "Contact", to: "/contact" },
 ] as const;

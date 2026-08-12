@@ -30,8 +30,8 @@ export async function sendEmailViaResend(
   timeoutMs = PROVIDER_TIMEOUT_MS,
 ) {
   const emailPayload: Record<string, unknown> = {
-    from: "Hestiva Quotes <quotes@hestiva.co.za>",
-    reply_to: "quotes@hestiva.co.za",
+    from: "Homent Quotes <quotes@homent.co.za>",
+    reply_to: "quotes@homent.co.za",
     to: email.to,
     subject: email.subject,
     text: email.text,

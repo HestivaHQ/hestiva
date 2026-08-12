@@ -287,7 +287,7 @@ function ServicesOverview() {
               Cleaning tailored to your home.
             </h1>
             <p className="mt-7 max-w-2xl text-lg leading-8 text-[#695E59] md:text-xl">
-              Whether you need dependable weekly cleaning or a one-time deep refresh, Hestiva offers
+              Whether you need dependable weekly cleaning or a one-time deep refresh, Homent offers
               thoughtful residential cleaning designed around your home and your routine.
             </p>
             <a

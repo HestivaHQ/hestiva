@@ -80,7 +80,7 @@ export const Route = createFileRoute("/about")({
   head: () => {
     const title = `About ${SITE_NAME} | Trusted Residential Cleaning`;
     const description =
-      "Discover Hestiva's thoughtful approach to dependable residential cleaning, respectful home care and clear communication.";
+      "Discover Homent's thoughtful approach to dependable residential cleaning, respectful home care and clear communication.";
     const path = "/about";
     return {
       ...createSeoHead({ title, description, path }),
@@ -120,13 +120,13 @@ function AboutPage() {
               separatorClassName="text-[#C9A45B]"
             />
             <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#9A7132]">
-              About Hestiva
+              About Homent
             </p>
             <h1 className="mt-5 max-w-4xl text-5xl font-semibold leading-[1.08] tracking-[-0.035em] text-[#3B0F1A] sm:text-6xl md:text-7xl">
               Thoughtful care for the place you call home.
             </h1>
             <p className="mt-7 max-w-2xl text-lg leading-8 text-[#5F4B46] md:text-xl">
-              Hestiva provides dependable residential cleaning with respect, consistency and close
+              Homent provides dependable residential cleaning with respect, consistency and close
               attention to the details that make a home feel cared for.
             </p>
             <div className="mt-10 flex flex-col gap-4 sm:flex-row">
@@ -153,7 +153,7 @@ function AboutPage() {
                 A cleaner home should make life feel lighter.
               </h2>
               <p className="mt-6 max-w-2xl text-lg leading-8 text-[#5F4B46]">
-                Hestiva helps busy households enjoy a cleaner, calmer home without sacrificing the
+                Homent helps busy households enjoy a cleaner, calmer home without sacrificing the
                 trust, comfort or consistency that matters in a personal space. We take time to
                 understand what feels right for your household, then care for it with a steady,
                 thoughtful approach.
@@ -174,7 +174,7 @@ function AboutPage() {
                 id="principles-heading"
                 className="mt-4 text-3xl font-semibold tracking-tight text-[#3B0F1A] md:text-5xl"
               >
-                Why homeowners choose Hestiva
+                Why homeowners choose Homent
               </h2>
             </div>
             <div className="mt-14 grid gap-x-10 gap-y-12 sm:grid-cols-2 lg:grid-cols-4">
@@ -329,10 +329,10 @@ function AboutPage() {
             </div>
             <div className="mt-10 flex flex-col items-center justify-center gap-3 text-sm text-[#5F4B46] sm:flex-row sm:gap-6">
               <a
-                href="mailto:quotes@hestiva.co.za"
+                href="mailto:quotes@homent.co.za"
                 className="rounded-sm underline decoration-[#C9A45B] underline-offset-4 hover:text-[#3B0F1A] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A45B]"
               >
-                quotes@hestiva.co.za
+                quotes@homent.co.za
               </a>
               <span aria-hidden="true" className="hidden text-[#C9A45B] sm:inline">
                 •

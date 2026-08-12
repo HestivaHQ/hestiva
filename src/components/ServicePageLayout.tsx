@@ -22,7 +22,7 @@ const coreServiceAreaNames = new Set(["Sandton", "Randburg", "Rosebank", "Roodep
 const linkedServiceAreas = locationPages.filter((location) => coreServiceAreaNames.has(location.name));
 
 function buildWhatsAppLink(service: ServicePage) {
-  const message = `Hi Hestiva, I would like a quote for ${service.title}.`;
+  const message = `Hi Homent, I would like a quote for ${service.title}.`;
   return `https://wa.me/${PHONE_NUMBER.replace("+", "")}?text=${encodeURIComponent(message)}`;
 }
 
@@ -82,7 +82,7 @@ export function ServicePageLayout({ service }: { service: ServicePage }) {
             <div className="grid items-center gap-10 lg:grid-cols-2">
               <div>
                 <span className="text-xs uppercase tracking-[0.3em] text-primary font-semibold">
-                  Hestiva Residential Cleaning
+                  Homent Residential Cleaning
                 </span>
                 <h1 className="text-4xl md:text-6xl font-extrabold mt-4 text-foreground leading-tight">
                   {service.title}
@@ -96,11 +96,11 @@ export function ServicePageLayout({ service }: { service: ServicePage }) {
                   </Button>
                   <Button variant="outline" size="lg" asChild>
                     <a href={whatsappLink} target="_blank" rel="noopener noreferrer">
-                      <MessageCircle className="w-4 h-4" /> WhatsApp Hestiva
+                      <MessageCircle className="w-4 h-4" /> WhatsApp Homent
                     </a>
                   </Button>
                   <Button variant="outline" size="lg" asChild>
-                    <a href={`tel:${PHONE_NUMBER}`} aria-label="Call Hestiva">
+                    <a href={`tel:${PHONE_NUMBER}`} aria-label="Call Homent">
                       <Phone className="w-4 h-4" /> Call Us
                     </a>
                   </Button>
@@ -181,7 +181,7 @@ export function ServicePageLayout({ service }: { service: ServicePage }) {
                     to="/locations/$locationSlug"
                     params={{ locationSlug: area.slug }}
                     className="rounded-full border border-border px-3 py-1 text-xs text-muted-foreground hover:border-primary hover:text-primary transition-colors"
-                    aria-label={`View Hestiva cleaning services in ${area.name}`}
+                    aria-label={`View Homent cleaning services in ${area.name}`}
                   >
                     Cleaning in {area.name}
                   </Link>
@@ -195,7 +195,7 @@ export function ServicePageLayout({ service }: { service: ServicePage }) {
           <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-[0.9fr_1.1fr] gap-12 items-start">
             <div>
               <span className="text-xs uppercase tracking-[0.3em] text-primary font-semibold">
-                Why Hestiva
+                Why Homent
               </span>
               <h2 className="text-3xl md:text-4xl font-bold text-foreground mt-3">
                 Cleaning planned around your home
@@ -307,7 +307,7 @@ export function ServicePageLayout({ service }: { service: ServicePage }) {
                   <Link to="/quote">Request Your Quote</Link>
                 </Button>
                 <Button variant="outline" size="lg" asChild>
-                  <a href="mailto:quotes@hestiva.co.za">Email Quotes</a>
+                  <a href="mailto:quotes@homent.co.za">Email Quotes</a>
                 </Button>
               </div>
             </div>

@@ -68,13 +68,13 @@ export function Footer() {
               </a>
             </li>
             <li>
-              <a href="mailto:info@hestiva.co.za" className={`${linkStyles} break-all`}>
-                info@hestiva.co.za
+              <a href="mailto:info@homent.co.za" className={`${linkStyles} break-all`}>
+                info@homent.co.za
               </a>
             </li>
             <li>
-              <a href="mailto:quotes@hestiva.co.za" className={`${linkStyles} break-all`}>
-                quotes@hestiva.co.za
+              <a href="mailto:quotes@homent.co.za" className={`${linkStyles} break-all`}>
+                quotes@homent.co.za
               </a>
             </li>
           </ul>

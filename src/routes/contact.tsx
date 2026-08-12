@@ -11,7 +11,7 @@ import { SITE_NAME } from "@/lib/site";
 const phoneDisplay = "068 423 1614";
 const phoneLink = "tel:+27684231614";
 const whatsappLink =
-  "https://wa.me/27684231614?text=Hello%20Hestiva%2C%20I%20would%20like%20help%20with%20a%20residential%20cleaning%20enquiry.";
+  "https://wa.me/27684231614?text=Hello%20Homent%2C%20I%20would%20like%20help%20with%20a%20residential%20cleaning%20enquiry.";
 
 const nextSteps = [
   {
@@ -38,7 +38,7 @@ export const Route = createFileRoute("/contact")({
   head: () => {
     const title = `Contact ${SITE_NAME} | Residential Cleaning Enquiries`;
     const description =
-      "Contact Hestiva for a personalised residential cleaning quotation, a general enquiry or help with an existing booking.";
+      "Contact Homent for a personalised residential cleaning quotation, a general enquiry or help with an existing booking.";
     const path = "/contact";
     return {
       ...createSeoHead({ title, description, path }),
@@ -81,7 +81,7 @@ function ContactPage() {
               separatorClassName="text-[#C9A45B]"
             />
             <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#9A7132]">
-              Contact Hestiva
+              Contact Homent
             </p>
             <h1 className="mt-5 max-w-4xl text-5xl font-semibold leading-[1.08] tracking-[-0.035em] text-[#3B0F1A] sm:text-6xl md:text-7xl">
               Let&apos;s talk about your home.
@@ -97,7 +97,7 @@ function ContactPage() {
               </a>
               <a href={whatsappLink} className={secondaryButton}>
                 <MessageCircle aria-hidden="true" className="h-5 w-5" />
-                WhatsApp Hestiva
+                WhatsApp Homent
               </a>
             </div>
           </div>
@@ -127,18 +127,18 @@ function ContactPage() {
               </ContactCard>
               <ContactCard icon={Mail} title="Quote requests">
                 <a
-                  href="mailto:quotes@hestiva.co.za"
+                  href="mailto:quotes@homent.co.za"
                   className="break-all font-semibold text-[#3B0F1A] underline decoration-[#C9A45B] underline-offset-4 transition hover:text-[#531628] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A45B]"
                 >
-                  quotes@hestiva.co.za
+                  quotes@homent.co.za
                 </a>
               </ContactCard>
               <ContactCard icon={Mail} title="General enquiries">
                 <a
-                  href="mailto:info@hestiva.co.za"
+                  href="mailto:info@homent.co.za"
                   className="break-all font-semibold text-[#3B0F1A] underline decoration-[#C9A45B] underline-offset-4 transition hover:text-[#531628] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A45B]"
                 >
-                  info@hestiva.co.za
+                  info@homent.co.za
                 </a>
               </ContactCard>
             </div>
@@ -227,16 +227,16 @@ function ContactPage() {
                 </button>
                 <a href={whatsappLink} className={secondaryButton}>
                   <MessageCircle aria-hidden="true" className="h-5 w-5" />
-                  WhatsApp Hestiva
+                  WhatsApp Homent
                 </a>
               </div>
               <p id="form-availability" className="mt-5 text-sm leading-6 text-[#5F4B46]">
                 Online submission is available. You can also send your request by email to
                 <a
-                  href="mailto:quotes@hestiva.co.za"
+                  href="mailto:quotes@homent.co.za"
                   className="mx-1 font-semibold text-[#3B0F1A] underline decoration-[#C9A45B] underline-offset-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A45B]"
                 >
-                  quotes@hestiva.co.za
+                  quotes@homent.co.za
                 </a>
                 or use WhatsApp if you prefer.
               </p>
@@ -254,7 +254,7 @@ function ContactPage() {
                 Prefer to message us?
               </h2>
               <p className="mt-4 leading-7 text-[#5F4B46]">
-                Start a WhatsApp conversation with Hestiva on {phoneDisplay} using our short
+                Start a WhatsApp conversation with Homent on {phoneDisplay} using our short
                 pre-filled message.
               </p>
             </div>

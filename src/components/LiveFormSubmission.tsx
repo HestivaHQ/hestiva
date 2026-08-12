@@ -252,7 +252,7 @@ function syncEstateAccess() {
       nextNotice.id = "access-code-day-notice";
       nextNotice.className = "sm:col-span-2 text-sm leading-6 text-[#695E59]";
       nextNotice.textContent =
-        "You can send Hestiva the access code on the day of the visit once the booking is confirmed.";
+        "You can send Homent the access code on the day of the visit once the booking is confirmed.";
       select.closest("label")?.insertAdjacentElement("afterend", nextNotice);
     }
   } else {
@@ -792,7 +792,7 @@ async function sendQuoteForm(button: HTMLButtonElement) {
         propertyAddress: propertyAddress || "Address supplied in quote form",
         description: details.length
           ? details.map(([label, entry]) => `${label}: ${entry}`).join("\n")
-          : "Residential cleaning quotation requested through the Hestiva website.",
+          : "Residential cleaning quotation requested through the Homent website.",
         preferredContact: quoteValue("contactMethod", "Not specified"),
         urgency: quoteValue("urgency", "Not specified"),
         files,
@@ -806,7 +806,7 @@ async function sendQuoteForm(button: HTMLButtonElement) {
   } catch {
     console.error("Quote submission failed");
     setButtonState(button, button.dataset.originalText || "Send Request", false);
-    window.alert("We could not send your request. Please try again or email quotes@hestiva.co.za.");
+    window.alert("We could not send your request. Please try again or email quotes@homent.co.za.");
   }
 }
 
@@ -839,7 +839,7 @@ async function sendContactForm(form: HTMLFormElement, button: HTMLButtonElement)
   } catch {
     console.error("Contact submission failed");
     setButtonState(button, button.dataset.originalText || "Send Request", false);
-    window.alert("We could not send your request. Please try again or email quotes@hestiva.co.za.");
+    window.alert("We could not send your request. Please try again or email quotes@homent.co.za.");
   }
 }
 

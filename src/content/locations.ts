@@ -256,29 +256,29 @@ export const locationPages: LocationPage[] = approvedServiceAreas.map((name) => 
     name,
     region: "Gauteng",
     cluster: cluster.name,
-    metaTitle: `Residential Cleaning ${name} | Hestiva`,
-    metaDescription: `Residential cleaning in ${name} with regular, deep, move-in and move-out options. Request a personalised Hestiva home-cleaning quote.`,
+    metaTitle: `Residential Cleaning ${name} | Homent`,
+    metaDescription: `Residential cleaning in ${name} with regular, deep, move-in and move-out options. Request a personalised Homent home-cleaning quote.`,
     heroDescription: profile.localAngle,
-    overview: `For households in ${name}, Hestiva scopes the visit around the actual property rather than a one-size-fits-all checklist. ${profile.localAngle} The quote process records the home layout, service frequency or one-off need, access details, household requirements and selected add-ons before the booking is confirmed.`,
+    overview: `For households in ${name}, Homent scopes the visit around the actual property rather than a one-size-fits-all checklist. ${profile.localAngle} The quote process records the home layout, service frequency or one-off need, access details, household requirements and selected add-ons before the booking is confirmed.`,
     propertyTypes: [...propertyTypes],
     priorityServices: coreServices,
     nearbyAreas: [...nearbyAreasFor(name)],
     visual: {
       ...licensedVisual,
-      alt: `${name} and surrounding Johannesburg residential context for Hestiva's local cleaning service area`,
-      brief: `${profile.visualBrief}. Use an authentic or closely relevant residential scene; do not fabricate a landmark, expose an identifiable private address or imply that the pictured property is a Hestiva customer.`,
+      alt: `${name} and surrounding Johannesburg residential context for Homent's local cleaning service area`,
+      brief: `${profile.visualBrief}. Use an authentic or closely relevant residential scene; do not fabricate a landmark, expose an identifiable private address or imply that the pictured property is a Homent customer.`,
     },
     faqs: [
       {
-        question: `Does Hestiva provide home cleaning in ${name}?`,
-        answer: `Yes. ${name} is one of Hestiva's approved service areas. Exact availability is confirmed against the address, requested date and cleaning requirements.`,
+        question: `Does Homent provide home cleaning in ${name}?`,
+        answer: `Yes. ${name} is one of Homent's approved service areas. Exact availability is confirmed against the address, requested date and cleaning requirements.`,
       },
       {
-        question: `What kind of cleaning can Hestiva arrange in ${name}?`,
+        question: `What kind of cleaning can Homent arrange in ${name}?`,
         answer: `${profile.localAngle} Customers can request regular home cleaning, deep cleaning, move-in or move-out cleaning, room-focused services and available add-ons through the quote flow.`,
       },
       {
-        question: `What information helps Hestiva prepare a ${name} cleaning quote?`,
+        question: `What information helps Homent prepare a ${name} cleaning quote?`,
         answer:
           "The quote flow captures the property layout, preferred service, dates, condition, access details and household requirements. Where relevant, you can also provide floor and building access information, key handover details and optional reference photos.",
       },

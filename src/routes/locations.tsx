@@ -18,7 +18,7 @@ const bookingNotes = [
   "Recurring cleaning availability may differ by area and schedule.",
 ] as const;
 
-const quoteEmail = "mailto:quotes@hestiva.co.za?subject=Homent%20address%20and%20quote%20request";
+const quoteEmail = "mailto:quotes@homent.co.za?subject=Homent%20address%20and%20quote%20request";
 const whatsAppUrl =
   "https://wa.me/27684231614?text=Hello%20Homent%2C%20I%27d%20like%20to%20check%20cleaning%20availability%20for%20my%20address.";
 const breadcrumbs = locationBreadcrumbs();
@@ -88,7 +88,7 @@ function LocationsOverview() {
               <Link to="/quote" className={primaryButton}>
                 Request a Quote <ArrowRight aria-hidden="true" className="h-4 w-4" />
               </Link>
-              <a href="mailto:info@hestiva.co.za" className={secondaryButton}>
+              <a href="mailto:info@homent.co.za" className={secondaryButton}>
                 Contact Homent
               </a>
             </div>

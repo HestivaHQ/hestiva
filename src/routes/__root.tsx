@@ -21,6 +21,11 @@ const LazyContactValidationEnhancements = lazy(() =>
     default: module.ContactValidationEnhancements,
   })),
 );
+const LazyContactHoneypotGuard = lazy(() =>
+  import("@/components/ContactHoneypotGuard").then((module) => ({
+    default: module.ContactHoneypotGuard,
+  })),
+);
 const LazyFormSubmission = lazy(() =>
   import("@/components/LiveFormSubmission").then((module) => ({
     default: module.LiveFormSubmission,
@@ -106,6 +111,7 @@ function RootComponent() {
   const pathname = useRouterState({ select: (state) => state.location.pathname });
   const needsFormSubmission = pathname === "/quote" || pathname === "/contact";
   const needsContactValidation = pathname === "/quote" || pathname === "/contact";
+  const needsContactHoneypotGuard = pathname === "/contact";
   const needsBrandedFormNotices = pathname === "/quote" || pathname === "/contact";
   const needsAddonQuantityEnhancements = pathname === "/quote";
   const needsPostRenovationFrequencyEnhancement = pathname === "/quote";
@@ -127,6 +133,11 @@ function RootComponent() {
       {needsContactValidation && (
         <Suspense fallback={null}>
           <LazyContactValidationEnhancements />
+        </Suspense>
+      )}
+      {needsContactHoneypotGuard && (
+        <Suspense fallback={null}>
+          <LazyContactHoneypotGuard />
         </Suspense>
       )}
       {needsFormSubmission && (

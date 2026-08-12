@@ -53,11 +53,11 @@ export function HeroSection() {
             <picture>
               <source
                 type="image/webp"
-                srcSet="/images/home/hero-hestiva-living-room-480.webp 480w, /images/home/hero-hestiva-living-room-768.webp 768w, /images/home/hero-hestiva-living-room-1200.webp 1200w"
+                srcSet="/images/home/hero-homent-living-room-480.webp 480w, /images/home/hero-homent-living-room-768.webp 768w, /images/home/hero-homent-living-room-1200.webp 1200w"
                 sizes="(min-width: 1280px) 720px, (min-width: 1024px) 58vw, calc(100vw - 3rem)"
               />
               <img
-                src="/images/home/hero-hestiva-living-room.png"
+                src="/images/home/hero-homent-living-room.png"
                 alt="Bright, beautifully maintained living room prepared for a family to enjoy"
                 width={1920}
                 height={1080}

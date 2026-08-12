@@ -100,7 +100,7 @@ export function Navbar() {
           <picture>
             <source
               type="image/webp"
-              srcSet="/brand/logo/hestiva-white-144.webp 144w, /brand/logo/hestiva-white-288.webp 288w"
+              srcSet="/brand/logo/homent-white-144.webp 144w, /brand/logo/homent-white-288.webp 288w"
               sizes="(min-width: 768px) 84px, 72px"
             />
             <img

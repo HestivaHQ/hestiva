@@ -4,7 +4,7 @@ import { access } from "node:fs/promises";
 import { get } from "node:http";
 import { setTimeout as delay } from "node:timers/promises";
 
-const PRODUCTION_ORIGIN = "https://www.hestiva.co.za";
+const PRODUCTION_ORIGIN = "https://www.homent.co.za";
 const SOCIAL_IMAGE = `${PRODUCTION_ORIGIN}/brand/social/social-share-1200x630.png`;
 const LOCAL_ORIGIN = "http://127.0.0.1:8787";
 const WRANGLER_CONFIG = ".output/server/wrangler.json";
@@ -37,7 +37,7 @@ const REQUIRED_OPEN_GRAPH = {
   "og:image:width": "1200",
   "og:image:height": "630",
   "og:image:alt": null,
-  "og:site_name": "Hestiva",
+  "og:site_name": "Homent",
   "og:locale": "en_ZA",
 };
 
@@ -301,7 +301,7 @@ function verifyOnPageSeo(route, html) {
     titles[0].length >= 20 && titles[0].length <= 65,
     `${route}: title length is unsuitable`,
   );
-  assert.match(titles[0], /Hestiva/i, `${route}: title is missing consistent branding`);
+  assert.match(titles[0], /Homent/i, `${route}: title is missing consistent branding`);
 
   const descriptions = metadataValues(
     html,
@@ -441,7 +441,7 @@ function internalLinks(route, html) {
   for (const anchor of html.matchAll(/<a\b([^>]*)>([\s\S]*?)<\/a>/gi)) {
     const href = attributeValue(anchor[1], "href");
     const absoluteInternalHost = href?.match(/^(?:https?:)?\/\/([^/?#]+)(?:[/?#]|$)/i)?.[1];
-    if (absoluteInternalHost?.replace(/^www\./i, "") === "hestiva.co.za") {
+    if (absoluteInternalHost?.replace(/^www\./i, "") === "homent.co.za") {
       assert.ok(
         href.startsWith(PRODUCTION_ORIGIN),
         `${route}: internal link uses a non-canonical host: ${href}`,
@@ -727,7 +727,7 @@ async function loadPolicy() {
   );
   assert.equal(llms.status, 200, "llms.txt: expected HTTP 200");
   assert.match(llms.body, new RegExp(PRODUCTION_ORIGIN), "llms.txt: production origin is missing");
-  assert.doesNotMatch(llms.body, /https:\/\/hestiva\.co\.za/, "llms.txt: non-www origin found");
+  assert.doesNotMatch(llms.body, /https:\/\/(?:www\.)?hestiva\.co\.za/i, "llms.txt: legacy Hestiva origin found");
   for (const match of llms.body.matchAll(/\[[^\]]+\]\((\/[^)#?]*)(?:[?#][^)]*)?\)/g)) {
     const href = new URL(match[1], PRODUCTION_ORIGIN).href;
     assert.ok(

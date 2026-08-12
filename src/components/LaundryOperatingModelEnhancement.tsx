@@ -186,7 +186,7 @@ export function LaundryOperatingModelEnhancement() {
             outcome.textContent = `Wash & Hang — R125 per standard load. Requested laundry: R${125 * Number(laundryLoads)}.`;
             error.classList.add("hidden");
           } else if (laundryFacilities === "No washing machine") {
-            outcome.textContent = "Laundry is unavailable because Hestiva does not transport laundry off-site in v1.";
+            outcome.textContent = "Laundry is unavailable because Homent does not transport laundry off-site in v1.";
             error.textContent = "Laundry requires a working washing machine at the property.";
             error.classList.remove("hidden");
           } else {

@@ -98,7 +98,7 @@ function emailShell(title: string, preheader: string, body: string) {
               <td style="padding:18px 26px;background:#fbf8f3;border-top:1px solid #eadfd5;color:#7a675d;font-size:12px;line-height:1.6;">
                 Homent (Pty) Ltd<br />
                 Grace in Every Detail.<br />
-                Website: www.hestiva.co.za | Email: quotes@hestiva.co.za | Phone: 076 781 6550
+                Website: www.hestiva.co.za | Email: quotes@hestiva.co.za | Phone: 068 423 1614
               </td>
             </tr>
           </table>
@@ -204,7 +204,7 @@ export function buildQuoteEmailPackage(data: QuoteEmailData): QuoteEmailPackage 
     "",
     "Our team will contact you to confirm the details and advise on the next step.",
     "",
-    "Contact Number: 076 781 6550",
+    "Contact Number: 068 423 1614",
     "Email: quotes@hestiva.co.za",
     "Website: www.hestiva.co.za",
     "",

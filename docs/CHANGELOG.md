@@ -2,6 +2,15 @@
 
 This is the append-only technical change history for implemented repository and material verified operational changes. It begins with the documentation baseline and does not invent undocumented releases.
 
+## 2026-08-12
+
+### Homent visual asset cutover
+
+- Added the approved Homent logo family and customer-facing replacement visual assets, including the homepage hero, service imagery, add-on imagery, profile badge, favicons and social-share image.
+- Preserved the existing responsive image strategy: homepage/service WebPs at 480/768/1200 widths, add-on WebPs at 384/640/960 widths, and white navbar/footer logo WebPs at 144/288 widths.
+- Updated `src/lib/site.ts`, `Navbar.tsx`, `Footer.tsx`, and `HeroSection.tsx` so public logo and hero references use the new Homent asset filenames while retaining the current Hestiva domain and email addresses for a later controlled cutover.
+- Kept the existing monogram asset unchanged and made no routing, pricing, quote-flow, email-delivery, deployment-authority, or Website ↔ HestivaOS architecture change.
+
 ## 2026-08-11
 
 ### Launch-readiness repairs

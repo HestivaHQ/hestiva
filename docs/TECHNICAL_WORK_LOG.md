@@ -2,6 +2,20 @@
 
 This append-only log records verified engineering and material operational work without reconstructing unsupported history. Add newest entries first. Link pull requests/commits when available and describe validation without including secrets or customer data.
 
+## 2026-08-12 — Corrected Homent favicon transfer regression
+
+**Purpose:** Resolve the post-cutover production transfer regression identified by Homent Lighthouse run `31624786999` without reopening speculative application-runtime optimisation.
+
+**Work recorded:**
+
+- verified Homent production medians remained healthy at performance `92/94/93` for Homepage/Services/Quote while total transfer regressed to approximately `2.50/2.57/2.45 MB`;
+- traced the regression to replacement favicon assets, including `favicon-16.png` at `1,143,225` bytes and `favicon-32.png` at `1,157,806` bytes, plus oversized 180×180 and 512×512 variants;
+- regenerated the four favicon PNGs at their declared dimensions and retained the existing public paths and metadata references;
+- reduced the files to `210` bytes (16×16), `306` bytes (32×32), `1,063` bytes (180×180), and `2,926` bytes (512×512); and
+- made no route, JavaScript architecture, pricing, quote-flow, email, deployment-authority, or Website ↔ HestivaOS integration change.
+
+**Verification state:** Repository byte sizes are verified on the feature branch. Full PR CI and a post-deployment production Lighthouse rerun are still required before the Homent regression is closed.
+
 ## 2026-08-12 — Added Homent visual assets and wired public asset references
 
 **Purpose:** Prepare the customer-facing visual layer for the Hestiva → Homent rebrand without changing the current production domain, public email addresses, or internal application architecture.

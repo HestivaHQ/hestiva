@@ -19,7 +19,6 @@ const services = [
   "Bedroom Cleaning",
   "Living Area Cleaning",
   "Interior Window Cleaning",
-  "Laundry Folding",
   "Eco-Friendly Cleaning",
   "Post-Renovation Cleaning",
   "Add-on Services",

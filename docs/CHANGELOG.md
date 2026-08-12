@@ -4,6 +4,13 @@ This is the append-only technical change history for implemented repository and 
 
 ## 2026-08-12
 
+### Homent favicon performance correction
+
+- Re-measured the migrated Homent production site with Lighthouse run `31624786999` and verified that page-level application performance remained healthy while transfer size regressed to roughly 2.5 MB because the replacement favicon files were oversized.
+- Replaced the four Homent favicon PNGs at their existing public paths with true-size optimized PNGs: 16×16 at 210 bytes, 32×32 at 306 bytes, 180×180 at 1,063 bytes, and 512×512 at 2,926 bytes.
+- Preserved favicon URLs and page metadata; no routing, pricing, quote-flow, email, deployment-authority, or Website ↔ HestivaOS integration behavior changed.
+- A post-deployment production Lighthouse rerun remains required to verify the expected transfer-size recovery.
+
 ### Homent visual asset cutover
 
 - Added the approved Homent logo family and customer-facing replacement visual assets, including the homepage hero, service imagery, add-on imagery, profile badge, favicons and social-share image.

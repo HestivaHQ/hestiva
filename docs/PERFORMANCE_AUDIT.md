@@ -124,3 +124,19 @@ The evidence-backed performance audit is therefore **closed**. The measured appl
 The material application-owned initial-load issue identified during the earlier audit—the globally imported quote/contact controller—has been corrected. Route-level code splitting is functioning, and no evidence supports a risky framework-level rewrite merely to chase the shared runtime chunk.
 
 Global client-side internal navigation is corrected through PR #108. The first production Lighthouse baseline then identified image transfer as the material evidence-backed bottleneck, leading to responsive WebP delivery in PR #110 and the favicon correction in PR #111. Final production run `31495511555` verified median performance scores of 93, 95, and 93 for the homepage, Services, and Quote pages respectively, with transfer reduced to 240 KB, 308 KB, and 196 KB. The performance audit is closed; future optimization work must be driven by new production evidence rather than speculative source refactoring.
+
+## 2026-08-12 Homent post-cutover verification
+
+GitHub Actions run `31624786999` audited the migrated Homent production site from `main` commit `04f3a67b0b08ae96bb5969e4b54040803635833d` with three mobile Lighthouse runs per URL. Median values were:
+
+| Page | Performance | FCP | LCP | Total transfer | TBT | CLS |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| Homepage | 92 | 2.53 s | 2.86 s | 2.50 MB | 0 ms | 0 |
+| Services | 94 | 2.46 s | 2.49 s | 2.57 MB | 0 ms | 0 |
+| Quote | 93 | 2.58 s | 2.58 s | 2.45 MB | 0 ms | 0 |
+
+The application-runtime and responsive-image improvements survived the Homent cutover, but replacement favicon assets reintroduced the previously resolved static-asset defect. The Homent `favicon-16.png` and `favicon-32.png` files were 1,143,225 and 1,157,806 bytes, causing roughly 2.30 MB of avoidable transfer on every audited page. The 180×180 and 512×512 variants were also oversized at 1,969,396 and 1,924,456 bytes.
+
+The focused Homent favicon correction regenerates the four files at their declared dimensions with optimized PNG compression at the same public paths. Resulting repository sizes are 210 bytes (16×16), 306 bytes (32×32), 1,063 bytes (180×180), and 2,926 bytes (512×512). No route, HTML metadata, pricing, quote-flow, deployment authority, or Website ↔ HestivaOS integration behaviour changes.
+
+A fresh production Lighthouse run is required after deployment before the post-cutover regression is considered closed.

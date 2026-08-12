@@ -67,7 +67,7 @@ export const submitContactForm = createServerFn({ method: "POST" })
       await assertRateLimit(submission.service);
 
       const attachments = validateQuoteAttachments(submission.files);
-      const reference = `HST-${crypto.randomUUID().slice(0, 8).toUpperCase()}`;
+      const reference = `HOM-${crypto.randomUUID().slice(0, 8).toUpperCase()}`;
       const submittedAt = getSubmittedAt();
       const attachmentSummary = attachments.length
         ? attachments.map((attachment) => `- ${attachment.filename}`).join("\n")

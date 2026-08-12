@@ -2,6 +2,21 @@
 
 This append-only log records verified engineering and material operational work without reconstructing unsupported history. Add newest entries first. Link pull requests/commits when available and describe validation without including secrets or customer data.
 
+## 2026-08-12 — Added Homent visual assets and wired public asset references
+
+**Purpose:** Prepare the customer-facing visual layer for the Hestiva → Homent rebrand without changing the current production domain, public email addresses, or internal application architecture.
+
+**Work recorded:**
+
+- added the approved Homent logo family plus replacement homepage hero, service, add-on, profile-badge, favicon and social-share assets on PR #123;
+- preserved the existing responsive delivery strategy with homepage/service WebPs at 480/768/1200 widths, add-on WebPs at 384/640/960 widths, and white navbar/footer logo WebPs at 144/288 widths;
+- updated `src/lib/site.ts` to reference Homent logo filenames while retaining the current `hestiva.co.za` production URL and Hestiva email addresses for a later controlled cutover;
+- updated Navbar and Footer responsive logo references and the homepage Hero responsive/fallback image references to the new Homent filenames;
+- kept the existing monogram asset unchanged; and
+- made no pricing, quote-flow, email-delivery, deployment-authority, routing, security-boundary, or Website ↔ HestivaOS architecture change.
+
+**Verification state:** GitHub's first PR check reached the repository documentation gate and failed only because these implementation changes initially lacked companion documentation. This entry and the changelog update record the implementation so the normal PR quality gate can rerun.
+
 ## 2026-08-11 — Repaired Contact form launch behaviour and public form feedback
 
 **Purpose:** Address the launch-readiness failure where Contact submissions could be rejected after repeated Quote QA activity and replace browser-hostname alert dialogs with branded Hestiva notices.

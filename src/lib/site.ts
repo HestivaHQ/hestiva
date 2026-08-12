@@ -43,10 +43,10 @@ export const TAGLINE = "Grace in Every Detail";
 export const DEFAULT_SERVICE_AREA = "Johannesburg North, Randburg, Johannesburg West and Midrand";
 
 export const BRAND_ASSETS = {
-  logoPrimary: "/brand/logo/hestiva-burgundy.png",
-  logoGold: "/brand/logo/hestiva-gold.png",
-  logoWhite: "/brand/logo/hestiva-white.png",
-  logoBlack: "/brand/logo/hestiva-black.png",
+  logoPrimary: "/brand/logo/homent-burgundy.png",
+  logoGold: "/brand/logo/homent-gold.png",
+  logoWhite: "/brand/logo/homent-white.png",
+  logoBlack: "/brand/logo/homent-black.png",
   favicon16: "/brand/favicon/favicon-16.png",
   favicon32: "/brand/favicon/favicon-32.png",
   appleTouchIcon: "/brand/favicon/favicon-180.png",

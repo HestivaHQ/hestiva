@@ -329,10 +329,10 @@ function AboutPage() {
             </div>
             <div className="mt-10 flex flex-col items-center justify-center gap-3 text-sm text-[#5F4B46] sm:flex-row sm:gap-6">
               <a
-                href="mailto:quotes@hestiva.co.za"
+                href="mailto:quotes@homent.co.za"
                 className="rounded-sm underline decoration-[#C9A45B] underline-offset-4 hover:text-[#3B0F1A] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A45B]"
               >
-                quotes@hestiva.co.za
+                quotes@homent.co.za
               </a>
               <span aria-hidden="true" className="hidden text-[#C9A45B] sm:inline">
                 •

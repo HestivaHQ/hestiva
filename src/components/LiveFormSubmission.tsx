@@ -121,6 +121,11 @@ function clearInlineError(id: string) {
 function showInlineError(id: string, message: string) {
   const element = document.querySelector<HTMLElement>(`#${id}`);
   if (!element) return;
+  const existing = document.querySelector<HTMLElement>(`#quote-error-${id}`);
+  if (existing?.textContent === message) {
+    element.setAttribute("aria-invalid", "true");
+    return;
+  }
   clearInlineError(id);
   element.setAttribute("aria-invalid", "true");
   const error = document.createElement("p");

@@ -29,7 +29,7 @@ function submissionChannel(service: string): SubmissionChannel {
 }
 
 function adminRecipient(channel: SubmissionChannel) {
-  return channel === "contact" ? "info@hestiva.co.za" : "quotes@hestiva.co.za";
+  return channel === "contact" ? "info@homent.co.za" : "quotes@homent.co.za";
 }
 
 function failed(category: SubmissionFailureCategory) {

@@ -26,7 +26,7 @@ export const Route = createFileRoute("/")({
         "house cleaning Johannesburg",
         "home cleaning Midrand",
         "cleaning services Sandton",
-        "Hestiva",
+        "Homent",
       ],
     }),
     scripts: schemaScripts(createHomepageGraph(description)),

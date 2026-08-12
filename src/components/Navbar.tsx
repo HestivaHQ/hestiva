@@ -150,7 +150,8 @@ export function Navbar() {
           <div className="flex flex-col gap-4 px-6 py-5">
             {navLinks.map((link) => (
               <MobileNavLink
-                key={"to" in link ? link.to : link.href} link={link}
+                key={"to" in link ? link.to : link.href}
+                link={link}
                 onNavigate={() => setOpen(false)}
               />
             ))}

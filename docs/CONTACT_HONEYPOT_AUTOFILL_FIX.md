@@ -12,6 +12,8 @@ The Contact page exposes that trap as an off-screen text input named `website`. 
 
 `ContactHoneypotGuard` is route-gated to `/contact`. On mount it clears only the initial browser-autofilled value, makes the trap read-only to prevent subsequent browser profile autofill, and adds common password-manager ignore hints. The existing field name, server schema, honeypot assertion, same-origin validation, per-channel rate limit, bounded validation and Resend delivery path remain unchanged.
 
+The guard changes only browser-side handling of the existing Contact honeypot. It does not bypass or alter the authoritative server security checks.
+
 The trap is not removed. Scripted automation can still assign a value directly to the input and will continue to be rejected by the existing server-side honeypot assertion. The change is specifically intended to prevent browser/profile autofill from manufacturing a honeypot value for a legitimate visitor.
 
 ## Verification requirement

@@ -60,6 +60,7 @@ These questions should only be added after an explicit business policy is approv
 
 - `/faq` is the canonical, comprehensive customer FAQ page.
 - The homepage displays a short preview of high-value questions and links to `/faq`.
-- FAQ content is maintained in `src/content/faqs.ts` so the dedicated page, homepage preview and FAQ structured data use the same answers.
+- FAQ content is maintained in `src/content/faqs.ts` so the dedicated page and homepage preview use the same answers.
+- The dedicated FAQ page follows the repository's existing structured-data policy for static pages; FAQPage schema remains limited to the route types already approved by the SEO verifier.
 - `/faq` is an indexable route and is included in the generated XML sitemap through `src/lib/route-policy.ts`.
 - The footer links to `/faq`; the primary navigation remains focused on core service and conversion routes.

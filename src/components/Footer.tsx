@@ -18,40 +18,91 @@ export function Footer() {
     <footer className="border-t border-[#C9A45B]/30 bg-[#3B0F1A] text-[#F5F1E8]">
       <div className="mx-auto grid max-w-7xl gap-8 px-6 py-9 sm:grid-cols-2 lg:grid-cols-[1.25fr_1fr_1fr] lg:gap-10">
         <div>
-          <Link to="/" aria-label={`${SITE_NAME} home`} className="inline-flex rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D8B970] focus-visible:ring-offset-4 focus-visible:ring-offset-[#3B0F1A]">
+          <Link
+            to="/"
+            aria-label={`${SITE_NAME} home`}
+            className="inline-flex rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D8B970] focus-visible:ring-offset-4 focus-visible:ring-offset-[#3B0F1A]"
+          >
             <picture>
-              <source type="image/webp" srcSet="/brand/logo/homent-white-144.webp 144w, /brand/logo/homent-white-288.webp 288w" sizes="72px" />
-              <img src={BRAND_ASSETS.logoWhite} alt={`${SITE_NAME} logo`} width={1536} height={1024} className="h-12 w-auto max-w-[180px] object-contain" />
+              <source
+                type="image/webp"
+                srcSet="/brand/logo/homent-white-144.webp 144w, /brand/logo/homent-white-288.webp 288w"
+                sizes="72px"
+              />
+              <img
+                src={BRAND_ASSETS.logoWhite}
+                alt={`${SITE_NAME} logo`}
+                width={1536}
+                height={1024}
+                className="h-12 w-auto max-w-[180px] object-contain"
+              />
             </picture>
           </Link>
           <p className="mt-3 font-serif text-base text-[#D8B970]">{TAGLINE}</p>
-          <p className="mt-2 max-w-xs text-sm leading-6 text-[#F5F1E8]/65">Thoughtful residential cleaning for beautifully cared-for homes and more time for the moments that matter.</p>
+          <p className="mt-2 max-w-xs text-sm leading-6 text-[#F5F1E8]/65">
+            Thoughtful residential cleaning for beautifully cared-for homes and more time for the
+            moments that matter.
+          </p>
         </div>
         <nav aria-label="Footer navigation">
-          <h2 className="text-xs font-semibold uppercase tracking-[0.18em] text-[#D8B970]">Explore</h2>
+          <h2 className="text-xs font-semibold uppercase tracking-[0.18em] text-[#D8B970]">
+            Explore
+          </h2>
           <ul className="mt-4 grid gap-2 text-sm">
             {navigation.map((item) => (
-              <li key={item.to}><Link to={item.to} className={linkStyles}>{item.label}</Link></li>
+              <li key={item.to}>
+                <Link to={item.to} className={linkStyles}>
+                  {item.label}
+                </Link>
+              </li>
             ))}
           </ul>
         </nav>
         <div>
-          <h2 className="text-xs font-semibold uppercase tracking-[0.18em] text-[#D8B970]">Contact</h2>
+          <h2 className="text-xs font-semibold uppercase tracking-[0.18em] text-[#D8B970]">
+            Contact
+          </h2>
           <ul className="mt-4 grid gap-2 text-sm">
-            <li><a href="tel:+27684231614" className={linkStyles}>068 423 1614</a></li>
-            <li><a href="mailto:info@homent.co.za" className={`${linkStyles} break-all`}>info@homent.co.za</a></li>
-            <li><a href="mailto:quotes@homent.co.za" className={`${linkStyles} break-all`}>quotes@homent.co.za</a></li>
+            <li>
+              <a href="tel:+27684231614" className={linkStyles}>
+                068 423 1614
+              </a>
+            </li>
+            <li>
+              <a href="mailto:info@homent.co.za" className={`${linkStyles} break-all`}>
+                info@homent.co.za
+              </a>
+            </li>
+            <li>
+              <a href="mailto:quotes@homent.co.za" className={`${linkStyles} break-all`}>
+                quotes@homent.co.za
+              </a>
+            </li>
           </ul>
         </div>
       </div>
       <div className="border-t border-[#F5F1E8]/10">
         <div className="mx-auto flex max-w-7xl flex-col gap-3 px-6 py-4 text-xs text-[#F5F1E8]/55 sm:flex-row sm:items-center sm:justify-between">
-          <p>© {new Date().getFullYear()} {SITE_NAME}. All rights reserved.</p>
+          <p>
+            © {new Date().getFullYear()} {SITE_NAME}. All rights reserved.
+          </p>
           <nav aria-label="Legal and credits">
             <ul className="flex flex-wrap gap-x-5 gap-y-2">
-              <li><Link to="/privacy" className={linkStyles}>Privacy Policy</Link></li>
-              <li><Link to="/terms" className={linkStyles}>Terms of Service</Link></li>
-              <li><a href="/terms#image-credits" className={linkStyles}>Image Credits</a></li>
+              <li>
+                <Link to="/privacy" className={linkStyles}>
+                  Privacy Policy
+                </Link>
+              </li>
+              <li>
+                <Link to="/terms" className={linkStyles}>
+                  Terms of Service
+                </Link>
+              </li>
+              <li>
+                <a href="/terms#image-credits" className={linkStyles}>
+                  Image Credits
+                </a>
+              </li>
             </ul>
           </nav>
         </div>

@@ -1,4 +1,6 @@
+import { Link } from "@tanstack/react-router";
 import {
+  ArrowRight,
   Bath,
   BedDouble,
   CookingPot,
@@ -10,6 +12,7 @@ import {
   SprayCan,
   Square,
 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 const services = [
   {
@@ -17,78 +20,91 @@ const services = [
     description:
       "Reliable weekly or fortnightly care that keeps everyday spaces fresh, comfortable and beautifully maintained.",
     icon: Home,
+    slug: "regular-home-cleaning",
   },
   {
     title: "Deep Cleaning",
     description:
       "A thorough top-to-bottom refresh for overlooked corners, built-up dust and hard-working household surfaces.",
     icon: Sparkles,
+    slug: "deep-cleaning",
   },
   {
     title: "Move-In Cleaning",
     description:
       "Careful cleaning before you unpack, creating a fresh and welcoming start in your new home.",
     icon: PackageOpen,
+    slug: "move-in-cleaning",
   },
   {
     title: "Move-Out Cleaning",
     description:
       "Detailed end-of-lease care that leaves your former space clean, tidy and ready for handover.",
     icon: PackageOpen,
+    slug: "move-out-cleaning",
   },
   {
     title: "Kitchen Cleaning",
     description:
       "Focused care for counters, cupboards and cooking areas where grease and daily mess gather.",
     icon: CookingPot,
+    slug: "kitchen-cleaning",
   },
   {
     title: "Bathroom Sanitisation",
     description:
       "Hygienic attention to showers, baths, fixtures and surfaces for a noticeably fresher bathroom.",
     icon: Bath,
+    slug: "bathroom-sanitisation",
   },
   {
     title: "Bedroom Cleaning",
     description:
       "Gentle, considered cleaning that makes bedrooms feel calm, dust-free and ready for rest.",
     icon: BedDouble,
+    slug: "bedroom-cleaning",
   },
   {
     title: "Living Area Cleaning",
     description:
       "Thoughtful care for shared spaces, from dusting furniture to refreshing floors and finishing touches.",
     icon: Home,
+    slug: "living-area-cleaning",
   },
   {
     title: "Interior Window Cleaning",
     description:
       "Streak-free interior glass and frames that welcome more natural light into every room.",
     icon: Square,
+    slug: "interior-window-cleaning",
   },
   {
     title: "Laundry Folding",
     description:
       "Neatly folded laundry organised with care, saving you time in a busy household routine.",
     icon: Shirt,
+    slug: "laundry-folding",
   },
   {
     title: "Apartment Cleaning",
     description:
       "Efficient whole-apartment care tailored to compact spaces, shared buildings and modern city living.",
     icon: Home,
+    slug: "apartment-cleaning",
   },
   {
     title: "Eco-Friendly Cleaning",
     description:
       "Mindful cleaning with gentler product choices for your household, pets and the wider environment.",
     icon: Leaf,
+    slug: "eco-conscious-cleaning",
   },
   {
     title: "Add-on Services",
     description:
       "Flexible extras for the details your home needs, added easily to your chosen clean.",
     icon: SprayCan,
+    slug: "cleaning-add-ons",
   },
 ];
 
@@ -118,19 +134,43 @@ export function ServicesSection() {
 
         <div className="grid items-stretch gap-6 md:grid-cols-2 lg:grid-cols-3 lg:gap-7">
           {services.map((service) => (
-            <article
+            <Link
               key={service.title}
-              className="group h-full rounded-2xl border border-[#E7DCC9] bg-[#FFFDF8] p-7 shadow-[0_8px_24px_rgba(59,15,26,0.04)] transition-transform duration-300 hover:-translate-y-1 sm:p-8"
+              to="/services/$serviceSlug"
+              params={{ serviceSlug: service.slug }}
+              className="group block h-full rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#3B0F1A] focus-visible:ring-offset-4 focus-visible:ring-offset-[#F8F3E8]"
+              aria-label={`Learn more about ${service.title}`}
             >
-              <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-full border border-[#C9A45B]/30 bg-[#F8F3E8]">
-                <service.icon className="h-5 w-5 text-[#9A7132]" aria-hidden="true" />
-              </div>
-              <h3 className="text-xl font-semibold tracking-[-0.01em] text-[#3B0F1A]">
-                {service.title}
-              </h3>
-              <p className="mt-3 text-[0.95rem] leading-7 text-[#6D5B55]">{service.description}</p>
-            </article>
+              <article className="h-full rounded-2xl border border-[#E7DCC9] bg-[#FFFDF8] p-7 shadow-[0_8px_24px_rgba(59,15,26,0.04)] transition-all duration-300 group-hover:-translate-y-1 group-hover:border-[#C9A45B]/60 group-hover:shadow-[0_14px_32px_rgba(59,15,26,0.08)] sm:p-8">
+                <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-full border border-[#C9A45B]/30 bg-[#F8F3E8]">
+                  <service.icon className="h-5 w-5 text-[#9A7132]" aria-hidden="true" />
+                </div>
+                <h3 className="text-xl font-semibold tracking-[-0.01em] text-[#3B0F1A]">
+                  {service.title}
+                </h3>
+                <p className="mt-3 text-[0.95rem] leading-7 text-[#6D5B55]">{service.description}</p>
+                <span className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-[#9A7132]">
+                  Learn more
+                  <ArrowRight
+                    className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1"
+                    aria-hidden="true"
+                  />
+                </span>
+              </article>
+            </Link>
           ))}
+        </div>
+
+        <div className="mt-12 flex justify-center lg:mt-14">
+          <Button variant="heroOutline" size="lg" asChild>
+            <Link
+              to="/services"
+              className="border-[#3B0F1A] text-[#3B0F1A] hover:bg-[#3B0F1A] hover:text-[#F8F3E8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#3B0F1A] focus-visible:ring-offset-4 focus-visible:ring-offset-[#F8F3E8]"
+            >
+              View All Services
+              <ArrowRight className="h-4 w-4" aria-hidden="true" />
+            </Link>
+          </Button>
         </div>
       </div>
     </section>

@@ -27,11 +27,11 @@ function failureMessage(category: ReturnType<typeof consumeSubmissionFailureCate
 }
 
 function showNotice(message: string) {
-  document.getElementById("hestiva-form-notice")?.remove();
+  document.getElementById("homent-form-notice")?.remove();
 
   const tone = noticeTone(message);
   const wrapper = document.createElement("div");
-  wrapper.id = "hestiva-form-notice";
+  wrapper.id = "homent-form-notice";
   wrapper.setAttribute("role", tone === "success" ? "status" : "alert");
   wrapper.setAttribute("aria-live", "assertive");
   wrapper.className =
@@ -69,7 +69,7 @@ function showNotice(message: string) {
 function alignContactFallbackEmail() {
   if (window.location.pathname !== "/contact") return;
   const link = document.querySelector<HTMLAnchorElement>(
-    '#enquiry-form a[href="mailto:quotes@hestiva.co.za"], #enquiry-form a[href="mailto:quotes@homent.co.za"]',
+    '#enquiry-form a[href="mailto:quotes@homent.co.za"]',
   );
   if (!link) return;
   link.href = "mailto:info@homent.co.za";
@@ -93,7 +93,7 @@ export function BrandedFormNotices() {
 
     return () => {
       window.alert = originalAlert;
-      document.getElementById("hestiva-form-notice")?.remove();
+      document.getElementById("homent-form-notice")?.remove();
     };
   }, []);
 

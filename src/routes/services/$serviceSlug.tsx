@@ -11,16 +11,9 @@ import {
   schemaScripts,
 } from "@/lib/structured-data";
 
-const RETIRED_STANDALONE_SERVICE_SLUGS = new Set(["laundry-folding"]);
-
-function getPublicServicePage(slug: string) {
-  if (RETIRED_STANDALONE_SERVICE_SLUGS.has(slug)) return undefined;
-  return getServicePage(slug);
-}
-
 export const Route = createFileRoute("/services/$serviceSlug")({
   loader: ({ params }) => {
-    const service = getPublicServicePage(params.serviceSlug);
+    const service = getServicePage(params.serviceSlug);
 
     if (!service) {
       throw notFound();
@@ -29,7 +22,7 @@ export const Route = createFileRoute("/services/$serviceSlug")({
     return { service };
   },
   head: ({ loaderData, params }) => {
-    const service = loaderData?.service ?? getPublicServicePage(params.serviceSlug);
+    const service = loaderData?.service ?? getServicePage(params.serviceSlug);
 
     if (!service) {
       return {};
@@ -61,7 +54,5 @@ function ServiceRoute() {
 }
 
 export function getStaticServicePaths() {
-  return servicePages
-    .filter((service) => !RETIRED_STANDALONE_SERVICE_SLUGS.has(service.slug))
-    .map((service) => `/services/${service.slug}`);
+  return servicePages.map((service) => `/services/${service.slug}`);
 }

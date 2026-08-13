@@ -2,6 +2,16 @@
 
 This is the append-only technical change history for implemented repository and material verified operational changes. It begins with the documentation baseline and does not invent undocumented releases.
 
+## 2026-08-13
+
+### Customer-facing payment and recurring-policy alignment
+
+- Added canonical website payment/billing policy documentation covering the approved 50% initial/once-off deposit, 50% completion balance, standard recurring one-visit advance, optional month-end billing, cancellation/refund/payment-dispute rules and launch manual-EFT boundary.
+- Updated the public Terms of Service to remove the superseded statement that Homent has no universal deposit percentage and to expose the approved customer-facing payment, recurring, cancellation, refund and price-change rules.
+- Updated the shared FAQ content so the dedicated FAQ page and any shared FAQ surfaces use the approved deposit, recurring billing, month-end billing, cancellation and refund answers.
+- Updated the customer quote-request acknowledgement email to state explicitly that a quote request is not a booking confirmation, that no payment is due merely for submitting the request, and that the priced quotation/booking correspondence will disclose the 50% booking amount and completion balance.
+- Preserved the existing quote-request transport, pricing authority, Website ↔ HestivaOS contract boundary, Resend delivery path and booking-confirmation architecture; this change does not introduce a payment gateway or website-owned financial ledger.
+
 ## 2026-08-12
 
 ### Quote routing and validation UX correction

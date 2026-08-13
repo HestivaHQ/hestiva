@@ -2,18 +2,22 @@
 
 ## Scope and status
 
-This document describes architecture currently implemented in the Hestiva website repository. It is not a design for a future production quotation/pricing system.
+This document describes architecture currently implemented in the Hestiva website repository. It distinguishes implemented website transport from quotation/pricing authority owned by HestivaOS.
 
 ## System overview
 
 Hestiva is a TypeScript, React 19 website built with TanStack Start and TanStack Router through Vite. TanStack Start produces server-rendered application output and client assets. The production target is the `hestiva` Cloudflare Worker; static files are served through its `ASSETS` binding.
 
-The runtime request path is:
+The active public-form runtime paths are:
 
 ```text
-Browser -> hestiva.co.za -> Cloudflare Worker -> TanStack Start SSR/router
-                                     |-> static ASSETS
-                                     `-> server function -> Resend HTTPS API
+Contact:
+Browser -> hestiva.co.za -> Cloudflare Worker -> TanStack server function -> Resend HTTPS API
+
+Residential quote:
+Browser -> hestiva.co.za -> Cloudflare Worker -> structured quote server function
+                                         |-> private HestivaOS quote ingestion
+                                         `-> Resend admin/customer correspondence after OS acknowledgement
 ```
 
 ## Repository structure
@@ -26,7 +30,7 @@ Browser -> hestiva.co.za -> Cloudflare Worker -> TanStack Start SSR/router
 - `src/content/service-areas.ts` is the authoritative approved service-area source. It currently contains 66 areas across five Johannesburg/Midrand clusters.
 - `src/content/locations.ts` defines the generated location-page content model for the approved service areas.
 - `src/content/location-visuals.ts` maps exactly three unique people-free residential interior images to each approved location page and rejects duplicate Pexels photo IDs.
-- `src/lib/` contains site/SEO/structured-data helpers, route policy, content helpers, quote client/server helpers, and the contact/email server path.
+- `src/lib/` contains site/SEO/structured-data helpers, route policy, content helpers, quote client/server helpers, the contact/email path, and the Website → HestivaOS structured quote mapper/adapter.
 - `public/` contains static discovery, brand, and image assets.
 - `supabase/` contains Supabase project configuration and migrations. These files establish a database history but are not evidence that the current website runtime queries Supabase.
 
@@ -58,62 +62,79 @@ The current SEO geography is intentionally driven from `src/content/service-area
 
 Most route and component code participates in SSR and then hydrates on the client.
 
-Browser-only quote/contact orchestration is implemented in `src/components/LiveFormSubmission.tsx`. It contains DOM enhancement/validation, quote-file compression/submission helpers, and contact/quote submission handling. The controller is not imported synchronously into the global application bundle: `src/routes/__root.tsx` dynamically imports and mounts it only when the current route is `/quote` or `/contact`.
+`src/components/LiveFormSubmission.tsx` remains the legacy browser controller for shared quote-step DOM enhancement/validation and ordinary contact submission. It is dynamically imported only on `/quote` and `/contact`.
 
-`src/components/BrandedFormNotices.tsx` is mounted only on `/quote` and `/contact`. It replaces the browser-native `window.alert()` presentation used by the existing submission controller with Hestiva-branded in-page success/error notices, while leaving submission semantics unchanged.
+`src/components/StructuredQuoteSubmission.tsx` is mounted only on `/quote`. Its capture-phase handler owns the final residential `Send Request` action before the legacy bubble-phase email-only quote handler can run. It accumulates structured form state while steps mount/unmount, keeps one stable submission UUID/UTC timestamp and stable client photo identities across retry, compresses supported browser images using the existing policy, and calls the structured server function. A failed attempt retains the exact pending snapshot so retry cannot accidentally change an already-accepted HestivaOS replay identity.
 
-`src/components/ContactValidationEnhancements.tsx` is a separate route-gated browser enhancement mounted only on `/quote` and `/contact`. It applies immediate phone/email feedback and input bounds without changing submitted values. `src/lib/contact-validation.ts` owns the shared phone/email validation semantics used by that browser enhancement and by the authoritative Zod server schema. South African local numbers must compact to 10 digits beginning with `0`; international numbers require a leading `+` and 8–15 digits. Email validation is capped at 254 characters and requires one practical local part plus a dotted DNS-style domain. These rules validate contact data only; they do not normalize, persist, or match customers for HestivaOS.
+`src/components/BrandedFormNotices.tsx` is mounted only on `/quote` and `/contact`. It replaces browser-native `window.alert()` presentation where the existing notice bridge recognizes the submission result while leaving transport semantics to the relevant submission controller.
 
-`src/components/AddonQuantityEnhancements.tsx` is a quote-only browser enhancement. It is dynamically imported by `src/routes/__root.tsx` only on `/quote`, applies the approved positive-integer quantity controls with default `1` to `Extra refrigerator` and `Balcony / Patio Cleaning`, keeps selected quantities visible in the review UI, and encodes them into the existing add-on labels consumed by the current submission controller. It does not define the future structured Website ↔ HestivaOS quantity schema.
+`src/components/ContactValidationEnhancements.tsx` applies immediate phone/email feedback on `/quote` and `/contact`. `src/lib/contact-validation.ts` owns the shared public form policy. South African local numbers must compact to 10 digits beginning with `0`; international numbers require a leading `+` and 8–15 digits. The HestivaOS contract mapper additionally normalizes supported South African local numbers to `+27` E.164 before authoritative quote ingestion.
 
-`src/components/PostRenovationFrequencyEnhancement.tsx` is a quote-only launch repair mounted only on `/quote`. It restores `One-time` and `Custom` choices when `Post-Renovation Cleaning` is selected, because the older `LiveFormSubmission` frequency switch does not yet contain that newly-added primary-service value. The enhancement preserves the existing quote state/submission path and exists to keep the service completable without changing pricing or Website ↔ HestivaOS transport.
+`src/components/AddonQuantityEnhancements.tsx` remains quote-only and keeps positive-integer quantity controls for approved quantity-bearing generic add-ons such as Extra refrigerator and Balcony / Patio Cleaning. Display labels may include the quantity for review, while the HestivaOS v2 mapper converts the selected website value and quantity into structured generic add-on entries before transport.
 
-The current quote catalogue treats `Post-Renovation Cleaning` as a primary service in the customer-facing selector and in the server-side allowed service enum. The former `Post-renovation dust removal` add-on is not selectable. `Recently renovated` remains a separate Home Condition and may coexist with the primary service. This catalogue alignment does not implement Website ↔ HestivaOS transport, pricing, shared quote identity, persistence, or Accept/Decline actions.
+`src/components/LaundryOperatingModelEnhancement.tsx` enforces the approved Laundry/Ironing operating model on `/quote`. Laundry is unavailable as a primary booking, only Regular Home Cleaning and Deep Cleaning can carry Laundry/Ironing, washer/dryer versus washer/line facilities resolve the permitted Laundry outcome, no-washer Laundry fails closed, and Laundry/Ironing requested loads remain separate positive quantities. The component also maintains a first-class structured Laundry request state exported to the structured submitter; v2 transport does not reconstruct facilities or load counts from presentation labels.
 
-`src/lib/contact.functions.ts` defines the `POST` TanStack Start server function. On the server it:
+`src/components/PostRenovationFrequencyEnhancement.tsx` remains a quote-only launch repair that restores approved frequency choices when `Post-Renovation Cleaning` is selected. Structured transport now maps the selected primary service and frequency into the HestivaOS contract; the enhancement itself does not price or persist the quote.
 
-1. validates input with Zod, including the shared phone/email policy;
-2. rejects cross-origin requests and treats the honeypot only as a supplemental bot signal;
-3. applies deterministic five-submissions-per-15-minutes throttles keyed only from Cloudflare's `CF-Connecting-IP`, using separate `contact` and `quote` channels so activity in one public form cannot exhaust the other's per-isolate bucket;
-4. validates attachment metadata/content;
-5. builds the administrative and customer email packages; and
-6. invokes the Resend adapter.
+The customer-facing quote source no longer treats `Laundry Folding` as a selectable primary-service option in `src/lib/quote-options.ts`. The legacy React route source is still guarded at runtime by `LaundryOperatingModelEnhancement` until that older selector definition is removed in a focused source cleanup; the customer cannot retain Laundry Folding as the primary selection.
 
-`src/lib/quote/email-service.ts` is server-only in this flow. It reads `RESEND_API_KEY` from the runtime environment and calls the Resend email API. The secret must never cross into browser code or tracked documentation.
+## Public contact submission
+
+`src/lib/contact.functions.ts` defines the existing TanStack Start server function used by ordinary contact enquiries. It validates with Zod, enforces same-origin and honeypot/rate-limit controls, validates allowed attachments, builds human-readable email packages, and sends through Resend.
+
+The old quote-capable code remains temporarily in that shared legacy function for compatibility, but `/quote` final submission is intercepted by `StructuredQuoteSubmission` before the legacy quote handler executes.
+
+## Structured Website → HestivaOS quote submission
+
+`src/lib/quote/hestiva-os-contract.ts` maps the website snapshot to Website Quote Contract v2. It owns exact enum/value translation, South African mobile normalization, generic add-on quantity extraction, structured Laundry/Ironing placement in `request.laundry`, and the complete Customer/Property/Request/Visit/Access/Household/Safety/Notes shape. It does not calculate authoritative pricing.
+
+`src/lib/quote/structured-submission.functions.ts` is the quote-only TanStack server function. It:
+
+1. validates the structured browser snapshot and bounded file envelope;
+2. reuses the public contact validation policy and same-origin/honeypot/rate-limit controls;
+3. validates email attachments;
+4. creates image transfer metadata with stable client UUIDs, byte sizes and SHA-256 hashes;
+5. builds the HestivaOS Contract v2 payload;
+6. sends it to the private HestivaOS ingestion route using server-only runtime configuration;
+7. requires a successful HestivaOS acknowledgement with an authoritative quote reference; and
+8. only then sends the existing admin/customer Resend correspondence using that HestivaOS reference.
+
+A missing endpoint configuration, missing integration credential, timeout, rejected HestivaOS response, or malformed acknowledgement fails closed. The website does not send a success email pretending that authoritative quote intake succeeded.
 
 ## Quote file handling
 
-The quote interface can retain up to 10 selected files. Browser-side submission logic attempts to compress ordinary decodable images to a maximum 1920-pixel dimension at 82% JPEG quality when that produces a smaller file; HEIC/HEIF files are preserved when browser decoding is unavailable.
+The quote interface can retain up to 10 selected files. Browser-side submission attempts to compress ordinary decodable images to a maximum 1920-pixel dimension at 82% JPEG quality when that produces a smaller file; HEIC/HEIF files are preserved when browser decoding is unavailable.
 
-Server validation allows up to 10 attachment objects, bounds base64 length, and content-sniffs supported file types. `src/lib/quote/file-validation.ts` enforces a 10 MiB decoded-file limit and validates supported image/document formats before email attachment packaging. Quote attachments are sent through the email flow; this repository does not implement an object-storage bucket for them.
+Server attachment validation continues to allow the approved image/document formats for email correspondence. HestivaOS structured photo transfer includes image files only; each image carries a stable client photo UUID, content type, byte size, SHA-256 and base64 upload body. Non-image documents remain email attachments rather than being misclassified as HestivaOS Quote Photos.
+
+This repository still does not own the durable quote-photo object store. HestivaOS ingestion owns the downstream quote-photo persistence/transfer contract.
 
 ## Supabase
 
-The repository includes Supabase configuration, migrations, and public/anonymous variable names. No current file under `src/` imports a Supabase client or performs a Supabase query. Supabase is therefore configured repository/deployment context, not an active dependency in the observed website request or form-submission path. Migrations document existing database artifacts; this document does not assert that they are currently used in production.
+The repository includes Supabase configuration, migrations, and public/anonymous variable names. No current file under `src/` imports a Supabase client or performs a Supabase query. Supabase is therefore configured repository/deployment context, not an active dependency in the observed website request or form-submission path.
 
 Public or anonymous keys are not authorization controls. If Supabase is activated in application code later, database permissions and Row Level Security must remain the data-security boundary.
 
 ## Resend
 
-Resend is actively used for contact and quote emails. The server function sends an administrative message and a customer confirmation over HTTPS. The API credential is a Cloudflare encrypted Secret in production. The source contains no Resend SDK dependency and calls the API with `fetch`.
+Resend is actively used for contact emails and for quote correspondence after authoritative HestivaOS acknowledgement. The API credential is a Cloudflare encrypted Secret in production. The source contains no Resend SDK dependency and calls the API with `fetch`.
 
 ## Security boundaries and current limitations
 
-- Cloudflare terminates public traffic and provides Worker runtime variables/secrets.
-- The Worker/TanStack server-function boundary protects `RESEND_API_KEY`; only non-secret form data crosses from the browser.
-- Zod and attachment validation constrain accepted server-function payloads. These controls do not replace authentication or authorization.
-- Phone and email values are checked in the browser for immediate feedback and revalidated with the same shared helpers at the server boundary; browser validation is convenience only and cannot bypass authoritative server rejection.
-- Strict Zod validation bounds strings/collections, allows at most 10 attachments, caps each encoded attachment at 14 MiB, and rejects unknown fields. Attachment validation separately caps decoded files at 10 MiB and checks content signatures.
-- Browser timing is not submitted or trusted. The honeypot is only a signal; same-origin and server-side validation are authoritative controls.
-- Contact and Quote each have their own five-per-15-minute server-enforced bucket within a Worker isolate. These are useful best-effort controls, **not globally reliable Cloudflare rate limiting**. Globally consistent enforcement requires a separately provisioned Durable Object binding and migration.
-- Turnstile is justified for this public email-generating endpoint, but activation requires a Cloudflare widget/site key and encrypted secret plus server-side verification. No fail-open placeholder is present.
-- Resend requests abort after 10 seconds. Provider bodies and network details are not returned to clients; structured logs avoid customer PII.
-- No authentication or authorization layer is visible in the website source.
-- Supabase publishable/anonymous values are intended to be public; security for any future client access would depend on database authorization/RLS, which this baseline does not validate.
-- Cloudflare Logs, Traces, exports, and sampling are currently disabled, limiting production diagnostics.
+- Cloudflare terminates public traffic and protects server-only runtime variables/secrets.
+- The browser never receives `RESEND_API_KEY` or `HESTIVA_WEBSITE_INTEGRATION_SECRET`.
+- HestivaOS quote ingestion is server-to-server and uses the dedicated integration bearer credential over HTTPS.
+- Quote retry reuses one stable submission identity and frozen pending snapshot until the attempt succeeds, preserving HestivaOS replay semantics if an earlier stage may already have committed the quote.
+- Zod, enum mapping, same-origin checks, bounded attachments and HestivaOS validation constrain the public-to-private boundary. Browser validation remains convenience only.
+- Contact and Quote each use their own five-per-15-minute server-enforced bucket within a Worker isolate. These are best-effort, not globally reliable Cloudflare rate limiting.
+- Turnstile is still not active; activation requires separately provisioned Cloudflare configuration and server verification.
+- HestivaOS requests use a bounded 12-second timeout; provider bodies and credentials are not returned to clients or logged.
+- Resend failures occur after HestivaOS acknowledgement in the structured quote path. Browser retry therefore deliberately reuses the same frozen quote identity rather than creating another quote.
+- No customer authentication layer is present on the public website.
+- Cloudflare Logs, Traces, exports, and sampling remain limited/disabled as documented elsewhere, reducing production diagnostics.
 
-## Future quotation-system boundary
+## Quotation-system ownership boundary
 
-The current `/quote` experience collects detailed customer/home/service state in the browser and submits the request through the existing email server function. The repository does **not** implement quotation persistence, a pricing/calculation engine, idempotent quotation records, a quotation state machine, authenticated staff workflows, or a verified active Supabase quotation data path.
+The website now implements structured quote transport but does not own authoritative quotation persistence, pricing, profitability calculation, quote state, accepted-quote operational orchestration, Work Orders, Recurring Service Agreements, collections, or financial state. Those are HestivaOS responsibilities.
 
-Those capabilities are future architecture and require separate decisions, security review, documentation, and implementation PRs. Nothing in this document presents them as existing or selects their final design.
+The website remains responsible for customer-facing collection/validation/presentation and correspondence. HestivaOS remains the authoritative operational/commercial destination for accepted structured quote intake. Later Accept/Decline actions, customer self-service, or newer quote schema versions require separate coordinated decisions and implementation.

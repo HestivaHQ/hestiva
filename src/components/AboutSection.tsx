@@ -1,4 +1,5 @@
-import { Heart, Home, Sparkles } from "lucide-react";
+import { Link } from "@tanstack/react-router";
+import { ArrowRight, Heart, Home, Sparkles } from "lucide-react";
 
 export function AboutSection() {
   return (
@@ -8,10 +9,7 @@ export function AboutSection() {
           <span className="text-xs font-semibold uppercase tracking-[0.3em] text-[#9A7132]">
             About Homent
           </span>
-          <h2
-            id="about-heading"
-            className="mt-3 text-4xl font-semibold leading-tight text-[#3B0F1A] md:text-5xl"
-          >
+          <h2 id="about-heading" className="mt-3 text-4xl font-semibold leading-tight text-[#3B0F1A] md:text-5xl">
             The quiet luxury of a beautifully cared-for home
           </h2>
           <p className="mt-6 leading-relaxed text-[#5F4B46]">
@@ -23,6 +21,10 @@ export function AboutSection() {
             That feeling, when the cleaning is done and your time is yours again, is what we call
             your Homent Moment.
           </p>
+          <Link to="/about" className="group mt-7 inline-flex items-center gap-2 text-sm font-semibold text-[#9A7132] underline-offset-4 transition-colors hover:text-[#3B0F1A] hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#3B0F1A] focus-visible:ring-offset-4 focus-visible:ring-offset-[#F8F3E8]">
+            Learn more about Homent
+            <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" aria-hidden="true" />
+          </Link>
         </div>
         <div className="grid gap-4 sm:grid-cols-3 lg:grid-cols-1">
           {[
@@ -30,10 +32,7 @@ export function AboutSection() {
             { icon: Home, label: "Respect for your space" },
             { icon: Sparkles, label: "Standards you can feel" },
           ].map((value) => (
-            <div
-              key={value.label}
-              className="flex items-center gap-4 rounded-xl border border-[#E7DCC9] bg-[#FFFDF8] p-5"
-            >
+            <div key={value.label} className="flex items-center gap-4 rounded-xl border border-[#E7DCC9] bg-[#FFFDF8] p-5">
               <value.icon className="h-5 w-5 shrink-0 text-[#9A7132]" aria-hidden="true" />
               <span className="font-medium text-[#3B0F1A]">{value.label}</span>
             </div>

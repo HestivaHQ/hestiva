@@ -59,9 +59,9 @@ if (!/if \(!baseUrl \|\| !secret\)/.test(structuredQuoteAdapter)) {
 
 const environmentDocs = readFileSync("docs/ENVIRONMENT.md", "utf8");
 for (const [read] of reads) {
-  const name = read.split(".").at(-1);
-  if (!name || !environmentDocs.includes(`\`${name}\``)) {
-    findings.push(`docs/ENVIRONMENT.md: ${read} is read by source but its variable name is not documented`);
+  const token = read.startsWith("import.meta.env.") ? read : read.split(".").at(-1);
+  if (!token || !environmentDocs.includes(`\`${token}\``)) {
+    findings.push(`docs/ENVIRONMENT.md: ${read} is read by source but is not documented`);
   }
 }
 

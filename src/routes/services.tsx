@@ -182,19 +182,19 @@ const services: CleaningService[] = [
   },
   {
     slug: "laundry-folding",
-    title: "Laundry Folding",
+    title: "Laundry & Ironing Add-On",
     introduction:
-      "A practical helping hand that turns clean, dry laundry into neat, organised stacks ready to be put away.",
+      "Practical laundry and ironing support that can be added to an eligible cleaning visit, with the requested loads confirmed during quoting.",
     included: [
-      "Folding everyday clothing",
-      "Pairing socks",
-      "Folding towels",
-      "Folding bed linen",
-      "Sorting by household member",
-      "Neat placement in agreed areas",
+      "Laundry loads selected during quoting",
+      "Ironing loads selected during quoting",
+      "Folding clean, dry laundry",
+      "Pairing socks and organising suitable items",
+      "Folding towels and bed linen",
+      "Neat placement in an agreed area",
     ],
     closing:
-      "Add folding to your cleaning visit and reclaim valuable time while keeping wardrobes and linen cupboards beautifully ordered.",
+      "Add laundry and ironing to an eligible cleaning visit and we will confirm the facilities, load quantities and scope before the booking.",
   },
   {
     slug: "eco-conscious-cleaning",
@@ -221,7 +221,7 @@ const services: CleaningService[] = [
       "Inside-fridge cleaning",
       "Inside-oven cleaning",
       "Interior cupboard cleaning",
-      "Extra laundry folding",
+      "Laundry and ironing",
       "Balcony sweeping",
       "Additional room cleaning",
     ],
@@ -232,9 +232,7 @@ const services: CleaningService[] = [
 
 const serviceOverviewBySlug = new Map(services.map((service) => [service.slug, service]));
 
-const overviewServicePages = servicePages.filter(
-  (service) => service.image && service.slug !== "laundry-folding",
-);
+const overviewServicePages = servicePages.filter((service) => service.image);
 
 const breadcrumbs = serviceBreadcrumbs();
 

@@ -232,7 +232,9 @@ const services: CleaningService[] = [
 
 const serviceOverviewBySlug = new Map(services.map((service) => [service.slug, service]));
 
-const overviewServicePages = servicePages.filter((service) => service.image);
+const overviewServicePages = servicePages.filter(
+  (service) => service.image && service.slug !== "laundry-folding",
+);
 
 const breadcrumbs = serviceBreadcrumbs();
 

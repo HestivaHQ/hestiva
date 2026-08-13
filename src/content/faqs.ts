@@ -43,7 +43,7 @@ export const faqCategories: readonly FaqCategory[] = [
         id: "requested-date-confirmation",
         question: "If I request a date, is my booking confirmed?",
         answer:
-          "No. A preferred date or automated acknowledgement is not a confirmed booking. Your booking is confirmed only when Homent expressly accepts it and communicates the applicable service details.",
+          "No. A preferred date or automated acknowledgement is not a confirmed booking. Your booking is confirmed only when Homent expressly accepts it, communicates the applicable service and payment details, and any required booking payment has been verified as received.",
       },
       {
         id: "quote-pricing-basis",
@@ -73,7 +73,7 @@ export const faqCategories: readonly FaqCategory[] = [
         id: "recurring-cleaning",
         question: "Can I arrange recurring cleaning?",
         answer:
-          "Yes. Regular home cleaning can be requested as a recurring service. Available frequency options are captured during the quote request and the agreed schedule is confirmed as part of the booking.",
+          "Yes. Regular home cleaning can be requested as a recurring service. Recurring residential cleaning has no fixed-term lock-in. The agreed frequency and schedule are confirmed as part of the booking, and customers may later end or pause the recurring arrangement with at least 14 days' notice.",
       },
     ],
   },
@@ -199,31 +199,55 @@ export const faqCategories: readonly FaqCategory[] = [
   },
   {
     title: "Bookings, changes and payment",
-    description: "What happens after a quote and what to know about changes or extra work.",
+    description: "What happens after a quote and what to know about changes, recurring billing and payment.",
     items: [
       {
         id: "cancel-reschedule",
         question: "How much notice should I give to cancel or reschedule?",
         answer:
-          "Please give at least 24 hours' notice to cancel or reschedule a confirmed booking. Homent may take the circumstances into account where there is a reasonable reason for a late change.",
+          "Please give at least 24 hours' notice to cancel or reschedule an individual confirmed visit. With at least 24 hours' notice, there is no cancellation charge and rescheduling is free subject to availability. Ending or pausing an ongoing recurring arrangement requires at least 14 days' notice.",
       },
       {
         id: "late-cancellation-fee",
         question: "Can there be a fee for a late cancellation, no-show or failed access?",
         answer:
-          "A reasonable cancellation or attendance fee may apply for less than 24 hours' notice, a no-show or failed access, but only where that fee was disclosed before the booking was accepted. Any applicable arrangement is communicated with the booking terms.",
+          "Yes. For less than 24 hours' notice, a no-show or failed access, the standard late-cancellation charge is 50% of the booked service price, subject to applicable South African consumer-law requirements and the circumstances. Homent may reduce or waive the charge where appropriate.",
       },
       {
         id: "deposit",
-        question: "Do I always have to pay a deposit?",
+        question: "Do I have to pay a deposit?",
         answer:
-          "Homent does not apply a universal deposit percentage under the website terms. If a deposit or particular payment deadline applies to your booking, it will be stated in the quotation or booking confirmation before you accept it.",
+          "Yes. Initial and once-off bookings require a 50% deposit to secure the booking, with the remaining 50% due when the service is completed. Where the price is known, your quotation or booking correspondence will show the actual rand amounts.",
       },
       {
         id: "payment-method",
         question: "How and when do I pay?",
         answer:
-          "The applicable price, payment deadline and payment method are stated in the quotation or booking confirmation before acceptance. Follow the payment instructions supplied with your confirmed service.",
+          "At launch, Homent supports EFT using the payment instructions supplied with your quotation or booking correspondence. For an initial or once-off booking, 50% is required to secure the booking and the remaining 50% is due on completion. Proof of payment shows that payment was initiated, but the booking is financially confirmed only once the required payment has been verified as received.",
+      },
+      {
+        id: "recurring-payment",
+        question: "How does payment work for recurring cleaning?",
+        answer:
+          "Standard recurring cleaning is billed per job. Homent keeps an advance equal to 50% of one normal scheduled visit toward your next clean. After each completed visit, your payment settles the outstanding part of that visit and replenishes the 50% advance for the next scheduled visit.",
+      },
+      {
+        id: "month-end-billing",
+        question: "Can recurring customers pay at month end?",
+        answer:
+          "Eligible recurring customers may request month-end billing after two successfully paid months of standard per-job service. Approval is not automatic and the account must be current and in good standing. Approved customers choose a billing date from the 25th through the 7th, and the bill reflects the actual completed visits in that billing cycle.",
+      },
+      {
+        id: "refund-timing",
+        question: "How long does an approved refund take?",
+        answer:
+          "Homent initiates an approved refund within 5 business days. Your bank or payment provider may take additional time to reflect the funds after Homent has initiated the refund.",
+      },
+      {
+        id: "late-payment",
+        question: "What happens if a payment is late?",
+        answer:
+          "Homent does not currently charge late-payment interest or a late fee. Payment reminders may be sent and future cleaning can be placed on hold rather than allowing unpaid services to accumulate. An outstanding amount of R50 or less does not by itself place the next service on hold, although the balance remains payable.",
       },
       {
         id: "extra-work",

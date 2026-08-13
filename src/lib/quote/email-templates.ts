@@ -202,6 +202,9 @@ export function buildQuoteEmailPackage(data: QuoteEmailData): QuoteEmailPackage 
     `Preferred Contact: ${data.preferredContact}`,
     `Property Address: ${data.propertyAddress}`,
     "",
+    "This acknowledgement is not a booking confirmation and no payment is due merely because you submitted a quote request.",
+    "If you proceed after receiving a quotation, Homent will clearly state the total price, the 50% amount required to secure an initial or once-off booking, and the remaining 50% due on completion.",
+    "",
     "Our team will contact you to confirm the details and advise on the next step.",
     "",
     "Contact Number: 068 423 1614",
@@ -231,6 +234,10 @@ export function buildQuoteEmailPackage(data: QuoteEmailData): QuoteEmailPackage 
         ${detailRow("Property Address", data.propertyAddress)}
       </table>
       <div style="margin-top:22px;background:#fbf8f3;border:1px solid #eadfd5;border-radius:10px;padding:14px 16px;color:#55443c;font-size:14px;line-height:1.6;">
+        <strong>This is not a booking confirmation.</strong><br />
+        No payment is due merely because you submitted a quote request. If you proceed after receiving a quotation, Homent will clearly state the total price, the 50% amount required to secure an initial or once-off booking, and the remaining 50% due on completion.
+      </div>
+      <div style="margin-top:14px;background:#fbf8f3;border:1px solid #eadfd5;border-radius:10px;padding:14px 16px;color:#55443c;font-size:14px;line-height:1.6;">
         <strong>What happens next:</strong><br />
         Our team will contact you to confirm the details and advise on the next step.
       </div>`,

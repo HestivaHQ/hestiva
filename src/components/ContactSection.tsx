@@ -8,17 +8,27 @@ export function ContactSection() {
           <span className="text-xs font-semibold uppercase tracking-[0.3em] text-[#C9A45B]">
             Your home, beautifully cared for
           </span>
-          <h2 id="contact-heading" className="mx-auto mt-4 max-w-2xl text-4xl font-semibold text-[#F5F1E8] md:text-5xl">
+          <h2
+            id="contact-heading"
+            className="mx-auto mt-4 max-w-2xl text-4xl font-semibold text-[#F5F1E8] md:text-5xl"
+          >
             Ready for your Homent Moment?
           </h2>
           <p className="mx-auto mt-5 max-w-xl leading-relaxed text-[#F5F1E8]/75">
-            Tell us about your home and the care you need. We will create a thoughtful cleaning plan around you, so you can get back to the moments that matter.
+            Tell us about your home and the care you need. We will create a thoughtful cleaning plan
+            around you, so you can get back to the moments that matter.
           </p>
           <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
-            <a href="/quote" className="inline-flex items-center justify-center gap-2 rounded-lg bg-[#C9A45B] px-6 py-3 font-semibold text-[#3B0F1A] transition-colors hover:bg-[#D8B970] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F5F1E8]">
+            <a
+              href="/quote"
+              className="inline-flex items-center justify-center gap-2 rounded-lg bg-[#C9A45B] px-6 py-3 font-semibold text-[#3B0F1A] transition-colors hover:bg-[#D8B970] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F5F1E8]"
+            >
               Request a Quote <ArrowRight className="h-4 w-4" aria-hidden="true" />
             </a>
-            <a href="mailto:info@homent.co.za" className="inline-flex items-center justify-center gap-2 rounded-lg border border-[#C9A45B]/60 px-6 py-3 font-semibold text-[#F5F1E8] transition-colors hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A45B]">
+            <a
+              href="mailto:info@homent.co.za"
+              className="inline-flex items-center justify-center gap-2 rounded-lg border border-[#C9A45B]/60 px-6 py-3 font-semibold text-[#F5F1E8] transition-colors hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A45B]"
+            >
               <Mail className="h-4 w-4" aria-hidden="true" /> Contact Homent
             </a>
           </div>

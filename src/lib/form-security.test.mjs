@@ -56,7 +56,7 @@ describe("public form security", () => {
       false,
     );
     expect(contactSchema.safeParse({ ...validSubmission, phone: "1234567" }).success).toBe(false);
-    expect(contactSchema.safeParse({ ...validSubmission, phone: "+27 CALL HESTIVA" }).success).toBe(
+    expect(contactSchema.safeParse({ ...validSubmission, phone: "+27 CALL HOMENT" }).success).toBe(
       false,
     );
     expect(
@@ -69,10 +69,10 @@ describe("public form security", () => {
 
   test("rejects a populated honeypot and cross-origin request", () => {
     expect(() => assertHoneypotEmpty("spam")).toThrow(PublicSubmissionError);
-    expect(() => assertSameOrigin("https://attacker.example", "hestiva.co.za")).toThrow(
+    expect(() => assertSameOrigin("https://attacker.example", "homent.co.za")).toThrow(
       PublicSubmissionError,
     );
-    expect(() => assertSameOrigin("https://hestiva.co.za", "hestiva.co.za")).not.toThrow();
+    expect(() => assertSameOrigin("https://homent.co.za", "homent.co.za")).not.toThrow();
   });
 
   test("rejects the deterministic per-isolate rate-limit excess", async () => {

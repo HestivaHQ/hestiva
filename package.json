@@ -11,7 +11,7 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "verify:environment": "node scripts/validate-environment.mjs",
-    "verify:seo": "node scripts/verify-seo-heads.mjs"
+    "verify:seo": "node scripts/verify-homent-migration.mjs && node scripts/verify-seo-heads.mjs"
   },
   "dependencies": {
     "@cloudflare/vite-plugin": "^1.25.5",

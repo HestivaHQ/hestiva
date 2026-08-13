@@ -26,6 +26,11 @@ const LazyContactHoneypotGuard = lazy(() =>
     default: module.ContactHoneypotGuard,
   })),
 );
+const LazyStructuredQuoteSubmission = lazy(() =>
+  import("@/components/StructuredQuoteSubmission").then((module) => ({
+    default: module.StructuredQuoteSubmission,
+  })),
+);
 const LazyFormSubmission = lazy(() =>
   import("@/components/LiveFormSubmission").then((module) => ({
     default: module.LiveFormSubmission,
@@ -110,6 +115,7 @@ function RootShell({ children }: { children: React.ReactNode }) {
 function RootComponent() {
   const pathname = useRouterState({ select: (state) => state.location.pathname });
   const needsFormSubmission = pathname === "/quote" || pathname === "/contact";
+  const needsStructuredQuoteSubmission = pathname === "/quote";
   const needsContactValidation = pathname === "/quote" || pathname === "/contact";
   const needsContactHoneypotGuard = pathname === "/contact";
   const needsBrandedFormNotices = pathname === "/quote" || pathname === "/contact";
@@ -138,6 +144,11 @@ function RootComponent() {
       {needsContactHoneypotGuard && (
         <Suspense fallback={null}>
           <LazyContactHoneypotGuard />
+        </Suspense>
+      )}
+      {needsStructuredQuoteSubmission && (
+        <Suspense fallback={null}>
+          <LazyStructuredQuoteSubmission />
         </Suspense>
       )}
       {needsFormSubmission && (

@@ -1,6 +1,19 @@
 import { Link } from "@tanstack/react-router";
 import { ArrowRight, Plus } from "lucide-react";
-import { homepageFaqs } from "@/content/faqs";
+import { allFaqs } from "@/content/faqs";
+
+const homepagePriorityFaqIds = [
+  "service-areas",
+  "request-quote",
+  "requested-date-confirmation",
+  "deposit",
+  "recurring-cleaning",
+  "cancel-reschedule",
+] as const;
+
+const homepageFaqs = homepagePriorityFaqIds
+  .map((id) => allFaqs.find((faq) => faq.id === id))
+  .filter((faq): faq is (typeof allFaqs)[number] => Boolean(faq));
 
 export function FaqPreviewSection() {
   return (

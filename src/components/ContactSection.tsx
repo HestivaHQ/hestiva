@@ -12,11 +12,11 @@ export function ContactSection() {
             id="contact-heading"
             className="mx-auto mt-4 max-w-2xl text-4xl font-semibold text-[#F5F1E8] md:text-5xl"
           >
-            Ready to make home feel effortless?
+            Ready for your Homent Moment?
           </h2>
           <p className="mx-auto mt-5 max-w-xl leading-relaxed text-[#F5F1E8]/75">
             Tell us about your home and the care you need. We will create a thoughtful cleaning plan
-            around you.
+            around you, so you can get back to the moments that matter.
           </p>
           <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
             <a

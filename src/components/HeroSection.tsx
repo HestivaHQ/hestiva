@@ -18,12 +18,12 @@ export function HeroSection() {
           </div>
 
           <h1 className="mb-7 text-4xl font-semibold leading-[1.06] tracking-[-0.035em] text-[#3B0F1A] sm:text-5xl lg:text-[4rem]">
-            Professional Home Cleaning, Thoughtfully Done.
+            Come home to your Homent Moment.
           </h1>
 
           <p className="mb-10 max-w-xl text-lg leading-[1.75] text-[#3B0F1A]/85 sm:text-xl">
-            Regular, deep, move-in and move-out cleaning for homes across our Johannesburg and
-            Midrand service areas, delivered with care, consistency and attention to detail.
+            Thoughtful home cleaning that gives you back a beautifully cared-for space — and more
+            time for the moments that matter.
           </p>
 
           <div className="flex flex-col gap-4 sm:flex-row">

@@ -40,7 +40,8 @@ export function Footer() {
           </Link>
           <p className="mt-3 font-serif text-base text-[#D8B970]">{TAGLINE}</p>
           <p className="mt-2 max-w-xs text-sm leading-6 text-[#F5F1E8]/65">
-            Thoughtful residential cleaning for beautifully cared-for homes.
+            Thoughtful residential cleaning for beautifully cared-for homes and more time for the
+            moments that matter.
           </p>
         </div>
         <nav aria-label="Footer navigation">

@@ -30,8 +30,8 @@ const steps = [
   ["02", "Receive your tailored plan", "We recommend the right service and confirm every detail."],
   [
     "03",
-    "Return to a beautifully cared-for home",
-    "Our team completes your clean with calm, attentive care.",
+    "Enjoy your Homent Moment",
+    "Return to a beautifully cared-for home, with the cleaning handled and more time for what matters to you.",
   ],
 ];
 

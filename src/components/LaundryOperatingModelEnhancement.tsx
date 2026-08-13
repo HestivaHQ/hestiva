@@ -2,6 +2,18 @@ import { useEffect } from "react";
 
 const ELIGIBLE_PRIMARY_SERVICES = new Set(["Regular Home Cleaning", "Deep Cleaning"]);
 
+export type StructuredLaundryRequest = {
+  facilities?: "WASHER_DRYER" | "WASHER_LINE" | "NO_WASHER";
+  laundryLoads?: number;
+  ironingLoads?: number;
+};
+
+let structuredLaundryRequest: StructuredLaundryRequest = {};
+
+export function getStructuredLaundryRequest(): StructuredLaundryRequest {
+  return { ...structuredLaundryRequest };
+}
+
 const INPUT_CLASS =
   "mt-2 min-h-12 w-full rounded-xl border border-[#CDBFB1] bg-white px-4 py-3 text-base text-[#342C2A] shadow-sm outline-none transition hover:border-[#A89380] focus:border-[#5A1425] focus:ring-2 focus:ring-[#C9A45B]/45";
 
@@ -48,6 +60,13 @@ function fieldLabel(text: string, control: HTMLElement) {
   label.append(document.createTextNode(text));
   label.appendChild(control);
   return label;
+}
+
+function normalizedLaundryFacilities(value: string): StructuredLaundryRequest["facilities"] {
+  if (value === "Washer + tumble dryer") return "WASHER_DRYER";
+  if (value === "Washer + line / drying rack") return "WASHER_LINE";
+  if (value === "No washing machine") return "NO_WASHER";
+  return undefined;
 }
 
 export function LaundryOperatingModelEnhancement() {
@@ -123,6 +142,20 @@ export function LaundryOperatingModelEnhancement() {
         if (!canUseLaundry) clearAddon(ironingCheckbox, ironingText, "Ironing");
       }
 
+      if (!laundry?.checkbox.checked || !canUseLaundry) {
+        structuredLaundryRequest = {
+          ...structuredLaundryRequest,
+          facilities: undefined,
+          laundryLoads: undefined,
+        };
+      }
+      if (!ironingCheckbox?.checked || !canUseLaundry) {
+        structuredLaundryRequest = {
+          ...structuredLaundryRequest,
+          ironingLoads: undefined,
+        };
+      }
+
       const oldLaundryPanel = document.getElementById("laundry-operating-model-control");
       if (!laundry?.checkbox.checked || !canUseLaundry) {
         oldLaundryPanel?.remove();
@@ -175,6 +208,11 @@ export function LaundryOperatingModelEnhancement() {
           const parsed = Number.parseInt(loads.value, 10);
           laundryLoads = Number.isFinite(parsed) && parsed >= 1 ? String(parsed) : "1";
           loads.value = laundryLoads;
+          structuredLaundryRequest = {
+            ...structuredLaundryRequest,
+            facilities: normalizedLaundryFacilities(laundryFacilities),
+            laundryLoads: Number(laundryLoads),
+          };
 
           let nextLabel = "Laundry";
           if (laundryFacilities === "Washer + tumble dryer") {
@@ -237,6 +275,10 @@ export function LaundryOperatingModelEnhancement() {
           const parsed = Number.parseInt(input.value, 10);
           ironingLoads = Number.isFinite(parsed) && parsed >= 1 ? String(parsed) : "1";
           input.value = ironingLoads;
+          structuredLaundryRequest = {
+            ...structuredLaundryRequest,
+            ironingLoads: Number(ironingLoads),
+          };
           const nextLabel = `Ironing × ${ironingLoads}`;
           const currentLabel = ironingText.textContent?.trim() || "Ironing";
           syncing = true;
@@ -288,6 +330,7 @@ export function LaundryOperatingModelEnhancement() {
       document.removeEventListener("click", validateLaundryStep, true);
       document.getElementById("laundry-operating-model-control")?.remove();
       document.getElementById("ironing-load-quantity-control")?.remove();
+      structuredLaundryRequest = {};
     };
   }, []);
 

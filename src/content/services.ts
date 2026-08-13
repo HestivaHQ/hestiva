@@ -30,7 +30,7 @@ const serviceImageAltText: Record<string, string> = {
   "bedroom-cleaning": "Professional cleaner cleaning a bedside surface",
   "living-area-cleaning": "Professional cleaner vacuuming a modern living room",
   "interior-window-cleaning": "Professional cleaner washing the inside of a residential window",
-  "laundry-folding": "Professional cleaner folding clean household laundry",
+  "laundry-folding": "Professional cleaner providing a laundry and ironing add-on during a home cleaning visit",
   "apartment-cleaning": "Homent cleaner working in a modern apartment",
   "eco-conscious-cleaning": "Homent cleaner using eco-conscious cleaning products",
 };
@@ -118,6 +118,69 @@ const createService = (
     },
   ],
 });
+
+const laundryAndIroningAddon: ServicePage = {
+  slug: "laundry-folding",
+  title: "Laundry & Ironing Add-On",
+  shortTitle: "Laundry & Ironing Add-On",
+  metaTitle: "Laundry & Ironing Add-On Johannesburg & Midrand | Homent",
+  metaDescription:
+    "Add laundry or ironing to an eligible Homent home cleaning visit in Johannesburg and Midrand. On-site facilities and requested load quantities are confirmed during quoting; standalone laundry bookings are not available.",
+  heroDescription:
+    "Laundry and ironing support for eligible Regular Home Cleaning or Deep Cleaning visits, using the customer's on-site equipment and requested load quantities confirmed during quoting.",
+  overview:
+    "Laundry & Ironing is an add-on only and cannot be booked as a standalone service. Laundry is available with eligible Regular Home Cleaning or Deep Cleaning visits when a safe, working washing machine is available. The available drying facilities determine whether the laundry outcome is Wash, Dry & Fold or Wash & Hang. Ironing remains separate and requires a safe, working iron and ironing board.",
+  services: [
+    "Wash, Dry & Fold when a washing machine and tumble dryer are available",
+    "Wash & Hang when a washing machine and suitable line or drying rack are available",
+    "Separate ironing loads for suitable already-clean, dry clothing",
+    "Requested laundry and ironing load quantities captured during quoting",
+    "Use of the customer's safe, working on-site laundry equipment",
+    "Folding and organising suitable completed laundry where the confirmed outcome includes folding",
+  ],
+  commonProblems: [
+    "Busy households that need laundry support during an eligible cleaning visit",
+    "Clean, dry clothing waiting to be ironed",
+    "Laundry loads that can run while whole-home cleaning is underway",
+    "Households with different available drying facilities",
+    "Need to confirm achievable load quantities before the booking",
+  ],
+  image: {
+    src: "/images/services/laundry-folding.png",
+    alt: serviceImageAltText["laundry-folding"],
+    width: 1536,
+    height: 1024,
+  },
+  process: [
+    "Choose an eligible Regular Home Cleaning or Deep Cleaning service before selecting Laundry or Ironing.",
+    "Tell us whether a working washing machine, tumble dryer, washing line or drying rack is available and specify the requested load quantities.",
+    "Homent confirms the valid laundry outcome and whether the requested Laundry or Ironing loads fit the cleaning visit.",
+    "Laundry and Ironing are completed using the confirmed on-site facilities and agreed scope during the eligible cleaning visit.",
+    "Any load quantity or garment type outside the confirmed scope requires separate approval before the booking.",
+  ],
+  faqs: [
+    {
+      question: "Can I book Laundry & Ironing on its own?",
+      answer:
+        "No. Laundry and Ironing are add-ons only to eligible Regular Home Cleaning or Deep Cleaning visits and cannot be booked as standalone services.",
+    },
+    {
+      question: "What laundry outcome can I request?",
+      answer:
+        "If you have a working washing machine and tumble dryer, the available laundry outcome is Wash, Dry & Fold. If you have a working washing machine but no tumble dryer, Laundry requires a suitable washing line or drying rack and the outcome is Wash & Hang. Laundry is unavailable when there is no working washing machine.",
+    },
+    {
+      question: "Is ironing included with laundry?",
+      answer:
+        "No. Ironing is a separate paid add-on. It can be requested with Laundry or for suitable already-clean, dry clothing during an eligible cleaning visit, and requires a safe, working iron and ironing board.",
+    },
+    {
+      question: "How many laundry or ironing loads can I request?",
+      answer:
+        "Enter the requested standard-load quantities when asking for a quote. The accepted quantities are confirmed against the expected duration and labour capacity of the eligible cleaning visit so the promised work remains achievable.",
+    },
+  ],
+};
 
 export const servicePages: ServicePage[] = [
   createService(
@@ -309,27 +372,7 @@ export const servicePages: ServicePage[] = [
       "Finishing details during a deeper clean",
     ],
   ),
-  createService(
-    "laundry-folding",
-    "Laundry Folding",
-    "Laundry Folding",
-    "Household laundry folding that can be added to a cleaning visit for clean, dry clothing, towels and suitable linen.",
-    [
-      "Folding everyday clothing",
-      "Pairing socks",
-      "Folding towels",
-      "Folding bed linen",
-      "Sorting by household member when requested",
-      "Neat placement in an agreed area",
-    ],
-    [
-      "Clean laundry waiting to be folded",
-      "Busy household routines",
-      "Towels and linen needing organisation",
-      "Large folding loads",
-      "Limited time for household finishing tasks",
-    ],
-  ),
+  laundryAndIroningAddon,
   createService(
     "apartment-cleaning",
     "Apartment Cleaning",
@@ -380,7 +423,7 @@ export const servicePages: ServicePage[] = [
     [
       "Inside oven",
       "Inside fridge",
-      "Laundry folding",
+      "Laundry & ironing",
       "Bed making",
       "Linen change",
       "Balcony or patio",

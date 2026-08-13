@@ -54,54 +54,66 @@ function getRelatedServices(service: ServicePage) {
     .map(({ item }) => item);
 }
 
+const cardClass =
+  "rounded-xl border border-[#E7DCC9] bg-[#FFFDF8] shadow-[0_8px_24px_rgba(59,15,26,0.04)]";
+
 export function ServicePageLayout({ service }: { service: ServicePage }) {
   const breadcrumbs = serviceBreadcrumbs(service.title, `/services/${service.slug}`);
   const relatedServices = getRelatedServices(service);
   const whatsappLink = buildWhatsAppLink(service);
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen bg-[#FFFDF8] text-[#5F4B46]">
       <Navbar />
       <main>
-        <section className="pt-32 pb-20 bg-secondary">
-          <div className="max-w-7xl mx-auto px-6">
+        <section className="bg-[#F8F3E8] pb-20 pt-32">
+          <div className="mx-auto max-w-7xl px-6">
             <Breadcrumbs
               items={breadcrumbs}
-              className="mb-8 text-muted-foreground"
-              linkClassName="transition-colors hover:text-primary"
+              className="mb-8 text-[#7A6861]"
+              linkClassName="transition-colors hover:text-[#9A7132]"
             />
 
             <Link
               to="/services"
-              className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors mb-8"
+              className="mb-8 inline-flex items-center gap-2 text-sm text-[#7A6861] transition-colors hover:text-[#9A7132]"
             >
-              <ArrowLeft className="w-4 h-4" />
+              <ArrowLeft className="h-4 w-4" />
               Back to all services
             </Link>
 
             <div className="grid items-center gap-10 lg:grid-cols-2">
               <div>
-                <span className="text-xs uppercase tracking-[0.3em] text-primary font-semibold">
+                <span className="text-xs font-semibold uppercase tracking-[0.3em] text-[#9A7132]">
                   Homent Residential Cleaning
                 </span>
-                <h1 className="text-4xl md:text-6xl font-extrabold mt-4 text-foreground leading-tight">
+                <h1 className="mt-4 text-4xl font-extrabold leading-tight text-[#3B0F1A] md:text-6xl">
                   {service.title}
                 </h1>
-                <p className="text-lg text-muted-foreground mt-6 leading-relaxed">
+                <p className="mt-6 text-lg leading-relaxed text-[#6D5B55]">
                   {service.heroDescription}
                 </p>
-                <div className="mt-8 flex flex-col sm:flex-row gap-4">
+                <div className="mt-8 flex flex-col gap-4 sm:flex-row">
                   <Button variant="hero" size="lg" asChild>
                     <Link to="/quote">Request a Quote</Link>
                   </Button>
                   <Button variant="outline" size="lg" asChild>
-                    <a href={whatsappLink} target="_blank" rel="noopener noreferrer">
-                      <MessageCircle className="w-4 h-4" /> WhatsApp Homent
+                    <a
+                      href={whatsappLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="border-[#C9A45B]/70 bg-[#FFFDF8] text-[#3B0F1A] hover:bg-[#F4EBDD]"
+                    >
+                      <MessageCircle className="h-4 w-4" /> WhatsApp Homent
                     </a>
                   </Button>
                   <Button variant="outline" size="lg" asChild>
-                    <a href={`tel:${PHONE_NUMBER}`} aria-label="Call Homent">
-                      <Phone className="w-4 h-4" /> Call Us
+                    <a
+                      href={`tel:${PHONE_NUMBER}`}
+                      aria-label="Call Homent"
+                      className="border-[#C9A45B]/70 bg-[#FFFDF8] text-[#3B0F1A] hover:bg-[#F4EBDD]"
+                    >
+                      <Phone className="h-4 w-4" /> Call Us
                     </a>
                   </Button>
                 </div>
@@ -110,37 +122,34 @@ export function ServicePageLayout({ service }: { service: ServicePage }) {
                 <ServiceImage
                   image={service.image}
                   eager
-                  className="block aspect-[3/2] overflow-hidden rounded-xl border border-border bg-card shadow-lg"
+                  className="block aspect-[3/2] overflow-hidden rounded-2xl border border-[#E7DCC9] bg-[#FFFDF8] shadow-[0_16px_40px_rgba(59,15,26,0.10)]"
                 />
               )}
             </div>
           </div>
         </section>
 
-        <section className="py-20">
-          <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-[1.2fr_0.8fr] gap-12">
+        <section className="bg-[#FFFDF8] py-20">
+          <div className="mx-auto grid max-w-7xl gap-12 px-6 lg:grid-cols-[1.2fr_0.8fr]">
             <div>
-              <h2 className="text-3xl font-bold text-foreground">What This Service Includes</h2>
-              <p className="text-muted-foreground mt-4 leading-relaxed">{service.overview}</p>
-              <div className="mt-10 grid sm:grid-cols-2 gap-4">
+              <h2 className="text-3xl font-bold text-[#3B0F1A]">What This Service Includes</h2>
+              <p className="mt-4 leading-relaxed text-[#6D5B55]">{service.overview}</p>
+              <div className="mt-10 grid gap-4 sm:grid-cols-2">
                 {service.services.map((item) => (
-                  <div
-                    key={item}
-                    className="flex items-start gap-3 rounded-lg border border-border bg-card p-4"
-                  >
-                    <CheckCircle2 className="w-5 h-5 text-primary shrink-0 mt-0.5" />
-                    <span className="text-sm text-muted-foreground">{item}</span>
+                  <div key={item} className={`${cardClass} flex items-start gap-3 p-4`}>
+                    <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-[#9A7132]" />
+                    <span className="text-sm text-[#6D5B55]">{item}</span>
                   </div>
                 ))}
               </div>
             </div>
 
-            <aside className="rounded-lg border border-border bg-card p-6 h-fit">
-              <h2 className="text-xl font-bold text-foreground">A Good Fit When You Need</h2>
+            <aside className={`${cardClass} h-fit p-6`}>
+              <h2 className="text-xl font-bold text-[#3B0F1A]">A Good Fit When You Need</h2>
               <ul className="mt-4 space-y-3">
                 {service.commonProblems.map((problem) => (
-                  <li key={problem} className="text-sm text-muted-foreground flex gap-2">
-                    <span className="w-1.5 h-1.5 rounded-full bg-primary mt-2 shrink-0" />
+                  <li key={problem} className="flex gap-2 text-sm text-[#6D5B55]">
+                    <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#C9A45B]" />
                     {problem}
                   </li>
                 ))}
@@ -149,25 +158,30 @@ export function ServicePageLayout({ service }: { service: ServicePage }) {
           </div>
         </section>
 
-        <section className="py-16 bg-secondary">
-          <div className="max-w-7xl mx-auto px-6">
-            <div className="rounded-xl border border-border bg-card p-6 md:p-8">
-              <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+        <section className="bg-[#F8F3E8] py-16">
+          <div className="mx-auto max-w-7xl px-6">
+            <div className={`${cardClass} p-6 md:p-8`}>
+              <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
                 <div>
-                  <div className="flex items-center gap-2 text-primary font-semibold text-sm uppercase tracking-[0.2em]">
-                    <MapPin className="w-4 h-4" /> Service Areas
+                  <div className="flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.2em] text-[#9A7132]">
+                    <MapPin className="h-4 w-4" /> Service Areas
                   </div>
-                  <h2 className="text-2xl md:text-3xl font-bold text-foreground mt-3">
+                  <h2 className="mt-3 text-2xl font-bold text-[#3B0F1A] md:text-3xl">
                     {service.shortTitle} across Johannesburg and Midrand
                   </h2>
-                  <p className="text-muted-foreground mt-3 max-w-3xl leading-relaxed">
+                  <p className="mt-3 max-w-3xl leading-relaxed text-[#6D5B55]">
                     Explore our main service hubs below, or view all approved areas. Exact
                     availability is confirmed using your address, requested date and cleaning scope.
                   </p>
                 </div>
                 <div className="flex flex-col gap-3 sm:flex-row">
                   <Button variant="outline" size="lg" asChild>
-                    <Link to="/locations">View All Areas</Link>
+                    <Link
+                      to="/locations"
+                      className="border-[#C9A45B]/70 bg-[#FFFDF8] text-[#3B0F1A] hover:bg-[#F4EBDD]"
+                    >
+                      View All Areas
+                    </Link>
                   </Button>
                   <Button variant="hero" size="lg" asChild>
                     <Link to="/quote">Check Availability</Link>
@@ -180,7 +194,7 @@ export function ServicePageLayout({ service }: { service: ServicePage }) {
                     key={area.slug}
                     to="/locations/$locationSlug"
                     params={{ locationSlug: area.slug }}
-                    className="rounded-full border border-border px-3 py-1 text-xs text-muted-foreground hover:border-primary hover:text-primary transition-colors"
+                    className="rounded-full border border-[#D9C9AD] bg-[#FFFDF8] px-3 py-1 text-xs text-[#6D5B55] transition-colors hover:border-[#C9A45B] hover:text-[#9A7132]"
                     aria-label={`View Homent cleaning services in ${area.name}`}
                   >
                     Cleaning in {area.name}
@@ -191,97 +205,97 @@ export function ServicePageLayout({ service }: { service: ServicePage }) {
           </div>
         </section>
 
-        <section className="py-20">
-          <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-[0.9fr_1.1fr] gap-12 items-start">
+        <section className="bg-[#FFFDF8] py-20">
+          <div className="mx-auto grid max-w-7xl items-start gap-12 px-6 lg:grid-cols-[0.9fr_1.1fr]">
             <div>
-              <span className="text-xs uppercase tracking-[0.3em] text-primary font-semibold">
+              <span className="text-xs font-semibold uppercase tracking-[0.3em] text-[#9A7132]">
                 Why Homent
               </span>
-              <h2 className="text-3xl md:text-4xl font-bold text-foreground mt-3">
+              <h2 className="mt-3 text-3xl font-bold text-[#3B0F1A] md:text-4xl">
                 Cleaning planned around your home
               </h2>
-              <p className="text-muted-foreground mt-4 leading-relaxed">
+              <p className="mt-4 leading-relaxed text-[#6D5B55]">
                 Every household is different. We use the property details, condition, priorities and
                 selected add-ons in your enquiry to prepare a cleaning scope that is clear and
                 practical.
               </p>
             </div>
-            <div className="grid sm:grid-cols-2 gap-4">
+            <div className="grid gap-4 sm:grid-cols-2">
               {trustPoints.map((point) => (
-                <div key={point} className="rounded-lg border border-border bg-card p-5">
-                  <CheckCircle2 className="w-5 h-5 text-primary" />
-                  <h3 className="font-bold text-foreground mt-4">{point}</h3>
+                <div key={point} className={`${cardClass} p-5`}>
+                  <CheckCircle2 className="h-5 w-5 text-[#9A7132]" />
+                  <h3 className="mt-4 font-bold text-[#3B0F1A]">{point}</h3>
                 </div>
               ))}
             </div>
           </div>
         </section>
 
-        <section className="py-20 bg-secondary">
-          <div className="max-w-7xl mx-auto px-6">
+        <section className="bg-[#F8F3E8] py-20">
+          <div className="mx-auto max-w-7xl px-6">
             <div className="max-w-2xl">
-              <span className="text-xs uppercase tracking-[0.3em] text-primary font-semibold">
+              <span className="text-xs font-semibold uppercase tracking-[0.3em] text-[#9A7132]">
                 Our Process
               </span>
-              <h2 className="text-3xl md:text-4xl font-bold text-foreground mt-3">
+              <h2 className="mt-3 text-3xl font-bold text-[#3B0F1A] md:text-4xl">
                 How the Service Is Prepared
               </h2>
             </div>
-            <ol className="mt-10 grid md:grid-cols-5 gap-4">
+            <ol className="mt-10 grid gap-4 md:grid-cols-5">
               {service.process.map((step, index) => (
-                <li key={step} className="rounded-lg border border-border bg-card p-5">
-                  <span className="text-xs font-bold text-primary">STEP {index + 1}</span>
-                  <p className="text-sm text-muted-foreground mt-3 leading-relaxed">{step}</p>
+                <li key={step} className={`${cardClass} p-5`}>
+                  <span className="text-xs font-bold text-[#9A7132]">STEP {index + 1}</span>
+                  <p className="mt-3 text-sm leading-relaxed text-[#6D5B55]">{step}</p>
                 </li>
               ))}
             </ol>
           </div>
         </section>
 
-        <section className="py-20">
-          <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-[0.8fr_1.2fr] gap-12">
+        <section className="bg-[#FFFDF8] py-20">
+          <div className="mx-auto grid max-w-7xl gap-12 px-6 lg:grid-cols-[0.8fr_1.2fr]">
             <div>
-              <span className="text-xs uppercase tracking-[0.3em] text-primary font-semibold">
+              <span className="text-xs font-semibold uppercase tracking-[0.3em] text-[#9A7132]">
                 Questions
               </span>
-              <h2 className="text-3xl md:text-4xl font-bold text-foreground mt-3">
+              <h2 className="mt-3 text-3xl font-bold text-[#3B0F1A] md:text-4xl">
                 Frequently Asked Questions
               </h2>
-              <p className="text-muted-foreground mt-4">
+              <p className="mt-4 text-[#6D5B55]">
                 Helpful answers before requesting your personalised quotation.
               </p>
             </div>
             <div className="space-y-4">
               {service.faqs.map((faq) => (
-                <div key={faq.question} className="rounded-lg border border-border bg-card p-6">
-                  <h3 className="font-bold text-foreground">{faq.question}</h3>
-                  <p className="text-sm text-muted-foreground mt-2 leading-relaxed">{faq.answer}</p>
+                <div key={faq.question} className={`${cardClass} p-6`}>
+                  <h3 className="font-bold text-[#3B0F1A]">{faq.question}</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-[#6D5B55]">{faq.answer}</p>
                 </div>
               ))}
             </div>
           </div>
         </section>
 
-        <section className="py-20 bg-secondary">
-          <div className="max-w-7xl mx-auto px-6">
+        <section className="bg-[#F8F3E8] py-20">
+          <div className="mx-auto max-w-7xl px-6">
             <div className="max-w-2xl">
-              <span className="text-xs uppercase tracking-[0.3em] text-primary font-semibold">
+              <span className="text-xs font-semibold uppercase tracking-[0.3em] text-[#9A7132]">
                 Related Services
               </span>
-              <h2 className="text-3xl md:text-4xl font-bold text-foreground mt-3">
+              <h2 className="mt-3 text-3xl font-bold text-[#3B0F1A] md:text-4xl">
                 Explore More Cleaning Options
               </h2>
             </div>
-            <div className="mt-10 grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
               {relatedServices.map((relatedService) => (
                 <Link
                   key={relatedService.slug}
                   to="/services/$serviceSlug"
                   params={{ serviceSlug: relatedService.slug }}
-                  className="rounded-lg border border-border bg-card p-5 hover:border-primary transition-colors"
+                  className={`${cardClass} p-5 transition-all hover:-translate-y-0.5 hover:border-[#C9A45B] hover:shadow-[0_12px_28px_rgba(59,15,26,0.08)]`}
                 >
-                  <h3 className="font-bold text-foreground">{relatedService.shortTitle}</h3>
-                  <p className="text-sm text-muted-foreground mt-2 leading-relaxed">
+                  <h3 className="font-bold text-[#3B0F1A]">{relatedService.shortTitle}</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-[#6D5B55]">
                     {relatedService.heroDescription}
                   </p>
                 </Link>
@@ -290,25 +304,32 @@ export function ServicePageLayout({ service }: { service: ServicePage }) {
           </div>
         </section>
 
-        <section className="py-20">
-          <div className="max-w-7xl mx-auto px-6 rounded-xl border border-border bg-card p-8 md:p-10">
-            <div className="grid lg:grid-cols-[1fr_auto] gap-8 items-center">
-              <div>
-                <h2 className="text-3xl font-bold text-foreground">
-                  Ready to request {service.shortTitle.toLowerCase()}?
-                </h2>
-                <p className="text-muted-foreground mt-3 max-w-2xl">
-                  Tell us about your property, preferred date, home condition and any add-ons. We
-                  will review the details and prepare a personalised quotation.
-                </p>
-              </div>
-              <div className="flex flex-col sm:flex-row gap-3">
-                <Button variant="hero" size="lg" asChild>
-                  <Link to="/quote">Request Your Quote</Link>
-                </Button>
-                <Button variant="outline" size="lg" asChild>
-                  <a href="mailto:quotes@homent.co.za">Email Quotes</a>
-                </Button>
+        <section className="bg-[#FFFDF8] py-20">
+          <div className="mx-auto max-w-7xl px-6">
+            <div className={`${cardClass} p-8 md:p-10`}>
+              <div className="grid items-center gap-8 lg:grid-cols-[1fr_auto]">
+                <div>
+                  <h2 className="text-3xl font-bold text-[#3B0F1A]">
+                    Ready to request {service.shortTitle.toLowerCase()}?
+                  </h2>
+                  <p className="mt-3 max-w-2xl text-[#6D5B55]">
+                    Tell us about your property, preferred date, home condition and any add-ons. We
+                    will review the details and prepare a personalised quotation.
+                  </p>
+                </div>
+                <div className="flex flex-col gap-3 sm:flex-row">
+                  <Button variant="hero" size="lg" asChild>
+                    <Link to="/quote">Request Your Quote</Link>
+                  </Button>
+                  <Button variant="outline" size="lg" asChild>
+                    <a
+                      href="mailto:quotes@homent.co.za"
+                      className="border-[#C9A45B]/70 bg-[#FFFDF8] text-[#3B0F1A] hover:bg-[#F4EBDD]"
+                    >
+                      Email Quotes
+                    </a>
+                  </Button>
+                </div>
               </div>
             </div>
           </div>

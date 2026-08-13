@@ -79,9 +79,9 @@ const services = [
     slug: "interior-window-cleaning",
   },
   {
-    title: "Laundry Folding",
+    title: "Laundry & Ironing Add-On",
     description:
-      "Neatly folded laundry organised with care, saving you time in a busy household routine.",
+      "Laundry and ironing support added to an eligible Regular Home Cleaning or Deep Cleaning visit, with facilities and load quantities confirmed during quoting.",
     icon: Shirt,
     slug: "laundry-folding",
   },

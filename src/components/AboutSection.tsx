@@ -16,12 +16,12 @@ export function AboutSection() {
           </h2>
           <p className="mt-6 leading-relaxed text-[#5F4B46]">
             Homent was created for people who value their time, their space and the comfort of a
-            home cared for with intention. We bring warmth, discretion and exacting attention to the
-            everyday ritual of cleaning.
+            home cared for with intention. We believe a beautifully cared-for home gives you
+            something more valuable than a clean space: a moment to enjoy it.
           </p>
           <p className="mt-4 leading-relaxed text-[#5F4B46]">
-            Our promise is simple: dependable home care that feels personal, considered and
-            consistently exceptional.
+            That feeling, when the cleaning is done and your time is yours again, is what we call
+            your Homent Moment.
           </p>
         </div>
         <div className="grid gap-4 sm:grid-cols-3 lg:grid-cols-1">

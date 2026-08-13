@@ -33,14 +33,92 @@ Architecture and engineering decisions should continue to use the repository's A
 - The remaining 50% is due upon completion of the cleaning service.
 - A requested date or quotation does not by itself confirm a booking; the applicable booking-confirmation process must still be completed.
 
-### Recurring bookings
+### Standard recurring bookings — rolling 50% advance
 
-- The first visit follows the initial-booking payment policy: 50% deposit to secure the booking and the remaining 50% due upon completion.
-- After the initial visit, an approved recurring customer may move onto a monthly recurring reservation cycle.
-- The recurring customer's agreed payment date may be aligned with the customer's salary/payday cycle.
-- A 50% deposit toward the upcoming recurring cycle reserves the scheduled visits in that cycle.
-- The remaining balance attributable to each individual visit is due after that visit is completed.
-- The recurring payment-date arrangement is intended to reduce unnecessary payment friction while preserving Homent's advance reservation protection. It is not intended to create an open-ended credit arrangement.
+The previously considered model of taking a 50% deposit against an entire upcoming monthly recurring cycle is superseded. Homent instead uses a rolling advance equal to 50% of one normal scheduled recurring visit.
+
+- The first visit follows the initial-booking policy: 50% is paid in advance to secure the visit.
+- When the customer continues as a recurring customer, Homent maintains an advance equal to 50% of one normal scheduled visit toward the customer's next appointment.
+- After a recurring clean, the customer's payment settles the unpaid portion of the completed visit and replenishes the 50% advance for the next scheduled visit.
+- Customer-facing communications should describe this as an advance payment toward the next scheduled clean rather than relying on the internal shorthand "rolling deposit".
+- The advance is based on the customer's normal recurring service price. An occasional add-on does not permanently increase the recurring advance.
+- If the normal recurring scope and price change permanently, the standing advance may be adjusted to remain equal to 50% of the new normal visit price.
+- Four- and five-visit months require no special monthly calculation under standard recurring billing: each actual scheduled/completed visit is handled on its own rolling basis.
+- If a customer skips or reschedules a visit with at least 24 hours' notice, the advance may follow the replacement or next scheduled visit.
+- If an applicable late-cancellation or failed-access charge consumes the advance, the advance must be replenished before the next service proceeds.
+- If payment due after a completed recurring clean is not received, future services may be placed on hold until the outstanding balance and required advance are restored.
+- Homent must not allow unpaid recurring visits to accumulate indefinitely.
+- When recurring service ends and no further visit will consume the advance, any unused advance remaining after legitimate amounts owed are settled must be refunded or otherwise dealt with in accordance with the agreed customer instruction and applicable law.
+
+## Recurring-service commitment, pause and termination
+
+- Recurring residential cleaning has no fixed-term lock-in.
+- A customer may end or pause the recurring arrangement by giving at least 14 days' notice.
+- Changing, skipping or rescheduling one individual visit is governed by the normal 24-hour cancellation/rescheduling policy rather than the 14-day recurring-arrangement notice period.
+- A pause releases the customer's regular time slot; the same day/time is not guaranteed when service resumes.
+- Homent may end a recurring arrangement on reasonable notice.
+- Homent may suspend or terminate sooner where serious circumstances justify it, including serious safety concerns, abuse or harassment, unlawful conduct, repeated failed access, or serious/repeated non-payment, subject to applicable law and the circumstances.
+
+## Optional month-end billing for established recurring customers
+
+Month-end billing is not the default recurring payment arrangement and is not available immediately to a new customer.
+
+### Eligibility
+
+- A recurring customer becomes eligible to request month-end billing only after completing two successful months under the standard recurring payment arrangement.
+- Eligibility does not create an automatic entitlement to month-end billing; Homent must approve the arrangement.
+- At approval, the account must be current and in good standing, with prior services paid on time and no unresolved repeated payment failures.
+
+### Operation
+
+- The existing 50% advance for one normal scheduled visit remains in place as standing security when an approved customer moves to month-end billing.
+- Month-end billing covers the actual completed visits in the applicable billing cycle. A cycle containing five weekly cleans therefore costs more than a cycle containing four; the system must not assume that every month contains four weeks.
+- The customer's agreed collection/payment date should be aligned with the customer's salary/payday where practical.
+- Before the customer opts into month-end billing, Homent must clearly disclose the expected financial effect, including the standing advance, the estimated upcoming monthly commitment, the agreed payment date and the consequences of non-payment.
+- If a month-end payment is not received as agreed, future cleaning visits may be placed on hold rather than allowing another month's debt to accumulate.
+- Repeated month-end payment failures may result in withdrawal of month-end billing and return to standard recurring billing, or termination/suspension of the recurring arrangement where appropriate.
+- Longer-term implementation should support an authorised automatic recurring collection method where commercially and technically appropriate; manual EFT must not be assumed to be the permanent design.
+
+### Month-end due date and grace period
+
+The exact due-date and grace-period rule has not yet been approved and must not be invented in customer-facing implementation. The system should ultimately support an agreed payment/collection date and clear failed-payment handling. South African recurring-payment services commonly use explicit collection dates and defined suspension/failed-payment rules, but Homent's exact rule requires separate approval.
+
+## Financial disclosure and booking correspondence
+
+Material financial terms must be communicated automatically and explicitly as part of the customer's quotation, booking information and/or confirmation process. Homent owners, supervisors and cleaners must not be relied upon to verbally explain standard financial policies to each customer.
+
+The system must present the actual customer-specific rand amounts wherever they are known rather than requiring the customer to calculate percentages.
+
+For an initial or once-off booking, this should include at minimum:
+
+- total quoted service price;
+- 50% amount payable to secure the booking;
+- remaining amount due upon completion;
+- applicable cancellation/rescheduling terms; and
+- the fact that a requested date or quotation is not itself confirmation of a booking.
+
+For standard recurring service, correspondence/confirmation must additionally explain:
+
+- the normal per-visit price;
+- the 50% advance allocated to the next scheduled visit;
+- how the post-service payment both settles the completed visit and replenishes the next-visit advance;
+- the amount payable after each normal visit;
+- the cancellation/rescheduling consequences for the advance;
+- the 14-day rule for ending or pausing the recurring arrangement; and
+- what happens if an outstanding payment is not received.
+
+For approved month-end billing, correspondence/confirmation must additionally explain:
+
+- that month-end billing is an approved alternative available only after the required successful recurring history;
+- the standing 50% one-visit advance/security amount;
+- the agreed payment/collection date;
+- the actual or estimated number of visits in the billing cycle;
+- the estimated/actual monthly amount, including the effect of four- versus five-visit months;
+- any initial or transition amount required to activate the arrangement once that calculation is approved;
+- what happens if the scheduled payment fails or is not received; and
+- that future services can be suspended rather than allowing unpaid balances to accumulate.
+
+The customer should affirmatively acknowledge material payment terms before entering the relevant arrangement. The same information should be available in durable booking correspondence such as the booking-confirmation email and, if/when implemented, the customer account.
 
 ## Cancellation and rescheduling
 
@@ -52,8 +130,8 @@ Homent's standard cancellation/rescheduling threshold is 24 hours before the sch
 
 - Cancellation is free of a cancellation charge.
 - Rescheduling is free, subject to availability.
-- The customer may choose to have the applicable deposit refunded or transferred to the replacement/future booking.
-- For a recurring customer who reschedules, the payment already allocated to the visit follows the replacement visit where appropriate.
+- The customer may choose to have an applicable unused deposit/advance refunded or transferred to the replacement/future booking where appropriate.
+- For a recurring customer who reschedules, the advance allocated to the visit may follow the replacement visit.
 
 ### Cancellation with less than 24 hours' notice
 
@@ -61,8 +139,8 @@ Homent's standard cancellation/rescheduling threshold is 24 hours before the sch
 - The charge is not an automatic punitive forfeiture. It remains subject to applicable South African consumer law and must be reasonable in the circumstances.
 - Homent may reduce or waive the charge where the circumstances reasonably justify doing so.
 - Relevant circumstances may include the notice actually given, the nature of the service, whether Homent could reasonably refill the reserved appointment and other factors relevant under applicable consumer law.
-- Where the customer's 50% booking deposit equals the applicable standard late-cancellation charge, Homent does not charge an additional amount merely because the deposit has already been paid.
-- If the applicable reasonable cancellation charge is lower than the deposit held, the remaining amount must be refunded or credited as appropriate.
+- Where the customer's 50% booking deposit/advance equals the applicable standard late-cancellation charge, Homent does not charge an additional amount merely because the deposit/advance has already been paid.
+- If the applicable reasonable cancellation charge is lower than the amount held, the remaining amount must be refunded or credited as appropriate.
 
 ### No-show and failed access
 
@@ -85,11 +163,11 @@ If Homent cancels a booking, the customer may choose either:
 - a full refund of amounts paid for the affected service; or
 - transfer of the full applicable amount to a replacement booking.
 
-## Deposit and cancellation-charge distinction
+## Deposit/advance and cancellation-charge distinction
 
-A booking deposit and a cancellation charge are separate concepts.
+A booking deposit or recurring advance and a cancellation charge are separate concepts.
 
-The 50% deposit secures the booking or recurring reservation cycle. The existence of a 50% deposit does not mean that 50% is automatically forfeited in every cancellation scenario.
+The 50% initial deposit secures an initial/once-off booking. Under standard recurring billing, the 50% standing advance secures the next normal scheduled visit. The existence of either does not mean that 50% is automatically forfeited in every cancellation scenario.
 
 Any cancellation charge must follow the approved cancellation policy and applicable consumer-law requirements.
 
@@ -107,12 +185,17 @@ The policies above must be propagated consistently to all relevant customer-faci
 
 Until implementation is completed, existing website wording that says Homent does not apply a universal deposit percentage is superseded by this approved policy and must be corrected.
 
+The existing documentation statement that recurring customers use a 50% deposit against the entire upcoming monthly cycle is also superseded by the rolling one-visit advance model recorded above.
+
 ## Decisions still requiring separate approval
 
 This document does not yet establish:
 
-- the exact technical payment method(s) used to collect deposits or balances;
-- whether recurring-cycle deposits will initially be collected manually, by payment link, debit order or another mechanism;
-- the exact set of selectable payday/payment-date options exposed in the customer interface;
+- the exact technical payment method(s) used to collect deposits, advances or balances;
+- the exact automatic collection provider/mechanism for future recurring billing;
+- the exact selectable payday/payment-date options exposed in the customer interface;
+- the exact due date and grace period for approved month-end billing;
+- the exact transition amount, if any beyond the existing one-visit standing advance, required when an eligible customer activates month-end billing;
 - detailed refund processing timeframes;
+- the advance-notice rule for recurring-service price increases; or
 - any policy not expressly approved above.

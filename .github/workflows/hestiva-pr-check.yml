@@ -45,14 +45,14 @@ jobs:
       - name: Type check
         run: bunx tsc --noEmit
 
-      - name: Form security tests
-        run: RESEND_API_KEY=test-only bun test src/lib/form-security.test.mjs src/lib/submission-result.test.mjs
+      - name: Public form and structured quote tests
+        run: RESEND_API_KEY=test-only bun test src/lib/form-security.test.mjs src/lib/submission-result.test.mjs src/lib/quote/hestiva-os-contract.test.ts
 
       - name: Targeted lint
-        run: bunx eslint src/lib/site.ts src/lib/contact.functions.ts src/lib/form-security.ts src/lib/rate-limit.ts src/lib/submission-result.ts src/lib/quote/email-service.ts src/lib/quote/file-validation.ts src/routes/__root.tsx src/routes/contact.tsx src/components/Navbar.tsx src/components/Footer.tsx src/components/HeroSection.tsx src/components/LiveFormSubmission.tsx scripts/validate-environment.mjs
+        run: bunx eslint src/lib/site.ts src/lib/contact.functions.ts src/lib/form-security.ts src/lib/rate-limit.ts src/lib/submission-result.ts src/lib/quote/email-service.ts src/lib/quote/file-validation.ts src/lib/quote/hestiva-os-contract.ts src/lib/quote/hestiva-os-contract.test.ts src/lib/quote/structured-submission.functions.ts src/routes/__root.tsx src/routes/contact.tsx src/components/Navbar.tsx src/components/Footer.tsx src/components/HeroSection.tsx src/components/LiveFormSubmission.tsx src/components/LaundryOperatingModelEnhancement.tsx src/components/StructuredQuoteSubmission.tsx scripts/validate-environment.mjs
 
       - name: Targeted format check
-        run: bunx prettier --check AGENTS.md src/lib/site.ts src/lib/contact.functions.ts src/lib/form-security.ts src/lib/rate-limit.ts src/lib/form-security.test.mjs src/lib/submission-result.ts src/lib/submission-result.test.mjs src/lib/quote/email-service.ts src/lib/quote/file-validation.ts src/routes/__root.tsx src/routes/contact.tsx src/components/Navbar.tsx src/components/Footer.tsx src/components/HeroSection.tsx src/components/LiveFormSubmission.tsx scripts/validate-environment.mjs docs/README.md docs/ARCHITECTURE.md docs/ENVIRONMENT.md docs/DEPLOYMENT.md docs/RECOVERY_GUIDE.md docs/TECHNICAL_WORK_LOG.md docs/CHANGELOG.md docs/decisions/README.md docs/decisions/ADR-0001-repository-documentation-policy.md
+        run: bunx prettier --check AGENTS.md src/lib/site.ts src/lib/contact.functions.ts src/lib/form-security.ts src/lib/rate-limit.ts src/lib/form-security.test.mjs src/lib/submission-result.ts src/lib/submission-result.test.mjs src/lib/quote/email-service.ts src/lib/quote/file-validation.ts src/lib/quote/hestiva-os-contract.ts src/lib/quote/hestiva-os-contract.test.ts src/lib/quote/structured-submission.functions.ts src/routes/__root.tsx src/routes/contact.tsx src/components/Navbar.tsx src/components/Footer.tsx src/components/HeroSection.tsx src/components/LiveFormSubmission.tsx src/components/LaundryOperatingModelEnhancement.tsx src/components/StructuredQuoteSubmission.tsx scripts/validate-environment.mjs docs/README.md docs/ARCHITECTURE.md docs/ENVIRONMENT.md docs/DEPLOYMENT.md docs/RECOVERY_GUIDE.md docs/TECHNICAL_WORK_LOG.md docs/CHANGELOG.md docs/decisions/README.md docs/decisions/ADR-0001-repository-documentation-policy.md
 
       - name: Production build
         run: bun run build

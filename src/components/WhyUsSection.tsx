@@ -1,4 +1,6 @@
+import { Link } from "@tanstack/react-router";
 import {
+  ArrowRight,
   CalendarCheck,
   CheckCircle2,
   HeartHandshake,
@@ -6,6 +8,7 @@ import {
   ShieldCheck,
   Sparkles,
 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 const benefits = [
   {
@@ -129,30 +132,28 @@ export function WhyUsSection() {
         </div>
       </section>
 
-      <section className="bg-[#3B0F1A] py-24 text-[#F5F1E8]" aria-labelledby="testimonials-heading">
-        <div className="mx-auto max-w-7xl px-6 text-center">
+      <section className="bg-[#3B0F1A] py-24 text-[#F5F1E8]" aria-labelledby="quote-cta-heading">
+        <div className="mx-auto max-w-4xl px-6 text-center">
           <span className="text-xs font-semibold uppercase tracking-[0.3em] text-[#C9A45B]">
-            Testimonials
+            Ready When You Are
           </span>
-          <h2 id="testimonials-heading" className="mt-3 text-4xl font-semibold md:text-5xl">
-            Homes cared for beautifully
+          <h2 id="quote-cta-heading" className="mt-3 text-4xl font-semibold md:text-5xl">
+            Ready for a cleaner, calmer home?
           </h2>
-          <div className="mt-14 grid gap-6 md:grid-cols-3">
-            {[
-              "The attention to detail made our whole home feel renewed.",
-              "Professional, thoughtful and wonderfully consistent every time.",
-              "Homent makes coming home feel like a genuine luxury.",
-            ].map((quote) => (
-              <figure
-                key={quote}
-                className="rounded-xl border border-[#C9A45B]/25 bg-white/5 p-7 text-left"
+          <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-[#F5F1E8]/80">
+            Tell us about your home and the help you need. We&apos;ll review the details and prepare a
+            tailored quote for your space, priorities and preferred schedule.
+          </p>
+          <div className="mt-9 flex justify-center">
+            <Button variant="hero" size="lg" asChild>
+              <Link
+                to="/quote"
+                className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F5F1E8] focus-visible:ring-offset-4 focus-visible:ring-offset-[#3B0F1A]"
               >
-                <blockquote className="leading-relaxed text-[#F5F1E8]/85">“{quote}”</blockquote>
-                <figcaption className="mt-5 text-xs font-semibold uppercase tracking-[0.2em] text-[#C9A45B]">
-                  Homent client
-                </figcaption>
-              </figure>
-            ))}
+                Request Your Quote
+                <ArrowRight className="h-4 w-4" aria-hidden="true" />
+              </Link>
+            </Button>
           </div>
         </div>
       </section>

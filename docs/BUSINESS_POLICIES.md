@@ -73,15 +73,18 @@ Month-end billing is not the default recurring payment arrangement and is not av
 
 - The existing 50% advance for one normal scheduled visit remains in place as standing security when an approved customer moves to month-end billing.
 - Month-end billing covers the actual completed visits in the applicable billing cycle. A cycle containing five weekly cleans therefore costs more than a cycle containing four; the system must not assume that every month contains four weeks.
-- The customer's agreed collection/payment date should be aligned with the customer's salary/payday where practical.
 - Before the customer opts into month-end billing, Homent must clearly disclose the expected financial effect, including the standing advance, the estimated upcoming monthly commitment, the agreed payment date and the consequences of non-payment.
 - If a month-end payment is not received as agreed, future cleaning visits may be placed on hold rather than allowing another month's debt to accumulate.
 - Repeated month-end payment failures may result in withdrawal of month-end billing and return to standard recurring billing, or termination/suspension of the recurring arrangement where appropriate.
 - Longer-term implementation should support an authorised automatic recurring collection method where commercially and technically appropriate; manual EFT must not be assumed to be the permanent design.
 
-### Month-end due date and grace period
+### Approved selectable month-end billing dates
 
-The exact due-date and grace-period rule has not yet been approved and must not be invented in customer-facing implementation. The system should ultimately support an agreed payment/collection date and clear failed-payment handling. South African recurring-payment services commonly use explicit collection dates and defined suspension/failed-payment rules, but Homent's exact rule requires separate approval.
+- An approved month-end-billing customer chooses their exact agreed payment/collection date from a scrollable/selectable list covering the salary-cycle window from the 25th through the 7th of the following month.
+- Supported day numbers are 25, 26, 27, 28, 29, 30, 31 where that day exists in the applicable month, followed by 1, 2, 3, 4, 5, 6 and 7.
+- The selected day becomes the customer's agreed recurring month-end billing date and must be stored as structured data rather than free text.
+- Where a selected day does not exist in a shorter calendar month, the implementation must not silently invent a substitute rule; the final fallback behaviour requires explicit implementation approval.
+- No additional grace period beyond the agreed billing date has been approved. The system must not advertise or infer one until separately decided.
 
 ## Financial disclosure and booking correspondence
 
@@ -111,7 +114,7 @@ For approved month-end billing, correspondence/confirmation must additionally ex
 
 - that month-end billing is an approved alternative available only after the required successful recurring history;
 - the standing 50% one-visit advance/security amount;
-- the agreed payment/collection date;
+- the agreed payment/collection date selected from the approved 25th-through-7th window;
 - the actual or estimated number of visits in the billing cycle;
 - the estimated/actual monthly amount, including the effect of four- versus five-visit months;
 - any initial or transition amount required to activate the arrangement once that calculation is approved;
@@ -171,6 +174,30 @@ The 50% initial deposit secures an initial/once-off booking. Under standard recu
 
 Any cancellation charge must follow the approved cancellation policy and applicable consumer-law requirements.
 
+## Cross-system operational visibility
+
+HestivaOS must provide operational visibility into upcoming expected customer payments so management can plan cash flow without reconstructing expected receipts manually from Work Orders or recurring schedules.
+
+The OS requirement is a dedicated Upcoming Payments capability that derives expected receipts from authoritative booking, recurring-agreement, payment-arrangement and payment-status data rather than duplicating customer-facing pricing logic.
+
+At minimum, the operational view should support:
+
+- customer;
+- property;
+- associated recurring agreement and/or Work Order where applicable;
+- expected due date;
+- billing arrangement, including standard per-visit recurring billing versus approved month-end billing;
+- expected amount;
+- standing advance already held;
+- outstanding amount;
+- next scheduled clean;
+- payment status; and
+- whether future service is active, at risk, or held because of payment status.
+
+Management summaries should include expected receipts due today, in the next 7 days, during the remainder of the current month, expected month-end collections, and overdue amounts, with totals suitable for cash-flow planning.
+
+This view is operational/management functionality. It must not expose ADMIN-only pricing information to unauthorised roles.
+
 ## Implementation requirement
 
 The policies above must be propagated consistently to all relevant customer-facing and operational surfaces, including as applicable:
@@ -180,7 +207,8 @@ The policies above must be propagated consistently to all relevant customer-faci
 - quotation and booking flows;
 - booking confirmations and payment instructions;
 - recurring-service communications;
-- cancellation/rescheduling communications; and
+- cancellation/rescheduling communications;
+- HestivaOS recurring-service and financial-planning functionality; and
 - any future payment automation or customer account experience.
 
 Until implementation is completed, existing website wording that says Homent does not apply a universal deposit percentage is superseded by this approved policy and must be corrected.
@@ -193,8 +221,8 @@ This document does not yet establish:
 
 - the exact technical payment method(s) used to collect deposits, advances or balances;
 - the exact automatic collection provider/mechanism for future recurring billing;
-- the exact selectable payday/payment-date options exposed in the customer interface;
-- the exact due date and grace period for approved month-end billing;
+- fallback behaviour when a selected billing day does not exist in a shorter month;
+- any grace period after the selected month-end billing date;
 - the exact transition amount, if any beyond the existing one-visit standing advance, required when an eligible customer activates month-end billing;
 - detailed refund processing timeframes;
 - the advance-notice rule for recurring-service price increases; or

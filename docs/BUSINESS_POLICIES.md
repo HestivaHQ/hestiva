@@ -15,9 +15,9 @@ This document records approved policy. It must not be used to invent undecided r
 
 Homent uses the repository as the durable source of truth for approved project and business decisions rather than relying on chat history or handover documents.
 
-After approximately 3–5 substantive business or product decisions, the current canonical documentation must be updated before substantial further implementation or policy work continues.
+Routine documentation synchronization may batch up to approximately 15 substantive approved business or product decisions because each migration has material coordination cost. This is a batching maximum, not a requirement to manufacture decisions; if a topic reaches a natural stopping point earlier, it may be synchronized earlier.
 
-A documentation update must happen sooner when a major policy, architecture, legal/customer-terms, payment, booking or operational decision is approved.
+A documentation update must happen sooner when a major policy, architecture, legal/compliance, security, production-infrastructure or cross-system decision is approved, or when continuing without synchronization would make implementation unsafe or inconsistent.
 
 Minor clarifications that do not create or change policy do not individually trigger a checkpoint.
 

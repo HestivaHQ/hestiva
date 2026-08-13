@@ -10,6 +10,7 @@ Homent provides residential cleaning services for homes and apartments in Johann
 - [Services](/services): Residential cleaning services.
 - [Locations](/locations): Current service-area information.
 - [About](/about): Information about Homent.
+- [FAQs](/faq): Customer questions about services, quotations, bookings, access, cancellations, payments and service concerns.
 - [Contact](/contact): Contact details and enquiry options.
 - [Request a Quote](/quote): Residential cleaning quote request form.
 - [Sitemap](/sitemap.xml): Search-engine sitemap.

@@ -56,3 +56,11 @@ The required external migration behaviour is:
 - The old domain should remain under control for the migration period rather than being allowed to lapse immediately.
 
 The Cloudflare redirect configuration and Google Search Console migration steps are operational follow-ups and are not implemented by this repository-only change.
+
+## 2026-08-14 homepage trust and conversion follow-up
+
+- Homepage service cards are being converted from non-interactive presentation cards into direct links to their corresponding service-detail routes, with visible `Learn more` cues and a `View All Services` CTA.
+- The generic homepage testimonial block is removed because the repository does not contain verified customer-review attribution for those statements.
+- The removed testimonial block is replaced with a direct quote-request CTA using the existing `/quote` journey.
+- Public social-media links remain intentionally hidden until the corresponding Homent profiles are live and customer-ready. Once the live profile URLs are confirmed, the Footer and Contact page are the preferred website surfaces for activation.
+- This follow-up does not change pricing, quote transport, payment handling, deployment authority, service catalogue definitions, or the Website ↔ HestivaOS boundary.

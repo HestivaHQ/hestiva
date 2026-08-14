@@ -14,10 +14,11 @@ https://hestiva.co.za
 - Kitchen and bathroom cleaning
 - Bedroom and living-area cleaning
 - Interior window cleaning
-- Laundry folding
 - Apartment cleaning
 - Eco-conscious cleaning options
-- Approved add-on services
+- Approved add-on services, including Laundry & Ironing for eligible cleaning visits
+
+Laundry and Ironing are add-ons only and are not available as standalone primary bookings.
 
 ## Technology
 

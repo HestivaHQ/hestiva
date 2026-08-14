@@ -2,6 +2,18 @@
 
 This is the append-only technical change history for implemented repository and material verified operational changes. It begins with the documentation baseline and does not invent undocumented releases.
 
+## 2026-08-14
+
+### Website Quote Contract v2 and Laundry/Ironing finalization
+
+- Finalized the website side of HestivaOS Issue #79 with structured Website Quote Contract v2 transport and fail-closed HestivaOS acknowledgement before quote confirmation correspondence.
+- Retained `/services/laundry-folding` for compatibility and customer information while presenting it as **Laundry & Ironing Add-On**, not a standalone service.
+- Removed remaining `Laundry Folding` primary-service semantics from the legacy quote source and frequency controller while preserving valid Laundry and Ironing add-ons.
+- Preserved facilities, laundry outcome, laundry-load quantity and ironing-load quantity as structured contract data rather than deriving them from display labels.
+- Added and verified regression coverage for valid washer/dryer Laundry, no-washer rejection, ironing-only requests and rejection of Laundry Folding as a primary service.
+- Verified the PR quality gates through TypeScript, tests, lint, formatting, production build, runtime SEO and Cloudflare Worker dry-run.
+- Kept production activation blocked pending operational verification of Website → HestivaOS runtime secrets and HestivaOS COIDA/routing configuration; HestivaOS routing runtime/documentation currently also requires reconciliation between OpenRouteService implementation and older Google Routes documentation.
+
 ## 2026-08-13
 
 ### Customer-facing payment and recurring-policy alignment

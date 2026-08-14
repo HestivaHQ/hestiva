@@ -276,7 +276,7 @@ export function LaundryOperatingModelEnhancement() {
         const hint = document.createElement("p");
         hint.className = "mt-2 text-xs leading-5 text-[#756963]";
         hint.textContent =
-          "R150 per standard load. Customer provides a safe, working iron and ironing board.";
+          "R150 per standard load. Customer provides a safe, working iron and ironing board. Special-care garments requiring professional pressing, dry-cleaning or specialist garment care are excluded.";
 
         const apply = () => {
           const parsed = Number.parseInt(input.value, 10);

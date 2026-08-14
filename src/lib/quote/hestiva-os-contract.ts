@@ -222,7 +222,10 @@ function mapLaundry(snapshot: QuoteFormSnapshot) {
   };
 }
 
-export function buildHestivaOsQuotePayload(snapshot: QuoteFormSnapshot, photos: HestivaOsPhoto[]) {
+export function buildHestivaOsQuotePayload(
+  snapshot: QuoteFormSnapshot,
+  photos: HestivaOsPhoto[],
+) {
   const v = snapshot.values;
   const service = v.service?.trim();
   if (!service || !(service in PRIMARY_SERVICE_MAP)) throw new Error("Unsupported primary service.");
@@ -353,7 +356,9 @@ export function buildHestivaOsQuotePayload(snapshot: QuoteFormSnapshot, photos: 
     },
     household: {
       hasPets: v.pets?.startsWith("Yes") ?? false,
-      ...(v.pets?.startsWith("Yes") && optionalText(v.petType) ? { petType: v.petType.trim() } : {}),
+      ...(v.pets?.startsWith("Yes") && optionalText(v.petType)
+        ? { petType: v.petType.trim() }
+        : {}),
       ...(v.pets?.startsWith("Yes") && optionalText(v.petTemperament)
         ? { petTemperament: v.petTemperament.trim() }
         : {}),

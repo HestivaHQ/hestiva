@@ -7,9 +7,7 @@ import type { QuoteFormSnapshot, StructuredQuoteFile } from "@/lib/quote/hestiva
 const values: Record<string, string> = {};
 const addOns = new Set<string>();
 const photoIds = new Map<string, string>();
-let pendingSubmission:
-  | { snapshot: QuoteFormSnapshot; files: StructuredQuoteFile[] }
-  | undefined;
+let pendingSubmission: { snapshot: QuoteFormSnapshot; files: StructuredQuoteFile[] } | undefined;
 let inFlight = false;
 
 function fieldName(id: string) {
@@ -159,7 +157,8 @@ async function sendStructuredQuote(button: HTMLButtonElement) {
         website: "",
       },
     });
-    if (!result || result.success !== true) throw new Error("Structured quote was not acknowledged");
+    if (!result || result.success !== true)
+      throw new Error("Structured quote was not acknowledged");
 
     pendingSubmission = undefined;
     photoIds.clear();
@@ -184,7 +183,9 @@ export function StructuredQuoteSubmission() {
     const remember = () => rememberVisibleState();
     const onClick = (event: MouseEvent) => {
       rememberVisibleState();
-      const button = (event.target as HTMLElement | null)?.closest("button") as HTMLButtonElement | null;
+      const button = (event.target as HTMLElement | null)?.closest(
+        "button",
+      ) as HTMLButtonElement | null;
       if (!button?.textContent?.includes("Send Request")) return;
 
       event.preventDefault();

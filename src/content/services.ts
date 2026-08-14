@@ -125,7 +125,7 @@ const laundryAndIroningAddon: ServicePage = {
   shortTitle: "Laundry & Ironing Add-On",
   metaTitle: "Laundry & Ironing Add-On Johannesburg & Midrand | Homent",
   metaDescription:
-    "Add laundry or ironing to an eligible Homent home cleaning visit in Johannesburg and Midrand. On-site facilities and requested load quantities are confirmed during quoting; standalone laundry bookings are not available.",
+    "Add laundry or ironing to eligible Homent cleaning visits in Johannesburg and Midrand. Add-on only; facilities and load quantities are confirmed when quoting.",
   heroDescription:
     "Laundry and ironing support for eligible Regular Home Cleaning or Deep Cleaning visits, using the customer's on-site equipment and requested load quantities confirmed during quoting.",
   overview:

@@ -2,6 +2,18 @@ import { useEffect } from "react";
 
 const ELIGIBLE_PRIMARY_SERVICES = new Set(["Regular Home Cleaning", "Deep Cleaning"]);
 
+export type StructuredLaundryRequest = {
+  facilities?: "WASHER_DRYER" | "WASHER_LINE" | "NO_WASHER";
+  laundryLoads?: number;
+  ironingLoads?: number;
+};
+
+let structuredLaundryRequest: StructuredLaundryRequest = {};
+
+export function getStructuredLaundryRequest(): StructuredLaundryRequest {
+  return { ...structuredLaundryRequest };
+}
+
 const INPUT_CLASS =
   "mt-2 min-h-12 w-full rounded-xl border border-[#CDBFB1] bg-white px-4 py-3 text-base text-[#342C2A] shadow-sm outline-none transition hover:border-[#A89380] focus:border-[#5A1425] focus:ring-2 focus:ring-[#C9A45B]/45";
 
@@ -50,6 +62,13 @@ function fieldLabel(text: string, control: HTMLElement) {
   return label;
 }
 
+function normalizedLaundryFacilities(value: string): StructuredLaundryRequest["facilities"] {
+  if (value === "Washer + tumble dryer") return "WASHER_DRYER";
+  if (value === "Washer + line / drying rack") return "WASHER_LINE";
+  if (value === "No washing machine") return "NO_WASHER";
+  return undefined;
+}
+
 export function LaundryOperatingModelEnhancement() {
   useEffect(() => {
     if (window.location.pathname !== "/quote") return;
@@ -63,7 +82,8 @@ export function LaundryOperatingModelEnhancement() {
       const service = document.querySelector<HTMLSelectElement>("#field-service");
       if (!service) return;
       const stale = Array.from(service.options).find(
-        (option) => option.value === "Laundry Folding" || option.textContent?.trim() === "Laundry Folding",
+        (option) =>
+          option.value === "Laundry Folding" || option.textContent?.trim() === "Laundry Folding",
       );
       if (!stale) return;
       if (service.value === stale.value) {
@@ -123,6 +143,20 @@ export function LaundryOperatingModelEnhancement() {
         if (!canUseLaundry) clearAddon(ironingCheckbox, ironingText, "Ironing");
       }
 
+      if (!laundry?.checkbox.checked || !canUseLaundry) {
+        structuredLaundryRequest = {
+          ...structuredLaundryRequest,
+          facilities: undefined,
+          laundryLoads: undefined,
+        };
+      }
+      if (!ironingCheckbox?.checked || !canUseLaundry) {
+        structuredLaundryRequest = {
+          ...structuredLaundryRequest,
+          ironingLoads: undefined,
+        };
+      }
+
       const oldLaundryPanel = document.getElementById("laundry-operating-model-control");
       if (!laundry?.checkbox.checked || !canUseLaundry) {
         oldLaundryPanel?.remove();
@@ -159,7 +193,10 @@ export function LaundryOperatingModelEnhancement() {
         loads.className = INPUT_CLASS;
         loads.value = laundryLoads;
 
-        grid.append(fieldLabel("Laundry facilities", facilities), fieldLabel("Requested standard loads", loads));
+        grid.append(
+          fieldLabel("Laundry facilities", facilities),
+          fieldLabel("Requested standard loads", loads),
+        );
 
         const outcome = document.createElement("p");
         outcome.id = "laundry-operating-model-outcome";
@@ -175,6 +212,11 @@ export function LaundryOperatingModelEnhancement() {
           const parsed = Number.parseInt(loads.value, 10);
           laundryLoads = Number.isFinite(parsed) && parsed >= 1 ? String(parsed) : "1";
           loads.value = laundryLoads;
+          structuredLaundryRequest = {
+            ...structuredLaundryRequest,
+            facilities: normalizedLaundryFacilities(laundryFacilities),
+            laundryLoads: Number(laundryLoads),
+          };
 
           let nextLabel = "Laundry";
           if (laundryFacilities === "Washer + tumble dryer") {
@@ -186,11 +228,13 @@ export function LaundryOperatingModelEnhancement() {
             outcome.textContent = `Wash & Hang — R125 per standard load. Requested laundry: R${125 * Number(laundryLoads)}.`;
             error.classList.add("hidden");
           } else if (laundryFacilities === "No washing machine") {
-            outcome.textContent = "Laundry is unavailable because Homent does not transport laundry off-site in v1.";
+            outcome.textContent =
+              "Laundry is unavailable because Homent does not transport laundry off-site in v1.";
             error.textContent = "Laundry requires a working washing machine at the property.";
             error.classList.remove("hidden");
           } else {
-            outcome.textContent = "Select your laundry facilities to determine the available service.";
+            outcome.textContent =
+              "Select your laundry facilities to determine the available service.";
             error.classList.add("hidden");
           }
 
@@ -231,12 +275,17 @@ export function LaundryOperatingModelEnhancement() {
 
         const hint = document.createElement("p");
         hint.className = "mt-2 text-xs leading-5 text-[#756963]";
-        hint.textContent = "R150 per standard load. Customer provides a safe, working iron and ironing board.";
+        hint.textContent =
+          "R150 per standard load. Customer provides a safe, working iron and ironing board.";
 
         const apply = () => {
           const parsed = Number.parseInt(input.value, 10);
           ironingLoads = Number.isFinite(parsed) && parsed >= 1 ? String(parsed) : "1";
           input.value = ironingLoads;
+          structuredLaundryRequest = {
+            ...structuredLaundryRequest,
+            ironingLoads: Number(ironingLoads),
+          };
           const nextLabel = `Ironing × ${ironingLoads}`;
           const currentLabel = ironingText.textContent?.trim() || "Ironing";
           syncing = true;
@@ -254,9 +303,13 @@ export function LaundryOperatingModelEnhancement() {
     };
 
     const validateLaundryStep = (event: MouseEvent) => {
-      const button = (event.target as HTMLElement | null)?.closest("button") as HTMLButtonElement | null;
+      const button = (event.target as HTMLElement | null)?.closest(
+        "button",
+      ) as HTMLButtonElement | null;
       if (!button || !button.textContent?.includes("Continue")) return;
-      const heading = document.querySelector<HTMLHeadingElement>("#quote-form h2")?.textContent?.trim();
+      const heading = document
+        .querySelector<HTMLHeadingElement>("#quote-form h2")
+        ?.textContent?.trim();
       if (heading !== "Personalise Your Service") return;
       const laundry = normalizeLaundryCheckbox();
       if (!laundry?.checkbox.checked) return;
@@ -288,6 +341,7 @@ export function LaundryOperatingModelEnhancement() {
       document.removeEventListener("click", validateLaundryStep, true);
       document.getElementById("laundry-operating-model-control")?.remove();
       document.getElementById("ironing-load-quantity-control")?.remove();
+      structuredLaundryRequest = {};
     };
   }, []);
 

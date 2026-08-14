@@ -2,6 +2,25 @@
 
 This append-only log records verified engineering and material operational work without reconstructing unsupported history. Add newest entries first. Link pull requests/commits when available and describe validation without including secrets or customer data.
 
+## 2026-08-14 — Finalized Website Quote Contract v2 and Laundry/Ironing website semantics
+
+**Purpose:** Complete the website side of HestivaOS Issue #79 without activating production quote ingestion before its external prerequisites are verified.
+
+**Work recorded:**
+
+- retained `/services/laundry-folding` as an informational compatibility route while presenting its customer-facing content as **Laundry & Ironing Add-On** and explicitly preventing standalone-booking semantics;
+- removed `Laundry Folding` from the legacy quote Primary Service source and removed the final unreachable legacy frequency fallback while preserving legitimate Laundry and Ironing add-on options;
+- preserved laundry facilities, resolved outcome, `laundryLoads`, and `ironingLoads` as structured first-class Website Quote Contract v2 data rather than reconstructing those values from display labels;
+- implemented fail-closed Website → HestivaOS submission before customer/admin Resend correspondence and required an authoritative HestivaOS `quoteReference` acknowledgement before reporting successful intake;
+- verified HestivaOS `main` contains the corresponding v2 ingestion/validation path alongside backward-compatible v1 handling;
+- added and passed regression coverage for washer + dryer, no-washer rejection, ironing-only requests, and rejection of `Laundry Folding` as a primary service;
+- corrected the retained compatibility page metadata so runtime SEO verification passes; and
+- verified the website PR quality gate through TypeScript, 15 regression tests, lint, Prettier, production build, runtime SEO and Cloudflare Worker dry-run before the final source/documentation reconciliation.
+
+**Activation blockers:** Production activation remains unapproved until the Cloudflare values for `HESTIVA_OS_API_URL` and `HESTIVA_WEBSITE_INTEGRATION_SECRET` are verified operationally and HestivaOS confirms authoritative COIDA/routing configuration. HestivaOS runtime currently uses `OPENROUTESERVICE_API_KEY` while its canonical ingestion-boundary document still describes Google Routes; that inconsistency requires reconciliation on the OS side.
+
+**Scope:** Website-side Issue #79 implementation and verification only. This entry does not assert that HestivaOS operational load-cap/accepted-booking work is complete and does not authorize merging or production activation by itself.
+
 ## 2026-08-12 — Corrected quote routing and validation feedback
 
 **Purpose:** Resolve production QA findings where quote intent could be sent to the general Contact form and where required quote information, invalid past dates, or missing final consent did not always produce clear customer feedback.

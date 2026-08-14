@@ -6,6 +6,11 @@ const sourceFiles = trackedFiles.filter((file) => /^src\/.*\.(?:[cm]?[jt]sx?)$/.
 
 const allowedReads = new Map([
   ["process.env.RESEND_API_KEY", "src/lib/quote/email-service.ts"],
+  ["process.env.HESTIVA_OS_API_URL", "src/lib/quote/structured-submission.functions.ts"],
+  [
+    "process.env.HESTIVA_WEBSITE_INTEGRATION_SECRET",
+    "src/lib/quote/structured-submission.functions.ts",
+  ],
   ["import.meta.env.DEV", "src/router.tsx"],
 ]);
 const findings = [];
@@ -42,9 +47,20 @@ if (!/!key\s*\|\|\s*key\.trim\(\)\s*===\s*["']{2}/.test(emailAdapter)) {
   );
 }
 
+const structuredQuoteAdapter = readFileSync(
+  "src/lib/quote/structured-submission.functions.ts",
+  "utf8",
+);
+if (!/if \(!baseUrl \|\| !secret\)/.test(structuredQuoteAdapter)) {
+  findings.push(
+    "src/lib/quote/structured-submission.functions.ts: HestivaOS endpoint and integration secret must fail closed when missing",
+  );
+}
+
 const environmentDocs = readFileSync("docs/ENVIRONMENT.md", "utf8");
 for (const [read] of reads) {
-  if (!environmentDocs.includes(`\`${read}\``)) {
+  const token = read.startsWith("import.meta.env.") ? read : read.split(".").at(-1);
+  if (!token || !environmentDocs.includes(`\`${token}\``)) {
     findings.push(`docs/ENVIRONMENT.md: ${read} is read by source but is not documented`);
   }
 }
@@ -66,8 +82,10 @@ const wrangler = readFileSync("wrangler.jsonc", "utf8");
 if (!/"keep_vars"\s*:\s*true/.test(wrangler)) {
   findings.push("wrangler.jsonc: keep_vars must remain true to preserve dashboard-managed values");
 }
-if (/"RESEND_API_KEY"\s*:/.test(wrangler)) {
-  findings.push("wrangler.jsonc: RESEND_API_KEY must remain an untracked Cloudflare Secret");
+for (const secretName of ["RESEND_API_KEY", "HESTIVA_WEBSITE_INTEGRATION_SECRET"]) {
+  if (new RegExp(`"${secretName}"\\s*:`).test(wrangler)) {
+    findings.push(`wrangler.jsonc: ${secretName} must remain an untracked Cloudflare Secret`);
+  }
 }
 
 if (findings.length > 0) {

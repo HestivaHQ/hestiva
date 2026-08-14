@@ -119,9 +119,9 @@ export const faqCategories: readonly FaqCategory[] = [
       },
       {
         id: "laundry-folding",
-        question: "Can laundry folding be added to my cleaning visit?",
+        question: "Can I add Laundry or Ironing to my cleaning visit?",
         answer:
-          "Yes. Laundry folding can be included for clean, dry clothing, towels and suitable linen. It can include folding everyday clothing, pairing socks, folding towels and bed linen, sorting by household member when requested and placing folded items in an agreed area.",
+          "Yes, but Laundry and Ironing are add-ons only to eligible Regular Home Cleaning or Deep Cleaning visits and cannot be booked on their own. Laundry uses the customer's safe, working washing equipment: a washing machine with tumble dryer supports Wash, Dry & Fold, while a washing machine with a suitable line or drying rack supports Wash & Hang. Ironing is a separate add-on for suitable clean, dry clothing and requires a safe, working iron and ironing board. Requested load quantities are confirmed during quoting.",
       },
       {
         id: "eco-conscious",
@@ -133,7 +133,7 @@ export const faqCategories: readonly FaqCategory[] = [
         id: "add-ons",
         question: "What cleaning add-ons can I request?",
         answer:
-          "Available add-ons can include tasks such as inside-oven cleaning, inside-fridge cleaning, interior cupboard cleaning, interior windows, laundry folding, bed making or linen changes, balcony or patio cleaning and additional rooms or fixtures. The available options and final scope are confirmed with your quotation.",
+          "Available add-ons can include tasks such as inside-oven cleaning, inside-fridge cleaning, interior cupboard cleaning, interior windows, Laundry and Ironing on eligible whole-home cleaning visits, bed making or linen changes, balcony or patio cleaning and additional rooms or fixtures. The available options and final scope are confirmed with your quotation.",
       },
       {
         id: "unlisted-task",

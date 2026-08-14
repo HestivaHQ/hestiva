@@ -42,7 +42,6 @@ function serviceFrequencyOptions(service: string) {
     service === "Bedroom Cleaning" ||
     service === "Living Area Cleaning" ||
     service === "Interior Window Cleaning" ||
-    service === "Laundry Folding" ||
     service === "Add-on Services" ||
     service === "Not sure"
   ) {

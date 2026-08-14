@@ -62,8 +62,7 @@ The site must communicate:
 - Bathroom sanitisation.
 - Bedroom and living-area cleaning.
 - Interior window cleaning where practical.
-- Laundry folding and clearly defined add-ons where operationally approved.
-
+- Laundry & Ironing as add-ons only to eligible cleaning visits; they are not standalone primary services.
 ### Excluded for the current launch
 
 - Commercial or industrial cleaning.

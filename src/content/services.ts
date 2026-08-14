@@ -53,8 +53,8 @@ export const visualAddOns = [
   ],
   [
     "extra-laundry-folding",
-    "Extra laundry folding",
-    "Professional cleaner folding additional household laundry",
+    "Laundry & ironing",
+    "Professional cleaner providing laundry and ironing support during a home cleaning visit",
   ],
   ["balcony-sweeping", "Balcony sweeping", "Professional cleaner sweeping a residential balcony"],
   [

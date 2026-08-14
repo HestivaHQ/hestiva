@@ -129,7 +129,7 @@ async function submitToHestivaOs(payload: unknown) {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), 12_000);
   try {
-    const response = await fetch(`${baseUrl}/api/integrations/website/quotes`, {
+    const response = await fetch(`${baseUrl}/api/v1/integrations/website/quotes`, {
       method: "POST",
       headers: {
         authorization: `Bearer ${secret}`,

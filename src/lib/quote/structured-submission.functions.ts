@@ -23,7 +23,10 @@ const fileSchema = z
     clientPhotoId: z.string().uuid(),
     name: z.string().trim().min(1).max(120),
     type: z.string().trim().min(1).max(100),
-    base64: z.string().min(1).max(14 * 1024 * 1024),
+    base64: z
+      .string()
+      .min(1)
+      .max(14 * 1024 * 1024),
   })
   .strict();
 
@@ -53,13 +56,17 @@ const structuredSubmissionSchema = z
   })
   .strict();
 
-function failed(category: "validation" | "bot" | "origin" | "rate_limit" | "delivery" | "unexpected") {
+function failed(
+  category: "validation" | "bot" | "origin" | "rate_limit" | "delivery" | "unexpected",
+) {
   return { success: false as const, category };
 }
 
 function publicEmailInput(snapshot: QuoteFormSnapshot) {
   const values = snapshot.values;
-  const propertyAddress = [values.address, values.suburb, values.postcode].filter(Boolean).join(", ");
+  const propertyAddress = [values.address, values.suburb, values.postcode]
+    .filter(Boolean)
+    .join(", ");
   const detailEntries = Object.entries(values)
     .filter(([, value]) => value?.trim())
     .map(([key, value]) => `${key}: ${value}`);

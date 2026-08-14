@@ -21,7 +21,11 @@ function addonCheckbox(labelPrefix: string) {
   return Array.from(
     document.querySelectorAll<HTMLInputElement>('#quote-form input[type="checkbox"]'),
   ).find((checkbox) =>
-    checkbox.closest("label")?.querySelector("span")?.textContent?.trim().startsWith(labelPrefix),
+    checkbox
+      .closest("label")
+      ?.querySelector("span")
+      ?.textContent?.trim()
+      .startsWith(labelPrefix),
   );
 }
 
@@ -82,7 +86,8 @@ export function LaundryOperatingModelEnhancement() {
       const service = document.querySelector<HTMLSelectElement>("#field-service");
       if (!service) return;
       const stale = Array.from(service.options).find(
-        (option) => option.value === "Laundry Folding" || option.textContent?.trim() === "Laundry Folding",
+        (option) =>
+          option.value === "Laundry Folding" || option.textContent?.trim() === "Laundry Folding",
       );
       if (!stale) return;
       if (service.value === stale.value) {
@@ -192,7 +197,10 @@ export function LaundryOperatingModelEnhancement() {
         loads.className = INPUT_CLASS;
         loads.value = laundryLoads;
 
-        grid.append(fieldLabel("Laundry facilities", facilities), fieldLabel("Requested standard loads", loads));
+        grid.append(
+          fieldLabel("Laundry facilities", facilities),
+          fieldLabel("Requested standard loads", loads),
+        );
 
         const outcome = document.createElement("p");
         outcome.id = "laundry-operating-model-outcome";
@@ -224,11 +232,13 @@ export function LaundryOperatingModelEnhancement() {
             outcome.textContent = `Wash & Hang — R125 per standard load. Requested laundry: R${125 * Number(laundryLoads)}.`;
             error.classList.add("hidden");
           } else if (laundryFacilities === "No washing machine") {
-            outcome.textContent = "Laundry is unavailable because Homent does not transport laundry off-site in v1.";
+            outcome.textContent =
+              "Laundry is unavailable because Homent does not transport laundry off-site in v1.";
             error.textContent = "Laundry requires a working washing machine at the property.";
             error.classList.remove("hidden");
           } else {
-            outcome.textContent = "Select your laundry facilities to determine the available service.";
+            outcome.textContent =
+              "Select your laundry facilities to determine the available service.";
             error.classList.add("hidden");
           }
 
@@ -269,7 +279,8 @@ export function LaundryOperatingModelEnhancement() {
 
         const hint = document.createElement("p");
         hint.className = "mt-2 text-xs leading-5 text-[#756963]";
-        hint.textContent = "R150 per standard load. Customer provides a safe, working iron and ironing board.";
+        hint.textContent =
+          "R150 per standard load. Customer provides a safe, working iron and ironing board.";
 
         const apply = () => {
           const parsed = Number.parseInt(input.value, 10);
@@ -296,9 +307,13 @@ export function LaundryOperatingModelEnhancement() {
     };
 
     const validateLaundryStep = (event: MouseEvent) => {
-      const button = (event.target as HTMLElement | null)?.closest("button") as HTMLButtonElement | null;
+      const button = (event.target as HTMLElement | null)?.closest(
+        "button",
+      ) as HTMLButtonElement | null;
       if (!button || !button.textContent?.includes("Continue")) return;
-      const heading = document.querySelector<HTMLHeadingElement>("#quote-form h2")?.textContent?.trim();
+      const heading = document
+        .querySelector<HTMLHeadingElement>("#quote-form h2")
+        ?.textContent?.trim();
       if (heading !== "Personalise Your Service") return;
       const laundry = normalizeLaundryCheckbox();
       if (!laundry?.checkbox.checked) return;

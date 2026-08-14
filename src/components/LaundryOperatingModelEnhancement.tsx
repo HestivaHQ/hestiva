@@ -21,11 +21,7 @@ function addonCheckbox(labelPrefix: string) {
   return Array.from(
     document.querySelectorAll<HTMLInputElement>('#quote-form input[type="checkbox"]'),
   ).find((checkbox) =>
-    checkbox
-      .closest("label")
-      ?.querySelector("span")
-      ?.textContent?.trim()
-      .startsWith(labelPrefix),
+    checkbox.closest("label")?.querySelector("span")?.textContent?.trim().startsWith(labelPrefix),
   );
 }
 

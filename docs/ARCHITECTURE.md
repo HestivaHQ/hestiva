@@ -76,8 +76,7 @@ Most route and component code participates in SSR and then hydrates on the clien
 
 `src/components/PostRenovationFrequencyEnhancement.tsx` remains a quote-only launch repair that restores approved frequency choices when `Post-Renovation Cleaning` is selected. Structured transport now maps the selected primary service and frequency into the HestivaOS contract; the enhancement itself does not price or persist the quote.
 
-The customer-facing quote source no longer treats `Laundry Folding` as a selectable primary-service option in `src/lib/quote-options.ts`. The legacy React route source is still guarded at runtime by `LaundryOperatingModelEnhancement` until that older selector definition is removed in a focused source cleanup; the customer cannot retain Laundry Folding as the primary selection.
-
+The customer-facing quote sources no longer treat `Laundry Folding` as a selectable primary-service option in `src/lib/quote-options.ts`, `src/routes/quote.tsx`, or the legacy `LiveFormSubmission` frequency controller. Laundry and Ironing remain add-ons only to eligible cleaning visits through `LaundryOperatingModelEnhancement`, while the retained `/services/laundry-folding` compatibility route is informational customer content presented as `Laundry & Ironing Add-On` rather than a standalone booking category.
 ## Public contact submission
 
 `src/lib/contact.functions.ts` defines the existing TanStack Start server function used by ordinary contact enquiries. It validates with Zod, enforces same-origin and honeypot/rate-limit controls, validates allowed attachments, builds human-readable email packages, and sends through Resend.

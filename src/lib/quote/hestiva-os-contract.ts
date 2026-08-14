@@ -222,13 +222,11 @@ function mapLaundry(snapshot: QuoteFormSnapshot) {
   };
 }
 
-export function buildHestivaOsQuotePayload(
-  snapshot: QuoteFormSnapshot,
-  photos: HestivaOsPhoto[],
-) {
+export function buildHestivaOsQuotePayload(snapshot: QuoteFormSnapshot, photos: HestivaOsPhoto[]) {
   const v = snapshot.values;
   const service = v.service?.trim();
-  if (!service || !(service in PRIMARY_SERVICE_MAP)) throw new Error("Unsupported primary service.");
+  if (!service || !(service in PRIMARY_SERVICE_MAP))
+    throw new Error("Unsupported primary service.");
   const latitude = numeric(v.latitude);
   const longitude = numeric(v.longitude);
   const accuracyMetres = numeric(v.locationAccuracy);

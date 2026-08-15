@@ -7,18 +7,22 @@ export function QuoteIntegrationHealthGuard() {
 
     let integrationHealthy: boolean | undefined;
     let disposed = false;
+    let rechecking = false;
 
     const check = async () => {
       try {
         const result = await checkHestivaOsIntegrationHealth();
-        if (!disposed) integrationHealthy = result?.ok === true;
+        const healthy = result?.ok === true;
+        if (!disposed) integrationHealthy = healthy;
+        return healthy;
       } catch {
         if (!disposed) integrationHealthy = false;
+        return false;
       }
     };
 
     const onClick = (event: MouseEvent) => {
-      if (integrationHealthy !== false) return;
+      if (integrationHealthy !== false || rechecking) return;
       const button = (event.target as HTMLElement | null)?.closest(
         "button",
       ) as HTMLButtonElement | null;
@@ -26,9 +30,23 @@ export function QuoteIntegrationHealthGuard() {
 
       event.preventDefault();
       event.stopImmediatePropagation();
-      window.alert(
-        "Our quotation system is temporarily unavailable. Your request has not been sent. Please try again shortly. Error code: Q-INTEGRATION-HEALTH.",
-      );
+      rechecking = true;
+      const originalText = button.textContent;
+      button.disabled = true;
+      button.textContent = "Checking connection…";
+
+      void check().then((healthy) => {
+        rechecking = false;
+        button.disabled = false;
+        button.textContent = originalText || "Send Request";
+        if (healthy) {
+          button.click();
+          return;
+        }
+        window.alert(
+          "Our quotation system is temporarily unavailable. Your request has not been sent. Please try again shortly. Error code: Q-INTEGRATION-HEALTH.",
+        );
+      });
     };
 
     void check();

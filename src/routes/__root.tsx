@@ -12,6 +12,7 @@ import appCss from "../styles.css?url";
 import { BRAND_ASSETS } from "@/lib/site";
 import { StructuredQuoteSubmission } from "@/components/StructuredQuoteSubmission";
 import { QuoteProgressionPolicy } from "@/components/QuoteProgressionPolicy";
+import { QuoteFormStabilityEnhancement } from "@/components/QuoteFormStabilityEnhancement";
 
 const LazyBrandedFormNotices = lazy(() =>
   import("@/components/BrandedFormNotices").then((module) => ({
@@ -114,6 +115,7 @@ function RootComponent() {
   const needsFormSubmission = pathname === "/quote" || pathname === "/contact";
   const needsStructuredQuoteSubmission = pathname === "/quote";
   const needsQuoteProgressionPolicy = pathname === "/quote";
+  const needsQuoteFormStability = pathname === "/quote";
   const needsContactValidation = pathname === "/quote" || pathname === "/contact";
   const needsContactHoneypotGuard = pathname === "/contact";
   const needsBrandedFormNotices = pathname === "/quote" || pathname === "/contact";
@@ -166,6 +168,7 @@ function RootComponent() {
           <LazyLaundryOperatingModelEnhancement />
         </Suspense>
       )}
+      {needsQuoteFormStability && <QuoteFormStabilityEnhancement />}
       <div id="main-content" tabIndex={-1}>
         <Outlet />
       </div>

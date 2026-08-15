@@ -3,6 +3,7 @@ import { useEffect } from "react";
 const LAUNDRY_ELIGIBLE_SERVICES = new Set(["Regular Home Cleaning", "Deep Cleaning"]);
 const EXPANDED_RECURRING_SERVICES = new Set(["Bedroom Cleaning", "Living Area Cleaning"]);
 const EXPANDED_FREQUENCIES = ["One-time", "Weekly", "Every two weeks", "Monthly", "Custom"];
+const TOWNHOUSE_BRIDGE_IDS = ["field-unitFloorExact", "field-buildingAccess"] as const;
 
 function findAddonCheckbox(prefix: string) {
   return Array.from(
@@ -50,6 +51,38 @@ function removeOrphanedSafetyControls() {
   document.getElementById("quote-allergies-choice")?.remove();
 }
 
+function removeTownhouseLegacyBridge() {
+  for (const id of TOWNHOUSE_BRIDGE_IDS) {
+    document.querySelector(`[data-townhouse-legacy-bridge="${id}"]`)?.remove();
+  }
+}
+
+function ensureTownhouseLegacyBridge() {
+  const propertyType = document.querySelector<HTMLSelectElement>("#field-propertyType")?.value || "";
+  if (propertyType !== "Townhouse") {
+    removeTownhouseLegacyBridge();
+    return;
+  }
+
+  const form = document.getElementById("quote-form");
+  if (!form) return;
+
+  const values: Record<(typeof TOWNHOUSE_BRIDGE_IDS)[number], string> = {
+    "field-unitFloorExact": "Townhouse storey model",
+    "field-buildingAccess": "Townhouse storey model",
+  };
+
+  for (const id of TOWNHOUSE_BRIDGE_IDS) {
+    if (document.getElementById(id)) continue;
+    const input = document.createElement("input");
+    input.type = "hidden";
+    input.id = id;
+    input.value = values[id];
+    input.dataset.townhouseLegacyBridge = id;
+    form.appendChild(input);
+  }
+}
+
 export function QuoteFormStabilityEnhancement() {
   useEffect(() => {
     if (window.location.pathname !== "/quote") return;
@@ -61,6 +94,13 @@ export function QuoteFormStabilityEnhancement() {
       scheduled = false;
       const visibleService = document.querySelector<HTMLSelectElement>("#field-service")?.value || "";
       if (visibleService) lastPrimaryService = visibleService;
+
+      // Contract v2 and the React form model Townhouses by storeys. The lazy legacy
+      // controller still classifies Townhouse as apartment-style unit access and will
+      // clear Balcony/Patio and Estate/Complex values unless its obsolete dependency
+      // appears complete. These hidden bridge values are ignored by the v2 mapper for
+      // Townhouses; they exist only to stop that legacy controller from erasing React state.
+      ensureTownhouseLegacyBridge();
 
       // React owns step validation. Legacy enhancement code must not silently lock later fields.
       for (const id of ["field-outdoor", "field-estate", "field-frequency", "field-condition"]) {
@@ -106,6 +146,7 @@ export function QuoteFormStabilityEnhancement() {
       observer.disconnect();
       document.removeEventListener("input", schedule, true);
       document.removeEventListener("change", schedule, true);
+      removeTownhouseLegacyBridge();
     };
   }, []);
 

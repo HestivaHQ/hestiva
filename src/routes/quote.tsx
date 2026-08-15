@@ -59,6 +59,7 @@ const steps = [
 
 const initialForm = {
   propertyType: "",
+  propertyTypeOther: "",
   suburb: "",
   address: "",
   postcode: "",
@@ -75,7 +76,9 @@ const initialForm = {
   outdoor: "",
   estate: "",
   service: "",
+  serviceOther: "",
   frequency: "",
+  customFrequency: "",
   condition: "",
   addons: [] as string[],
   ecoFriendlyProducts: "",
@@ -142,7 +145,6 @@ const selectOptions = {
     "Interior Window Cleaning",
     "Eco-Friendly Cleaning",
     "Post-Renovation Cleaning",
-    "Add-on Services",
     "Not sure",
   ],
   frequency: ["One-time", "Weekly", "Every two weeks", "Monthly", "Custom"],
@@ -162,19 +164,16 @@ function bedroomOptions(propertyType: string): readonly string[] {
   return ["1", "2", "3", "4", "5+", "Other"];
 }
 
-function bathroomOptions(bedrooms: string): readonly string[] {
-  if (bedrooms === "Studio" || bedrooms === "1") return ["1", "2"];
-  if (bedrooms === "2") return ["1", "2", "3"];
-  if (bedrooms === "3") return ["1", "2", "3", "4"];
-  if (bedrooms === "4" || bedrooms === "5+" || bedrooms === "Other")
-    return ["1", "2", "3", "4", "5+"];
-  return [];
+function bathroomOptions(): readonly string[] {
+  return ["1", "2", "3", "4", "5+"];
 }
 
 function storeyOptions(propertyType: string): readonly string[] {
   if (propertyType === "Apartment" || propertyType === "Duplex") return [];
-  if (propertyType === "Townhouse") return ["1 storey", "2 storeys", "3 storeys", "4+ storeys", "Not sure"];
-  return ["1 storey", "2 storeys", "3 storeys", "4+ storeys", "Not sure"];
+  if (propertyType === "Townhouse") return ["1 storey", "2 storeys", "3+ storeys", "Not sure"];
+  if (propertyType === "House") return ["1 storey", "2 storeys", "3 storeys", "4+ storeys"];
+  if (propertyType === "Other") return ["1 storey", "2 storeys", "3 storeys", "4+ storeys", "Not sure"];
+  return [];
 }
 
 function unitFloorOptions(propertyType: string): readonly string[] {
@@ -189,9 +188,6 @@ function unitFloorOptions(propertyType: string): readonly string[] {
       "10th floor or above",
       "Not sure",
     ];
-  }
-  if (propertyType === "Townhouse") {
-    return ["Ground-level unit", "1st floor", "2nd floor", "3rd floor or above", "Not sure"];
   }
   return [];
 }
@@ -241,16 +237,21 @@ const requiredByStep: Partial<Record<number, TextKey[]>> = {
 
 const labelByKey: Partial<Record<keyof FormData, string>> = {
   propertyType: "Property type",
+  propertyTypeOther: "Property type description",
   suburb: "Suburb",
   address: "Full service address",
   floorSize: "Approximate floor size",
   bedrooms: "Bedrooms",
   bathrooms: "Bathrooms",
   livingAreas: "Living areas",
+  storeys: "Storeys in the home",
+  unitFloor: "Unit floor / level",
   outdoor: "Balcony or patio",
   estate: "Estate or complex",
   service: "Primary service",
+  serviceOther: "Cleaning requirements",
   frequency: "Frequency",
+  customFrequency: "Custom frequency",
   condition: "Home condition",
   preferredDate: "Preferred date",
   alternativeDate: "Alternative date",
@@ -290,6 +291,7 @@ function QuotePage() {
       const next = { ...current, [key]: value };
 
       if (key === "propertyType") {
+        if (value !== "Other") next.propertyTypeOther = "";
         if (!bedroomOptions(value).includes(current.bedrooms)) next.bedrooms = "";
         if (value === "Apartment") next.storeys = "";
         else if (value === "Duplex") next.storeys = "2 storeys";
@@ -297,14 +299,16 @@ function QuotePage() {
         if (!unitFloorOptions(value).includes(current.unitFloor)) next.unitFloor = "";
       }
 
-      if (key === "bedrooms" && !bathroomOptions(value).includes(current.bathrooms)) {
-        next.bathrooms = "";
-      }
+      if (key === "service" && value !== "Not sure") next.serviceOther = "";
+      if (key === "frequency" && value !== "Custom") next.customFrequency = "";
 
       return next;
     });
     setErrors((current) => {
       const next = { ...current, [key]: "" };
+      if (key === "propertyType" && value !== "Other") next.propertyTypeOther = "";
+      if (key === "service" && value !== "Not sure") next.serviceOther = "";
+      if (key === "frequency" && value !== "Custom") next.customFrequency = "";
       if (
         (key === "preferredDate" || key === "alternativeDate") &&
         value &&
@@ -332,6 +336,27 @@ function QuotePage() {
     const nextErrors: Record<string, string> = {};
     for (const key of requiredByStep[index] ?? []) {
       if (!form[key].trim()) nextErrors[key] = `${labelByKey[key]} is required.`;
+    }
+
+    if (index === 0) {
+      if (form.propertyType === "Other" && !form.propertyTypeOther.trim()) {
+        nextErrors.propertyTypeOther = "Please describe the property type.";
+      }
+      if (["Townhouse", "House", "Other"].includes(form.propertyType) && !form.storeys.trim()) {
+        nextErrors.storeys = "Storeys in the home is required.";
+      }
+      if (form.propertyType === "Apartment" && !form.unitFloor.trim()) {
+        nextErrors.unitFloor = "Unit floor / level is required.";
+      }
+    }
+
+    if (index === 1) {
+      if (form.service === "Not sure" && !form.serviceOther.trim()) {
+        nextErrors.serviceOther = "Please tell us what you would like cleaned.";
+      }
+      if (form.frequency === "Custom" && !form.customFrequency.trim()) {
+        nextErrors.customFrequency = "Please describe your preferred cleaning frequency.";
+      }
     }
 
     if (index === 3) {
@@ -380,6 +405,16 @@ function QuotePage() {
       .forEach((key) => {
         if (!form[key].trim()) allErrors[key] = `${labelByKey[key]} is required.`;
       });
+    if (form.propertyType === "Other" && !form.propertyTypeOther.trim())
+      allErrors.propertyTypeOther = "Please describe the property type.";
+    if (["Townhouse", "House", "Other"].includes(form.propertyType) && !form.storeys.trim())
+      allErrors.storeys = "Storeys in the home is required.";
+    if (form.propertyType === "Apartment" && !form.unitFloor.trim())
+      allErrors.unitFloor = "Unit floor / level is required.";
+    if (form.service === "Not sure" && !form.serviceOther.trim())
+      allErrors.serviceOther = "Please tell us what you would like cleaned.";
+    if (form.frequency === "Custom" && !form.customFrequency.trim())
+      allErrors.customFrequency = "Please describe your preferred cleaning frequency.";
     if (!form.consent) allErrors.consent = "Please confirm that Homent may contact you.";
     if (form.email && !/^\S+@\S+\.\S+$/.test(form.email))
       allErrors.email = "Enter a valid email address.";
@@ -387,7 +422,10 @@ function QuotePage() {
   };
 
   const whatsappUrl = useMemo(() => {
-    const message = `Hello Homent,\n\nI would like help with a residential cleaning quotation.\n\nName: ${form.fullName}\nSuburb: ${form.suburb}\nProperty type: ${form.propertyType}\nBedrooms: ${form.bedrooms}\nBathrooms: ${form.bathrooms}\nService: ${form.service}\nFrequency: ${form.frequency}\nPreferred date: ${form.preferredDate}\nAdditional notes: ${form.notes}`;
+    const property = form.propertyType === "Other" ? form.propertyTypeOther : form.propertyType;
+    const service = form.service === "Not sure" ? form.serviceOther : form.service;
+    const frequency = form.frequency === "Custom" ? form.customFrequency : form.frequency;
+    const message = `Hello Homent,\n\nI would like help with a residential cleaning quotation.\n\nName: ${form.fullName}\nSuburb: ${form.suburb}\nProperty type: ${property}\nBedrooms: ${form.bedrooms}\nBathrooms: ${form.bathrooms}\nService: ${service}\nFrequency: ${frequency}\nPreferred date: ${form.preferredDate}\nAdditional notes: ${form.notes}`;
     return `https://wa.me/27684231614?text=${encodeURIComponent(message)}`;
   }, [form]);
 
@@ -623,7 +661,7 @@ function StepContent({
 
   if (step === 0) {
     const bedrooms = bedroomOptions(form.propertyType);
-    const bathrooms = bathroomOptions(form.bedrooms);
+    const bathrooms = bathroomOptions();
     const storeys = storeyOptions(form.propertyType);
     const unitFloors = unitFloorOptions(form.propertyType);
 
@@ -636,6 +674,15 @@ function StepContent({
           options={selectOptions.propertyType}
           required
         />
+        {form.propertyType === "Other" && (
+          <TextArea
+            {...props}
+            name="propertyTypeOther"
+            label="Please describe your property type"
+            required
+            wide
+          />
+        )}
 
         <div className="sm:col-span-2 rounded-xl border border-[#D8CCC0] bg-[#FBF7EF] p-4 sm:p-5">
           <p className="text-sm font-semibold text-[#4A3435]">Current location (optional)</p>
@@ -689,7 +736,6 @@ function StepContent({
           label="Bedrooms"
           options={bedrooms}
           required
-          placeholder={form.propertyType ? "Select bedrooms" : "Select property type first"}
         />
         <SelectField
           {...props}
@@ -697,7 +743,6 @@ function StepContent({
           label="Bathrooms"
           options={bathrooms}
           required
-          placeholder={form.bedrooms ? "Select bathrooms" : "Select bedrooms first"}
         />
         <SelectField
           {...props}
@@ -708,7 +753,13 @@ function StepContent({
         />
 
         {storeys.length > 0 && (
-          <SelectField {...props} name="storeys" label="Storeys in the home" options={storeys} />
+          <SelectField
+            {...props}
+            name="storeys"
+            label="Storeys in the home"
+            options={storeys}
+            required
+          />
         )}
         {form.propertyType === "Duplex" && (
           <div className="text-sm font-semibold text-[#4A3435]">
@@ -724,6 +775,7 @@ function StepContent({
             label="Unit floor / level"
             options={unitFloors}
             placeholder="Select the floor or level"
+            required
           />
         )}
 
@@ -756,6 +808,15 @@ function StepContent({
           required
           wide
         />
+        {form.service === "Not sure" && (
+          <TextArea
+            {...props}
+            name="serviceOther"
+            label="Tell us what you would like cleaned"
+            required
+            wide
+          />
+        )}
         <SelectField
           {...props}
           name="frequency"
@@ -763,6 +824,14 @@ function StepContent({
           options={selectOptions.frequency}
           required
         />
+        {form.frequency === "Custom" && (
+          <TextArea
+            {...props}
+            name="customFrequency"
+            label="Describe your preferred cleaning frequency"
+            required
+          />
+        )}
         <SelectField
           {...props}
           name="condition"
@@ -1126,6 +1195,7 @@ function SelectField({
         value={form[name]}
         onChange={(e) => update(name, e.target.value)}
         aria-invalid={!!errors[name]}
+        aria-describedby={errors[name] ? `${id}-error` : undefined}
         className={inputClass}
       >
         <option value="">{placeholder}</option>
@@ -1134,13 +1204,24 @@ function SelectField({
         ))}
       </select>
       {errors[name] && (
-        <span className="mt-2 block font-normal text-[#9B3349]">{errors[name]}</span>
+        <span id={`${id}-error`} className="mt-2 block font-normal text-[#9B3349]">
+          {errors[name]}
+        </span>
       )}
     </label>
   );
 }
 
-function TextArea({ form, update, name, label, hint, wide }: FieldProps & { hint?: string }) {
+function TextArea({
+  form,
+  update,
+  errors,
+  name,
+  label,
+  hint,
+  required,
+  wide,
+}: FieldProps & { hint?: string }) {
   const id = `field-${name}`;
   return (
     <label
@@ -1148,14 +1229,27 @@ function TextArea({ form, update, name, label, hint, wide }: FieldProps & { hint
       htmlFor={id}
     >
       {label}
+      {required && (
+        <span aria-hidden="true" className="text-[#9B3349]">
+          {" "}
+          *
+        </span>
+      )}
       <textarea
         id={id}
         rows={4}
         value={form[name]}
         onChange={(e) => update(name, e.target.value)}
+        aria-invalid={!!errors[name]}
+        aria-describedby={errors[name] ? `${id}-error` : undefined}
         className={`${inputClass} resize-y`}
       />
       {hint && <span className="mt-2 block font-normal leading-5 text-[#756963]">{hint}</span>}
+      {errors[name] && (
+        <span id={`${id}-error`} className="mt-2 block font-normal text-[#9B3349]">
+          {errors[name]}
+        </span>
+      )}
     </label>
   );
 }
@@ -1180,14 +1274,18 @@ function Notice({ children }: { children: React.ReactNode }) {
 }
 
 function Summary({ form }: { form: FormData }) {
+  const property = form.propertyType === "Other" ? form.propertyTypeOther : form.propertyType;
+  const service = form.service === "Not sure" ? form.serviceOther : form.service;
+  const frequency = form.frequency === "Custom" ? form.customFrequency : form.frequency;
   const rows = [
-    ["Property", form.propertyType],
+    ["Property", property],
     ["Suburb", form.suburb],
     ["Bedrooms", form.bedrooms],
     ["Bathrooms", form.bathrooms],
+    ["Storeys", form.storeys],
     ["Unit floor", form.unitFloor],
-    ["Service", form.service],
-    ["Frequency", form.frequency],
+    ["Service", service],
+    ["Frequency", frequency],
     ["Add-ons", form.addons.length ? `${form.addons.length} selected` : "None selected"],
     ["Eco-friendly products", form.ecoFriendlyProducts],
     ["Preferred date", form.preferredDate],
@@ -1224,15 +1322,18 @@ function Review({
   setForm: React.Dispatch<React.SetStateAction<FormData>>;
   errors: Record<string, string>;
 }) {
+  const property = form.propertyType === "Other" ? form.propertyTypeOther : form.propertyType;
+  const service = form.service === "Not sure" ? form.serviceOther : form.service;
+  const frequency = form.frequency === "Custom" ? form.customFrequency : form.frequency;
   const items = [
-    ["Property type", form.propertyType],
+    ["Property type", property],
     ["Suburb", form.suburb],
     ["Bedrooms", form.bedrooms],
     ["Bathrooms", form.bathrooms],
     ["Storeys", form.storeys],
     ["Unit floor / level", form.unitFloor],
-    ["Selected service", form.service],
-    ["Frequency", form.frequency],
+    ["Selected service", service],
+    ["Frequency", frequency],
     ["Home condition", form.condition],
     ["Selected add-ons", form.addons.join(", ") || "None selected"],
     ["Eco-friendly products", form.ecoFriendlyProducts],

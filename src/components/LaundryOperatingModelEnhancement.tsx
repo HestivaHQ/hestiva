@@ -106,7 +106,8 @@ export function LaundryOperatingModelEnhancement() {
     };
 
     const eligible = () => {
-      const visibleService = document.querySelector<HTMLSelectElement>("#field-service")?.value || "";
+      const visibleService =
+        document.querySelector<HTMLSelectElement>("#field-service")?.value || "";
       if (visibleService) selectedPrimaryService = visibleService;
       return ELIGIBLE_PRIMARY_SERVICES.has(selectedPrimaryService);
     };

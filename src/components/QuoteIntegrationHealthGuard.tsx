@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { checkHestivaOsIntegrationHealth } from "@/lib/quote/integration-health.functions";
+import { checkHestivaOsIntegrationHealth } from "@/lib/quote/structured-submission.functions";
 
 export function QuoteIntegrationHealthGuard() {
   useEffect(() => {

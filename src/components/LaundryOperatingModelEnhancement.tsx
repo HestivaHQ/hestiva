@@ -1,6 +1,20 @@
 import { useEffect } from "react";
 
-const ELIGIBLE_PRIMARY_SERVICES = new Set(["Regular Home Cleaning", "Deep Cleaning"]);
+const ELIGIBLE_PRIMARY_SERVICES = new Set([
+  "Regular Home Cleaning",
+  "Deep Cleaning",
+  "Move-In Cleaning",
+  "Move-Out Cleaning",
+  "Apartment Cleaning",
+  "Kitchen Cleaning",
+  "Bathroom Sanitisation",
+  "Bedroom Cleaning",
+  "Living Area Cleaning",
+  "Interior Window Cleaning",
+  "Eco-Friendly Cleaning",
+  "Post-Renovation Cleaning",
+  "Not sure",
+]);
 
 export type StructuredLaundryRequest = {
   facilities?: "WASHER_DRYER" | "WASHER_LINE" | "NO_WASHER";
@@ -134,8 +148,8 @@ export function LaundryOperatingModelEnhancement() {
         laundry.checkbox.disabled = !canUseLaundry;
         laundry.label.classList.toggle("opacity-50", !canUseLaundry);
         laundry.label.title = canUseLaundry
-          ? "Laundry is available with this whole-home cleaning service."
-          : "Laundry is available only with Regular Home Cleaning or Deep Cleaning.";
+          ? "Laundry is available as an add-on to this cleaning service."
+          : "Select a primary cleaning service before adding Laundry.";
         if (!canUseLaundry) clearAddon(laundry.checkbox, laundry.text, "Laundry");
       }
 
@@ -143,8 +157,8 @@ export function LaundryOperatingModelEnhancement() {
         ironingCheckbox.disabled = !canUseLaundry;
         ironingLabel.classList.toggle("opacity-50", !canUseLaundry);
         ironingLabel.title = canUseLaundry
-          ? "Ironing is available with this whole-home cleaning service."
-          : "Ironing is available only with Regular Home Cleaning or Deep Cleaning.";
+          ? "Ironing is available as an add-on to this cleaning service."
+          : "Select a primary cleaning service before adding Ironing.";
         if (!canUseLaundry) clearAddon(ironingCheckbox, ironingText, "Ironing");
       }
 

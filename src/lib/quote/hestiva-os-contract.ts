@@ -160,6 +160,7 @@ function mapStoreys(value: string | undefined) {
       "1 storey": "ONE",
       "2 storeys": "TWO",
       "3 storeys": "THREE",
+      "3+ storeys": "UNKNOWN",
       "4+ storeys": "FOUR_PLUS",
       "Not sure": "UNKNOWN",
     },
@@ -222,6 +223,21 @@ function mapLaundry(snapshot: QuoteFormSnapshot) {
   };
 }
 
+function buildAdditionalNotes(values: Record<string, string>) {
+  const lines: string[] = [];
+  if (values.propertyType === "Other" && optionalText(values.propertyTypeOther)) {
+    lines.push(`Property type details: ${values.propertyTypeOther.trim()}`);
+  }
+  if (values.service === "Not sure" && optionalText(values.serviceOther)) {
+    lines.push(`Requested service details: ${values.serviceOther.trim()}`);
+  }
+  if (values.storeys === "3+ storeys") {
+    lines.push("Storeys selected: 3+ storeys");
+  }
+  if (optionalText(values.notes)) lines.push(values.notes.trim());
+  return lines.length ? lines.join("\n") : undefined;
+}
+
 export function buildHestivaOsQuotePayload(snapshot: QuoteFormSnapshot, photos: HestivaOsPhoto[]) {
   const v = snapshot.values;
   const service = v.service?.trim();
@@ -230,7 +246,8 @@ export function buildHestivaOsQuotePayload(snapshot: QuoteFormSnapshot, photos: 
   const latitude = numeric(v.latitude);
   const longitude = numeric(v.longitude);
   const accuracyMetres = numeric(v.locationAccuracy);
-  const needsUnitAccess = v.propertyType === "Apartment" || v.propertyType === "Townhouse";
+  const needsUnitAccess = v.propertyType === "Apartment";
+  const additionalNotes = buildAdditionalNotes(v);
 
   return {
     schemaVersion: HESTIVA_OS_QUOTE_SCHEMA_VERSION,
@@ -299,8 +316,8 @@ export function buildHestivaOsQuotePayload(snapshot: QuoteFormSnapshot, photos: 
         canonicalService: PRIMARY_SERVICE_MAP[service],
       },
       frequency: requiredMap(FREQUENCY_MAP, v.frequency, "frequency"),
-      ...(v.frequency === "Custom" && optionalText(v.recurringNotes)
-        ? { customFrequencyNote: v.recurringNotes.trim() }
+      ...(v.frequency === "Custom" && optionalText(v.customFrequency)
+        ? { customFrequencyNote: v.customFrequency.trim() }
         : {}),
       homeCondition: requiredMap(CONDITION_MAP, v.condition, "home condition"),
       addOns: mapAddOns(snapshot.addOns),
@@ -372,7 +389,7 @@ export function buildHestivaOsQuotePayload(snapshot: QuoteFormSnapshot, photos: 
       ...(optionalText(v.attentionAreas) ? { attentionAreas: v.attentionAreas.trim() } : {}),
       ...(optionalText(v.renovationDust) ? { renovationDust: v.renovationDust.trim() } : {}),
       ...(optionalText(v.applianceAddons) ? { applianceNotes: v.applianceAddons.trim() } : {}),
-      ...(optionalText(v.notes) ? { additionalNotes: v.notes.trim() } : {}),
+      ...(additionalNotes ? { additionalNotes } : {}),
     },
     photos,
   };

@@ -13,6 +13,7 @@ import { BRAND_ASSETS } from "@/lib/site";
 import { StructuredQuoteSubmission } from "@/components/StructuredQuoteSubmission";
 import { QuoteProgressionPolicy } from "@/components/QuoteProgressionPolicy";
 import { QuoteFormStabilityEnhancement } from "@/components/QuoteFormStabilityEnhancement";
+import { QuoteIntegrationHealthGuard } from "@/components/QuoteIntegrationHealthGuard";
 
 const LazyBrandedFormNotices = lazy(() =>
   import("@/components/BrandedFormNotices").then((module) => ({
@@ -114,6 +115,7 @@ function RootComponent() {
   const pathname = useRouterState({ select: (state) => state.location.pathname });
   const needsFormSubmission = pathname === "/quote" || pathname === "/contact";
   const needsStructuredQuoteSubmission = pathname === "/quote";
+  const needsQuoteIntegrationHealthGuard = pathname === "/quote";
   const needsQuoteProgressionPolicy = pathname === "/quote";
   const needsQuoteFormStability = pathname === "/quote";
   const needsContactValidation = pathname === "/quote" || pathname === "/contact";
@@ -146,6 +148,7 @@ function RootComponent() {
           <LazyContactHoneypotGuard />
         </Suspense>
       )}
+      {needsQuoteIntegrationHealthGuard && <QuoteIntegrationHealthGuard />}
       {needsStructuredQuoteSubmission && <StructuredQuoteSubmission />}
       {needsQuoteProgressionPolicy && <QuoteProgressionPolicy />}
       {needsFormSubmission && (

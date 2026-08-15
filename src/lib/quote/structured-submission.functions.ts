@@ -101,6 +101,10 @@ async function sha256Hex(bytes: Uint8Array) {
   return Array.from(new Uint8Array(digest), (byte) => byte.toString(16).padStart(2, "0")).join("");
 }
 
+async function secretFingerprint(secret: string) {
+  return (await sha256Hex(new TextEncoder().encode(secret))).slice(0, 12);
+}
+
 async function buildPhotos(files: z.infer<typeof fileSchema>[]): Promise<HestivaOsPhoto[]> {
   const photos: HestivaOsPhoto[] = [];
   for (const file of files) {
@@ -117,6 +121,75 @@ async function buildPhotos(files: z.infer<typeof fileSchema>[]): Promise<Hestiva
   }
   return photos;
 }
+
+export const checkHestivaOsIntegrationHealth = createServerFn({ method: "GET" }).handler(
+  async () => {
+    const baseUrl = process.env.HESTIVA_OS_API_URL?.trim().replace(/\/$/, "");
+    const secret = process.env.HESTIVA_WEBSITE_INTEGRATION_SECRET?.trim();
+    if (!baseUrl || !secret) {
+      console.error({
+        event: "hestiva_os_integration_health_failed",
+        stage: "configuration",
+      });
+      return { ok: false as const };
+    }
+
+    const localFingerprint = await secretFingerprint(secret);
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 5_000);
+
+    try {
+      const response = await fetch(`${baseUrl}/api/v1/integrations/website/health`, {
+        method: "GET",
+        headers: { authorization: `Bearer ${secret}` },
+        signal: controller.signal,
+      });
+
+      if (!response.ok) {
+        console.error({
+          event: "hestiva_os_integration_health_failed",
+          stage: "response",
+          status: response.status,
+          secretFingerprint: localFingerprint,
+        });
+        return { ok: false as const };
+      }
+
+      const result = (await response.json()) as {
+        ok?: unknown;
+        secretFingerprint?: unknown;
+      };
+      const remoteFingerprint =
+        typeof result.secretFingerprint === "string" ? result.secretFingerprint : "missing";
+      const ok = result.ok === true && remoteFingerprint === localFingerprint;
+
+      if (!ok) {
+        console.error({
+          event: "hestiva_os_integration_health_failed",
+          stage: "fingerprint_mismatch",
+          secretFingerprint: localFingerprint,
+          remoteFingerprint,
+        });
+        return { ok: false as const };
+      }
+
+      console.info({
+        event: "hestiva_os_integration_health_ok",
+        secretFingerprint: localFingerprint,
+      });
+      return { ok: true as const };
+    } catch {
+      console.error({
+        event: "hestiva_os_integration_health_failed",
+        stage: "network",
+        secretFingerprint: localFingerprint,
+      });
+      return { ok: false as const };
+    } finally {
+      clearTimeout(timer);
+    }
+  },
+);
 
 async function submitToHestivaOs(payload: unknown) {
   const baseUrl = process.env.HESTIVA_OS_API_URL?.trim().replace(/\/$/, "");
@@ -244,9 +317,6 @@ export const submitStructuredQuoteForm = createServerFn({ method: "POST" })
         });
       }
 
-      // HestivaOS acknowledgement is the authoritative intake boundary. Once a real
-      // quoteReference exists, an email-provider problem must not tell the customer
-      // that the request itself was not sent or encourage a duplicate submission.
       return { success: true as const, quoteReference, correspondenceDelivered };
     } catch (error) {
       if (error instanceof PublicSubmissionError) {

@@ -77,10 +77,12 @@ export function LaundryOperatingModelEnhancement() {
     let laundryFacilities = "";
     let laundryLoads = "1";
     let ironingLoads = "1";
+    let selectedPrimaryService = "";
 
     const removePrimaryLaundry = () => {
       const service = document.querySelector<HTMLSelectElement>("#field-service");
       if (!service) return;
+      if (service.value) selectedPrimaryService = service.value;
       const stale = Array.from(service.options).find(
         (option) =>
           option.value === "Laundry Folding" || option.textContent?.trim() === "Laundry Folding",
@@ -88,6 +90,7 @@ export function LaundryOperatingModelEnhancement() {
       if (!stale) return;
       if (service.value === stale.value) {
         service.value = "";
+        selectedPrimaryService = "";
         service.dispatchEvent(new Event("change", { bubbles: true }));
       }
       stale.remove();
@@ -102,10 +105,12 @@ export function LaundryOperatingModelEnhancement() {
       return { checkbox, label, text };
     };
 
-    const eligible = () =>
-      ELIGIBLE_PRIMARY_SERVICES.has(
-        document.querySelector<HTMLSelectElement>("#field-service")?.value || "",
-      );
+    const eligible = () => {
+      const visibleService =
+        document.querySelector<HTMLSelectElement>("#field-service")?.value || "";
+      if (visibleService) selectedPrimaryService = visibleService;
+      return ELIGIBLE_PRIMARY_SERVICES.has(selectedPrimaryService);
+    };
 
     const clearAddon = (checkbox: HTMLInputElement, text: HTMLElement, baseLabel: string) => {
       if (checkbox.checked) {
@@ -143,14 +148,17 @@ export function LaundryOperatingModelEnhancement() {
         if (!canUseLaundry) clearAddon(ironingCheckbox, ironingText, "Ironing");
       }
 
-      if (!laundry?.checkbox.checked || !canUseLaundry) {
+      // Do not erase selected structured Laundry/Ironing data merely because the
+      // add-on step has unmounted. Clear only when the relevant checkbox is
+      // actually present and deselected (or the remembered primary service is ineligible).
+      if (laundry && (!laundry.checkbox.checked || !canUseLaundry)) {
         structuredLaundryRequest = {
           ...structuredLaundryRequest,
           facilities: undefined,
           laundryLoads: undefined,
         };
       }
-      if (!ironingCheckbox?.checked || !canUseLaundry) {
+      if (ironingCheckbox && (!ironingCheckbox.checked || !canUseLaundry)) {
         structuredLaundryRequest = {
           ...structuredLaundryRequest,
           ironingLoads: undefined,

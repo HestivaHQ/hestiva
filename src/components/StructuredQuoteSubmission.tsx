@@ -157,18 +157,23 @@ async function sendStructuredQuote(button: HTMLButtonElement) {
         website: "",
       },
     });
-    if (!result || result.success !== true)
+    if (!result || result.success !== true) {
+      console.error("Structured quote submission failed", result);
       throw new Error("Structured quote was not acknowledged");
+    }
 
     pendingSubmission = undefined;
     photoIds.clear();
     clearQuoteFiles();
     setButtonState(button, "Request Sent", true);
+    const correspondenceDelivered =
+      "correspondenceDelivered" in result ? result.correspondenceDelivered !== false : true;
     window.alert(
-      `Your request has been sent successfully. Reference: ${result.quoteReference}. A confirmation email is on its way.`,
+      correspondenceDelivered
+        ? `Your request has been sent successfully. Reference: ${result.quoteReference}. A confirmation email is on its way.`
+        : `Your request has been sent successfully. Reference: ${result.quoteReference}. We received your request, but the confirmation email could not be delivered automatically.`,
     );
   } catch {
-    console.error("Structured quote submission failed");
     setButtonState(button, button.dataset.originalText || "Send Request", false);
     window.alert("We could not send your request. Please try again or email quotes@homent.co.za.");
   } finally {

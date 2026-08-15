@@ -218,6 +218,7 @@ export const submitStructuredQuoteForm = createServerFn({ method: "POST" })
         attachmentSummary,
       });
 
+      let correspondenceDelivered = true;
       try {
         await Promise.all([
           sendEmailViaResend({
@@ -235,10 +236,18 @@ export const submitStructuredQuoteForm = createServerFn({ method: "POST" })
           }),
         ]);
       } catch {
-        throw new PublicSubmissionError("delivery");
+        correspondenceDelivered = false;
+        console.error({
+          event: "structured_quote_correspondence_failed",
+          stage: "email",
+          quoteReference,
+        });
       }
 
-      return { success: true as const, quoteReference };
+      // HestivaOS acknowledgement is the authoritative intake boundary. Once a real
+      // quoteReference exists, an email-provider problem must not tell the customer
+      // that the request itself was not sent or encourage a duplicate submission.
+      return { success: true as const, quoteReference, correspondenceDelivered };
     } catch (error) {
       if (error instanceof PublicSubmissionError) {
         console.error({ event: "structured_quote_rejected", stage: error.category });

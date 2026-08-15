@@ -143,6 +143,24 @@ function setButtonState(button: HTMLButtonElement, text: string, disabled: boole
   button.textContent = text;
 }
 
+function submissionFailureMessage(category: string | undefined) {
+  switch (category) {
+    case "validation":
+      return "Some quote details could not be processed. Please review your selections and try again. Error code: Q-VALIDATION.";
+    case "rate_limit":
+      return "Too many quote requests have been attempted from this connection. Please wait about 15 minutes before trying again. Error code: Q-RATE-LIMIT.";
+    case "delivery":
+      return "Your quote details were prepared, but we could not reach the quotation system. Please try again shortly. Error code: Q-DELIVERY.";
+    case "origin":
+    case "bot":
+      return "We could not verify this quote request. Please refresh the page and try again. Error code: Q-SECURITY.";
+    case "unexpected":
+      return "A technical error occurred while preparing your quote. Please try again shortly. Error code: Q-UNEXPECTED.";
+    default:
+      return "We could not send your request. Please try again or email quotes@homent.co.za. Error code: Q-UNKNOWN.";
+  }
+}
+
 async function sendStructuredQuote(button: HTMLButtonElement) {
   if (inFlight || !consentConfirmed()) return;
   inFlight = true;
@@ -159,7 +177,9 @@ async function sendStructuredQuote(button: HTMLButtonElement) {
     });
     if (!result || result.success !== true) {
       console.error("Structured quote submission failed", result);
-      throw new Error("Structured quote was not acknowledged");
+      setButtonState(button, button.dataset.originalText || "Send Request", false);
+      window.alert(submissionFailureMessage(result?.category));
+      return;
     }
 
     pendingSubmission = undefined;
@@ -175,7 +195,9 @@ async function sendStructuredQuote(button: HTMLButtonElement) {
     );
   } catch {
     setButtonState(button, button.dataset.originalText || "Send Request", false);
-    window.alert("We could not send your request. Please try again or email quotes@homent.co.za.");
+    window.alert(
+      "A browser or network error interrupted the request before it could be confirmed. Please try again. Error code: Q-CLIENT.",
+    );
   } finally {
     inFlight = false;
   }

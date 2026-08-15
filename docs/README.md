@@ -1,6 +1,6 @@
-# Hestiva engineering documentation
+# Homent website engineering documentation
 
-This directory is the maintained engineering and operational record for the Hestiva website. It describes verified repository and production state; product requirements remain in [`../HEPS.md`](../HEPS.md).
+This directory is the maintained engineering and operational record for the Homent website. It describes verified repository and production state. Product and engineering requirements remain in [`../HEPS.md`](../HEPS.md), except that pre-cutover Hestiva-specific public-brand instructions in HEPS are superseded by the verified Homent cutover record in [`HOMENT_PUBLIC_CUTOVER.md`](HOMENT_PUBLIC_CUTOVER.md) and the repository-wide current-identity rule in [`../AGENTS.md`](../AGENTS.md).
 
 ## Documentation policy
 
@@ -16,6 +16,7 @@ Historical gaps may be backfilled only from authoritative evidence such as merge
 
 ## Canonical documents
 
+- [`HOMENT_PUBLIC_CUTOVER.md`](HOMENT_PUBLIC_CUTOVER.md) — current customer-facing Homent identity, domain/email cutover state, and preserved historical/internal Hestiva boundaries.
 - [`ARCHITECTURE.md`](ARCHITECTURE.md) — current application structure, runtime boundaries, and explicitly deferred quotation-system architecture.
 - [`DEPLOYMENT.md`](DEPLOYMENT.md) — authoritative Cloudflare production path, verified settings, previews, and the Wrangler configuration relationship.
 - [`ENVIRONMENT.md`](ENVIRONMENT.md) — variable inventory and handling rules (names only; never secret values).

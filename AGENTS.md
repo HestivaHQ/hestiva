@@ -1,6 +1,15 @@
-# Hestiva website engineering standards
+# Homent website engineering standards
 
 These rules apply to every file in this repository. Documentation is part of the Definition of Done: implementation, configuration, operational state, and their authoritative documentation must not knowingly diverge.
+
+## Current public identity
+
+- The active customer-facing brand is **Homent**.
+- The canonical production origin is `https://www.homent.co.za`.
+- `docs/HOMENT_PUBLIC_CUTOVER.md` is the current authority for public brand/domain/email cutover state.
+- Historical documentation and implementation-internal identifiers may still contain `Hestiva` where that wording remains technically or historically accurate, including the repository name and the HestivaOS integration boundary.
+- Do not reintroduce Hestiva customer-facing branding, `hestiva.co.za` public URLs/email addresses, or superseded Hestiva taglines merely because an older specification or historical document still contains them.
+- Where `HEPS.md` contains pre-cutover Hestiva-specific public-brand instructions, those instructions are superseded by the verified Homent cutover record and current active source. Preserve non-brand product, engineering, safety, accessibility, content-integrity, testing, and governance rules unless separately superseded.
 
 ## Documentation principles
 

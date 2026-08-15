@@ -67,19 +67,33 @@ function ensureTownhouseLegacyBridge() {
   const form = document.getElementById("quote-form");
   if (!form) return;
 
+  // The legacy controller can inject apartment-style controls before its progressive
+  // check runs. Remove that visible panel for Townhouses; Contract v2 uses storeys.
+  document.getElementById("quote-unit-access-fields")?.remove();
+
   const values: Record<(typeof TOWNHOUSE_BRIDGE_IDS)[number], string> = {
     "field-unitFloorExact": "Townhouse storey model",
     "field-buildingAccess": "Townhouse storey model",
   };
 
-  for (const id of TOWNHOUSE_BRIDGE_IDS) {
-    if (document.getElementById(id)) continue;
+  for (const id of [...TOWNHOUSE_BRIDGE_IDS].reverse()) {
+    const existingBridge = document.querySelector<HTMLInputElement>(
+      `[data-townhouse-legacy-bridge="${id}"]`,
+    );
+    if (existingBridge) {
+      existingBridge.value = values[id];
+      continue;
+    }
+
     const input = document.createElement("input");
     input.type = "hidden";
     input.id = id;
     input.value = values[id];
     input.dataset.townhouseLegacyBridge = id;
-    form.appendChild(input);
+
+    // Prepend so document.querySelector/getElementById resolves this compatibility
+    // value before any apartment-style control the lazy legacy controller may inject.
+    form.prepend(input);
   }
 }
 
@@ -128,6 +142,14 @@ export function QuoteFormStabilityEnhancement() {
       window.setTimeout(apply, 1);
     };
 
+    const applyBeforeLegacyTimer = () => {
+      // LiveFormSubmission records the change and schedules its legacy synchronisation
+      // with setTimeout(..., 0). Apply synchronously here so Townhouse bridge values are
+      // already first in DOM order before that timer can clear outdoor/estate selections.
+      apply();
+      schedule();
+    };
+
     const root = document.getElementById("quote-form");
     const observer = new MutationObserver(schedule);
     if (root) {
@@ -139,13 +161,13 @@ export function QuoteFormStabilityEnhancement() {
       });
     }
     document.addEventListener("input", schedule, true);
-    document.addEventListener("change", schedule, true);
+    document.addEventListener("change", applyBeforeLegacyTimer, true);
     schedule();
 
     return () => {
       observer.disconnect();
       document.removeEventListener("input", schedule, true);
-      document.removeEventListener("change", schedule, true);
+      document.removeEventListener("change", applyBeforeLegacyTimer, true);
       removeTownhouseLegacyBridge();
     };
   }, []);

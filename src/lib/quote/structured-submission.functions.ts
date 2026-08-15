@@ -23,7 +23,10 @@ const fileSchema = z
     clientPhotoId: z.string().uuid(),
     name: z.string().trim().min(1).max(120),
     type: z.string().trim().min(1).max(100),
-    base64: z.string().min(1).max(14 * 1024 * 1024),
+    base64: z
+      .string()
+      .min(1)
+      .max(14 * 1024 * 1024),
   })
   .strict();
 

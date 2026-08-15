@@ -10,6 +10,7 @@ import { lazy, Suspense } from "react";
 
 import appCss from "../styles.css?url";
 import { BRAND_ASSETS } from "@/lib/site";
+import { StructuredQuoteSubmission } from "@/components/StructuredQuoteSubmission";
 
 const LazyBrandedFormNotices = lazy(() =>
   import("@/components/BrandedFormNotices").then((module) => ({
@@ -24,11 +25,6 @@ const LazyContactValidationEnhancements = lazy(() =>
 const LazyContactHoneypotGuard = lazy(() =>
   import("@/components/ContactHoneypotGuard").then((module) => ({
     default: module.ContactHoneypotGuard,
-  })),
-);
-const LazyStructuredQuoteSubmission = lazy(() =>
-  import("@/components/StructuredQuoteSubmission").then((module) => ({
-    default: module.StructuredQuoteSubmission,
   })),
 );
 const LazyFormSubmission = lazy(() =>
@@ -146,11 +142,7 @@ function RootComponent() {
           <LazyContactHoneypotGuard />
         </Suspense>
       )}
-      {needsStructuredQuoteSubmission && (
-        <Suspense fallback={null}>
-          <LazyStructuredQuoteSubmission />
-        </Suspense>
-      )}
+      {needsStructuredQuoteSubmission && <StructuredQuoteSubmission />}
       {needsFormSubmission && (
         <Suspense fallback={null}>
           <LazyFormSubmission />

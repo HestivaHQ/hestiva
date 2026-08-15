@@ -11,6 +11,7 @@ import { lazy, Suspense } from "react";
 import appCss from "../styles.css?url";
 import { BRAND_ASSETS } from "@/lib/site";
 import { StructuredQuoteSubmission } from "@/components/StructuredQuoteSubmission";
+import { QuoteProgressionPolicy } from "@/components/QuoteProgressionPolicy";
 
 const LazyBrandedFormNotices = lazy(() =>
   import("@/components/BrandedFormNotices").then((module) => ({
@@ -112,6 +113,7 @@ function RootComponent() {
   const pathname = useRouterState({ select: (state) => state.location.pathname });
   const needsFormSubmission = pathname === "/quote" || pathname === "/contact";
   const needsStructuredQuoteSubmission = pathname === "/quote";
+  const needsQuoteProgressionPolicy = pathname === "/quote";
   const needsContactValidation = pathname === "/quote" || pathname === "/contact";
   const needsContactHoneypotGuard = pathname === "/contact";
   const needsBrandedFormNotices = pathname === "/quote" || pathname === "/contact";
@@ -143,6 +145,7 @@ function RootComponent() {
         </Suspense>
       )}
       {needsStructuredQuoteSubmission && <StructuredQuoteSubmission />}
+      {needsQuoteProgressionPolicy && <QuoteProgressionPolicy />}
       {needsFormSubmission && (
         <Suspense fallback={null}>
           <LazyFormSubmission />

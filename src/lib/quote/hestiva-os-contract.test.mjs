@@ -94,4 +94,71 @@ describe("HestivaOS Quote Contract v2 mapper", () => {
       ),
     ).toThrow("Unsupported primary service");
   });
+
+  test("uses the dedicated custom-frequency explanation in the structured contract", () => {
+    const payload = buildHestivaOsQuotePayload(
+      snapshot({
+        values: {
+          ...snapshot().values,
+          frequency: "Custom",
+          customFrequency: "Every third Saturday morning",
+          recurringNotes: "Please call before arriving.",
+        },
+      }),
+      [],
+    );
+
+    expect(payload.request.frequency).toBe("CUSTOM");
+    expect(payload.request.customFrequencyNote).toBe("Every third Saturday morning");
+    expect(payload.visit.recurringNotes).toBe("Please call before arriving.");
+  });
+
+  test("preserves Other property and Not sure service explanations for HestivaOS review", () => {
+    const payload = buildHestivaOsQuotePayload(
+      snapshot({
+        values: {
+          ...snapshot().values,
+          propertyType: "Other",
+          propertyTypeOther: "Converted loft above a workshop",
+          service: "Not sure",
+          serviceOther: "Mainly floors, kitchen and two bathrooms",
+          frequency: "One-time",
+          notes: "Please use the side entrance.",
+        },
+      }),
+      [],
+    );
+
+    expect(payload.request.primaryService).toEqual({
+      websiteValue: "Not sure",
+      canonicalService: null,
+    });
+    expect(payload.notes.additionalNotes).toContain(
+      "Property type details: Converted loft above a workshop",
+    );
+    expect(payload.notes.additionalNotes).toContain(
+      "Requested service details: Mainly floors, kitchen and two bathrooms",
+    );
+    expect(payload.notes.additionalNotes).toContain("Please use the side entrance.");
+  });
+
+  test("treats Townhouse as a storey-based home instead of requiring apartment floor access", () => {
+    const payload = buildHestivaOsQuotePayload(
+      snapshot({
+        values: {
+          ...snapshot().values,
+          propertyType: "Townhouse",
+          storeys: "3+ storeys",
+          unitFloorExact: "",
+          buildingAccess: "",
+        },
+      }),
+      [],
+    );
+
+    expect(payload.property.storeys).toBe("UNKNOWN");
+    expect(payload.property).not.toHaveProperty("exactFloor");
+    expect(payload.property).not.toHaveProperty("buildingAccess");
+    expect(payload.notes.additionalNotes).toContain("Storeys selected: 3+ storeys");
+  });
 });

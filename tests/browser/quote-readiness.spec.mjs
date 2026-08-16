@@ -23,7 +23,7 @@ async function openQuote(page) {
   });
   await page.goto("/quote");
   await expect(page.getByRole("heading", { name: "Tell us about your home." })).toBeVisible();
-  await expect(page.locator("#field-frequency")).toHaveAttribute("data-option-signature", ":");
+  await expect(page.locator("#field-propertyType")).toBeEnabled();
   return consoleErrors;
 }
 

@@ -4,6 +4,10 @@ test("quote success notice stays visible until the customer closes it", async ({
   await page.goto("/quote");
   await expect(page.getByRole("heading", { name: "Tell us about your home." })).toBeVisible();
 
+  await page.waitForFunction(() => {
+    return !Function.prototype.toString.call(window.alert).includes("[native code]");
+  });
+
   await page.evaluate(() => {
     window.alert(
       "Your request has been sent successfully. Reference: HOM-PERSISTENCE-TEST. A confirmation email has been sent.",

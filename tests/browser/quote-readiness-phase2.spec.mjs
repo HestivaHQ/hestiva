@@ -176,7 +176,9 @@ test("malformed email blocks progression from Your Details", async ({ page }) =>
   await selectWhenReady(page, "#field-contactMethod", { label: "Email" });
 
   await page.getByRole("button", { name: /Continue/i }).click();
-  await expect(page.locator("#field-email-error")).toHaveText("Enter a valid email address.");
+  await expect(
+    page.locator('[role="alert"]').filter({ hasText: "Enter a valid email address." }),
+  ).toBeVisible();
   await expect(page.getByRole("heading", { name: "Your Details", exact: true })).toBeVisible();
 });
 
@@ -200,9 +202,10 @@ test("entered customer journey survives back and forward navigation through Revi
   await selectWhenReady(page, "#field-contactMethod", { label: "WhatsApp" });
   await continueTo(page, "Review and Submit");
 
-  await expect(page.getByText("Regular Home Cleaning", { exact: true })).toBeVisible();
-  await expect(page.getByText(preferredDate, { exact: true })).toBeVisible();
-  await expect(page.getByText("WhatsApp", { exact: true })).toBeVisible();
+  const review = page.locator("form");
+  await expect(review.getByText("Regular Home Cleaning", { exact: true })).toBeVisible();
+  await expect(review.getByText(preferredDate, { exact: true })).toBeVisible();
+  await expect(review.getByText("WhatsApp", { exact: true })).toBeVisible();
 
   await page.getByRole("button", { name: /Back/i }).click();
   await expect(page.getByRole("heading", { name: "Your Details", exact: true })).toBeVisible();
@@ -210,7 +213,7 @@ test("entered customer journey survives back and forward navigation through Revi
   await expect(page.locator("#field-email")).toHaveValue("readiness@example.com");
   await selectWhenReady(page, "#field-contactMethod", { label: "Email" });
   await continueTo(page, "Review and Submit");
-  await expect(page.getByText("Email", { exact: true })).toBeVisible();
+  await expect(page.locator("form").getByText("Email", { exact: true })).toBeVisible();
 
   // The readiness suite intentionally stops here. It does not submit a real quote.
 });

@@ -1,17 +1,8 @@
 import { useEffect } from "react";
 
-const LAUNDRY_ELIGIBLE_SERVICES = new Set(["Regular Home Cleaning", "Deep Cleaning"]);
 const EXPANDED_RECURRING_SERVICES = new Set(["Bedroom Cleaning", "Living Area Cleaning"]);
 const EXPANDED_FREQUENCIES = ["One-time", "Weekly", "Every two weeks", "Monthly", "Custom"];
 const TOWNHOUSE_BRIDGE_IDS = ["field-unitFloorExact", "field-buildingAccess"] as const;
-
-function findAddonCheckbox(prefix: string) {
-  return Array.from(
-    document.querySelectorAll<HTMLInputElement>('#quote-form input[type="checkbox"]'),
-  ).find((checkbox) =>
-    checkbox.closest("label")?.querySelector("span")?.textContent?.trim().startsWith(prefix),
-  );
-}
 
 function ensureFrequencyOptions(service: string) {
   if (!EXPANDED_RECURRING_SERVICES.has(service)) return;
@@ -124,16 +115,6 @@ export function QuoteFormStabilityEnhancement() {
 
       ensureFrequencyOptions(lastPrimaryService);
       removeOrphanedSafetyControls();
-
-      const canUseLaundry = LAUNDRY_ELIGIBLE_SERVICES.has(lastPrimaryService);
-      const laundry = findAddonCheckbox("Laundry");
-      const ironing = findAddonCheckbox("Ironing");
-      for (const checkbox of [laundry, ironing]) {
-        if (!checkbox) continue;
-        if (checkbox.disabled !== !canUseLaundry) checkbox.disabled = !canUseLaundry;
-        const label = checkbox.closest("label");
-        label?.classList.toggle("opacity-50", !canUseLaundry);
-      }
     };
 
     const schedule = () => {

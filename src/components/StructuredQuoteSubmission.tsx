@@ -25,6 +25,7 @@ declare global {
     __HOMENT_TEST_STRUCTURED_QUOTE_SUBMIT__?: (
       input: StructuredSubmissionInput,
     ) => Promise<StructuredSubmissionResult> | StructuredSubmissionResult;
+    __HOMENT_TEST_STRUCTURED_SUBMISSION_READY__?: boolean;
   }
 }
 
@@ -249,8 +250,14 @@ export function StructuredQuoteSubmission() {
     document.addEventListener("change", remember, true);
     document.addEventListener("click", onClick, true);
     rememberVisibleState();
+    if (isDevelopmentBuild) {
+      window.__HOMENT_TEST_STRUCTURED_SUBMISSION_READY__ = true;
+    }
 
     return () => {
+      if (isDevelopmentBuild) {
+        delete window.__HOMENT_TEST_STRUCTURED_SUBMISSION_READY__;
+      }
       document.removeEventListener("input", remember, true);
       document.removeEventListener("change", remember, true);
       document.removeEventListener("click", onClick, true);

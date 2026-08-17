@@ -99,6 +99,9 @@ test("first-step focus order follows the visible customer controls", async ({ pa
   await expect(page.locator("#field-suburb")).toBeFocused();
 
   await page.keyboard.press("Tab");
+  await expect(page.locator("#field-postcode")).toBeFocused();
+
+  await page.keyboard.press("Tab");
   await expect(page.locator("#field-address")).toBeFocused();
 });
 

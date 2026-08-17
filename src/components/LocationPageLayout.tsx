@@ -9,10 +9,14 @@ import { locationPages, type LocationPage } from "@/content/locations";
 import { servicePages } from "@/content/services";
 import { locationBreadcrumbs } from "@/lib/breadcrumbs";
 
+const DEAD_LOCATION_IMAGE_IDS = new Set(["3773571"]);
+
 export function LocationPageLayout({ location }: { location: LocationPage }) {
   const featuredServices = servicePages.slice(0, 6);
   const breadcrumbs = locationBreadcrumbs(location.name, `/locations/${location.slug}`);
-  const gallery = locationVisualLibrary[location.name] ?? [];
+  const gallery = (locationVisualLibrary[location.name] ?? []).filter(
+    (image) => ![...DEAD_LOCATION_IMAGE_IDS].some((photoId) => image.src.includes(`/photos/${photoId}/`)),
+  );
   const primaryImage = gallery[0];
   const supportingImages = gallery.slice(1, 3);
   const nearbyLocations = location.nearbyAreas

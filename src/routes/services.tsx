@@ -279,7 +279,7 @@ function ServicesRoute() {
 
 function ServicesOverview() {
   return (
-    <div className="min-h-screen bg-[#FBF7EF] text-[#322B2A]">
+    <div className="min-h-screen overflow-x-hidden bg-[#FBF7EF] text-[#322B2A]">
       <Navbar />
 
       <main>

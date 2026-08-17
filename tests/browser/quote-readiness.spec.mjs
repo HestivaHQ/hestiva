@@ -154,7 +154,9 @@ test("Other property type requires a description", async ({ page }) => {
   await selectWhenReady(page, "#field-estate", { label: "No" });
 
   await page.getByRole("button", { name: /Continue/i }).click();
-  await expect(page.getByText("Please describe the property type.", { exact: true })).toBeVisible();
+  await expect(page.locator("#field-propertyTypeOther-error")).toHaveText(
+    "Please describe the property type.",
+  );
   await expect(page.getByRole("heading", { name: "Your Home", exact: true })).toBeVisible();
 });
 

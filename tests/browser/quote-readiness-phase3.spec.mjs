@@ -114,12 +114,12 @@ test("mocked structured submission success is owned once and locks the final but
   await reachReview(page);
   await page.getByRole("checkbox").check();
 
-  const dialogPromise = page.waitForEvent("dialog");
   await page.getByRole("button", { name: "Send Request", exact: true }).click();
-  const dialog = await dialogPromise;
-  expect(dialog.message()).toContain("Your request has been sent successfully.");
-  expect(dialog.message()).toContain("HOM-TEST-001");
-  await dialog.accept();
+
+  const notice = page.locator("#homent-form-notice");
+  await expect(notice).toContainText("Homent — Request received");
+  await expect(notice).toContainText("Your request has been sent successfully.");
+  await expect(notice).toContainText("HOM-TEST-001");
 
   const sentButton = page.getByRole("button", { name: "Request Sent", exact: true });
   await expect(sentButton).toBeDisabled();
@@ -135,12 +135,12 @@ test("mocked delivery failure shows Q-DELIVERY and restores retryability", async
   await reachReview(page);
   await page.getByRole("checkbox").check();
 
-  const dialogPromise = page.waitForEvent("dialog");
   await page.getByRole("button", { name: "Send Request", exact: true }).click();
-  const dialog = await dialogPromise;
-  expect(dialog.message()).toContain("could not reach the quotation system");
-  expect(dialog.message()).toContain("Q-DELIVERY");
-  await dialog.accept();
+
+  const notice = page.locator("#homent-form-notice");
+  await expect(notice).toContainText("Homent — Request not sent");
+  await expect(notice).toContainText("could not reach the quotation system");
+  await expect(notice).toContainText("Q-DELIVERY");
 
   const retryButton = page.getByRole("button", { name: "Send Request", exact: true });
   await expect(retryButton).toBeEnabled();

@@ -23,6 +23,10 @@ async function openQuote(page) {
   });
   await page.goto("/quote");
   await expect(page.getByRole("heading", { name: "Tell us about your home." })).toBeVisible();
+  await page.waitForFunction(() => {
+    const field = document.querySelector("#field-propertyType");
+    return Boolean(field && Object.keys(field).some((key) => key.startsWith("__reactProps$")));
+  });
   await expect(page.locator("#field-propertyType")).toBeEnabled();
   return consoleErrors;
 }

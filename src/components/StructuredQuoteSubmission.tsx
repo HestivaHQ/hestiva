@@ -3,6 +3,7 @@ import { getStructuredLaundryRequest } from "@/components/LaundryOperatingModelE
 import { submitStructuredQuoteForm } from "@/lib/quote/structured-submission.functions";
 import { clearQuoteFiles, getQuoteFiles } from "@/lib/quote/client-upload-store";
 import type { QuoteFormSnapshot, StructuredQuoteFile } from "@/lib/quote/hestiva-os-contract";
+import { isDevelopmentRuntime } from "@/lib/runtime-environment";
 
 const values: Record<string, string> = {};
 const addOns = new Set<string>();
@@ -179,7 +180,7 @@ function submissionFailureMessage(category: string | undefined) {
 }
 
 async function executeStructuredSubmission(input: StructuredSubmissionInput) {
-  if (import.meta.env.DEV && window.__HOMENT_TEST_STRUCTURED_QUOTE_SUBMIT__) {
+  if (isDevelopmentRuntime() && window.__HOMENT_TEST_STRUCTURED_QUOTE_SUBMIT__) {
     return window.__HOMENT_TEST_STRUCTURED_QUOTE_SUBMIT__(input);
   }
   return submitStructuredQuoteForm(input);

@@ -232,9 +232,6 @@ export function StructuredQuoteSubmission() {
   useEffect(() => {
     if (window.location.pathname !== "/quote") return;
 
-    const quoteForm = document.querySelector<HTMLElement>("#quote-form");
-    quoteForm?.setAttribute("data-structured-submission-ready", "true");
-
     const remember = () => rememberVisibleState();
     const onClick = (event: MouseEvent) => {
       rememberVisibleState();
@@ -254,7 +251,6 @@ export function StructuredQuoteSubmission() {
     rememberVisibleState();
 
     return () => {
-      quoteForm?.removeAttribute("data-structured-submission-ready");
       document.removeEventListener("input", remember, true);
       document.removeEventListener("change", remember, true);
       document.removeEventListener("click", onClick, true);

@@ -3,7 +3,7 @@ import { getStructuredLaundryRequest } from "@/components/LaundryOperatingModelE
 import { submitStructuredQuoteForm } from "@/lib/quote/structured-submission.functions";
 import { clearQuoteFiles, getQuoteFiles } from "@/lib/quote/client-upload-store";
 import type { QuoteFormSnapshot, StructuredQuoteFile } from "@/lib/quote/hestiva-os-contract";
-import { isDevelopmentRuntime } from "@/lib/runtime-environment";
+import { isDevelopmentBuild } from "@/lib/runtime-environment";
 
 const values: Record<string, string> = {};
 const addOns = new Set<string>();
@@ -180,7 +180,7 @@ function submissionFailureMessage(category: string | undefined) {
 }
 
 async function executeStructuredSubmission(input: StructuredSubmissionInput) {
-  if (isDevelopmentRuntime() && window.__HOMENT_TEST_STRUCTURED_QUOTE_SUBMIT__) {
+  if (isDevelopmentBuild && window.__HOMENT_TEST_STRUCTURED_QUOTE_SUBMIT__) {
     return window.__HOMENT_TEST_STRUCTURED_QUOTE_SUBMIT__(input);
   }
   return submitStructuredQuoteForm(input);
@@ -232,6 +232,9 @@ export function StructuredQuoteSubmission() {
   useEffect(() => {
     if (window.location.pathname !== "/quote") return;
 
+    const quoteForm = document.querySelector<HTMLElement>("#quote-form");
+    quoteForm?.setAttribute("data-structured-submission-ready", "true");
+
     const remember = () => rememberVisibleState();
     const onClick = (event: MouseEvent) => {
       rememberVisibleState();
@@ -251,6 +254,7 @@ export function StructuredQuoteSubmission() {
     rememberVisibleState();
 
     return () => {
+      quoteForm?.removeAttribute("data-structured-submission-ready");
       document.removeEventListener("input", remember, true);
       document.removeEventListener("change", remember, true);
       document.removeEventListener("click", onClick, true);

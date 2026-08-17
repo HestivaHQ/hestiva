@@ -90,7 +90,7 @@ test("empty first step shows required-field feedback and keeps focus in the step
   await openQuote(page);
   await page.getByRole("button", { name: /Continue/i }).click();
   await expect(page.getByRole("alert").first()).toContainText(/Property type/i);
-  await expect(page.getByRole("heading", { name: "Your Home" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Your Home", exact: true })).toBeVisible();
   await expect(page.locator("#field-propertyType")).toBeFocused();
 });
 
@@ -137,7 +137,7 @@ test("Other property type requires a description", async ({ page }) => {
   await expect(property).toHaveValue("Other");
   await expect(page.locator("#field-propertyTypeOther")).toBeVisible();
   await page.getByRole("button", { name: /Continue/i }).click();
-  await expect(page.getByRole("alert").first()).toContainText(/describe the property type/i);
+  await expect(page.getByText("Please describe the property type.", { exact: true })).toBeVisible();
 });
 
 test("Not sure primary service requires cleaning requirements text", async ({ page }) => {
@@ -173,7 +173,7 @@ for (const service of primaryServices) {
     await fillCleaningStep(page, service);
 
     const laundry = page.getByRole("checkbox", { name: /^Laundry$/ });
-    const ironing = page.getByRole("checkbox", { name: /^Ironing$/ });
+    const ironing = page.getByRole("checkbox", { name: /^Ironing(?: × \d+)?$/ });
     await expect(laundry).toBeEnabled();
     await expect(ironing).toBeEnabled();
     await laundry.check();

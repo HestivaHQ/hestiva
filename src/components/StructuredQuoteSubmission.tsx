@@ -10,6 +10,23 @@ const photoIds = new Map<string, string>();
 let pendingSubmission: { snapshot: QuoteFormSnapshot; files: StructuredQuoteFile[] } | undefined;
 let inFlight = false;
 
+type StructuredSubmissionResult = Awaited<ReturnType<typeof submitStructuredQuoteForm>>;
+type StructuredSubmissionInput = {
+  data: {
+    snapshot: QuoteFormSnapshot;
+    files: StructuredQuoteFile[];
+    website: string;
+  };
+};
+
+declare global {
+  interface Window {
+    __HOMENT_TEST_STRUCTURED_QUOTE_SUBMIT__?: (
+      input: StructuredSubmissionInput,
+    ) => Promise<StructuredSubmissionResult> | StructuredSubmissionResult;
+  }
+}
+
 function fieldName(id: string) {
   return id.startsWith("field-") ? id.slice("field-".length) : id;
 }
@@ -161,6 +178,13 @@ function submissionFailureMessage(category: string | undefined) {
   }
 }
 
+async function executeStructuredSubmission(input: StructuredSubmissionInput) {
+  if (import.meta.env.DEV && window.__HOMENT_TEST_STRUCTURED_QUOTE_SUBMIT__) {
+    return window.__HOMENT_TEST_STRUCTURED_QUOTE_SUBMIT__(input);
+  }
+  return submitStructuredQuoteForm(input);
+}
+
 async function sendStructuredQuote(button: HTMLButtonElement) {
   if (inFlight || !consentConfirmed()) return;
   inFlight = true;
@@ -168,7 +192,7 @@ async function sendStructuredQuote(button: HTMLButtonElement) {
 
   try {
     const submission = await getPendingSubmission();
-    const result = await submitStructuredQuoteForm({
+    const result = await executeStructuredSubmission({
       data: {
         snapshot: submission.snapshot,
         files: submission.files,

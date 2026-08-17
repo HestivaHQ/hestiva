@@ -26,6 +26,11 @@ function failureMessage(category: ReturnType<typeof consumeSubmissionFailureCate
   }
 }
 
+function preserveDiagnosticCode(message: string, brandedMessage: string) {
+  const diagnosticCode = message.match(/Error code:\s*(Q-[A-Z-]+)/i)?.[1]?.toUpperCase();
+  return diagnosticCode ? `${brandedMessage} Error code: ${diagnosticCode}.` : brandedMessage;
+}
+
 function showNotice(message: string) {
   document.getElementById("homent-form-notice")?.remove();
 
@@ -85,7 +90,8 @@ export function BrandedFormNotices() {
     window.alert = (message?: unknown) => {
       const text = String(message ?? "");
       if (/could not send your request/i.test(text)) {
-        showNotice(failureMessage(consumeSubmissionFailureCategory()));
+        const brandedMessage = failureMessage(consumeSubmissionFailureCategory());
+        showNotice(preserveDiagnosticCode(text, brandedMessage));
         return;
       }
       showNotice(text);

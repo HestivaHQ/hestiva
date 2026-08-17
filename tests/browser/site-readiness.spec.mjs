@@ -95,8 +95,8 @@ test.describe("whole-site readiness", () => {
     await page.goto("/");
 
     for (const destination of ["/quote", "/services", "/contact", "/faq", "/privacy", "/terms"]) {
-      const links = page.locator(`a[href='${destination}']`);
-      await expect(links.first(), `Expected customer navigation to expose ${destination}`).toBeVisible();
+      const visibleLink = page.locator(`a[href='${destination}']:visible`).first();
+      await expect(visibleLink, `Expected customer navigation to expose ${destination}`).toBeVisible();
     }
   });
 });

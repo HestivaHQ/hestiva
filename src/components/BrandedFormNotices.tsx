@@ -68,7 +68,9 @@ function showNotice(message: string) {
   wrapper.appendChild(header);
   document.body.appendChild(wrapper);
 
-  window.setTimeout(() => wrapper.remove(), tone === "success" ? 8000 : 12000);
+  if (tone === "error") {
+    window.setTimeout(() => wrapper.remove(), 12000);
+  }
 }
 
 function alignContactFallbackEmail() {

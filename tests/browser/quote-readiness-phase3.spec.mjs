@@ -19,7 +19,7 @@ async function openQuote(page) {
     return Boolean(field && Object.keys(field).some((key) => key.startsWith("__reactProps$")));
   });
   await expect(page.locator("#field-propertyType")).toBeEnabled();
-  await expect.poll(() => page.evaluate(() => typeof window.__HOMENT_TEST_STRUCTURED_QUOTE_SUBMIT__)).toBe("function");
+  await expect.poll(() => page.evaluate(() => window.__HOMENT_TEST_STRUCTURED_SUBMISSION_READY__ === true)).toBe(true);
 }
 
 async function selectWhenReady(page, selector, option) {

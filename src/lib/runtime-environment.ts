@@ -1,3 +1,1 @@
-export function isDevelopmentRuntime() {
-  return import.meta.env.DEV;
-}
+export const isDevelopmentBuild = import.meta.env.DEV;

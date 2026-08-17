@@ -1,9 +1,15 @@
 import { useEffect } from "react";
 import { checkHestivaOsIntegrationHealth } from "@/lib/quote/structured-submission.functions";
+import { isDevelopmentBuild } from "@/lib/runtime-environment";
 
 export function QuoteIntegrationHealthGuard() {
   useEffect(() => {
     if (window.location.pathname !== "/quote") return;
+
+    // Phase 3 browser-readiness tests replace only the final structured
+    // submission boundary. Do not let the live integration-health guard
+    // pre-empt that development-only submission owner.
+    if (isDevelopmentBuild && window.__HOMENT_TEST_STRUCTURED_QUOTE_SUBMIT__) return;
 
     let integrationHealthy: boolean | undefined;
     let disposed = false;

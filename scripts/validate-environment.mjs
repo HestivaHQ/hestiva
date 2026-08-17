@@ -11,7 +11,7 @@ const allowedReads = new Map([
     "process.env.HESTIVA_WEBSITE_INTEGRATION_SECRET",
     "src/lib/quote/structured-submission.functions.ts",
   ],
-  ["import.meta.env.DEV", "src/router.tsx"],
+  ["import.meta.env.DEV", "src/lib/runtime-environment.ts"],
 ]);
 const findings = [];
 const reads = [];

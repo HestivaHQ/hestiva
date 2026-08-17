@@ -121,11 +121,17 @@ test("Townhouse keeps storeys, balcony/patio and estate/complex controls usable"
   const property = page.locator("#field-propertyType");
   await property.selectOption({ label: "Townhouse" });
   await expect(property).toHaveValue("Townhouse");
-  await expect(page.locator("#field-storeys")).toBeEnabled();
-  await expect(page.locator("#field-outdoor")).toBeEnabled();
-  await expect(page.locator("#field-estate")).toBeEnabled();
-  await page.locator("#field-outdoor").selectOption({ label: "Balcony" });
-  await page.locator("#field-estate").selectOption({ label: "Yes — complex" });
+
+  await page.locator("#field-suburb").fill("Sandton");
+  await page.locator("#field-address").fill("1 Test Street");
+  await selectWhenReady(page, "#field-floorSize", { index: 1 });
+  await selectWhenReady(page, "#field-bedrooms", { index: 1 });
+  await selectWhenReady(page, "#field-bathrooms", { label: "1" });
+  await selectWhenReady(page, "#field-livingAreas", { label: "1" });
+  await selectWhenReady(page, "#field-storeys", { index: 1 });
+  await selectWhenReady(page, "#field-outdoor", { label: "Balcony" });
+  await expect(page.locator("#field-outdoor")).toHaveValue("Balcony");
+  await selectWhenReady(page, "#field-estate", { label: "Yes — complex" });
   await expect(page.locator("#field-outdoor")).toHaveValue("Balcony");
   await expect(page.locator("#field-estate")).toHaveValue("Yes — complex");
 });
@@ -136,8 +142,20 @@ test("Other property type requires a description", async ({ page }) => {
   await property.selectOption({ label: "Other" });
   await expect(property).toHaveValue("Other");
   await expect(page.locator("#field-propertyTypeOther")).toBeVisible();
+
+  await page.locator("#field-suburb").fill("Sandton");
+  await page.locator("#field-address").fill("1 Test Street");
+  await selectWhenReady(page, "#field-floorSize", { index: 1 });
+  await selectWhenReady(page, "#field-bedrooms", { index: 1 });
+  await selectWhenReady(page, "#field-bathrooms", { label: "1" });
+  await selectWhenReady(page, "#field-livingAreas", { label: "1" });
+  await selectWhenReady(page, "#field-storeys", { index: 1 });
+  await selectWhenReady(page, "#field-outdoor", { label: "None" });
+  await selectWhenReady(page, "#field-estate", { label: "No" });
+
   await page.getByRole("button", { name: /Continue/i }).click();
   await expect(page.getByText("Please describe the property type.", { exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Your Home", exact: true })).toBeVisible();
 });
 
 test("Not sure primary service requires cleaning requirements text", async ({ page }) => {

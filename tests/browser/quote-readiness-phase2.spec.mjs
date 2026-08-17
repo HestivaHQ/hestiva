@@ -61,13 +61,28 @@ async function fillPreferredVisit(page) {
   return minimum;
 }
 
+async function fillRequiredChoice(page, field, details = "") {
+  const choice = `#field-${field}Choice`;
+  if (details) {
+    await selectWhenReady(page, choice, { label: "Yes — add details" });
+    const detailField = page.locator(`#field-${field}Details`);
+    await expect(detailField).toBeVisible();
+    await detailField.fill(details);
+  } else {
+    await selectWhenReady(page, choice, { label: "None" });
+  }
+}
+
 async function fillAccessStep(page, { pets = "No pets", restrictions = "", allergies = "" } = {}) {
   await selectWhenReady(page, "#field-complexAccess", { label: "Not applicable" });
   await selectWhenReady(page, "#field-keyHandover", { label: "Someone will open" });
   await selectWhenReady(page, "#field-present", { label: "Yes" });
   await selectWhenReady(page, "#field-pets", { label: pets });
-  if (restrictions) await page.locator("#field-restrictions").fill(restrictions);
-  if (allergies) await page.locator("#field-allergies").fill(allergies);
+
+  if (pets.startsWith("Yes")) return;
+
+  await fillRequiredChoice(page, "restrictions", restrictions);
+  await fillRequiredChoice(page, "allergies", allergies);
 }
 
 async function reachAccessStep(page) {
@@ -120,9 +135,11 @@ test("pet-dependent details are mandatory when pets are selected", async ({ page
   await expect(page.locator("#field-petTemperament")).toBeVisible();
   await page.getByRole("button", { name: /Continue/i }).click();
 
-  await expect(page.locator("#field-petType-error")).toHaveText("Pet type is required.");
-  await expect(page.locator("#field-petTemperament-error")).toHaveText(
-    "Pet temperament is required.",
+  await expect(page.locator("#quote-error-field-petType")).toHaveText(
+    "Please select the type of pet.",
+  );
+  await expect(page.locator("#quote-error-field-petTemperament")).toHaveText(
+    "Please select the pet temperament.",
   );
   await expect(
     page.getByRole("heading", { name: "Access and Household Details", exact: true }),
@@ -143,8 +160,12 @@ test("product restrictions and allergies stay on the household-details step afte
   await expect(
     page.getByRole("heading", { name: "Access and Household Details", exact: true }),
   ).toBeVisible();
-  await expect(page.locator("#field-restrictions")).toHaveValue("No bleach on natural stone");
-  await expect(page.locator("#field-allergies")).toHaveValue("Fragrance sensitivity");
+  await expect(page.locator("#field-restrictionsChoice")).toHaveValue("Yes — add details");
+  await expect(page.locator("#field-restrictionsDetails")).toHaveValue(
+    "No bleach on natural stone",
+  );
+  await expect(page.locator("#field-allergiesChoice")).toHaveValue("Yes — add details");
+  await expect(page.locator("#field-allergiesDetails")).toHaveValue("Fragrance sensitivity");
 });
 
 test("malformed email blocks progression from Your Details", async ({ page }) => {

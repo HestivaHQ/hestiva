@@ -2,6 +2,10 @@ name: Hestiva Production Performance Check
 
 on:
   workflow_dispatch:
+  pull_request:
+    paths:
+      - ".github/workflows/hestiva-performance-check.yml"
+      - "lighthouserc.cjs"
 
 permissions:
   contents: read
@@ -10,7 +14,7 @@ jobs:
   lighthouse:
     name: Lighthouse production baseline
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 30
 
     steps:
       - name: Check out repository

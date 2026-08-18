@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { getRequestHeader } from "@tanstack/react-start/server";
+import { buildContactEmailPackage } from "@/lib/contact-email-templates";
 import { sendEmailViaResend } from "@/lib/quote/email-service";
 import { buildQuoteEmailPackage } from "@/lib/quote/email-templates";
 import { validateQuoteAttachments } from "@/lib/quote/file-validation";
@@ -30,6 +31,12 @@ function submissionChannel(service: string): SubmissionChannel {
 
 function adminRecipient(channel: SubmissionChannel) {
   return channel === "contact" ? "info@homent.co.za" : "quotes@homent.co.za";
+}
+
+function senderIdentity(channel: SubmissionChannel) {
+  return channel === "contact"
+    ? { from: "Homent <info@homent.co.za>", replyTo: "info@homent.co.za" }
+    : { from: "Homent Quotes <quotes@homent.co.za>", replyTo: "quotes@homent.co.za" };
 }
 
 function failed(category: SubmissionFailureCategory) {
@@ -73,22 +80,36 @@ export const submitContactForm = createServerFn({ method: "POST" })
         ? attachments.map((attachment) => `- ${attachment.filename}`).join("\n")
         : "None";
 
-      const emailPackage = buildQuoteEmailPackage({
-        name: submission.name,
-        phone: submission.phone,
-        email: submission.email,
-        service: submission.service,
-        jobType: submission.jobType,
-        multipleServices: submission.multipleServices,
-        otherService: submission.otherService,
-        propertyAddress: submission.propertyAddress,
-        description: submission.description,
-        preferredContact: submission.preferredContact,
-        urgency: submission.urgency,
-        reference,
-        submittedAt,
-        attachmentSummary,
-      });
+      const emailPackage =
+        channel === "contact"
+          ? buildContactEmailPackage({
+              name: submission.name,
+              phone: submission.phone,
+              email: submission.email,
+              enquiryType: submission.service,
+              suburb: submission.propertyAddress,
+              description: submission.description,
+              preferredContact: submission.preferredContact,
+              reference,
+              submittedAt,
+            })
+          : buildQuoteEmailPackage({
+              name: submission.name,
+              phone: submission.phone,
+              email: submission.email,
+              service: submission.service,
+              jobType: submission.jobType,
+              multipleServices: submission.multipleServices,
+              otherService: submission.otherService,
+              propertyAddress: submission.propertyAddress,
+              description: submission.description,
+              preferredContact: submission.preferredContact,
+              urgency: submission.urgency,
+              reference,
+              submittedAt,
+              attachmentSummary,
+            });
+      const identity = senderIdentity(channel);
 
       try {
         await Promise.all([
@@ -98,12 +119,14 @@ export const submitContactForm = createServerFn({ method: "POST" })
             text: emailPackage.adminText,
             html: emailPackage.adminHtml,
             attachments,
+            ...identity,
           }),
           sendEmailViaResend({
             to: submission.email,
             subject: emailPackage.customerSubject,
             text: emailPackage.customerText,
             html: emailPackage.customerHtml,
+            ...identity,
           }),
         ]);
       } catch {

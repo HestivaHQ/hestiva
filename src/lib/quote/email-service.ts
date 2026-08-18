@@ -10,6 +10,8 @@ export type OutboundEmail = {
   text: string;
   html: string;
   attachments?: QuoteAttachment[];
+  from?: string;
+  replyTo?: string;
 };
 
 function getResendApiKey(): string {
@@ -30,8 +32,8 @@ export async function sendEmailViaResend(
   timeoutMs = PROVIDER_TIMEOUT_MS,
 ) {
   const emailPayload: Record<string, unknown> = {
-    from: "Homent Quotes <quotes@homent.co.za>",
-    reply_to: "quotes@homent.co.za",
+    from: email.from ?? "Homent Quotes <quotes@homent.co.za>",
+    reply_to: email.replyTo ?? "quotes@homent.co.za",
     to: email.to,
     subject: email.subject,
     text: email.text,

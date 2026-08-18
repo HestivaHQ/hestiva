@@ -11,6 +11,12 @@ import { locationBreadcrumbs } from "@/lib/breadcrumbs";
 
 const DEAD_LOCATION_IMAGE_IDS = new Set(["3773571"]);
 
+function pexelsSizedSrc(src: string, width: number): string {
+  const url = new URL(src);
+  url.searchParams.set("w", String(width));
+  return url.toString();
+}
+
 export function LocationPageLayout({ location }: { location: LocationPage }) {
   const featuredServices = servicePages.slice(0, 6);
   const breadcrumbs = locationBreadcrumbs(location.name, `/locations/${location.slug}`);
@@ -45,7 +51,7 @@ export function LocationPageLayout({ location }: { location: LocationPage }) {
 
             <div className="grid gap-10 lg:grid-cols-[1.02fr_0.98fr] lg:items-center">
               <div className="max-w-3xl">
-                <span className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.3em] text-[#9A7132]">
+                <span className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.3em] text-[#76531F]">
                   <MapPin className="h-4 w-4" />
                   {location.region} Service Area
                 </span>
@@ -63,9 +69,12 @@ export function LocationPageLayout({ location }: { location: LocationPage }) {
               {primaryImage && (
                 <figure className="overflow-hidden rounded-3xl border border-[#C9A45B]/30 bg-[#FFFDF8] shadow-[0_20px_60px_rgba(70,42,33,0.09)]">
                   <img
-                    src={primaryImage.src}
+                    src={pexelsSizedSrc(primaryImage.src, 960)}
+                    srcSet={`${pexelsSizedSrc(primaryImage.src, 480)} 480w, ${pexelsSizedSrc(primaryImage.src, 720)} 720w, ${pexelsSizedSrc(primaryImage.src, 960)} 960w, ${pexelsSizedSrc(primaryImage.src, 1280)} 1280w`}
+                    sizes="(min-width: 1024px) 48vw, calc(100vw - 3rem)"
                     alt={primaryImage.alt}
                     loading="eager"
+                    fetchPriority="high"
                     decoding="async"
                     className="aspect-[4/3] w-full object-cover"
                   />
@@ -80,7 +89,7 @@ export function LocationPageLayout({ location }: { location: LocationPage }) {
             <div className="mx-auto max-w-7xl">
               <div className="mb-8 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
                 <div>
-                  <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#9A7132]">
+                  <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#76531F]">
                     Residential interiors
                   </p>
                   <h2
@@ -101,7 +110,9 @@ export function LocationPageLayout({ location }: { location: LocationPage }) {
                     className="overflow-hidden rounded-2xl border border-[#E2D3BD] bg-[#F8F3E8]"
                   >
                     <img
-                      src={image.src}
+                      src={pexelsSizedSrc(image.src, 720)}
+                      srcSet={`${pexelsSizedSrc(image.src, 480)} 480w, ${pexelsSizedSrc(image.src, 720)} 720w, ${pexelsSizedSrc(image.src, 960)} 960w`}
+                      sizes="(min-width: 640px) 50vw, calc(100vw - 3rem)"
                       alt={image.alt}
                       loading="lazy"
                       decoding="async"
@@ -152,7 +163,7 @@ export function LocationPageLayout({ location }: { location: LocationPage }) {
         <section className="border-y border-[#E6D9C8] bg-[#FFFDF8] px-6 py-20 md:py-24">
           <div className="mx-auto max-w-7xl">
             <div className="max-w-2xl">
-              <span className="text-xs font-semibold uppercase tracking-[0.3em] text-[#9A7132]">
+              <span className="text-xs font-semibold uppercase tracking-[0.3em] text-[#76531F]">
                 Popular Services
               </span>
               <h2 className="mt-3 text-3xl font-semibold tracking-tight text-[#5A1425] md:text-4xl">
@@ -186,7 +197,7 @@ export function LocationPageLayout({ location }: { location: LocationPage }) {
         <section className="px-6 py-20 md:py-24">
           <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-[0.8fr_1.2fr]">
             <div>
-              <span className="text-xs font-semibold uppercase tracking-[0.3em] text-[#9A7132]">
+              <span className="text-xs font-semibold uppercase tracking-[0.3em] text-[#76531F]">
                 Questions
               </span>
               <h2 className="mt-3 text-3xl font-semibold tracking-tight text-[#5A1425] md:text-4xl">
@@ -227,7 +238,6 @@ export function LocationPageLayout({ location }: { location: LocationPage }) {
                       to="/locations/$locationSlug"
                       params={{ locationSlug: area.slug }}
                       className="rounded-full border border-[#D9C8AD] bg-[#F8F3E8] px-3 py-1 text-xs text-[#695E59] transition-colors hover:border-[#C9A45B] hover:text-[#5A1425]"
-                      aria-label={`View Homent residential cleaning in nearby ${area.name}`}
                     >
                       Cleaning in {area.name}
                     </Link>

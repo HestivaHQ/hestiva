@@ -17,22 +17,22 @@
 
 ## Application-consumed variables
 
-| Name                                 | Exposure                          | Purpose                                                                      | Requirement                                                                                                      | Expected environment                                                                             | Source consumption                                                   |
-| ------------------------------------ | --------------------------------- | ---------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------- |
-| `RESEND_API_KEY`                     | Server-only secret                | Authorizes HTTPS calls to Resend for contact/quote email delivery            | Required when a contact or quote submission sends email; the adapter throws if absent/blank                      | Cloudflare encrypted Secret in production; an untracked secret mechanism for local email testing | `src/lib/quote/email-service.ts` via `process.env`                   |
-| `HESTIVA_OS_API_URL`                 | Server-only runtime configuration | Base URL for the authoritative HestivaOS API used by structured quote intake | Required when `/quote` submits through HestivaOS; missing/blank fails the quote closed before email confirmation | Cloudflare runtime variable in production; untracked local integration config                    | `src/lib/quote/structured-submission.functions.ts` via `process.env` |
-| `HESTIVA_WEBSITE_INTEGRATION_SECRET` | Server-only secret                | Authorizes the private Website → HestivaOS quote-ingestion request           | Required when `/quote` submits through HestivaOS; missing/blank fails closed                                     | Cloudflare encrypted Secret in production; an untracked local secret mechanism                   | `src/lib/quote/structured-submission.functions.ts` via `process.env` |
+<!-- prettier-ignore -->
+| Name                                 | Exposure                          | Purpose                                                                                         | Requirement                                                                                                                        | Expected environment                                                                             | Source consumption                                                                                      |
+| ------------------------------------ | --------------------------------- | ----------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------- |
+| `RESEND_API_KEY`                     | Server-only secret                | Authorizes HTTPS calls to Resend for contact/quote email delivery                               | Required when a contact or quote submission sends email; the adapter throws if absent/blank                                        | Cloudflare encrypted Secret in production; an untracked secret mechanism for local email testing | `src/lib/quote/email-service.ts` via `process.env`                                                      |
+| `HESTIVA_OS_API_URL`                 | Server-only runtime configuration | Base URL for the authoritative HestivaOS API used by structured quote and contact-enquiry intake | Required when `/quote` or `/contact` submits through HestivaOS; missing/blank fails the authoritative intake closed before success | Cloudflare runtime variable in production; untracked local integration config                    | `src/lib/quote/structured-submission.functions.ts` and `src/lib/contact.functions.ts` via `process.env` |
+| `HESTIVA_WEBSITE_INTEGRATION_SECRET` | Server-only secret                | Authorizes private Website → HestivaOS quote and contact-enquiry ingestion                       | Required when `/quote` or `/contact` submits through HestivaOS; missing/blank fails closed                                          | Cloudflare encrypted Secret in production; an untracked local secret mechanism                   | `src/lib/quote/structured-submission.functions.ts` and `src/lib/contact.functions.ts` via `process.env` |
 
 None of these names may be prefixed with `VITE_`. The integration secret must never be exposed to
 browser code, checked into Wrangler variables, printed in logs, or reused for unrelated services.
 
 All three values are runtime-only: ordinary pages, static assets, navigation, and form entry do not
-require them at build time. Contact enquiries continue to require only `RESEND_API_KEY` when email
-is actually sent. Quote submission requires the HestivaOS endpoint and integration secret first;
-after HestivaOS accepts or replays the structured quote, the existing Resend admin/customer email
-flow runs using the authoritative HestivaOS quote reference. If either integration value is absent,
-the quote request fails closed and no confirmation email is sent pretending that HestivaOS accepted
-it.
+require them at build time. Contact enquiries and structured Quote submissions require the HestivaOS
+endpoint and integration secret before the Website may report successful authoritative intake. After
+HestivaOS accepts or safely replays the submission, the existing Resend Admin/customer email flow runs
+using the authoritative HestivaOS reference. If either integration value is absent, the corresponding
+request fails closed and no success response is returned pretending that HestivaOS accepted it.
 
 `import.meta.env.DEV`, read in `src/router.tsx`, is a Vite built-in mode boolean used only to decide
 whether to display error detail. Operators do not configure it as a Hestiva runtime variable.
@@ -67,11 +67,12 @@ not directly read the binding.
 ## Repository validation
 
 Run `bun run verify:environment` after changing source or environment configuration. The lightweight
-static check enforces the approved source-read locations, requires the Resend adapter and HestivaOS
-quote adapter to retain fail-closed configuration checks, rejects secret-like `VITE_` names in
-tracked environment configuration, and ensures `keep_vars` remains enabled without placing
-`RESEND_API_KEY` or `HESTIVA_WEBSITE_INTEGRATION_SECRET` in tracked Wrangler variables. It checks
-names and structure only; it neither reads nor proves the presence of Cloudflare dashboard values.
+static check enforces the approved source-read locations, requires the Resend adapter and both
+HestivaOS Website-integration call sites to retain fail-closed configuration checks, rejects
+secret-like `VITE_` names in tracked environment configuration, and ensures `keep_vars` remains
+enabled without placing `RESEND_API_KEY` or `HESTIVA_WEBSITE_INTEGRATION_SECRET` in tracked Wrangler
+variables. It checks names and structure only; it neither reads nor proves the presence of Cloudflare
+dashboard values.
 
 CI cannot safely validate production secret values or presence because GitHub Actions is not the
 owner of production runtime configuration. Diagnose runtime absence in Cloudflare, while build

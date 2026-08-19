@@ -29,7 +29,11 @@ for (const file of sourceFiles) {
     for (const match of contents.matchAll(pattern)) {
       const read = match[0];
       reads.push([read, file]);
-      if (!allowedReads.some(([allowedRead, allowedFile]) => allowedRead === read && allowedFile === file)) {
+      if (
+        !allowedReads.some(
+          ([allowedRead, allowedFile]) => allowedRead === read && allowedFile === file,
+        )
+      ) {
         findings.push(`${file}: undocumented or misplaced environment read ${read}`);
       }
     }

@@ -4,15 +4,17 @@ import { readFileSync } from "node:fs";
 const trackedFiles = execFileSync("git", ["ls-files", "-z"]).toString().split("\0").filter(Boolean);
 const sourceFiles = trackedFiles.filter((file) => /^src\/.*\.(?:[cm]?[jt]sx?)$/.test(file));
 
-const allowedReads = new Map([
+const allowedReads = [
   ["process.env.RESEND_API_KEY", "src/lib/quote/email-service.ts"],
   ["process.env.HESTIVA_OS_API_URL", "src/lib/quote/structured-submission.functions.ts"],
   [
     "process.env.HESTIVA_WEBSITE_INTEGRATION_SECRET",
     "src/lib/quote/structured-submission.functions.ts",
   ],
+  ["process.env.HESTIVA_OS_API_URL", "src/lib/contact.functions.ts"],
+  ["process.env.HESTIVA_WEBSITE_INTEGRATION_SECRET", "src/lib/contact.functions.ts"],
   ["import.meta.env.DEV", "src/lib/runtime-environment.ts"],
-]);
+];
 const findings = [];
 const reads = [];
 
@@ -27,7 +29,7 @@ for (const file of sourceFiles) {
     for (const match of contents.matchAll(pattern)) {
       const read = match[0];
       reads.push([read, file]);
-      if (allowedReads.get(read) !== file) {
+      if (!allowedReads.some(([allowedRead, allowedFile]) => allowedRead === read && allowedFile === file)) {
         findings.push(`${file}: undocumented or misplaced environment read ${read}`);
       }
     }
@@ -54,6 +56,13 @@ const structuredQuoteAdapter = readFileSync(
 if (!/if \(!baseUrl \|\| !secret\)/.test(structuredQuoteAdapter)) {
   findings.push(
     "src/lib/quote/structured-submission.functions.ts: HestivaOS endpoint and integration secret must fail closed when missing",
+  );
+}
+
+const contactAdapter = readFileSync("src/lib/contact.functions.ts", "utf8");
+if (!/if \(!baseUrl \|\| !secret\)/.test(contactAdapter)) {
+  findings.push(
+    "src/lib/contact.functions.ts: HestivaOS endpoint and integration secret must fail closed when missing",
   );
 }
 

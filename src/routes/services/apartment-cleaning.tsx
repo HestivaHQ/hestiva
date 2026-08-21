@@ -7,13 +7,12 @@ import { SITE_NAME } from "@/lib/site";
 import {
   createBreadcrumbList,
   createPageGraph,
-  createServiceSchema,
   schemaScripts,
 } from "@/lib/structured-data";
 
 const apartmentCleaning = (() => {
   const service = getServicePage("apartment-cleaning");
-  if (!service) throw new Error("Canonical Apartment Cleaning service content is missing");
+  if (!service) throw new Error("Apartment cleaning context content is missing");
   return service;
 })();
 
@@ -22,15 +21,19 @@ const breadcrumbs = serviceBreadcrumbs("Apartment Cleaning", "/services/apartmen
 export const Route = createFileRoute("/services/apartment-cleaning")({
   component: ApartmentCleaningPage,
   head: () => {
-    const title = `Apartment Cleaning | ${SITE_NAME}`;
+    const title = `Apartment Cleaning Options | ${SITE_NAME}`;
     const description =
-      "Detail-led apartment cleaning for studios and multi-bedroom homes, tailored to your space and routine.";
+      "Apartment is treated as property context when requesting Homent cleaning. Choose the cleaning service you need and identify the property as an apartment during quoting.";
     const path = "/services/apartment-cleaning";
     return {
-      ...createSeoHead({ title, description, path }),
+      ...createSeoHead({
+        title,
+        description,
+        path,
+        robots: { index: false, follow: true },
+      }),
       scripts: schemaScripts(
         createPageGraph(path, title, description),
-        createServiceSchema(path, "Apartment Cleaning", description),
         createBreadcrumbList(breadcrumbs),
       ),
     };

@@ -2,6 +2,23 @@
 
 This append-only log records verified engineering and material operational work without reconstructing unsupported history. Add newest entries first. Link pull requests/commits when available and describe validation without including secrets or customer data.
 
+## 2026-08-21 — Reconciled quote service options at source
+
+**Purpose:** Complete the canonical-service cleanup by making the actual server-rendered quote form agree with the approved service model rather than relying on a browser MutationObserver to repair incorrect options after hydration.
+
+**Work recorded:**
+
+- verified `src/routes/quote.tsx` still hard-coded `Apartment Cleaning` and `Eco-Friendly Cleaning` as primary-service choices even though Apartment is property context and eco-friendly products are a separate Yes/No preference;
+- removed those two non-primary values from the React quote source while preserving `Apartment` in Property Type and the existing eco-friendly-products preference;
+- removed `CanonicalServiceModelEnhancement` and its root-route wiring because the source form now renders the canonical primary-service list directly;
+- corrected the shared Apartment FAQ to explain that customers choose the cleaning service they need and identify Apartment as the property type;
+- retained the deliberately permissive legacy contact/server vocabulary and HestivaOS historical compatibility mappings rather than deleting backward-compatibility paths that are not customer-facing primary-service selectors; and
+- updated architecture and change records to reflect the source-level ownership change.
+
+**Preserved boundaries:** No pricing, HestivaOS service IDs, Website Quote Contract v2 mapping, submission transport, authentication, payment policy, Laundry/Ironing operating model, public compatibility URLs, or historical records were changed.
+
+**Verification state:** Source reconciliation is complete on `audit/final-consistency-launch-readiness`. The normal Hestiva PR quality gate must pass before merge.
+
 ## 2026-08-14 — Finalized Website Quote Contract v2 and Laundry/Ironing website semantics
 
 **Purpose:** Complete the website side of HestivaOS Issue #79 without activating production quote ingestion before its external prerequisites are verified.
@@ -201,7 +218,7 @@ This append-only log records verified engineering and material operational work 
 - preserved mobile-menu close behaviour, scroll behaviour, styling, accessibility states, and logo dimensions; and
 - completed the source-level performance audit without introducing speculative framework/shared-runtime refactoring.
 
-**Verification:** PR #108 passed the full Hestiva PR Check and merged into `main`.
+**Verification:** PR #108 passed the Hestiva PR Check and merged into `main`.
 
 ## 2026-08-11 — Added Balcony / Patio Cleaning quantity handling
 

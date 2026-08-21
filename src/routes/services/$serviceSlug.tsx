@@ -1,10 +1,13 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { ServicePageLayout } from "@/components/ServicePageLayout";
-import { postRenovationService } from "@/content/post-renovation-service";
-import { getServicePage, servicePages } from "@/content/services";
 import { createSeoHead } from "@/lib/seo";
 import { serviceBreadcrumbs } from "@/lib/breadcrumbs";
-import { isReclassifiedServiceSlug } from "@/lib/public-service-policy";
+import {
+  getResolvableServicePage,
+  indexablePublicServicePages,
+  isReclassifiedServiceSlug,
+  reclassifiedServicePages,
+} from "@/lib/public-service-policy";
 import {
   createBreadcrumbList,
   createFaqPage,
@@ -13,13 +16,9 @@ import {
   schemaScripts,
 } from "@/lib/structured-data";
 
-function getPublicServicePage(slug: string) {
-  return slug === postRenovationService.slug ? postRenovationService : getServicePage(slug);
-}
-
 export const Route = createFileRoute("/services/$serviceSlug")({
   loader: ({ params }) => {
-    const service = getPublicServicePage(params.serviceSlug);
+    const service = getResolvableServicePage(params.serviceSlug);
 
     if (!service) {
       throw notFound();
@@ -28,7 +27,7 @@ export const Route = createFileRoute("/services/$serviceSlug")({
     return { service };
   },
   head: ({ loaderData, params }) => {
-    const service = loaderData?.service ?? getPublicServicePage(params.serviceSlug);
+    const service = loaderData?.service ?? getResolvableServicePage(params.serviceSlug);
 
     if (!service) {
       return {};
@@ -67,8 +66,7 @@ function ServiceRoute() {
 }
 
 export function getStaticServicePaths() {
-  return [
-    ...servicePages.map((service) => `/services/${service.slug}`),
-    `/services/${postRenovationService.slug}`,
-  ];
+  return [...indexablePublicServicePages, ...reclassifiedServicePages].map(
+    (service) => `/services/${service.slug}`,
+  );
 }

@@ -24,6 +24,7 @@ The structured Website → HestivaOS contract already transports `property.prope
 - Preserved the existing `Use eco-friendly products?` Yes/No preference field.
 - Preserved Post-Renovation as assessment/quote-required; this change does not introduce deterministic customer pricing.
 - Preserved historical/internal service identifiers and compatibility mappings where removing them could alter replay/history semantics.
+- Added browser regression coverage that requires the live Primary Service selector to omit Apartment Cleaning and Eco-Friendly Cleaning while retaining Apartment as a property type.
 
 ## Scope boundary
 

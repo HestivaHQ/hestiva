@@ -8,9 +8,7 @@ export const SERVICE_OPTIONS = [
   "Bedroom Cleaning",
   "Living Area Cleaning",
   "Interior Window Cleaning",
-  "Apartment Cleaning",
-  "Eco-Friendly Cleaning",
-  "Add-On Services",
+  "Post-Renovation Cleaning",
   "Multiple Services Required",
   "Other (Please Describe)",
 ] as const;
@@ -25,9 +23,7 @@ export const JOB_TYPES: Record<string, string[]> = {
   "Bedroom Cleaning": ["Single Bedroom", "Multiple Bedrooms", "Linen Change", "Other"],
   "Living Area Cleaning": ["Lounge", "Dining Area", "Open-Plan Area", "Multiple Living Areas", "Other"],
   "Interior Window Cleaning": ["Selected Windows", "Whole Home", "Glass Doors", "Other"],
-  "Apartment Cleaning": ["Studio", "One Bedroom", "Two Bedroom", "Three Bedroom or Larger", "Other"],
-  "Eco-Friendly Cleaning": ["Whole Home", "Selected Rooms", "Recurring Service", "Other"],
-  "Add-On Services": ["Fridge Interior", "Oven Interior", "Cupboard Interiors", "Linen Change", "Other"],
+  "Post-Renovation Cleaning": ["Assessment Required", "Other"],
 };
 
 export const MULTIPLE_SERVICE_CATEGORIES = [
@@ -40,9 +36,7 @@ export const MULTIPLE_SERVICE_CATEGORIES = [
   "Bedroom Cleaning",
   "Living Area Cleaning",
   "Interior Window Cleaning",
-  "Apartment Cleaning",
-  "Eco-Friendly Cleaning",
-  "Add-On Services",
+  "Post-Renovation Cleaning",
 ];
 
 export const CONTACT_METHODS = ["Phone Call", "WhatsApp", "Email"] as const;

@@ -6,7 +6,7 @@ export const postRenovationService: ServicePage = {
   shortTitle: "Post-Renovation Cleaning",
   metaTitle: "Post-Renovation Cleaning Johannesburg & Midrand | Homent",
   metaDescription:
-    "Assessment-led post-renovation residential cleaning in Johannesburg and Midrand. Scope and pricing are confirmed after reviewing the property and renovation residue.",
+    "Post-renovation residential cleaning in Johannesburg and Midrand. Scope and pricing are confirmed after assessing the property and renovation residue.",
   heroDescription:
     "Detailed residential cleaning after renovation work, planned around the actual condition of the property and the residue left by the completed work.",
   overview:

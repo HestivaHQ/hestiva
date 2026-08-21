@@ -2,19 +2,6 @@ name: Quote Readiness Browser Test
 
 on:
   workflow_dispatch:
-  pull_request:
-    branches:
-      - main
-    paths:
-      - "src/routes/quote.tsx"
-      - "src/components/LaundryOperatingModelEnhancement.tsx"
-      - "src/components/QuoteFormStabilityEnhancement.tsx"
-      - "src/components/StructuredQuoteSubmission.tsx"
-      - "src/components/LiveFormSubmission.tsx"
-      - "src/lib/quote/**"
-      - "tests/browser/**"
-      - "playwright.config.mjs"
-      - ".github/workflows/quote-readiness-browser.yml"
 
 permissions:
   contents: read

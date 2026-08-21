@@ -5,13 +5,11 @@ const primaryServices = [
   "Deep Cleaning",
   "Move-In Cleaning",
   "Move-Out Cleaning",
-  "Apartment Cleaning",
   "Kitchen Cleaning",
   "Bathroom Sanitisation",
   "Bedroom Cleaning",
   "Living Area Cleaning",
   "Interior Window Cleaning",
-  "Eco-Friendly Cleaning",
   "Post-Renovation Cleaning",
   "Not sure",
 ];

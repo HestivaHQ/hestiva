@@ -4,6 +4,12 @@ This is the append-only technical change history for implemented repository and 
 
 ## 2026-08-21
 
+### External Hestiva → Homent migration completion
+
+- Recorded operator confirmation that Cloudflare permanent redirects for both legacy Hestiva hostnames are complete using the required path-preserving migration behaviour to `https://www.homent.co.za`.
+- Recorded operator confirmation that the corresponding Google Search Console Hestiva → Homent migration/property work is complete.
+- Closed the legacy-domain/Search Console item as an external operational follow-up while retaining the old Hestiva domain as an intentional migration asset.
+
 ### Quote service-model source reconciliation
 
 - Removed `Apartment Cleaning` and `Eco-Friendly Cleaning` from the React quote form's primary-service source so the server-rendered form now matches the approved canonical model without post-hydration correction.

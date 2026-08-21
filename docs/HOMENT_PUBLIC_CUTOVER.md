@@ -64,3 +64,13 @@ The Cloudflare redirect configuration and Google Search Console migration steps 
 - The removed testimonial block is replaced with a direct quote-request CTA using the existing `/quote` journey.
 - Public social-media links remain intentionally hidden until the corresponding Homent profiles are live and customer-ready. Once the live profile URLs are confirmed, the Footer and Contact page are the preferred website surfaces for activation.
 - This follow-up does not change pricing, quote transport, payment handling, deployment authority, service catalogue definitions, or the Website ↔ HestivaOS boundary.
+
+## 2026-08-21 external migration completion
+
+The operator confirmed that the external Hestiva → Homent domain migration has been completed.
+
+- Cloudflare permanent redirects are configured for the legacy `hestiva.co.za` and `www.hestiva.co.za` hostnames to the canonical `https://www.homent.co.za` site, using the required path-preserving migration behaviour.
+- The corresponding Google Search Console Hestiva → Homent migration/property work has been completed.
+- The legacy Hestiva domain remains an intentionally retained migration asset rather than an active customer-facing canonical origin.
+
+These are verified operational completions reported by the operator; they do not imply that the repository itself manages the Cloudflare or Google Search Console control planes.

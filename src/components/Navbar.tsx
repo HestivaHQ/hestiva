@@ -5,7 +5,6 @@ import { BRAND_ASSETS, SITE_NAME, TAGLINE } from "@/lib/site";
 
 const navLinks = [
   { label: "Services", to: "/services" },
-  { label: "Apartment Cleaning", to: "/services/apartment-cleaning" },
   { label: "Areas", to: "/locations" },
   { label: "Why Homent", href: "/#why-us" },
   { label: "About", to: "/about" },

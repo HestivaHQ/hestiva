@@ -5,7 +5,6 @@ import {
   BedDouble,
   CookingPot,
   Home,
-  Leaf,
   PackageOpen,
   Shirt,
   Sparkles,
@@ -13,100 +12,36 @@ import {
   Square,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { indexablePublicServicePages } from "@/lib/public-service-policy";
 
-const services = [
-  {
-    title: "Regular Home Cleaning",
-    description:
-      "Reliable weekly or fortnightly care that keeps everyday spaces fresh, comfortable and beautifully maintained.",
-    icon: Home,
-    slug: "regular-home-cleaning",
-  },
-  {
-    title: "Deep Cleaning",
-    description:
-      "A thorough top-to-bottom refresh for overlooked corners, built-up dust and hard-working household surfaces.",
-    icon: Sparkles,
-    slug: "deep-cleaning",
-  },
-  {
-    title: "Move-In Cleaning",
-    description:
-      "Careful cleaning before you unpack, creating a fresh and welcoming start in your new home.",
-    icon: PackageOpen,
-    slug: "move-in-cleaning",
-  },
-  {
-    title: "Move-Out Cleaning",
-    description:
-      "Detailed end-of-lease care that leaves your former space clean, tidy and ready for handover.",
-    icon: PackageOpen,
-    slug: "move-out-cleaning",
-  },
-  {
-    title: "Kitchen Cleaning",
-    description:
-      "Focused care for counters, cupboards and cooking areas where grease and daily mess gather.",
-    icon: CookingPot,
-    slug: "kitchen-cleaning",
-  },
-  {
-    title: "Bathroom Sanitisation",
-    description:
-      "Hygienic attention to showers, baths, fixtures and surfaces for a noticeably fresher bathroom.",
-    icon: Bath,
-    slug: "bathroom-sanitisation",
-  },
-  {
-    title: "Bedroom Cleaning",
-    description:
-      "Gentle, considered cleaning that makes bedrooms feel calm, dust-free and ready for rest.",
-    icon: BedDouble,
-    slug: "bedroom-cleaning",
-  },
-  {
-    title: "Living Area Cleaning",
-    description:
-      "Thoughtful care for shared spaces, from dusting furniture to refreshing floors and finishing touches.",
-    icon: Home,
-    slug: "living-area-cleaning",
-  },
-  {
-    title: "Interior Window Cleaning",
-    description:
-      "Streak-free interior glass and frames that welcome more natural light into every room.",
-    icon: Square,
-    slug: "interior-window-cleaning",
-  },
-  {
-    title: "Laundry & Ironing Add-On",
-    description:
-      "Laundry and ironing support added to an eligible Regular Home Cleaning or Deep Cleaning visit, with facilities and load quantities confirmed during quoting.",
-    icon: Shirt,
-    slug: "laundry-folding",
-  },
-  {
-    title: "Apartment Cleaning",
-    description:
-      "Efficient whole-apartment care tailored to compact spaces, shared buildings and modern city living.",
-    icon: Home,
-    slug: "apartment-cleaning",
-  },
-  {
-    title: "Eco-Friendly Cleaning",
-    description:
-      "Mindful cleaning with gentler product choices for your household, pets and the wider environment.",
-    icon: Leaf,
-    slug: "eco-conscious-cleaning",
-  },
-  {
-    title: "Add-on Services",
-    description:
-      "Flexible extras for the details your home needs, added easily to your chosen clean.",
-    icon: SprayCan,
-    slug: "cleaning-add-ons",
-  },
-];
+const serviceIcons = {
+  "regular-home-cleaning": Home,
+  "deep-cleaning": Sparkles,
+  "move-in-cleaning": PackageOpen,
+  "move-out-cleaning": PackageOpen,
+  "kitchen-cleaning": CookingPot,
+  "bathroom-sanitisation": Bath,
+  "bedroom-cleaning": BedDouble,
+  "living-area-cleaning": Home,
+  "interior-window-cleaning": Square,
+  "post-renovation-cleaning": Sparkles,
+  "laundry-folding": Shirt,
+  "cleaning-add-ons": SprayCan,
+} as const;
+
+const services = indexablePublicServicePages
+  .map((service) => {
+    const icon = serviceIcons[service.slug as keyof typeof serviceIcons];
+    if (!icon) return null;
+
+    return {
+      title: service.title,
+      description: service.heroDescription,
+      icon,
+      slug: service.slug,
+    };
+  })
+  .filter((service): service is NonNullable<typeof service> => service !== null);
 
 export function ServicesSection() {
   return (

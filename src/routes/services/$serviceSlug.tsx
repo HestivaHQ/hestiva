@@ -1,8 +1,13 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { ServicePageLayout } from "@/components/ServicePageLayout";
-import { getServicePage, servicePages } from "@/content/services";
 import { createSeoHead } from "@/lib/seo";
 import { serviceBreadcrumbs } from "@/lib/breadcrumbs";
+import {
+  getResolvableServicePage,
+  indexablePublicServicePages,
+  isReclassifiedServiceSlug,
+  reclassifiedServicePages,
+} from "@/lib/public-service-policy";
 import {
   createBreadcrumbList,
   createFaqPage,
@@ -13,7 +18,7 @@ import {
 
 export const Route = createFileRoute("/services/$serviceSlug")({
   loader: ({ params }) => {
-    const service = getServicePage(params.serviceSlug);
+    const service = getResolvableServicePage(params.serviceSlug);
 
     if (!service) {
       throw notFound();
@@ -22,27 +27,34 @@ export const Route = createFileRoute("/services/$serviceSlug")({
     return { service };
   },
   head: ({ loaderData, params }) => {
-    const service = loaderData?.service ?? getServicePage(params.serviceSlug);
+    const service = loaderData?.service ?? getResolvableServicePage(params.serviceSlug);
 
     if (!service) {
       return {};
     }
 
     const path = `/services/${service.slug}`;
+    const reclassified = isReclassifiedServiceSlug(service.slug);
     const seo = createSeoHead({
       title: service.metaTitle,
       description: service.metaDescription,
       path,
+      robots: reclassified ? { index: false, follow: true } : undefined,
     });
 
     return {
       ...seo,
-      scripts: schemaScripts(
-        createPageGraph(path, service.metaTitle, service.metaDescription),
-        createServiceSchema(path, service.title, service.metaDescription),
-        createFaqPage(service.faqs),
-        createBreadcrumbList(serviceBreadcrumbs(service.title, path)),
-      ),
+      scripts: reclassified
+        ? schemaScripts(
+            createPageGraph(path, service.metaTitle, service.metaDescription),
+            createBreadcrumbList(serviceBreadcrumbs(service.title, path)),
+          )
+        : schemaScripts(
+            createPageGraph(path, service.metaTitle, service.metaDescription),
+            createServiceSchema(path, service.title, service.metaDescription),
+            createFaqPage(service.faqs),
+            createBreadcrumbList(serviceBreadcrumbs(service.title, path)),
+          ),
     };
   },
   component: ServiceRoute,
@@ -54,5 +66,7 @@ function ServiceRoute() {
 }
 
 export function getStaticServicePaths() {
-  return servicePages.map((service) => `/services/${service.slug}`);
+  return [...indexablePublicServicePages, ...reclassifiedServicePages].map(
+    (service) => `/services/${service.slug}`,
+  );
 }

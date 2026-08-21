@@ -5,10 +5,13 @@ import { ServiceImage } from "@/components/ServiceImage";
 import { Footer } from "@/components/Footer";
 import { Navbar } from "@/components/Navbar";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
-import { servicePages } from "@/content/services";
 import { createSeoHead } from "@/lib/seo";
 import { serviceBreadcrumbs } from "@/lib/breadcrumbs";
 import { SITE_NAME } from "@/lib/site";
+import {
+  indexablePublicServicePages,
+  isCanonicalPrimaryServiceSlug,
+} from "@/lib/public-service-policy";
 import {
   createBreadcrumbList,
   createPageGraph,
@@ -87,22 +90,6 @@ const services: CleaningService[] = [
     ],
     closing:
       "With the cleaning thoughtfully handled, you can focus your attention on the move and what comes next.",
-  },
-  {
-    slug: "apartment-cleaning",
-    title: "Apartment Cleaning",
-    introduction:
-      "Efficient, detail-led care created for apartment living, from compact studios to generous multi-bedroom spaces.",
-    included: [
-      "Living and dining areas",
-      "Bedrooms and wardrobes",
-      "Kitchen surfaces",
-      "Bathroom cleaning",
-      "Balcony sweeping on request",
-      "Vacuuming and mopping",
-    ],
-    closing:
-      "Our approach makes the most of every visit, leaving smaller spaces feeling open, orderly and wonderfully fresh.",
   },
   {
     slug: "kitchen-cleaning",
@@ -185,6 +172,22 @@ const services: CleaningService[] = [
       "Available for safely reachable windows, this finishing touch gives rooms a brighter, more polished appearance.",
   },
   {
+    slug: "post-renovation-cleaning",
+    title: "Post-Renovation Cleaning",
+    introduction:
+      "Detailed residential cleaning after renovation work, planned around the actual condition of the property and the residue left behind.",
+    included: [
+      "Fine dust removal from reachable surfaces",
+      "Suitable floor and hard-surface cleaning",
+      "Kitchen and bathroom surface cleaning",
+      "Reachable interior glass where agreed",
+      "Room-by-room assessed cleaning scope",
+      "Quotation confirmed after assessment",
+    ],
+    closing:
+      "This service is assessment-led: we review the property, residue, access and requested scope before confirming pricing rather than promising an automatic area rate.",
+  },
+  {
     slug: "laundry-folding",
     title: "Laundry & Ironing Add-On",
     introduction:
@@ -200,46 +203,17 @@ const services: CleaningService[] = [
     closing:
       "Add laundry and ironing to an eligible cleaning visit and we will confirm the facilities, load quantities and scope before the booking.",
   },
-  {
-    slug: "eco-conscious-cleaning",
-    title: "Eco-Friendly Cleaning",
-    introduction:
-      "A mindful option for households that prefer considered product choices without compromising on attentive care.",
-    included: [
-      "Preference-led product planning",
-      "Reusable cloths where suitable",
-      "Measured product use",
-      "Low-fragrance options on request",
-      "Care for high-touch surfaces",
-      "Responsible waste handling",
-    ],
-    closing:
-      "Share your household preferences when requesting a quote, and we will discuss an approach suited to your home.",
-  },
-  {
-    slug: "cleaning-add-ons",
-    title: "Add-on Services",
-    introduction:
-      "Flexible extras let you personalise a visit when particular areas of your home need a little more attention.",
-    included: [
-      "Inside-fridge cleaning",
-      "Inside-oven cleaning",
-      "Interior cupboard cleaning",
-      "Laundry and ironing",
-      "Balcony sweeping",
-      "Additional room cleaning",
-    ],
-    closing:
-      "Choose add-ons when requesting your quote and we will allow the right amount of time for a beautifully finished visit.",
-  },
 ];
 
 const serviceOverviewBySlug = new Map(
   services.map((service) => [service.slug, service]),
 );
 
-const overviewServicePages = servicePages.filter((service) => service.image);
+const visualServicePages = indexablePublicServicePages.filter(
+  (service) => service.image && serviceOverviewBySlug.has(service.slug),
+);
 
+const postRenovationService = serviceOverviewBySlug.get("post-renovation-cleaning");
 const breadcrumbs = serviceBreadcrumbs();
 
 export const Route = createFileRoute("/services")({
@@ -310,9 +284,8 @@ function ServicesOverview() {
             </h1>
 
             <p className="mt-7 max-w-2xl text-lg leading-8 text-[#695E59] md:text-xl">
-              Whether you need dependable weekly cleaning or a one-time deep
-              refresh, Homent offers thoughtful residential cleaning designed
-              around your home and your routine.
+              Whether you need dependable weekly cleaning or a one-time deep refresh, Homent offers
+              thoughtful residential cleaning designed around your home and your routine.
             </p>
 
             <Link
@@ -324,10 +297,7 @@ function ServicesOverview() {
           </div>
         </section>
 
-        <section
-          aria-labelledby="services-heading"
-          className="px-6 py-20 md:py-28"
-        >
+        <section aria-labelledby="services-heading" className="px-6 py-20 md:py-28">
           <div className="mx-auto max-w-7xl">
             <div className="mx-auto mb-16 max-w-2xl text-center md:mb-24">
               <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#9A742E]">
@@ -343,10 +313,8 @@ function ServicesOverview() {
             </div>
 
             <div className="space-y-16 md:space-y-24">
-              {overviewServicePages.map((canonicalService, index) => {
-                const service = serviceOverviewBySlug.get(
-                  canonicalService.slug,
-                );
+              {visualServicePages.map((canonicalService, index) => {
+                const service = serviceOverviewBySlug.get(canonicalService.slug);
 
                 if (!service || !canonicalService.image) return null;
 
@@ -370,38 +338,30 @@ function ServicesOverview() {
                       }`}
                     >
                       <p className="mb-3 text-xs font-semibold uppercase tracking-[0.24em] text-[#9A742E]">
-                        Service {String(index + 1).padStart(2, "0")}
+                        {isCanonicalPrimaryServiceSlug(canonicalService.slug)
+                          ? `Service ${String(index + 1).padStart(2, "0")}`
+                          : "Service add-on"}
                       </p>
 
                       <h3 className="text-3xl font-semibold tracking-tight text-[#5A1425] md:text-4xl">
                         <Link
                           to="/services/$serviceSlug"
-                          params={{
-                            serviceSlug: canonicalService.slug,
-                          }}
+                          params={{ serviceSlug: canonicalService.slug }}
                           className="rounded-sm transition-colors hover:text-[#711C31] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A45B]"
                         >
                           {service.title}
                         </Link>
                       </h3>
 
-                      <p className="mt-5 leading-7 text-[#695E59]">
-                        {service.introduction}
-                      </p>
+                      <p className="mt-5 leading-7 text-[#695E59]">{service.introduction}</p>
 
                       <h4 className="mt-8 text-sm font-semibold uppercase tracking-[0.16em] text-[#5A1425]">
                         What&apos;s Included
                       </h4>
 
-                      <ul
-                        className="mt-5 grid gap-3 sm:grid-cols-2"
-                        role="list"
-                      >
+                      <ul className="mt-5 grid gap-3 sm:grid-cols-2" role="list">
                         {service.included.map((item) => (
-                          <li
-                            key={item}
-                            className="flex gap-3 text-sm leading-6 text-[#514946]"
-                          >
+                          <li key={item} className="flex gap-3 text-sm leading-6 text-[#514946]">
                             <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#F3E8D5] text-[#8A6729]">
                               <Check
                                 aria-hidden="true"
@@ -421,6 +381,39 @@ function ServicesOverview() {
                   </article>
                 );
               })}
+
+              {postRenovationService && (
+                <article className="rounded-2xl border border-[#E6D9C8] bg-white p-7 shadow-[0_18px_50px_rgba(70,42,33,0.06)] sm:p-10 lg:p-12">
+                  <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#9A742E]">
+                    Assessment-led service
+                  </p>
+                  <h3 className="mt-3 text-3xl font-semibold tracking-tight text-[#5A1425] md:text-4xl">
+                    <Link
+                      to="/services/$serviceSlug"
+                      params={{ serviceSlug: postRenovationService.slug }}
+                      className="rounded-sm transition-colors hover:text-[#711C31] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A45B]"
+                    >
+                      {postRenovationService.title}
+                    </Link>
+                  </h3>
+                  <p className="mt-5 max-w-3xl leading-7 text-[#695E59]">
+                    {postRenovationService.introduction}
+                  </p>
+                  <ul className="mt-7 grid gap-3 sm:grid-cols-2 lg:grid-cols-3" role="list">
+                    {postRenovationService.included.map((item) => (
+                      <li key={item} className="flex gap-3 text-sm leading-6 text-[#514946]">
+                        <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#F3E8D5] text-[#8A6729]">
+                          <Check aria-hidden="true" className="h-3.5 w-3.5" strokeWidth={2} />
+                        </span>
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                  <p className="mt-8 border-t border-[#C9A45B]/25 pt-6 text-sm leading-7 text-[#695E59]">
+                    {postRenovationService.closing}
+                  </p>
+                </article>
+              )}
             </div>
 
             <div className="mt-20 md:mt-28">
@@ -440,8 +433,8 @@ function ServicesOverview() {
             </h2>
 
             <p className="mx-auto mt-5 max-w-xl leading-7 text-white/75">
-              We will listen to your priorities and recommend a cleaning plan
-              that fits your space and schedule.
+              We will listen to your priorities and recommend a cleaning plan that fits your space
+              and schedule.
             </p>
 
             <Link

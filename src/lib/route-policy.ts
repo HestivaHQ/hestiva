@@ -1,5 +1,5 @@
 import { locationPages } from "@/content/locations";
-import { servicePages } from "@/content/services";
+import { indexablePublicServicePages } from "@/lib/public-service-policy";
 
 export const routeClassifications = [
   "INDEXABLE",
@@ -24,7 +24,7 @@ export const staticIndexablePaths = [
 ] as const;
 
 export const dynamicIndexablePaths = [
-  ...servicePages.map(({ slug }) => `/services/${slug}` as const),
+  ...indexablePublicServicePages.map(({ slug }) => `/services/${slug}` as const),
   ...locationPages.map(({ slug }) => `/locations/${slug}` as const),
 ];
 

@@ -7,7 +7,8 @@ import { serviceBreadcrumbs } from "@/lib/breadcrumbs";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { locationPages } from "@/content/locations";
-import { servicePages, type ServicePage } from "@/content/services";
+import type { ServicePage } from "@/content/services";
+import { indexablePublicServicePages } from "@/lib/public-service-policy";
 
 const PHONE_NUMBER = "+27684231614";
 
@@ -35,7 +36,7 @@ function getRelatedServices(service: ServicePage) {
       .filter((word) => word.length > 4),
   );
 
-  return servicePages
+  return indexablePublicServicePages
     .filter((item) => item.slug !== service.slug)
     .map((item) => {
       const candidateText = [

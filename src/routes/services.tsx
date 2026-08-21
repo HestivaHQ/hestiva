@@ -9,6 +9,7 @@ import { servicePages } from "@/content/services";
 import { createSeoHead } from "@/lib/seo";
 import { serviceBreadcrumbs } from "@/lib/breadcrumbs";
 import { SITE_NAME } from "@/lib/site";
+import { isReclassifiedServiceSlug } from "@/lib/public-service-policy";
 import {
   createBreadcrumbList,
   createPageGraph,
@@ -238,7 +239,9 @@ const serviceOverviewBySlug = new Map(
   services.map((service) => [service.slug, service]),
 );
 
-const overviewServicePages = servicePages.filter((service) => service.image);
+const overviewServicePages = servicePages.filter(
+  (service) => service.image && !isReclassifiedServiceSlug(service.slug),
+);
 
 const breadcrumbs = serviceBreadcrumbs();
 

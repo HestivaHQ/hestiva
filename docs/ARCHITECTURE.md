@@ -62,6 +62,8 @@ The current SEO geography is intentionally driven from `src/content/service-area
 
 Most route and component code participates in SSR and then hydrates on the client.
 
+`src/routes/quote.tsx` now renders the approved primary-service options directly from its React source. Apartment remains a property type and eco-friendly products remain a separate Yes/No preference; neither is inserted or removed from the primary-service selector after hydration. The former `CanonicalServiceModelEnhancement` MutationObserver reconciliation layer has been removed, so server-rendered and hydrated quote semantics share the same source values.
+
 `src/components/LiveFormSubmission.tsx` remains the legacy browser controller for shared quote-step DOM enhancement/validation and ordinary contact submission. It is dynamically imported only on `/quote` and `/contact`.
 
 `src/components/StructuredQuoteSubmission.tsx` is mounted only on `/quote`. Its capture-phase handler owns the final residential `Send Request` action before the legacy bubble-phase email-only quote handler can run. It accumulates structured form state while steps mount/unmount, keeps one stable submission UUID/UTC timestamp and stable client photo identities across retry, compresses supported browser images using the existing policy, and calls the structured server function. A failed attempt retains the exact pending snapshot so retry cannot accidentally change an already-accepted HestivaOS replay identity.

@@ -103,7 +103,7 @@ export const faqCategories: readonly FaqCategory[] = [
         id: "apartment-cleaning",
         question: "Do you clean apartments as well as houses?",
         answer:
-          "Yes. Homent offers residential apartment cleaning for studios and multi-bedroom units. Building access, the unit floor and other relevant access details are captured during the quotation process so the service can be planned appropriately.",
+          "Yes. Apartment is treated as a property type rather than a separate cleaning service. Choose the cleaning service you need and identify the property as an apartment in the quote form; building access, unit floor and other relevant access details are captured so the visit can be planned appropriately.",
       },
       {
         id: "room-specific-cleaning",

@@ -2,6 +2,16 @@
 
 This is the append-only technical change history for implemented repository and material verified operational changes. It begins with the documentation baseline and does not invent undocumented releases.
 
+## 2026-08-21
+
+### Quote service-model source reconciliation
+
+- Removed `Apartment Cleaning` and `Eco-Friendly Cleaning` from the React quote form's primary-service source so the server-rendered form now matches the approved canonical model without post-hydration correction.
+- Preserved Apartment as a property type and eco-friendly products as a separate Yes/No preference in the quote flow.
+- Removed the obsolete `CanonicalServiceModelEnhancement` MutationObserver and its root-route wiring; canonical service options are now rendered correctly at source.
+- Corrected the shared FAQ so apartment cleaning is described as cleaning an apartment property using the selected canonical service, not as a standalone primary service.
+- Preserved HestivaOS transport, pricing authority, historical/compatibility mappings, Laundry/Ironing semantics, payment policy, and public-service compatibility routes.
+
 ## 2026-08-14
 
 ### Website Quote Contract v2 and Laundry/Ironing finalization

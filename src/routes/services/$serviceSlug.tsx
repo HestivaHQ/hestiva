@@ -3,6 +3,7 @@ import { ServicePageLayout } from "@/components/ServicePageLayout";
 import { getServicePage, servicePages } from "@/content/services";
 import { createSeoHead } from "@/lib/seo";
 import { serviceBreadcrumbs } from "@/lib/breadcrumbs";
+import { isReclassifiedServiceSlug } from "@/lib/public-service-policy";
 import {
   createBreadcrumbList,
   createFaqPage,
@@ -29,20 +30,27 @@ export const Route = createFileRoute("/services/$serviceSlug")({
     }
 
     const path = `/services/${service.slug}`;
+    const reclassified = isReclassifiedServiceSlug(service.slug);
     const seo = createSeoHead({
       title: service.metaTitle,
       description: service.metaDescription,
       path,
+      robots: reclassified ? { index: false, follow: true } : undefined,
     });
 
     return {
       ...seo,
-      scripts: schemaScripts(
-        createPageGraph(path, service.metaTitle, service.metaDescription),
-        createServiceSchema(path, service.title, service.metaDescription),
-        createFaqPage(service.faqs),
-        createBreadcrumbList(serviceBreadcrumbs(service.title, path)),
-      ),
+      scripts: reclassified
+        ? schemaScripts(
+            createPageGraph(path, service.metaTitle, service.metaDescription),
+            createBreadcrumbList(serviceBreadcrumbs(service.title, path)),
+          )
+        : schemaScripts(
+            createPageGraph(path, service.metaTitle, service.metaDescription),
+            createServiceSchema(path, service.title, service.metaDescription),
+            createFaqPage(service.faqs),
+            createBreadcrumbList(serviceBreadcrumbs(service.title, path)),
+          ),
     };
   },
   component: ServiceRoute,

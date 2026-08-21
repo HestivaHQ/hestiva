@@ -11,6 +11,7 @@ import { lazy, Suspense } from "react";
 import appCss from "../styles.css?url";
 import { BRAND_ASSETS } from "@/lib/site";
 import { CanonicalServiceModelEnhancement } from "@/components/CanonicalServiceModelEnhancement";
+import { PublicServiceCatalogueEnhancement } from "@/components/PublicServiceCatalogueEnhancement";
 import { StructuredQuoteSubmission } from "@/components/StructuredQuoteSubmission";
 import { QuoteProgressionPolicy } from "@/components/QuoteProgressionPolicy";
 import { QuoteFormStabilityEnhancement } from "@/components/QuoteFormStabilityEnhancement";
@@ -120,6 +121,7 @@ function RootComponent() {
   const needsQuoteProgressionPolicy = pathname === "/quote";
   const needsQuoteFormStability = pathname === "/quote";
   const needsCanonicalServiceModel = pathname === "/quote";
+  const needsPublicServiceCatalogue = pathname === "/services" || pathname === "/services/";
   const needsContactValidation = pathname === "/quote" || pathname === "/contact";
   const needsContactHoneypotGuard = pathname === "/contact";
   const needsBrandedFormNotices = pathname === "/quote" || pathname === "/contact";
@@ -154,6 +156,7 @@ function RootComponent() {
       {needsStructuredQuoteSubmission && <StructuredQuoteSubmission />}
       {needsQuoteProgressionPolicy && <QuoteProgressionPolicy />}
       {needsCanonicalServiceModel && <CanonicalServiceModelEnhancement />}
+      {needsPublicServiceCatalogue && <PublicServiceCatalogueEnhancement />}
       {needsFormSubmission && (
         <Suspense fallback={null}>
           <LazyFormSubmission />

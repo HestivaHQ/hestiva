@@ -1,9 +1,5 @@
 import { locationPages } from "@/content/locations";
-import { servicePages } from "@/content/services";
-import {
-  CANONICAL_PRIMARY_SERVICE_SLUGS,
-  RECLASSIFIED_SERVICE_SLUGS,
-} from "@/lib/public-service-policy";
+import { indexablePublicServicePages } from "@/lib/public-service-policy";
 
 export const routeClassifications = [
   "INDEXABLE",
@@ -27,21 +23,8 @@ export const staticIndexablePaths = [
   "/terms",
 ] as const;
 
-const legacyIndexableServiceSlugs = servicePages
-  .map(({ slug }) => slug)
-  .filter(
-    (slug) =>
-      !(RECLASSIFIED_SERVICE_SLUGS as readonly string[]).includes(slug) &&
-      !(CANONICAL_PRIMARY_SERVICE_SLUGS as readonly string[]).includes(slug),
-  );
-
-const indexableServiceSlugs = [
-  ...CANONICAL_PRIMARY_SERVICE_SLUGS,
-  ...legacyIndexableServiceSlugs,
-];
-
 export const dynamicIndexablePaths = [
-  ...indexableServiceSlugs.map((slug) => `/services/${slug}` as const),
+  ...indexablePublicServicePages.map(({ slug }) => `/services/${slug}` as const),
   ...locationPages.map(({ slug }) => `/locations/${slug}` as const),
 ];
 

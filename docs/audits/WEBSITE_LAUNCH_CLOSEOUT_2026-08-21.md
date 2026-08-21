@@ -14,6 +14,7 @@ This close-out records verified state only. It does not convert external operati
 - Website Quote Contract v2 remains fail-closed against HestivaOS acknowledgement and does not move pricing authority into the website.
 - Generic Website enquiries use the HestivaOS `website-enquiry.v1` ingestion boundary and authoritative `ENQ-...` references before successful intake is reported.
 - The normal PR quality gate for the final source reconciliation passed TypeScript, public form/structured quote tests, lint, formatting, production build, runtime SEO verification and Cloudflare Worker dry-run before PR #171 merged.
+- The operator confirmed completion of the external Hestiva → Homent domain migration: Cloudflare permanent redirects are configured for both legacy Hestiva hostnames using the required path-preserving behaviour, and the corresponding Google Search Console migration/property work is complete.
 
 ## Cross-system production verification
 
@@ -29,17 +30,19 @@ Owner: HestivaOS / business operations.
 
 The production Quote handoff works, but the current COIDA rate is explicitly provisional until the business's authoritative Compensation Fund assessment is known. HestivaOS correctly treats unresolved/uncertain cost facts conservatively; the website must not invent this value.
 
-### 2. Legacy Hestiva-domain migration evidence
-
-Owner: Cloudflare / Search Console operations.
-
-`docs/HOMENT_PUBLIC_CUTOVER.md` requires permanent, path-preserving redirects from both legacy Hestiva hostnames to `https://www.homent.co.za`, plus the corresponding Google Search Console migration work. The repository does not currently contain verified evidence that those external control-plane actions are complete. They remain an SEO/domain-migration follow-up until explicitly verified and recorded.
-
-### 3. Comprehensive browser/performance readiness suite
+### 2. Comprehensive browser/performance readiness suite
 
 Owner: website engineering.
 
 The large Quote Readiness Browser Test was intentionally removed from routine pull-request execution on 2026-08-21. It remains available as a deliberate manual readiness/performance audit tool. This is not a launch blocker because the normal PR gate continues to cover TypeScript, focused public-form/quote tests, build, runtime SEO and Worker bundle validation, and the comprehensive suite is reserved for intentional broad audits.
+
+## Completed external operational follow-up
+
+### Legacy Hestiva-domain and Search Console migration
+
+Owner: Cloudflare / Search Console operations.
+
+The operator confirmed that the required permanent legacy-domain redirects and the corresponding Google Search Console Hestiva → Homent migration/property work are complete. `docs/HOMENT_PUBLIC_CUTOVER.md` records this completion. The old Hestiva domain remains intentionally retained as a migration asset rather than an active canonical customer-facing origin.
 
 ## Non-blocking known limitations
 

@@ -22,6 +22,10 @@ The audit does not remove deliberately permissive legacy server/contact vocabula
 
 No pricing, HestivaOS service IDs, Website Quote Contract v2 transport, payment policy, Laundry/Ironing operating model, public compatibility URLs, authentication, or production configuration changed.
 
-## Verification
+## Verification and close-out
 
-The normal pull-request quality gate is required before merge. This audit is not a substitute for post-deployment production QA.
+PR #171 passed the normal repository quality gate before merge, including TypeScript, public form and structured Quote tests, lint, formatting, production build, runtime SEO verification and Cloudflare Worker dry-run.
+
+HestivaOS current documentation separately records a successful production Website Quote handoff smoke test with the configured endpoint and routing prerequisites. A live Website contact/enquiry smoke test was also operator-verified during this audit cycle with authoritative HestivaOS `ENQ-...` reference allocation.
+
+The repository-level consistency audit is therefore closed with no known website code blocker. Remaining external/operational follow-ups are tracked in `docs/audits/WEBSITE_LAUNCH_CLOSEOUT_2026-08-21.md` and must not be confused with unresolved website implementation defects.

@@ -9,9 +9,17 @@ async function selectWhenReady(page, selector, option) {
 
 async function reachCleaningRequirements(page) {
   await page.goto("/quote");
+  await expect(page.getByRole("heading", { name: "Tell us about your home." })).toBeVisible();
+  await page.waitForFunction(() => {
+    const field = document.querySelector("#field-propertyType");
+    return Boolean(field && Object.keys(field).some((key) => key.startsWith("__reactProps$")));
+  });
+
   const property = page.locator("#field-propertyType");
   await expect(property).toBeEnabled();
   await property.selectOption({ label: "House" });
+  await expect(property).toHaveValue("House");
+
   await page.locator("#field-suburb").fill("Sandton");
   await page.locator("#field-address").fill("1 Test Street");
   await selectWhenReady(page, "#field-floorSize", { index: 1 });

@@ -1,5 +1,6 @@
 import { describe, expect, test } from "bun:test";
 import { buildHestivaOsQuotePayload } from "./hestiva-os-contract.ts";
+import { buildWebsiteQuotePayload } from "./post-event-hestiva-os-payload.ts";
 
 function snapshot(overrides = {}) {
   return {
@@ -39,6 +40,33 @@ function snapshot(overrides = {}) {
     addOns: [],
     ...overrides,
   };
+}
+
+function postEventSnapshot(overrides = {}) {
+  return snapshot({
+    values: {
+      ...snapshot().values,
+      service: "Post-Event Cleaning",
+      frequency: "One-time",
+      floorSize: "100–129 m²",
+      outdoor: "Patio",
+      postEventType: "Party / Birthday",
+      postEventVenueType: "Home",
+      postEventGuestBand: "51–100",
+      postEventBathrooms: "2",
+      postEventKitchenUsed: "Yes",
+      postEventDishwashing: "Moderate",
+      postEventOutdoorAreas: "Patio|Braai area",
+      postEventWasteLevel: "Moderate",
+      postEventSoiling: "No",
+      postEventOvernight: "No",
+      postEventBulkWaste: "No",
+      postEventSpecialistContamination: "No",
+      postEventSpecialistCarpet: "No",
+      postEventComplexVenue: "No",
+      ...(overrides.values || {}),
+    },
+  });
 }
 
 describe("HestivaOS Quote Contract v2 mapper", () => {
@@ -160,5 +188,47 @@ describe("HestivaOS Quote Contract v2 mapper", () => {
     expect(payload.property).not.toHaveProperty("exactFloor");
     expect(payload.property).not.toHaveProperty("buildingAccess");
     expect(payload.notes.additionalNotes).toContain("Storeys selected: 3+ storeys");
+  });
+
+  test("maps Post-Event Cleaning into the approved Website v2 structured facts", () => {
+    const payload = buildWebsiteQuotePayload(postEventSnapshot(), []);
+
+    expect(payload.schemaVersion).toBe("2.0");
+    expect(payload.source).toBe("HESTIVA_WEBSITE");
+    expect(payload.request.primaryService).toEqual({
+      websiteValue: "Post-Event Cleaning",
+      canonicalService: "Post-Event Cleaning",
+    });
+    expect(payload.request.frequency).toBe("ONE_TIME");
+    expect(payload.request.postEvent).toEqual({
+      eventType: "PARTY_BIRTHDAY",
+      venueType: "HOME",
+      guestBand: "FROM_51_TO_100",
+      bathrooms: 2,
+      kitchenSubstantiallyUsed: true,
+      dishwashing: "MODERATE",
+      outdoorAreas: ["PATIO", "BRAAI_AREA"],
+      wasteLevel: "MODERATE",
+      significantOrdinarySoiling: false,
+      lateNightOrOvernight: false,
+      bulkWasteRemovalRequested: false,
+      specialistContamination: false,
+      specialistCarpetOrUpholstery: false,
+      complexVenue: false,
+    });
+  });
+
+  test("fails closed when a required Post-Event fact is missing", () => {
+    expect(() =>
+      buildWebsiteQuotePayload(
+        postEventSnapshot({
+          values: {
+            ...postEventSnapshot().values,
+            postEventGuestBand: "",
+          },
+        }),
+        [],
+      ),
+    ).toThrow("Unsupported post-event guest band value");
   });
 });

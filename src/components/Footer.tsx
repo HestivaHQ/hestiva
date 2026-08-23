@@ -57,6 +57,15 @@ export function Footer() {
                 </Link>
               </li>
             ))}
+            <li>
+              <Link
+                to="/services/$serviceSlug"
+                params={{ serviceSlug: "post-event-cleaning" }}
+                className={linkStyles}
+              >
+                Post-Event Cleaning
+              </Link>
+            </li>
           </ul>
         </nav>
         <div>

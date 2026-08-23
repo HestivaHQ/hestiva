@@ -1,3 +1,4 @@
+import { postEventCleaningService } from "@/content/post-event-cleaning-service";
 import { postRenovationService } from "@/content/post-renovation-service";
 import { servicePages, type ServicePage } from "@/content/services";
 
@@ -12,6 +13,7 @@ export const CANONICAL_PRIMARY_SERVICE_SLUGS = [
   "living-area-cleaning",
   "interior-window-cleaning",
   "post-renovation-cleaning",
+  "post-event-cleaning",
 ] as const;
 
 export const RECLASSIFIED_SERVICE_SLUGS = [
@@ -40,6 +42,7 @@ export function isCanonicalPrimaryServiceSlug(slug: string): boolean {
 export const indexablePublicServicePages: ServicePage[] = [
   ...servicePages.filter((service) => !isReclassifiedServiceSlug(service.slug)),
   postRenovationService,
+  postEventCleaningService,
 ];
 
 /** Canonical primary services only; excludes add-on/explanatory service pages. */

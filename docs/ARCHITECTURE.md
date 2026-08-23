@@ -2,20 +2,20 @@
 
 ## Scope and status
 
-This document describes architecture currently implemented in the Hestiva website repository. It distinguishes implemented website transport from quotation/pricing authority owned by HestivaOS.
+This document describes architecture currently implemented in the Homent website repository. It distinguishes implemented website transport from quotation/pricing authority owned by HestivaOS.
 
 ## System overview
 
-Hestiva is a TypeScript, React 19 website built with TanStack Start and TanStack Router through Vite. TanStack Start produces server-rendered application output and client assets. The production target is the `hestiva` Cloudflare Worker; static files are served through its `ASSETS` binding.
+Homent is a TypeScript, React 19 website built with TanStack Start and TanStack Router through Vite. TanStack Start produces server-rendered application output and client assets. The production target is the internally named `hestiva` Cloudflare Worker; static files are served through its `ASSETS` binding.
 
 The active public-form runtime paths are:
 
 ```text
 Contact:
-Browser -> hestiva.co.za -> Cloudflare Worker -> TanStack server function -> Resend HTTPS API
+Browser -> www.homent.co.za -> Cloudflare Worker -> TanStack server function -> Resend HTTPS API
 
 Residential quote:
-Browser -> hestiva.co.za -> Cloudflare Worker -> structured quote server function
+Browser -> www.homent.co.za -> Cloudflare Worker -> structured quote server function
                                          |-> private HestivaOS quote ingestion
                                          `-> Resend admin/customer correspondence after OS acknowledgement
 ```
@@ -26,7 +26,7 @@ Browser -> hestiva.co.za -> Cloudflare Worker -> structured quote server functio
 - `src/routes/__root.tsx` defines the HTML shell, common head assets, not-found UI, outlet, and route-gated lazy loading boundaries for browser-only form/quote enhancements.
 - `src/router.tsx` creates the router and common error UI.
 - `src/components/` contains shared page sections, navigation, layouts, form wiring, browser-only quote enhancements, and UI primitives.
-- `src/content/services.ts` is the typed service catalogue.
+- `src/content/services.ts` is the historical typed service catalogue; focused service content may also live in dedicated typed content modules and is reconciled through `src/lib/public-service-policy.ts`.
 - `src/content/service-areas.ts` is the authoritative approved service-area source. It currently contains 66 areas across five Johannesburg/Midrand clusters.
 - `src/content/locations.ts` defines the generated location-page content model for the approved service areas.
 - `src/content/location-visuals.ts` maps exactly three unique people-free residential interior images to each approved location page and rejects duplicate Pexels photo IDs.
@@ -50,13 +50,15 @@ The responsive derivatives are static Cloudflare `ASSETS`; there is no runtime i
 The implemented public route families include:
 
 - `/`, `/about`, `/contact`, `/quote`, `/services`, `/locations`, `/privacy`, and `/terms`;
-- service detail routes including dynamic `/services/$serviceSlug` pages backed by the service catalogue;
+- service detail routes including dynamic `/services/$serviceSlug` pages backed by the public service policy and typed service content;
 - dynamic `/locations/$locationSlug` pages backed by the authoritative 66-area geography and unique location content; and
 - the server-rendered `/sitemap.xml` route.
 
 TanStack Start renders route output on the server and hydrates React in the browser. Route modules define their metadata and structured data. Shared navigation, footer, and page layouts are composed from React components.
 
 The current SEO geography is intentionally driven from `src/content/service-areas.ts` so location pages, service-area presentation, and structured business service areas do not maintain competing geographic lists. Service pages link into approved core geographic hubs and the full Areas We Serve hub. Location pages link to approved nearby locations through crawlable links.
+
+`Post-Event Cleaning` is a canonical public primary service. Its typed content lives in `src/content/post-event-cleaning-service.ts`, it is admitted into the indexable/canonical service policy by `src/lib/public-service-policy.ts`, resolves at `/services/post-event-cleaning`, participates in the sitemap/static-service path set, and has a typed internal navigation link. The service page intentionally does not reuse an unrelated image when no approved Post-Event visual asset exists.
 
 ## Server and client boundaries
 
@@ -78,6 +80,8 @@ Most route and component code participates in SSR and then hydrates on the clien
 
 `src/components/PostRenovationFrequencyEnhancement.tsx` remains a quote-only launch repair that restores approved frequency choices when `Post-Renovation Cleaning` is selected. Structured transport now maps the selected primary service and frequency into the HestivaOS contract; the enhancement itself does not price or persist the quote.
 
+`src/components/PostEventCleaningEnhancement.tsx` is mounted only on `/quote`. It adds `Post-Event Cleaning` to the customer-facing primary-service choice, enforces the approved one-time frequency, and conditionally collects the event/venue, guest, bathroom, kitchen/dishwashing, outdoor-area, waste, ordinary-soiling and review-trigger facts required by the Post-Event Website Quote v2 extension. Required Post-Event facts fail closed in the browser before final submission, while authoritative validation/pricing/review remains in HestivaOS. The enhancement exports the collected values into the existing structured quote snapshot rather than creating a second final-submit owner.
+
 The customer-facing quote sources no longer treat `Laundry Folding` as a selectable primary-service option in `src/lib/quote-options.ts`, `src/routes/quote.tsx`, or the legacy `LiveFormSubmission` frequency controller. Laundry and Ironing remain add-ons only to eligible cleaning visits through `LaundryOperatingModelEnhancement`, while the retained `/services/laundry-folding` compatibility route is informational customer content presented as `Laundry & Ironing Add-On` rather than a standalone booking category.
 
 ## Public contact submission
@@ -90,18 +94,20 @@ The old quote-capable code remains temporarily in that shared legacy function fo
 
 `src/lib/quote/hestiva-os-contract.ts` maps the website snapshot to Website Quote Contract v2. It owns exact enum/value translation, South African mobile normalization, generic add-on quantity extraction, structured Laundry/Ironing placement in `request.laundry`, and the complete Customer/Property/Request/Visit/Access/Household/Safety/Notes shape. It does not calculate authoritative pricing.
 
+For Post-Event Cleaning, `src/lib/quote/post-event-hestiva-os-payload.ts` extends that existing website mapper boundary. It requires the exact Post-Event primary service and `ONE_TIME` frequency, validates the complete structured Post-Event fact set collected by the enhancement, and places those facts in `request.postEvent` without changing `schemaVersion: 2.0`, the website provenance, endpoint, authentication model, or website pricing authority. Non-Post-Event requests continue through the existing v2 mapping unchanged.
+
 `src/lib/quote/structured-submission.functions.ts` is the quote-only TanStack server function. It:
 
 1. validates the structured browser snapshot and bounded file envelope;
 2. reuses the public contact validation policy and same-origin/honeypot/rate-limit controls;
 3. validates email attachments;
 4. creates image transfer metadata with stable client UUIDs, byte sizes and SHA-256 hashes;
-5. builds the HestivaOS Contract v2 payload;
+5. builds the HestivaOS Contract v2 payload, including `request.postEvent` when Post-Event Cleaning is selected;
 6. sends it to the private HestivaOS ingestion route using server-only runtime configuration;
 7. requires a successful HestivaOS acknowledgement with an authoritative quote reference; and
 8. only then sends the existing admin/customer Resend correspondence using that HestivaOS reference.
 
-A missing endpoint configuration, missing integration credential, timeout, rejected HestivaOS response, or malformed acknowledgement fails closed. The website does not send a success email pretending that authoritative quote intake succeeded.
+A missing endpoint configuration, missing integration credential, timeout, rejected HestivaOS response, malformed acknowledgement, or incomplete required Post-Event fact set fails closed. The website does not send a success email pretending that authoritative quote intake succeeded.
 
 ## Quote file handling
 
@@ -139,4 +145,4 @@ Resend is actively used for contact emails and for quote correspondence after au
 
 The website now implements structured quote transport but does not own authoritative quotation persistence, pricing, profitability calculation, quote state, accepted-quote operational orchestration, Work Orders, Recurring Service Agreements, collections, or financial state. Those are HestivaOS responsibilities.
 
-The website remains responsible for customer-facing collection/validation/presentation and correspondence. HestivaOS remains the authoritative operational/commercial destination for accepted structured quote intake. Later Accept/Decline actions, customer self-service, or newer quote schema versions require separate coordinated decisions and implementation.
+The website remains responsible for customer-facing collection/validation/presentation, public service information and correspondence. HestivaOS remains the authoritative operational/commercial destination for accepted structured quote intake, including Post-Event workload/pricing/review decisions. Later Accept/Decline actions, customer self-service, or newer quote schema versions require separate coordinated decisions and implementation.

@@ -12,11 +12,8 @@ import {
   PublicSubmissionError,
 } from "@/lib/form-security";
 import { checkIsolateRateLimit } from "@/lib/rate-limit";
-import {
-  buildHestivaOsQuotePayload,
-  type HestivaOsPhoto,
-  type QuoteFormSnapshot,
-} from "@/lib/quote/hestiva-os-contract";
+import { type HestivaOsPhoto, type QuoteFormSnapshot } from "@/lib/quote/hestiva-os-contract";
+import { buildWebsiteQuotePayload } from "@/lib/quote/post-event-hestiva-os-payload";
 
 const fileSchema = z
   .object({
@@ -264,7 +261,7 @@ export const submitStructuredQuoteForm = createServerFn({ method: "POST" })
 
       const attachments = validateQuoteAttachments(publicValidation.data.files);
       const photos = await buildPhotos(files);
-      const osPayload = buildHestivaOsQuotePayload(snapshot, photos);
+      const osPayload = buildWebsiteQuotePayload(snapshot, photos);
       const quoteReference = await submitToHestivaOs(osPayload);
 
       const attachmentSummary = attachments.length

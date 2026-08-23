@@ -32,7 +32,7 @@ export const postEventCleaningService: ServicePage = {
   process: [
     "Tell us about the property, event type, approximate guest count and areas used.",
     "Confirm kitchen, dishwashing, bathroom, outdoor-area, waste and ordinary-soiling requirements.",
-    "HestivaOS calculates the approved workload and checks whether the request can be quoted automatically or needs review.",
+    "Homent calculates the expected workload and checks whether the request can be quoted immediately or needs review.",
     "Homent confirms the final scope, timing and quotation before the booking is secured.",
     "The cleaning team completes the confirmed checklist and reports anything outside the agreed scope for separate review.",
   ],
@@ -55,7 +55,7 @@ export const postEventCleaningService: ServicePage = {
     {
       question: "Can I request cleaning immediately after a late event?",
       answer:
-        "You can state that late-night or overnight cleaning is required in the quote request. These requests are reviewed before a booking is confirmed rather than being automatically priced in the initial Post-Event model.",
+        "You can state that late-night or overnight cleaning is required in the quote request. These requests are reviewed before a booking is confirmed rather than being automatically quoted.",
     },
   ],
 };

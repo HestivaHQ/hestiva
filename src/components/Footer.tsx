@@ -4,6 +4,7 @@ import { BRAND_ASSETS, SITE_NAME, TAGLINE } from "@/lib/site";
 const navigation = [
   { label: "Home", to: "/" },
   { label: "Services", to: "/services" },
+  { label: "Post-Event Cleaning", to: "/services/post-event-cleaning" },
   { label: "About", to: "/about" },
   { label: "Areas We Serve", to: "/locations" },
   { label: "FAQs", to: "/faq" },

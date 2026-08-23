@@ -2,6 +2,29 @@
 
 This append-only log records verified engineering and material operational work without reconstructing unsupported history. Add newest entries first. Link pull requests/commits when available and describe validation without including secrets or customer data.
 
+## 2026-08-23 — Added Post-Event Cleaning website quote flow and public service
+
+**Purpose:** Extend the Homent website for the approved Post-Event Cleaning service without moving quotation/pricing authority out of HestivaOS or allowing the public website to get ahead of the receiving Website Quote Contract.
+
+**Work recorded:**
+
+- created website PR #174 from exact `main` `898ad984598e7e04a6c4923e70995c1035b96b4e` and kept the work isolated on `feat/post-event-cleaning-website-v1`;
+- added `Post-Event Cleaning` to the live `/quote` primary-service flow through a route-gated enhancement rather than creating a second final-submit owner;
+- enforced the approved one-time frequency and collected the approved event/venue, approximate guest count, bathrooms used, kitchen use, dishwashing, outdoor event areas, ordinary waste, ordinary spills/soiling and review-trigger facts;
+- failed closed in the browser when required Post-Event facts are incomplete or invalid while retaining HestivaOS as the authoritative contract-validation, workload, profitability, automatic-quote-limit and `NEEDS_ATTENTION` authority;
+- added `src/lib/quote/post-event-hestiva-os-payload.ts` so the existing Website Quote Contract v2 transport carries the Post-Event fact set in `request.postEvent` while preserving `schemaVersion: 2.0`, `source: HESTIVA_WEBSITE`, the existing private endpoint/authentication boundary and existing non-Post-Event mapping;
+- added Post-Event mapping and missing-fact regression coverage to the existing quote-contract test file that the normal PR gate executes, while retaining focused mapper tests;
+- added `/services/post-event-cleaning` as a canonical indexable service page with customer-facing scope, FAQs and SEO metadata, admitted it through the public service policy and static/sitemap path set, and added a typed footer navigation link;
+- deliberately did not reuse an unrelated service image because no approved Post-Event visual asset exists;
+- updated `docs/POST_EVENT_CLEANING_WEBSITE_V1.md`, `docs/ARCHITECTURE.md`, `docs/TECHNICAL_WORK_LOG.md` and `docs/CHANGELOG.md` to keep the implemented public-form/business-workflow boundary documented; and
+- kept merge blocked on HestivaOS PR #210, which owns the receiving Website Quote v2 Post-Event contract.
+
+**Verification:** The implementation head `028e00b5347a2cd510cd480836170f9d302cfdc1` passed the complete Hestiva PR Check run `32644096017`: diff integrity, documentation policy/companion gate, tracked-secret scan, environment validation, TypeScript, public-form/structured-quote tests including Post-Event cases, targeted lint, Prettier, production build, runtime SEO and Cloudflare Worker dry-run. Earlier runs correctly caught and led to fixes for a Prettier import issue, a missing internal link for the new indexable service page, and an invalid literal TanStack route link. A new full gate is required after this final documentation reconciliation.
+
+**Cross-system state:** HestivaOS PR #210 was green on its exact implementation head but subsequently became one commit behind `main` after Messaging PR #209 merged. The new `main` commit changes Messaging-only files and has no file overlap with #210's Website Quote/Post-Event files. Refresh/merge of #210 remains owned by the HestivaOS lane; website #174 must remain unmerged until that receiving contract is merged.
+
+**Preserved boundaries:** No website-owned authoritative Post-Event price calculation, quote persistence, Work Order creation, booking acceptance, financial state, runtime secret, deployment topology, or second quote-submission owner was introduced.
+
 ## 2026-08-21 — Reconciled quote service options at source
 
 **Purpose:** Complete the canonical-service cleanup by making the actual server-rendered quote form agree with the approved service model rather than relying on a browser MutationObserver to repair incorrect options after hydration.
@@ -181,7 +204,7 @@ This append-only log records verified engineering and material operational work 
 
 **Work recorded:**
 
-- reviewed manual production Lighthouse run `31456227764` from `main` commit `3e74a04137b42b5171cc2ecc20c20a45a9b76c08` using three mobile runs each for the homepage, Services, and Quote pages;
+- reviewed manual production Lighthouse run `31456228551` from `main` commit `3e74a04137b42b5171cc2ecc20c20a45a9b76c08` using three mobile runs each for the homepage, Services, and Quote pages;
 - recorded median homepage performance `72`, FCP `2.407 s`, LCP `16.621 s`, transfer `5.328 MB`, TBT `0 ms`, and CLS `0`;
 - recorded median Services performance `78`, FCP `2.462 s`, LCP `5.052 s`, transfer `9.692 MB`, TBT `0 ms`, and CLS `0`, including the observed run-to-run LCP volatility;
 - generated 480, 768, and 1200 pixel WebP derivatives from the approved homepage hero PNG and 144/288 pixel WebP derivatives from the approved transparent white logo without replacing the originals;

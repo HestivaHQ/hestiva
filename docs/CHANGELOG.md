@@ -2,6 +2,18 @@
 
 This is the append-only technical change history for implemented repository and material verified operational changes. It begins with the documentation baseline and does not invent undocumented releases.
 
+## 2026-08-23
+
+### Post-Event Cleaning website quote flow and public service
+
+- Added `Post-Event Cleaning` to the live `/quote` primary-service flow through the existing route-gated quote-enhancement architecture and enforced the approved one-time frequency.
+- Added structured collection for the approved Post-Event event/venue, guest, bathroom, kitchen/dishwashing, outdoor-area, waste, ordinary-soiling and review-trigger facts, with browser-side fail-closed validation for required facts.
+- Extended the Website Quote Contract v2 mapper boundary so Post-Event requests carry `request.postEvent` while preserving `schemaVersion: 2.0`, website provenance, the existing private HestivaOS endpoint/authentication model, stable retry identity and HestivaOS pricing/review authority.
+- Added `/services/post-event-cleaning` as an indexable canonical public service page with customer-facing scope, FAQs, SEO metadata, sitemap/static-path participation and a typed internal navigation link; no unrelated image was reused when no approved Post-Event visual exists.
+- Added focused Post-Event mapping/fail-closed regression coverage to the quote-contract test path used by CI.
+- Verified exact website head `028e00b5347a2cd510cd480836170f9d302cfdc1` through documentation policy, tracked-secret and environment checks, TypeScript, public-form/structured-quote tests, targeted lint, Prettier, production build, runtime SEO and Cloudflare Worker dry-run before the final documentation reconciliation.
+- Kept website merge blocked until the corresponding HestivaOS Website Quote v2 Post-Event contract is merged; the website does not get ahead of the accepting backend contract.
+
 ## 2026-08-21
 
 ### External Hestiva → Homent migration completion

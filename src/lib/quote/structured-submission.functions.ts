@@ -12,10 +12,7 @@ import {
   PublicSubmissionError,
 } from "@/lib/form-security";
 import { checkIsolateRateLimit } from "@/lib/rate-limit";
-import {
-  type HestivaOsPhoto,
-  type QuoteFormSnapshot,
-} from "@/lib/quote/hestiva-os-contract";
+import { type HestivaOsPhoto, type QuoteFormSnapshot } from "@/lib/quote/hestiva-os-contract";
 import { buildWebsiteQuotePayload } from "@/lib/quote/post-event-hestiva-os-payload";
 
 const fileSchema = z

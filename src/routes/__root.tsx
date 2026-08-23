@@ -45,6 +45,11 @@ const LazyPostRenovationFrequencyEnhancement = lazy(() =>
     default: module.PostRenovationFrequencyEnhancement,
   })),
 );
+const LazyPostEventCleaningEnhancement = lazy(() =>
+  import("@/components/PostEventCleaningEnhancement").then((module) => ({
+    default: module.PostEventCleaningEnhancement,
+  })),
+);
 const LazyLaundryOperatingModelEnhancement = lazy(() =>
   import("@/components/LaundryOperatingModelEnhancement").then((module) => ({
     default: module.LaundryOperatingModelEnhancement,
@@ -123,6 +128,7 @@ function RootComponent() {
   const needsBrandedFormNotices = pathname === "/quote" || pathname === "/contact";
   const needsAddonQuantityEnhancements = pathname === "/quote";
   const needsPostRenovationFrequencyEnhancement = pathname === "/quote";
+  const needsPostEventCleaningEnhancement = pathname === "/quote";
   const needsLaundryOperatingModelEnhancement = pathname === "/quote";
 
   return (
@@ -164,6 +170,11 @@ function RootComponent() {
       {needsPostRenovationFrequencyEnhancement && (
         <Suspense fallback={null}>
           <LazyPostRenovationFrequencyEnhancement />
+        </Suspense>
+      )}
+      {needsPostEventCleaningEnhancement && (
+        <Suspense fallback={null}>
+          <LazyPostEventCleaningEnhancement />
         </Suspense>
       )}
       {needsLaundryOperatingModelEnhancement && (

@@ -1,44 +1,35 @@
 import { useEffect } from "react";
 
 const SERVICE = "Post-Event Cleaning";
-
-const EVENT_TYPES = [
-  "Party / Birthday",
-  "Wedding / Reception",
-  "Family gathering",
-  "Corporate event",
-  "Funeral / Memorial",
-  "Other",
-];
-
+const EVENT_TYPES = ["Party / Birthday", "Wedding / Reception", "Family gathering", "Corporate event", "Funeral / Memorial", "Other"];
 const VENUE_TYPES = ["Home", "Apartment", "Business premises", "Event venue", "Other"];
 const GUEST_BANDS = ["1–20", "21–50", "51–100", "101–150", "150+"];
 const DISHWASHING = ["None", "Moderate", "Heavy"];
 const WASTE_LEVELS = ["Light", "Moderate", "Heavy"];
 const OUTDOOR_AREAS = ["Patio", "Balcony", "Braai area", "Garden entertainment area"];
-
 const storedValues: Record<string, string> = {};
 
-function rememberValue(element: HTMLInputElement | HTMLSelectElement) {
-  storedValues[element.id] = element.value;
-}
+const inputClass =
+  "mt-2 min-h-12 w-full rounded-xl border border-[#CDBFB1] bg-white px-4 py-3 text-base text-[#342C2A] shadow-sm outline-none transition hover:border-[#A89380] focus:border-[#5A1425] focus:ring-2 focus:ring-[#C9A45B]/45";
 
-function option(value: string, label = value) {
+function makeOption(value: string, label = value) {
   const node = document.createElement("option");
   node.value = value;
   node.textContent = label;
   return node;
 }
 
+function remember(element: HTMLInputElement | HTMLSelectElement) {
+  if (element.id) storedValues[element.id] = element.value;
+}
+
 function ensureServiceOption() {
-  const service = document.querySelector<HTMLSelectElement>("#field-service");
-  if (!service) return;
-  if (!Array.from(service.options).some((item) => item.value === SERVICE)) {
-    const notSure = Array.from(service.options).find((item) => item.value === "Not sure");
-    const postEvent = option(SERVICE);
-    if (notSure) service.insertBefore(postEvent, notSure);
-    else service.appendChild(postEvent);
-  }
+  const select = document.querySelector<HTMLSelectElement>("#field-service");
+  if (!select || Array.from(select.options).some((item) => item.value === SERVICE)) return;
+  const node = makeOption(SERVICE);
+  const notSure = Array.from(select.options).find((item) => item.value === "Not sure");
+  if (notSure) select.insertBefore(node, notSure);
+  else select.appendChild(node);
 }
 
 function ensureOneTimeFrequency() {
@@ -46,109 +37,109 @@ function ensureOneTimeFrequency() {
   const frequency = document.querySelector<HTMLSelectElement>("#field-frequency");
   if (!service || !frequency || service.value !== SERVICE) return;
 
-  if (frequency.options.length !== 2 || frequency.options[1]?.value !== "One-time") {
-    frequency.replaceChildren(option("", "Select frequency"), option("One-time"));
+  const needsOptions =
+    frequency.options.length !== 2 ||
+    frequency.options[0]?.value !== "" ||
+    frequency.options[1]?.value !== "One-time";
+  const needsValue = frequency.value !== "One-time";
+
+  if (needsOptions) {
+    frequency.replaceChildren(makeOption("", "Select frequency"), makeOption("One-time"));
   }
   frequency.disabled = false;
-  frequency.value = "One-time";
   frequency.dataset.optionSignature = `${SERVICE}:`;
-  frequency.dispatchEvent(new Event("change", { bubbles: true }));
+
+  if (needsValue || needsOptions) {
+    frequency.value = "One-time";
+    frequency.dispatchEvent(new Event("change", { bubbles: true }));
+  }
 }
 
-function labelledSelect(
-  id: string,
-  labelText: string,
-  values: string[],
-  placeholder = "Select one",
-) {
-  const label = document.createElement("label");
-  label.className = "text-sm font-semibold text-[#4A3435]";
-  label.htmlFor = id;
-  label.append(document.createTextNode(labelText));
+function requiredMarker() {
   const marker = document.createElement("span");
   marker.className = "text-[#9B3349]";
   marker.setAttribute("aria-hidden", "true");
   marker.textContent = " *";
-  label.appendChild(marker);
+  return marker;
+}
+
+function makeSelect(id: string, labelText: string, values: string[]) {
+  const label = document.createElement("label");
+  label.className = "text-sm font-semibold text-[#4A3435]";
+  label.htmlFor = id;
+  label.append(document.createTextNode(labelText), requiredMarker());
 
   const select = document.createElement("select");
   select.id = id;
-  select.className =
-    "mt-2 min-h-12 w-full rounded-xl border border-[#CDBFB1] bg-white px-4 py-3 text-base text-[#342C2A] shadow-sm outline-none transition hover:border-[#A89380] focus:border-[#5A1425] focus:ring-2 focus:ring-[#C9A45B]/45";
-  select.appendChild(option("", placeholder));
-  values.forEach((value) => select.appendChild(option(value)));
+  select.className = inputClass;
+  select.appendChild(makeOption("", "Select one"));
+  values.forEach((value) => select.appendChild(makeOption(value)));
   select.value = storedValues[id] || "";
-  select.addEventListener("change", () => rememberValue(select));
+  select.addEventListener("change", () => remember(select));
   label.appendChild(select);
   return label;
 }
 
-function labelledNumber(id: string, labelText: string) {
+function makeNumber(id: string, labelText: string) {
   const label = document.createElement("label");
   label.className = "text-sm font-semibold text-[#4A3435]";
   label.htmlFor = id;
-  label.append(document.createTextNode(labelText));
-  const marker = document.createElement("span");
-  marker.className = "text-[#9B3349]";
-  marker.setAttribute("aria-hidden", "true");
-  marker.textContent = " *";
-  label.appendChild(marker);
+  label.append(document.createTextNode(labelText), requiredMarker());
 
   const input = document.createElement("input");
   input.id = id;
   input.type = "number";
   input.min = "1";
-  input.max = "20";
   input.step = "1";
-  input.className =
-    "mt-2 min-h-12 w-full rounded-xl border border-[#CDBFB1] bg-white px-4 py-3 text-base text-[#342C2A] shadow-sm outline-none transition hover:border-[#A89380] focus:border-[#5A1425] focus:ring-2 focus:ring-[#C9A45B]/45";
+  input.inputMode = "numeric";
+  input.className = inputClass;
   input.value = storedValues[id] || "";
-  input.addEventListener("input", () => rememberValue(input));
+  input.addEventListener("input", () => remember(input));
   label.appendChild(input);
   return label;
 }
 
 function yesNo(id: string, labelText: string) {
-  return labelledSelect(id, labelText, ["Yes", "No"]);
+  return makeSelect(id, labelText, ["Yes", "No"]);
 }
 
-function outdoorAreaCheckboxes() {
+function makeOutdoorAreas() {
   const fieldset = document.createElement("fieldset");
-  fieldset.id = "post-event-outdoor-areas";
   fieldset.className = "sm:col-span-2 rounded-xl border border-[#E4D9CB] bg-[#FBF7EF] p-4";
+
   const legend = document.createElement("legend");
   legend.className = "px-1 text-sm font-semibold text-[#4A3435]";
-  legend.textContent = "Outdoor event areas requiring cleaning";
+  legend.textContent = "Outdoor event areas requiring cleaning (optional)";
   fieldset.appendChild(legend);
-
-  const current = new Set((storedValues["field-postEventOutdoorAreas"] || "").split("|").filter(Boolean));
-  for (const value of OUTDOOR_AREAS) {
-    const label = document.createElement("label");
-    label.className = "mt-3 flex items-center gap-3 text-sm text-[#4A3435]";
-    const input = document.createElement("input");
-    input.type = "checkbox";
-    input.value = value;
-    input.checked = current.has(value);
-    input.addEventListener("change", () => {
-      if (input.checked) current.add(value);
-      else current.delete(value);
-      storedValues["field-postEventOutdoorAreas"] = Array.from(current).join("|");
-      hidden.value = storedValues["field-postEventOutdoorAreas"];
-      hidden.dispatchEvent(new Event("input", { bubbles: true }));
-    });
-    label.append(input, document.createTextNode(value));
-    fieldset.appendChild(label);
-  }
 
   const hidden = document.createElement("input");
   hidden.type = "hidden";
   hidden.id = "field-postEventOutdoorAreas";
   hidden.value = storedValues[hidden.id] || "";
   fieldset.appendChild(hidden);
+
+  const selected = new Set(hidden.value.split("|").filter(Boolean));
+  OUTDOOR_AREAS.forEach((value) => {
+    const label = document.createElement("label");
+    label.className = "mt-3 flex items-center gap-3 text-sm text-[#4A3435]";
+    const checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+    checkbox.value = value;
+    checkbox.checked = selected.has(value);
+    checkbox.addEventListener("change", () => {
+      if (checkbox.checked) selected.add(value);
+      else selected.delete(value);
+      hidden.value = Array.from(selected).join("|");
+      storedValues[hidden.id] = hidden.value;
+      hidden.dispatchEvent(new Event("input", { bubbles: true }));
+    });
+    label.append(checkbox, document.createTextNode(value));
+    fieldset.appendChild(label);
+  });
   return fieldset;
 }
 
-function ensurePostEventPanel() {
+function ensurePanel() {
   ensureServiceOption();
   const service = document.querySelector<HTMLSelectElement>("#field-service");
   const existing = document.getElementById("post-event-quote-fields");
@@ -160,29 +151,28 @@ function ensurePostEventPanel() {
   ensureOneTimeFrequency();
   if (existing) return;
 
-  const condition = document.querySelector<HTMLSelectElement>("#field-condition");
-  const anchor = condition?.closest("label");
+  const anchor = document.querySelector<HTMLSelectElement>("#field-condition")?.closest("label");
   if (!anchor) return;
 
   const panel = document.createElement("div");
   panel.id = "post-event-quote-fields";
   panel.className = "sm:col-span-2 mt-2 grid gap-6 rounded-2xl border border-[#E4D9CB] bg-white p-5 sm:grid-cols-2";
 
-  const heading = document.createElement("div");
-  heading.className = "sm:col-span-2";
-  heading.innerHTML =
+  const intro = document.createElement("div");
+  intro.className = "sm:col-span-2";
+  intro.innerHTML =
     '<h3 class="text-base font-semibold text-[#342C2A]">Post-event details</h3><p class="mt-1 text-sm leading-6 text-[#695E59]">Tell us about the event and the cleanup required so Homent can calculate the workload accurately.</p>';
-  panel.appendChild(heading);
 
   panel.append(
-    labelledSelect("field-postEventType", "Event type", EVENT_TYPES),
-    labelledSelect("field-postEventVenueType", "Venue / property context", VENUE_TYPES),
-    labelledSelect("field-postEventGuestBand", "Approximate guests", GUEST_BANDS),
-    labelledNumber("field-postEventBathrooms", "Bathrooms used"),
+    intro,
+    makeSelect("field-postEventType", "Event type", EVENT_TYPES),
+    makeSelect("field-postEventVenueType", "Venue / property context", VENUE_TYPES),
+    makeSelect("field-postEventGuestBand", "Approximate guests", GUEST_BANDS),
+    makeNumber("field-postEventBathrooms", "Bathrooms used"),
     yesNo("field-postEventKitchenUsed", "Was the kitchen substantially used for food service?"),
-    labelledSelect("field-postEventDishwashing", "Dishwashing required", DISHWASHING),
-    outdoorAreaCheckboxes(),
-    labelledSelect("field-postEventWasteLevel", "Waste level", WASTE_LEVELS),
+    makeSelect("field-postEventDishwashing", "Dishwashing required", DISHWASHING),
+    makeOutdoorAreas(),
+    makeSelect("field-postEventWasteLevel", "Waste level", WASTE_LEVELS),
     yesNo("field-postEventSoiling", "Significant ordinary spills or soiling?"),
     yesNo("field-postEventOvernight", "Late-night or overnight cleaning required?"),
     yesNo("field-postEventBulkWaste", "Bulk or off-site waste removal requested?"),
@@ -194,20 +184,20 @@ function ensurePostEventPanel() {
   anchor.insertAdjacentElement("afterend", panel);
 }
 
-const REQUIRED_FIELDS: Array<[string, string]> = [
+const REQUIRED: Array<[string, string]> = [
   ["field-postEventType", "Please select the event type."],
   ["field-postEventVenueType", "Please select the venue type."],
   ["field-postEventGuestBand", "Please select the approximate guest count."],
   ["field-postEventBathrooms", "Please enter how many bathrooms were used."],
-  ["field-postEventKitchenUsed", "Please tell us whether the kitchen was substantially used."],
+  ["field-postEventKitchenUsed", "Please answer the kitchen-use question."],
   ["field-postEventDishwashing", "Please select the dishwashing level."],
   ["field-postEventWasteLevel", "Please select the waste level."],
-  ["field-postEventSoiling", "Please tell us whether there are significant spills or soiling."],
-  ["field-postEventOvernight", "Please tell us whether late-night or overnight cleaning is required."],
-  ["field-postEventBulkWaste", "Please tell us whether bulk waste removal is requested."],
+  ["field-postEventSoiling", "Please answer the spills or soiling question."],
+  ["field-postEventOvernight", "Please answer the late-night or overnight question."],
+  ["field-postEventBulkWaste", "Please answer the bulk-waste question."],
   ["field-postEventSpecialistContamination", "Please answer the specialist contamination question."],
-  ["field-postEventSpecialistCarpet", "Please answer the specialist carpet/upholstery question."],
-  ["field-postEventComplexVenue", "Please tell us whether this is a complex venue."],
+  ["field-postEventSpecialistCarpet", "Please answer the carpet or upholstery question."],
+  ["field-postEventComplexVenue", "Please answer the complex-venue question."],
 ];
 
 function clearError(id: string) {
@@ -215,27 +205,29 @@ function clearError(id: string) {
   document.getElementById(id)?.removeAttribute("aria-invalid");
 }
 
-function validatePostEventFields() {
+function validatePanel() {
   const service = document.querySelector<HTMLSelectElement>("#field-service");
   if (service?.value !== SERVICE) return true;
 
-  let first: HTMLElement | null = null;
   let valid = true;
-  for (const [id, message] of REQUIRED_FIELDS) {
+  let first: HTMLElement | null = null;
+  for (const [id, message] of REQUIRED) {
     const element = document.getElementById(id) as HTMLInputElement | HTMLSelectElement | null;
-    if (!element || !element.value.trim()) {
+    const bathroomInvalid = id === "field-postEventBathrooms" && element
+      ? !Number.isInteger(Number(element.value)) || Number(element.value) < 1
+      : false;
+    if (!element?.value.trim() || bathroomInvalid) {
       valid = false;
       if (element && !first) first = element;
-      if (element) {
-        clearError(id);
-        element.setAttribute("aria-invalid", "true");
-        const error = document.createElement("p");
-        error.id = `post-event-error-${id}`;
-        error.className = "mt-2 text-sm font-normal text-[#9B3349]";
-        error.setAttribute("role", "alert");
-        error.textContent = message;
-        element.insertAdjacentElement("afterend", error);
-      }
+      if (!element) continue;
+      clearError(id);
+      element.setAttribute("aria-invalid", "true");
+      const error = document.createElement("p");
+      error.id = `post-event-error-${id}`;
+      error.className = "mt-2 text-sm font-normal text-[#9B3349]";
+      error.setAttribute("role", "alert");
+      error.textContent = message;
+      element.insertAdjacentElement("afterend", error);
     } else {
       clearError(id);
     }
@@ -248,15 +240,15 @@ export function PostEventCleaningEnhancement() {
   useEffect(() => {
     if (window.location.pathname !== "/quote") return;
 
-    const sync = () => ensurePostEventPanel();
+    const sync = () => ensurePanel();
     sync();
-    const observer = new MutationObserver(sync);
     const quoteForm = document.getElementById("quote-form");
+    const observer = new MutationObserver(sync);
     if (quoteForm) observer.observe(quoteForm, { childList: true, subtree: true });
 
     const onChange = (event: Event) => {
       const target = event.target as HTMLInputElement | HTMLSelectElement | null;
-      if (target?.id) rememberValue(target);
+      if (target?.id) remember(target);
       if (target?.id === "field-service") window.setTimeout(sync, 0);
       if (target?.id?.startsWith("field-postEvent")) clearError(target.id);
     };
@@ -265,12 +257,10 @@ export function PostEventCleaningEnhancement() {
       const button = (event.target as HTMLElement | null)?.closest("button");
       if (!button) return;
       const service = document.querySelector<HTMLSelectElement>("#field-service");
-      if (service?.value !== SERVICE) return;
-      const panel = document.getElementById("post-event-quote-fields");
-      if (!panel) return;
+      if (service?.value !== SERVICE || !document.getElementById("post-event-quote-fields")) return;
       const text = button.textContent?.trim() || "";
       if (!text.includes("Continue") && !text.includes("Send Request")) return;
-      if (!validatePostEventFields()) {
+      if (!validatePanel()) {
         event.preventDefault();
         event.stopImmediatePropagation();
       }

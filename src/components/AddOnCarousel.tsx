@@ -21,6 +21,16 @@ export function AddOnCarousel() {
             Add-on Services
           </Link>
         </h2>
+        <p className="mt-4 leading-7 text-[#695E59]">
+          Optional extras can be added to eligible cleaning visits. Looking for clothing care?{" "}
+          <Link
+            to="/services/$serviceSlug"
+            params={{ serviceSlug: "laundry-folding" }}
+            className="rounded-sm font-semibold text-[#5A1425] underline decoration-[#C9A45B] underline-offset-4 transition-colors hover:text-[#711C31] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A45B]"
+          >
+            Learn about our Laundry &amp; Ironing Add-On.
+          </Link>
+        </p>
       </div>
       <ul
         aria-label="Visual selection of cleaning add-on services"

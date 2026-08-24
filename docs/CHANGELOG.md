@@ -2,6 +2,16 @@
 
 This is the append-only technical change history for implemented repository and material verified operational changes. It begins with the documentation baseline and does not invent undocumented releases.
 
+## 2026-08-24
+
+### Post-Event visual integration and documentation closeout
+
+- Integrated the operator-approved Post-Event Cleaning visual into the typed service model using `/images/services/post-event-cleaning.png` as the original fallback and the committed 480/768/1200 WebP derivatives through the existing responsive `ServiceImage` convention.
+- Made Post-Event Cleaning eligible for the normal visual Services catalogue rather than the temporary no-image navigation fallback.
+- Replaced the stale root README's Hestiva customer identity, legacy domain and superseded service list with the current Homent identity, `https://www.homent.co.za`, canonical primary-service model and Website → HestivaOS authority boundary.
+- Reconciled the focused Post-Event status document and architecture with merged HestivaOS PR #212 and website PR #174; stale references to pending PR #210 are no longer presented as current state.
+- Audited remaining Hestiva references against current documentation policy: historical pre-cutover records and technically accurate HestivaOS/internal identifiers remain intentionally preserved rather than rewritten as if they were current customer branding.
+
 ## 2026-08-23
 
 ### Post-Event Cleaning website quote flow and public service

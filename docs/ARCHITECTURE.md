@@ -39,7 +39,7 @@ Browser -> www.homent.co.za -> Cloudflare Worker -> structured quote server func
 Approved source PNG assets remain tracked under `public/` as visual-source and browser-fallback files. Performance-critical website surfaces prefer responsive WebP derivatives where available rather than transferring those full-resolution PNGs to every viewport.
 
 - The homepage hero uses 480, 768, and 1200 pixel WebP derivatives selected through `srcset`/`sizes`, while the original PNG remains the `<img>` fallback and the hero keeps intentional high fetch priority.
-- `src/components/ServiceImage.tsx` uses the existing 480, 768, and 1200 pixel WebP derivatives for images under `/images/services/`, while retaining the service PNG as fallback. Existing lazy/eager and fetch-priority semantics are preserved.
+- `src/components/ServiceImage.tsx` uses the existing 480, 768, and 1200 pixel WebP derivatives for images under `/images/services/`, while retaining the service PNG as fallback. Existing lazy/eager and fetch-priority semantics are preserved. The approved Post-Event Cleaning visual follows this same convention.
 - Navbar and Footer use 144 and 288 pixel transparent WebP derivatives of the white logo with the original white PNG retained as fallback.
 - Add-on and other imagery without an approved responsive derivative set continues to use its existing source rather than generating unverified URLs at runtime.
 
@@ -58,7 +58,7 @@ TanStack Start renders route output on the server and hydrates React in the brow
 
 The current SEO geography is intentionally driven from `src/content/service-areas.ts` so location pages, service-area presentation, and structured business service areas do not maintain competing geographic lists. Service pages link into approved core geographic hubs and the full Areas We Serve hub. Location pages link to approved nearby locations through crawlable links.
 
-`Post-Event Cleaning` is a canonical public primary service. Its typed content lives in `src/content/post-event-cleaning-service.ts`, it is admitted into the indexable/canonical service policy by `src/lib/public-service-policy.ts`, resolves at `/services/post-event-cleaning`, participates in the sitemap/static-service path set, and has a typed internal navigation link. The service page intentionally does not reuse an unrelated image when no approved Post-Event visual asset exists.
+`Post-Event Cleaning` is a canonical public primary service. Its typed content lives in `src/content/post-event-cleaning-service.ts`, it is admitted into the indexable/canonical service policy by `src/lib/public-service-policy.ts`, resolves at `/services/post-event-cleaning`, participates in the sitemap/static-service path set, and has an approved responsive service visual under `/images/services/post-event-cleaning.*`. Because the service now has an image entry, it participates in the normal visual service catalogue.
 
 ## Server and client boundaries
 

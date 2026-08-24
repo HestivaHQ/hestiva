@@ -92,29 +92,34 @@ export function Footer() {
         </div>
       </div>
       <div className="border-t border-[#F5F1E8]/10">
-        <div className="mx-auto flex max-w-7xl flex-col gap-3 px-6 py-4 text-xs text-[#F5F1E8]/55 sm:flex-row sm:items-center sm:justify-between">
-          <p>
-            © {new Date().getFullYear()} {SITE_NAME}. All rights reserved.
+        <div className="mx-auto max-w-7xl px-6 py-4 text-xs text-[#F5F1E8]/55">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <p>
+              © {new Date().getFullYear()} {SITE_NAME}. All rights reserved.
+            </p>
+            <nav aria-label="Legal and credits">
+              <ul className="flex flex-wrap gap-x-5 gap-y-2">
+                <li>
+                  <Link to="/privacy" className={linkStyles}>
+                    Privacy Policy
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/terms" className={linkStyles}>
+                    Terms of Service
+                  </Link>
+                </li>
+                <li>
+                  <a href="/terms#image-credits" className={linkStyles}>
+                    Image Credits
+                  </a>
+                </li>
+              </ul>
+            </nav>
+          </div>
+          <p className="mt-3 border-t border-[#F5F1E8]/10 pt-3 leading-5 text-[#F5F1E8]/50">
+            Hestiva (Pty) Ltd trading as Homent · Registration No. 2026/635515/07 · B-BBEE Level 1
           </p>
-          <nav aria-label="Legal and credits">
-            <ul className="flex flex-wrap gap-x-5 gap-y-2">
-              <li>
-                <Link to="/privacy" className={linkStyles}>
-                  Privacy Policy
-                </Link>
-              </li>
-              <li>
-                <Link to="/terms" className={linkStyles}>
-                  Terms of Service
-                </Link>
-              </li>
-              <li>
-                <a href="/terms#image-credits" className={linkStyles}>
-                  Image Credits
-                </a>
-              </li>
-            </ul>
-          </nav>
         </div>
       </div>
     </footer>

@@ -26,6 +26,12 @@ export const postRenovationService: ServicePage = {
     "Multiple affected areas requiring an assessed scope",
     "Properties where residue type and cleaning effort must be reviewed before pricing",
   ],
+  image: {
+    src: "/images/services/post-renovation-cleaning.png",
+    alt: "Professional cleaner removing post-renovation dust and residue from a residential surface",
+    width: 1535,
+    height: 1024,
+  },
   process: [
     "Review the property, completed renovation work and affected rooms.",
     "Assess dust, residue, access and any specialist exclusions before confirming scope.",

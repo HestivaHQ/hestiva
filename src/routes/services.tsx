@@ -1,219 +1,21 @@
 import { createFileRoute, Link, Outlet, useRouterState } from "@tanstack/react-router";
 import { Check } from "lucide-react";
 import { AddOnCarousel } from "@/components/AddOnCarousel";
-import { ServiceImage } from "@/components/ServiceImage";
+import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { Footer } from "@/components/Footer";
 import { Navbar } from "@/components/Navbar";
-import { Breadcrumbs } from "@/components/Breadcrumbs";
-import { createSeoHead } from "@/lib/seo";
+import { ServiceImage } from "@/components/ServiceImage";
 import { serviceBreadcrumbs } from "@/lib/breadcrumbs";
+import { canonicalPrimaryServicePages } from "@/lib/public-service-policy";
+import { createSeoHead } from "@/lib/seo";
 import { SITE_NAME } from "@/lib/site";
-import {
-  indexablePublicServicePages,
-  isCanonicalPrimaryServiceSlug,
-} from "@/lib/public-service-policy";
 import {
   createBreadcrumbList,
   createPageGraph,
   schemaScripts,
 } from "@/lib/structured-data";
 
-type CleaningService = {
-  slug: string;
-  title: string;
-  introduction: string;
-  included: string[];
-  closing: string;
-};
-
-const services: CleaningService[] = [
-  {
-    slug: "regular-home-cleaning",
-    title: "Regular Home Cleaning",
-    introduction:
-      "A considered weekly or fortnightly clean that keeps your home feeling calm, cared for and ready to enjoy.",
-    included: [
-      "Dusting of reachable surfaces",
-      "Vacuuming carpets and rugs",
-      "Mopping hard floors",
-      "Kitchen surface cleaning",
-      "Bathroom cleaning",
-      "General tidying",
-    ],
-    closing:
-      "We shape each recurring visit around your priorities, so your home receives reliable care without disrupting your routine.",
-  },
-  {
-    slug: "deep-cleaning",
-    title: "Deep Cleaning",
-    introduction:
-      "A detailed top-to-bottom refresh for homes that need more time, attention and a beautifully thorough finish.",
-    included: [
-      "Detailed surface and ledge dusting",
-      "Skirting board cleaning",
-      "Cabinet exterior cleaning",
-      "Focused kitchen degreasing",
-      "Bathroom descaling",
-      "Thorough floor care",
-    ],
-    closing:
-      "Ideal as a seasonal reset or before beginning regular visits, this service brings a renewed sense of ease to every room.",
-  },
-  {
-    slug: "move-in-cleaning",
-    title: "Move-In Cleaning",
-    introduction:
-      "Begin life in your new home with a clean, welcoming canvas prepared before your belongings are unpacked.",
-    included: [
-      "Inside cupboards and drawers",
-      "Kitchen and appliance exteriors",
-      "Bathroom sanitisation",
-      "Wardrobe interiors",
-      "Floor vacuuming and mopping",
-      "Reachable surface dusting",
-    ],
-    closing:
-      "We carefully attend to empty spaces so that settling in feels simpler, fresher and distinctly more comfortable.",
-  },
-  {
-    slug: "move-out-cleaning",
-    title: "Move-Out Cleaning",
-    introduction:
-      "A comprehensive final clean designed to leave your previous home polished, presentable and ready for its next chapter.",
-    included: [
-      "Empty-room dusting",
-      "Cupboard and drawer interiors",
-      "Kitchen surface degreasing",
-      "Bathroom sanitisation",
-      "Skirting board cleaning",
-      "Complete floor care",
-    ],
-    closing:
-      "With the cleaning thoughtfully handled, you can focus your attention on the move and what comes next.",
-  },
-  {
-    slug: "kitchen-cleaning",
-    title: "Kitchen Cleaning",
-    introduction:
-      "Focused attention for the heart of your home, with careful cleaning of the surfaces you use every day.",
-    included: [
-      "Worktop and splashback cleaning",
-      "Sink and tap polishing",
-      "Stovetop cleaning",
-      "Appliance exterior wiping",
-      "Cupboard-front cleaning",
-      "Floor vacuuming and mopping",
-    ],
-    closing:
-      "The result is a bright, hygienic kitchen that feels inviting for weekday meals, weekend gatherings and everything between.",
-  },
-  {
-    slug: "bathroom-sanitisation",
-    title: "Bathroom Sanitisation",
-    introduction:
-      "A meticulous clean that brings freshness, shine and a reassuring sense of hygiene to your bathroom.",
-    included: [
-      "Bath and shower cleaning",
-      "Toilet sanitisation",
-      "Basin and tap polishing",
-      "Mirror cleaning",
-      "Tile and surface wiping",
-      "Floor cleaning",
-    ],
-    closing:
-      "We pay attention to high-touch details and visible finishes, creating a space that feels serene and cared for.",
-  },
-  {
-    slug: "bedroom-cleaning",
-    title: "Bedroom Cleaning",
-    introduction:
-      "Gentle, precise care for restful rooms, helping each bedroom feel peaceful, ordered and comfortable.",
-    included: [
-      "Reachable surface dusting",
-      "Bed making",
-      "Mirror cleaning",
-      "Light general tidying",
-      "Carpet vacuuming",
-      "Hard-floor mopping",
-    ],
-    closing:
-      "Tell us how you prefer your space arranged and we will finish it with quiet attention to the details that matter.",
-  },
-  {
-    slug: "living-area-cleaning",
-    title: "Living Area Cleaning",
-    introduction:
-      "Thoughtful cleaning for the shared spaces where your household relaxes, connects and welcomes guests.",
-    included: [
-      "Furniture and surface dusting",
-      "Cushion straightening",
-      "Rug and carpet vacuuming",
-      "Hard-floor mopping",
-      "Reachable décor dusting",
-      "General tidying",
-    ],
-    closing:
-      "We leave your living areas feeling composed and comfortable, while respecting the way your family uses each space.",
-  },
-  {
-    slug: "interior-window-cleaning",
-    title: "Interior Window Cleaning",
-    introduction:
-      "A careful interior service that clears everyday marks and helps natural light shine through your home.",
-    included: [
-      "Interior glass cleaning",
-      "Frame and sill wiping",
-      "Finger-mark removal",
-      "Reachable door glass",
-      "Mirror polishing",
-      "Streak-conscious finishing",
-    ],
-    closing:
-      "Available for safely reachable windows, this finishing touch gives rooms a brighter, more polished appearance.",
-  },
-  {
-    slug: "post-renovation-cleaning",
-    title: "Post-Renovation Cleaning",
-    introduction:
-      "Detailed residential cleaning after renovation work, planned around the actual condition of the property and the residue left behind.",
-    included: [
-      "Fine dust removal from reachable surfaces",
-      "Suitable floor and hard-surface cleaning",
-      "Kitchen and bathroom surface cleaning",
-      "Reachable interior glass where agreed",
-      "Room-by-room assessed cleaning scope",
-      "Quotation confirmed after assessment",
-    ],
-    closing:
-      "This service is assessment-led: we review the property, residue, access and requested scope before confirming pricing rather than promising an automatic area rate.",
-  },
-  {
-    slug: "laundry-folding",
-    title: "Laundry & Ironing Add-On",
-    introduction:
-      "Practical laundry and ironing support that can be added to an eligible cleaning visit, with the requested loads confirmed during quoting.",
-    included: [
-      "Laundry loads selected during quoting",
-      "Ironing loads selected during quoting",
-      "Folding clean, dry laundry",
-      "Pairing socks and organising suitable items",
-      "Folding towels and bed linen",
-      "Neat placement in an agreed area",
-    ],
-    closing:
-      "Add laundry and ironing to an eligible cleaning visit and we will confirm the facilities, load quantities and scope before the booking.",
-  },
-];
-
-const serviceOverviewBySlug = new Map(
-  services.map((service) => [service.slug, service]),
-);
-
-const visualServicePages = indexablePublicServicePages.filter(
-  (service) => service.image && serviceOverviewBySlug.has(service.slug),
-);
-
-const postRenovationService = serviceOverviewBySlug.get("post-renovation-cleaning");
+const visualServicePages = canonicalPrimaryServicePages.filter((service) => service.image);
 const breadcrumbs = serviceBreadcrumbs();
 
 export const Route = createFileRoute("/services")({
@@ -313,20 +115,17 @@ function ServicesOverview() {
             </div>
 
             <div className="space-y-16 md:space-y-24">
-              {visualServicePages.map((canonicalService, index) => {
-                const service = serviceOverviewBySlug.get(canonicalService.slug);
-
-                if (!service || !canonicalService.image) return null;
-
+              {visualServicePages.map((service, index) => {
+                if (!service.image) return null;
                 const imageFirst = index % 2 === 0;
 
                 return (
                   <article
-                    key={service.title}
+                    key={service.slug}
                     className="grid items-stretch gap-8 lg:grid-cols-2 lg:gap-14"
                   >
                     <ServiceImage
-                      image={canonicalService.image}
+                      image={service.image}
                       className={`block aspect-[3/2] min-h-72 overflow-hidden rounded-2xl border border-[#C9A45B]/30 bg-[#EFE4D2] shadow-[0_18px_50px_rgba(70,42,33,0.08)] lg:min-h-[31rem] ${
                         imageFirst ? "lg:order-1" : "lg:order-2"
                       }`}
@@ -338,29 +137,27 @@ function ServicesOverview() {
                       }`}
                     >
                       <p className="mb-3 text-xs font-semibold uppercase tracking-[0.24em] text-[#9A742E]">
-                        {isCanonicalPrimaryServiceSlug(canonicalService.slug)
-                          ? `Service ${String(index + 1).padStart(2, "0")}`
-                          : "Service add-on"}
+                        Service {String(index + 1).padStart(2, "0")}
                       </p>
 
                       <h3 className="text-3xl font-semibold tracking-tight text-[#5A1425] md:text-4xl">
                         <Link
                           to="/services/$serviceSlug"
-                          params={{ serviceSlug: canonicalService.slug }}
+                          params={{ serviceSlug: service.slug }}
                           className="rounded-sm transition-colors hover:text-[#711C31] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A45B]"
                         >
                           {service.title}
                         </Link>
                       </h3>
 
-                      <p className="mt-5 leading-7 text-[#695E59]">{service.introduction}</p>
+                      <p className="mt-5 leading-7 text-[#695E59]">{service.heroDescription}</p>
 
                       <h4 className="mt-8 text-sm font-semibold uppercase tracking-[0.16em] text-[#5A1425]">
                         What&apos;s Included
                       </h4>
 
                       <ul className="mt-5 grid gap-3 sm:grid-cols-2" role="list">
-                        {service.included.map((item) => (
+                        {service.services.map((item) => (
                           <li key={item} className="flex gap-3 text-sm leading-6 text-[#514946]">
                             <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#F3E8D5] text-[#8A6729]">
                               <Check
@@ -375,45 +172,12 @@ function ServicesOverview() {
                       </ul>
 
                       <p className="mt-8 border-t border-[#C9A45B]/25 pt-6 text-sm leading-7 text-[#695E59]">
-                        {service.closing}
+                        {service.overview}
                       </p>
                     </div>
                   </article>
                 );
               })}
-
-              {postRenovationService && (
-                <article className="rounded-2xl border border-[#E6D9C8] bg-white p-7 shadow-[0_18px_50px_rgba(70,42,33,0.06)] sm:p-10 lg:p-12">
-                  <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#9A742E]">
-                    Assessment-led service
-                  </p>
-                  <h3 className="mt-3 text-3xl font-semibold tracking-tight text-[#5A1425] md:text-4xl">
-                    <Link
-                      to="/services/$serviceSlug"
-                      params={{ serviceSlug: postRenovationService.slug }}
-                      className="rounded-sm transition-colors hover:text-[#711C31] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A45B]"
-                    >
-                      {postRenovationService.title}
-                    </Link>
-                  </h3>
-                  <p className="mt-5 max-w-3xl leading-7 text-[#695E59]">
-                    {postRenovationService.introduction}
-                  </p>
-                  <ul className="mt-7 grid gap-3 sm:grid-cols-2 lg:grid-cols-3" role="list">
-                    {postRenovationService.included.map((item) => (
-                      <li key={item} className="flex gap-3 text-sm leading-6 text-[#514946]">
-                        <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#F3E8D5] text-[#8A6729]">
-                          <Check aria-hidden="true" className="h-3.5 w-3.5" strokeWidth={2} />
-                        </span>
-                        {item}
-                      </li>
-                    ))}
-                  </ul>
-                  <p className="mt-8 border-t border-[#C9A45B]/25 pt-6 text-sm leading-7 text-[#695E59]">
-                    {postRenovationService.closing}
-                  </p>
-                </article>
-              )}
             </div>
 
             <div className="mt-20 md:mt-28">

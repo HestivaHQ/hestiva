@@ -1,24 +1,30 @@
-# Hestiva
+# Homent Website
 
-Premium residential cleaning for homes across Gauteng, South Africa.
+Public website for **Homent**, a residential cleaning business serving Johannesburg and Midrand, South Africa.
 
-## Website
+## Production website
 
-https://hestiva.co.za
+https://www.homent.co.za
 
-## Core services
+## Canonical primary services
 
-- Regular home cleaning
-- Deep cleaning
-- Move-in and move-out cleaning
-- Kitchen and bathroom cleaning
-- Bedroom and living-area cleaning
-- Interior window cleaning
-- Apartment cleaning
-- Eco-conscious cleaning options
-- Approved add-on services, including Laundry & Ironing for eligible cleaning visits
+- Regular Home Cleaning
+- Deep Cleaning
+- Move-In Cleaning
+- Move-Out Cleaning
+- Kitchen Cleaning
+- Bathroom Sanitisation
+- Bedroom Cleaning
+- Living Area Cleaning
+- Interior Window Cleaning
+- Post-Renovation Cleaning
+- Post-Event Cleaning
 
-Laundry and Ironing are add-ons only and are not available as standalone primary bookings.
+Apartment is captured as property context rather than a separate primary service. Eco-conscious products are captured as a customer preference. Laundry & Ironing and other approved tasks are add-ons rather than standalone primary bookings.
+
+## Quote and enquiry architecture
+
+The website owns the customer-facing forms and Website Quote Contract mapping. **HestivaOS** is the authoritative operational system for accepted website quote/enquiry intake, quote identity, pricing/workload rules and downstream operations. The website must not duplicate HestivaOS pricing authority.
 
 ## Technology
 
@@ -27,8 +33,8 @@ Laundry and Ironing are add-ons only and are not available as standalone primary
 - TypeScript
 - Vite
 - Cloudflare Workers
-- Supabase
 - Resend
+- HestivaOS private integration boundary
 
 ## Development
 
@@ -43,8 +49,22 @@ bun run dev
 bun run build
 ```
 
-Production deployments are handled automatically through the connected Cloudflare Worker.
+Production deployment is handled through the repository's connected Cloudflare Worker/Git integration. See `docs/DEPLOYMENT.md` for the verified deployment model rather than treating this README as an operations runbook.
 
-## Environment variables
+## Documentation
 
-Required variable names are documented in the project configuration. Secret values must never be committed to the repository.
+Engineering documentation lives under `docs/`. Start with:
+
+- `AGENTS.md` — repository-wide engineering and documentation rules.
+- `docs/README.md` — canonical documentation map.
+- `docs/HOMENT_PUBLIC_CUTOVER.md` — current public identity and legacy Hestiva boundary.
+- `docs/ARCHITECTURE.md` — current application/runtime architecture.
+- `docs/ENVIRONMENT.md` — environment-variable inventory and handling rules.
+- `docs/DEPLOYMENT.md` — production deployment authority and procedures.
+- `docs/TECHNICAL_WORK_LOG.md` and `docs/CHANGELOG.md` — verified implementation history.
+
+Historical documents may still use **Hestiva** when describing pre-cutover state. Internal identifiers may also retain Hestiva where technically accurate, especially the HestivaOS integration boundary. Customer-facing website identity is Homent.
+
+## Environment variables and secrets
+
+Variable names and handling requirements are documented in `docs/ENVIRONMENT.md`. Secret values must never be committed to the repository.

@@ -29,6 +29,12 @@ export const postEventCleaningService: ServicePage = {
     "Patio, balcony or braai-area cleanup",
     "Ordinary event waste requiring bagging and consolidation",
   ],
+  image: {
+    src: "/images/services/post-event-cleaning.png",
+    alt: "Professional cleaners clearing and cleaning an outdoor children's birthday party area after the event",
+    width: 1536,
+    height: 1024,
+  },
   process: [
     "Tell us about the property, event type, approximate guest count and areas used.",
     "Confirm kitchen, dishwashing, bathroom, outdoor-area, waste and ordinary-soiling requirements.",

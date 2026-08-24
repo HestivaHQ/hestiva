@@ -2,6 +2,24 @@
 
 This append-only log records verified engineering and material operational work without reconstructing unsupported history. Add newest entries first. Link pull requests/commits when available and describe validation without including secrets or customer data.
 
+## 2026-08-24 — Integrated Post-Event visual and reconciled current website documentation
+
+**Purpose:** Finish the Post-Event public-service presentation and perform a current-state documentation sweep after the Homent cutover and cross-system Post-Event rollout.
+
+**Work recorded:**
+
+- verified the operator-uploaded Post-Event source PNG and its 480/768/1200 WebP derivatives are present on website `main` under `public/images/services/`;
+- added the approved Post-Event image metadata to `src/content/post-event-cleaning-service.ts`, allowing the existing `ServiceImage` component to use the responsive WebP set with the original PNG fallback and allowing the service to participate in the normal visual Services catalogue;
+- replaced the root README's stale Hestiva customer-facing identity, legacy `hestiva.co.za` website address and superseded service list with the current Homent identity, `https://www.homent.co.za`, canonical primary-service model and Website → HestivaOS authority boundary;
+- reconciled `docs/POST_EVENT_CLEANING_WEBSITE_V1.md` from its stale staged/#210 blocker state to the verified merged state: HestivaOS PR #212 superseded #210 and merged before website PR #174;
+- reconciled `docs/ARCHITECTURE.md` so Post-Event imagery is described as implemented rather than absent;
+- reviewed repository-wide Hestiva references against `AGENTS.md`, `docs/HOMENT_PUBLIC_CUTOVER.md`, merged website PR history and current HestivaOS state; retained historical pre-cutover Hestiva wording and technically accurate HestivaOS/internal identifiers rather than rewriting valid history; and
+- reviewed website PR history through the Homent cutover, canonical service-model reconciliation, launch closeout and Post-Event rollout to distinguish shipped state from old PR-era blockers.
+
+**Preserved boundaries:** No Post-Event pricing, quote validation vocabulary, Website Quote Contract, HestivaOS ingestion, deployment topology, authentication, payment, or operational workflow changed. The image integration uses the existing static service-image architecture.
+
+**Verification required before merge:** Normal Hestiva PR quality gates on the exact final head, including documentation policy, secret/environment checks, TypeScript, targeted tests, lint/format, production build, runtime SEO and Cloudflare Worker dry-run.
+
 ## 2026-08-23 — Added Post-Event Cleaning website quote flow and public service
 
 **Purpose:** Extend the Homent website for the approved Post-Event Cleaning service without moving quotation/pricing authority out of HestivaOS or allowing the public website to get ahead of the receiving Website Quote Contract.
@@ -15,13 +33,13 @@ This append-only log records verified engineering and material operational work 
 - added `src/lib/quote/post-event-hestiva-os-payload.ts` so the existing Website Quote Contract v2 transport carries the Post-Event fact set in `request.postEvent` while preserving `schemaVersion: 2.0`, `source: HESTIVA_WEBSITE`, the existing private endpoint/authentication boundary and existing non-Post-Event mapping;
 - added Post-Event mapping and missing-fact regression coverage to the existing quote-contract test file that the normal PR gate executes, while retaining focused mapper tests;
 - added `/services/post-event-cleaning` as a canonical indexable service page with customer-facing scope, FAQs and SEO metadata, admitted it through the public service policy and static/sitemap path set, and added a typed footer navigation link;
-- deliberately did not reuse an unrelated service image because no approved Post-Event visual asset exists;
+- deliberately did not reuse an unrelated service image because no approved Post-Event visual asset existed at that point;
 - updated `docs/POST_EVENT_CLEANING_WEBSITE_V1.md`, `docs/ARCHITECTURE.md`, `docs/TECHNICAL_WORK_LOG.md` and `docs/CHANGELOG.md` to keep the implemented public-form/business-workflow boundary documented; and
-- kept merge blocked on HestivaOS PR #210, which owns the receiving Website Quote v2 Post-Event contract.
+- kept merge blocked on the then-current HestivaOS PR #210 receiving-contract lane until that work was safely reconstructed and superseded by PR #212.
 
-**Verification:** The implementation head `028e00b5347a2cd510cd480836170f9d302cfdc1` passed the complete Hestiva PR Check run `32644096017`: diff integrity, documentation policy/companion gate, tracked-secret scan, environment validation, TypeScript, public-form/structured-quote tests including Post-Event cases, targeted lint, Prettier, production build, runtime SEO and Cloudflare Worker dry-run. Earlier runs correctly caught and led to fixes for a Prettier import issue, a missing internal link for the new indexable service page, and an invalid literal TanStack route link. A new full gate is required after this final documentation reconciliation.
+**Verification:** The implementation head `028e00b5347a2cd510cd480836170f9d302cfdc1` passed the complete Hestiva PR Check run `32644096017`: diff integrity, documentation policy/companion gate, tracked-secret scan, environment validation, TypeScript, public-form/structured-quote tests including Post-Event cases, targeted lint, Prettier, production build, runtime SEO and Cloudflare Worker dry-run. Earlier runs correctly caught and led to fixes for a Prettier import issue, a missing internal link for the new indexable service page, and an invalid literal TanStack route link. Final website PR #174 subsequently merged after HestivaOS PR #212 cleared the receiving-contract dependency.
 
-**Cross-system state:** HestivaOS PR #210 was green on its exact implementation head but subsequently became one commit behind `main` after Messaging PR #209 merged. The new `main` commit changes Messaging-only files and has no file overlap with #210's Website Quote/Post-Event files. Refresh/merge of #210 remains owned by the HestivaOS lane; website #174 must remain unmerged until that receiving contract is merged.
+**Cross-system final state:** HestivaOS PR #212 superseded stale #210 and merged the Website Quote v2 Post-Event receiving contract. Website PR #174 then merged the website Post-Event flow and public service. HestivaOS Issue #73 remains the historical coordination source, not a current website merge blocker.
 
 **Preserved boundaries:** No website-owned authoritative Post-Event price calculation, quote persistence, Work Order creation, booking acceptance, financial state, runtime secret, deployment topology, or second quote-submission owner was introduced.
 
@@ -40,7 +58,7 @@ This append-only log records verified engineering and material operational work 
 
 **Preserved boundaries:** No pricing, HestivaOS service IDs, Website Quote Contract v2 mapping, submission transport, authentication, payment policy, Laundry/Ironing operating model, public compatibility URLs, or historical records were changed.
 
-**Verification state:** Source reconciliation is complete on `audit/final-consistency-launch-readiness`. The normal Hestiva PR quality gate must pass before merge.
+**Verification state:** Source reconciliation was merged through website PR #171; website launch closeout was subsequently recorded through PR #172.
 
 ## 2026-08-14 — Finalized Website Quote Contract v2 and Laundry/Ironing website semantics
 
@@ -57,9 +75,9 @@ This append-only log records verified engineering and material operational work 
 - corrected the retained compatibility page metadata so runtime SEO verification passes; and
 - verified the website PR quality gate through TypeScript, 15 regression tests, lint, Prettier, production build, runtime SEO and Cloudflare Worker dry-run before the final source/documentation reconciliation.
 
-**Activation blockers:** Production activation remains unapproved until the Cloudflare values for `HESTIVA_OS_API_URL` and `HESTIVA_WEBSITE_INTEGRATION_SECRET` are verified operationally and HestivaOS confirms authoritative COIDA/routing configuration. HestivaOS runtime currently uses `OPENROUTESERVICE_API_KEY` while its canonical ingestion-boundary document still describes Google Routes; that inconsistency requires reconciliation on the OS side.
+**Historical activation note:** At this point production activation still depended on external Website → HestivaOS configuration and OS-side costing/routing prerequisites. Later launch-closeout records supersede this as current website state; the provisional COIDA input remains an HestivaOS operational follow-up rather than a website implementation blocker.
 
-**Scope:** Website-side Issue #79 implementation and verification only. This entry does not assert that HestivaOS operational load-cap/accepted-booking work is complete and does not authorize merging or production activation by itself.
+**Scope:** Website-side Issue #79 implementation and verification only.
 
 ## 2026-08-12 — Corrected quote routing and validation feedback
 
@@ -76,7 +94,7 @@ This append-only log records verified engineering and material operational work 
 
 **Preserved boundaries:** No pricing, `HOM-` reference, server validation, Resend/email routing, rate limiting, Contact honeypot, photo/file handling, persistence, or Website ↔ HestivaOS integration contract changed.
 
-**Verification state:** Source investigation and CTA sweep are complete on PR #128. The full Hestiva PR Check and post-deployment production QA are required before the customer-facing correction is considered complete.
+**Verification state:** Source investigation and CTA sweep were completed on PR #128 and later launch-readiness work verified the website at repository level.
 
 ## 2026-08-12 — Corrected Homent favicon transfer regression
 
@@ -90,22 +108,22 @@ This append-only log records verified engineering and material operational work 
 - reduced the files to `210` bytes (16×16), `306` bytes (32×32), `1,063` bytes (180×180), and `2,926` bytes (512×512); and
 - made no route, JavaScript architecture, pricing, quote-flow, email, deployment-authority, or Website ↔ HestivaOS integration change.
 
-**Verification state:** Repository byte sizes are verified on the feature branch. Full PR CI and a post-deployment production Lighthouse rerun are still required before the Homent regression is closed.
+**Verification state:** The subsequent performance audit closed after final production verification.
 
 ## 2026-08-12 — Added Homent visual assets and wired public asset references
 
-**Purpose:** Prepare the customer-facing visual layer for the Hestiva → Homent rebrand without changing the current production domain, public email addresses, or internal application architecture.
+**Purpose:** Prepare the customer-facing visual layer for the Hestiva → Homent rebrand without changing the then-current production domain, public email addresses, or internal application architecture.
 
 **Work recorded:**
 
 - added the approved Homent logo family plus replacement homepage hero, service, add-on, profile-badge, favicon and social-share assets on PR #123;
 - preserved the existing responsive delivery strategy with homepage/service WebPs at 480/768/1200 widths, add-on WebPs at 384/640/960 widths, and white navbar/footer logo WebPs at 144/288 widths;
-- updated `src/lib/site.ts` to reference Homent logo filenames while retaining the current `hestiva.co.za` production URL and Hestiva email addresses for a later controlled cutover;
+- updated `src/lib/site.ts` to reference Homent logo filenames while retaining the then-current `hestiva.co.za` production URL and Hestiva email addresses for the later controlled cutover;
 - updated Navbar and Footer responsive logo references and the homepage Hero responsive/fallback image references to the new Homent filenames;
 - kept the existing monogram asset unchanged; and
 - made no pricing, quote-flow, email-delivery, deployment-authority, routing, security-boundary, or Website ↔ HestivaOS architecture change.
 
-**Verification state:** GitHub's first PR check reached the repository documentation gate and failed only because these implementation changes initially lacked companion documentation. This entry and the changelog update record the implementation so the normal PR quality gate can rerun.
+**Verification state:** This was pre-cutover work. PR #122 and later migration hardening/closeout records establish the current Homent public state.
 
 ## 2026-08-11 — Repaired Contact form launch behaviour and public form feedback
 
@@ -116,11 +134,11 @@ This append-only log records verified engineering and material operational work 
 - verified that Contact and Quote used the same isolate-local five-submissions-per-15-minutes rate-limit bucket even though they are separate customer journeys;
 - preserved the same per-channel limit while separating server-side `contact` and `quote` keys using the existing Cloudflare-provided request identity and service vocabulary, without introducing a new client-trusted channel field;
 - added regression coverage proving the exact Contact-page payload passes the authoritative schema and that exhausting the Contact bucket does not exhaust the Quote bucket;
-- added `/quote` and `/contact`-only `BrandedFormNotices` so existing submission success/error messages render in-page under Hestiva branding instead of browser-native `window.alert()` dialogs that display the site hostname;
+- added `/quote` and `/contact`-only `BrandedFormNotices` so existing submission success/error messages render in-page under then-current Hestiva branding instead of browser-native `window.alert()` dialogs that display the site hostname;
 - updated architecture and recovery guidance and accepted ADR-0003 for the durable rate-limit channel decision; and
 - made no change to the existing Resend recipient/sender path, five-per-15-minute per-channel limit, HestivaOS integration, pricing, persistence, shared quote identity, or authentication.
 
-**Scope:** Public website Contact/Quote launch UX and best-effort abuse-control isolation only. Production re-verification is required after deployment before the Contact incident is considered closed.
+**Scope:** Historical pre-Homent-cutover public website work. Later cutover records supersede the customer-facing brand wording while preserving the technical rate-limit and notice architecture.
 
 ## 2026-08-11 — Repaired Post-Renovation Cleaning quote completion path
 
@@ -159,12 +177,12 @@ This append-only log records verified engineering and material operational work 
 **Work recorded:**
 
 - added `Post-Renovation Cleaning` to the quote-flow primary-service selector;
-- added the same value to the server-side allowed service enum so the current email submission path accepts the new primary-service value;
+- added the same value to the server-side allowed service enum so the then-current email submission path accepted the new primary-service value;
 - removed `Post-renovation dust removal` from the selectable add-on list;
 - preserved `Recently renovated` as a separate Home Condition that may coexist with the primary service; and
-- made no Website ↔ HestivaOS endpoint, structured payload, pricing, shared-reference, Accept/Decline, persistence, or authentication change.
+- made no Website ↔ HestivaOS endpoint, structured payload, pricing, shared-reference, Accept/Decline, persistence, or authentication change at that stage.
 
-**Scope:** Focused website catalogue alignment only.
+**Scope:** Historical focused website catalogue alignment. Later Website Quote Contract work supersedes the old email-only transport state.
 
 ## 2026-08-11 — Closed the production performance audit after final verification
 
@@ -180,250 +198,281 @@ This append-only log records verified engineering and material operational work 
 - retained one lower homepage run as documented measurement volatility because the anomaly was a temporary blocking-time spike rather than a return of oversized static-asset transfer; and
 - formally closed the performance audit without introducing any new runtime code, dependency, deployment, pricing, quote-flow, or Website ↔ HestivaOS integration change.
 
-**Verification:** GitHub Actions run `31495511555` completed successfully and uploaded the production Lighthouse artifact for `main` commit `e87a1794ffab3a27b25daef70bc90f4dd554cbe7`.
+**Verification:** GitHub Actions run `31495511555` completed successfully and uploaded the production Lighthouse reports.
 
-## 2026-08-11 — Corrected oversized favicon assets after post-WebP production measurement
+## 2026-08-11 — Corrected favicon transfer and verified the responsive-image improvement
 
-**Purpose:** Remove the remaining evidence-backed static-asset waste identified after responsive WebP delivery materially improved production Lighthouse results.
-
-**Work recorded:**
-
-- reviewed production Lighthouse run `31457228551` from merged `main` commit `4f6002d8f7b0a76cddf07837377387afcdec7a66`;
-- recorded post-WebP median homepage performance `93`, LCP `2.70 s`, and transfer `2.54 MB`, compared with baseline `72`, `16.621 s`, and `5.328 MB`;
-- recorded post-WebP median Services performance `93`, LCP `2.70 s`, and transfer `2.61 MB`, compared with baseline `78`, `5.052 s`, and `9.692 MB`;
-- verified the remaining `favicon-16.png` and `favicon-32.png` files were incorrectly stored at `1254×1254` despite being declared as 16×16 and 32×32 browser icons;
-- resized the existing favicon artwork to the declared dimensions and saved optimized PNGs without changing favicon paths or HTML references;
-- reduced `favicon-16.png` from `1,143,225` bytes to `657` bytes and `favicon-32.png` from `1,157,806` bytes to `1,864` bytes; and
-- introduced no runtime dependency, routing, SEO policy, quote-flow, pricing, deployment-authority, or Website ↔ HestivaOS integration change.
-
-**Verification state:** Binary dimensions and byte sizes were verified in GitHub Actions. Full repository CI and a final production Lighthouse comparison remain required before closing the performance audit.
-
-## 2026-08-11 — Added responsive WebP delivery for measured image bottlenecks
-
-**Purpose:** Act on the first verified production Lighthouse baseline, which showed image transfer—not JavaScript blocking—as the material remaining performance bottleneck on the homepage and Services page.
+**Purpose:** Remove the remaining oversized favicon transfer identified after the responsive-WebP deployment and record the first production evidence that PR #110 materially improved page performance.
 
 **Work recorded:**
 
-- reviewed manual production Lighthouse run `31456227764` from `main` commit `3e74a04137b42b5171cc2ecc20c20a45a9b76c08` using three mobile runs each for the homepage, Services, and Quote pages;
-- recorded median homepage performance `72`, FCP `2.407 s`, LCP `16.621 s`, transfer `5.328 MB`, TBT `0 ms`, and CLS `0`;
-- recorded median Services performance `78`, FCP `2.462 s`, LCP `5.052 s`, transfer `9.692 MB`, TBT `0 ms`, and CLS `0`, including the observed run-to-run LCP volatility;
-- generated 480, 768, and 1200 pixel WebP derivatives from the approved homepage hero PNG and 144/288 pixel WebP derivatives from the approved transparent white logo without replacing the originals;
-- wired the homepage hero to responsive WebP `srcset`/`sizes` with the original PNG fallback while preserving high fetch priority;
-- wired `ServiceImage` to the existing responsive WebP derivatives already tracked for `/images/services/`, retaining service PNG fallbacks and existing lazy/eager semantics;
-- wired Navbar and Footer to responsive white-logo WebPs with the original PNG fallback; and
-- introduced no runtime image proxy, image CDN dependency, application-framework rewrite, pricing change, quote transport change, or Website ↔ HestivaOS integration change.
+- inspected the existing favicon files in GitHub Actions and verified `favicon-16.png` was 1254×1254 at 1,143,225 bytes and `favicon-32.png` was 1254×1254 at 1,157,806 bytes despite being declared as 16×16 and 32×32 in the page head;
+- resized the existing artwork to the declared dimensions, producing a 16×16 PNG at 657 bytes and a 32×32 PNG at 1,864 bytes while preserving the same public paths and PNG format;
+- reviewed successful production Lighthouse run `31457228551` after PR #110 and verified median homepage performance improved from `72` to `93` with LCP from `16.621 s` to `2.70 s`, while Services improved from `78` to `93` with LCP from `5.052 s` to `2.70 s`;
+- verified the remaining oversized transfer in that run came from the favicon requests rather than the newly responsive hero/service images; and
+- kept the correction limited to the two favicon assets plus performance/documentation records.
 
-**Verification state:** Source/asset implementation is complete on PR #110. A post-deployment Lighthouse comparison is still required before claiming a measured production performance improvement.
+**Verification:** Favicon dimensions and byte sizes were measured in GitHub Actions with Pillow. A final production Lighthouse run after deployment was required and later completed before the performance audit was closed.
 
-## 2026-08-11 — Added production Lighthouse diagnostics
+## 2026-08-11 — Added responsive WebP delivery after the first production Lighthouse baseline
 
-**Purpose:** Move performance work from speculative source refactoring to repeatable production measurement after the source-level audit found no further evidence-backed application-runtime rewrite.
+**Purpose:** Address the verified image-transfer bottleneck from the first production Lighthouse measurement without changing approved visuals or introducing runtime image infrastructure.
 
 **Work recorded:**
 
-- added `lighthouserc.cjs` with three production URLs: the homepage, Services page, and Quote page;
-- configured three Lighthouse runs per URL to reduce normal run-to-run variance;
-- added the manual `.github/workflows/hestiva-performance-check.yml` diagnostic workflow using Lighthouse CI 0.15.1;
-- configured filesystem report export and 30-day GitHub Actions artifact retention instead of public temporary report storage;
-- deliberately introduced no score assertions or blocking thresholds before a verified production baseline exists; and
-- updated the performance/documentation records without changing application runtime, deployment authority, pricing, quote transport, or Website ↔ HestivaOS architecture.
+- reviewed production Lighthouse run `31456227764`, which measured three mobile runs each for Homepage, Services, and Quote from merged `main` commit `3e74a04137b42b5171cc2ecc20c20a45a9b76c08`;
+- recorded median baseline performance of `72/78/94`, LCP of `16.621/5.052/2.535 s`, and transfer of `5.328/9.692/3.014 MB` for Homepage/Services/Quote respectively;
+- confirmed TBT remained `0 ms` and CLS `0`, pointing to image transfer rather than JavaScript blocking as the material bottleneck;
+- added 480/768/1200 WebP derivatives for the homepage hero and 144/288 WebP derivatives for the shared white logo, while reusing the responsive service WebPs already present in the repository;
+- updated HeroSection, ServiceImage, Navbar, and Footer to prefer the responsive WebPs while retaining every approved PNG as fallback;
+- preserved existing dimensions, hero fetch priority, service lazy/eager semantics, alt text, layout, routing, quote flow, pricing, email, and Website ↔ HestivaOS boundaries; and
+- removed the temporary same-repository asset-generation workflow after it committed the derivatives, leaving no new runtime dependency or CI workflow in the final branch.
 
-**Scope:** Diagnostic repository workflow and performance documentation only. The workflow is manual and non-blocking until production measurements justify a separate threshold decision.
+**Verification:** Generated asset sizes were inspected in GitHub Actions. Production Lighthouse was rerun after deployment and later verified the material improvement recorded above.
 
-## 2026-08-11 — Completed global Navbar client-routing optimization
+## 2026-08-11 — Added production Lighthouse diagnostics and reconciled navigation optimization history
 
-**Verified source:** merged PR #108.
-
-**Work recorded:**
-
-- replaced normal internal global Navbar document-navigation anchors with TanStack Router `Link` on desktop and mobile;
-- retained `/#why-us` as a normal hash anchor so section navigation semantics remain intact;
-- preserved mobile-menu close behaviour, scroll behaviour, styling, accessibility states, and logo dimensions; and
-- completed the source-level performance audit without introducing speculative framework/shared-runtime refactoring.
-
-**Verification:** PR #108 passed the Hestiva PR Check and merged into `main`.
-
-## 2026-08-11 — Added Balcony / Patio Cleaning quantity handling
-
-**Purpose:** Implement the Slice 5M decision that Balcony / Patio Cleaning may use quantity when multiple areas exist, while preserving the already-approved Extra refrigerator quantity behaviour and avoiding the unresolved future structured handoff schema.
+**Purpose:** Move the performance audit from source/build inspection to repeatable production measurement without introducing a permanent application dependency or blocking threshold before a baseline exists.
 
 **Work recorded:**
 
-- replaced the refrigerator-specific quantity enhancer with one quote-only add-on quantity enhancement shared by the approved quantity-based add-ons;
-- retained positive-integer quantity handling with default `1` for `Extra refrigerator`;
-- added the same positive-integer quantity handling with default `1` for `Balcony / Patio Cleaning`;
-- kept selected quantities visible in the final quote review and encoded them into the existing add-on labels consumed by the current email submission controller;
-- preserved the `/quote`-only lazy-loading boundary; and
-- made no pricing, structured payload-schema, quote-identity, endpoint, security-token, photo-storage, or HestivaOS ingestion changes.
+- added manual `.github/workflows/hestiva-performance-check.yml` using Lighthouse CI `0.15.1` on the GitHub runner;
+- added `lighthouserc.cjs` with production URLs for Home, Services, and Quote and `numberOfRuns: 3`;
+- configured Lighthouse reports to remain on the workflow filesystem and upload as a 30-day Actions artifact instead of using temporary public Lighthouse storage;
+- kept the workflow diagnostic-only with no score assertions until production measurements establish evidence-backed thresholds;
+- reconciled the previously merged PR #108 Navbar optimization into the canonical technical work log and changelog; and
+- made no application source, dependency manifest, lockfile, runtime configuration, deployment authority, pricing, quote transport, or Website ↔ HestivaOS change.
 
-**Scope:** Focused website quote-flow quantity behaviour using the current browser/email submission path. The future structured Website ↔ HestivaOS quantity representation remains unresolved.
+**Verification:** Feature-branch diff was reviewed against `main`; the change set was limited to the workflow, Lighthouse configuration, and required documentation.
 
-## 2026-08-11 — Added Extra refrigerator quantity handling
+## 2026-08-11 — Adopted repository documentation governance and backfilled recent history
 
-**Purpose:** Implement the Slice 5M decision that Extra Refrigerator is quantity-based and defaults to quantity `1` without inventing the future shared handoff schema.
-
-**Work recorded:**
-
-- added a quote-only browser enhancement that exposes a positive-integer quantity control when the existing `Extra refrigerator` add-on is selected;
-- defaulted the control to `1` and prevented values below `1` from surviving the control;
-- kept the selected quantity visible in the final quote review;
-- encoded the selected quantity into the existing add-on label consumed by the current email submission controller so the administrative quote retains the quantity;
-- route-gated the enhancement to `/quote` through the existing lazy-loading pattern; and
-- made no pricing, structured payload-schema, quote-identity, endpoint, security-token, photo-storage, or HestivaOS ingestion changes.
-
-**Scope:** Focused website quote-flow quantity behaviour using the current browser/email submission path. The future structured Website ↔ HestivaOS quantity representation remains unresolved.
-
-## 2026-08-11 — Converted eco-friendly products to a quote preference
-
-**Purpose:** Implement the Slice 5M product decision that eco-friendly products are a customer Yes/No preference rather than a chargeable/selectable add-on.
+**Purpose:** Make documentation a required part of the website engineering workflow and reconcile the recent implemented state with authoritative records.
 
 **Work recorded:**
 
-- removed `Eco-friendly products` from the quote add-on list;
-- added a separate optional `Use eco-friendly products?` Yes/No selector in the Personalise Your Service step;
-- included the selected preference in the customer-facing quote summary and final review;
-- preserved the preference through the existing quote submission bridge so it appears as a distinct line in the current administrative quote details; and
-- made no shared payload-schema, quote-identity, pricing, endpoint, token/security, photo-storage, or HestivaOS handoff changes.
+- added root `AGENTS.md` with documentation principles, required update matrix, historical-record rules, operational-action rules, and the implementation/PR checklist;
+- added `docs/decisions/` and accepted ADR-0001 for repository documentation policy;
+- added `scripts/validate_documentation.py` and wired it into `.github/workflows/hestiva-pr-check.yml` so meaningful implementation/configuration changes require a `docs/` companion change;
+- updated `docs/README.md` with the policy and canonical document map;
+- backfilled the verified 2026-08-10 through 2026-08-11 work below from merged PR records and current repository state without reconstructing unsupported details;
+- reconciled `docs/ARCHITECTURE.md` with the current 66-area geography, 198-image interior location library, route-gated form controller, and ten-file quote limit; and
+- preserved the existing deployment/environment records except where current code or merged PR evidence justified correction.
 
-**Scope:** Focused website quote-flow product semantics and existing email-presentation transport only. No cross-repository structured integration contract or architecture boundary changed.
+**Verification:** The governance PR changed only repository workflow/documentation files. Historical entries below are based on merged PR records and current repository state; closed unmerged PRs are not recorded as shipped.
 
-## 2026-08-11 — Aligned Balcony / Patio Cleaning add-on naming
+## 2026-08-10 — Rebuilt location visuals as a unique people-free residential interior library
 
-**Purpose:** Replace the ambiguous website add-on label `Balcony or patio` with the approved Slice 5M catalogue name `Balcony / Patio Cleaning`.
-
-**Work recorded:**
-
-- changed only the customer-facing add-on value used by the quote flow from `Balcony or patio` to `Balcony / Patio Cleaning`;
-- preserved the existing outdoor-area property field, which remains a separate non-chargeable property fact;
-- made no quantity-model, pricing, payload-schema, identity, endpoint, security, photo-storage, or HestivaOS handoff changes; and
-- left the remaining unresolved/approved catalogue changes for separate focused slices.
-
-**Scope:** Focused quote-flow catalogue alignment only. No architecture boundary, email infrastructure, deployment configuration, or cross-repository transport contract changed.
-
-## 2026-08-11 — Aligned bathroom quote values with Slice 5M contract
-
-**Purpose:** Remove the unsupported bathroom `Other` value from the website quote flow so the customer-facing selector matches the approved Website ↔ HestivaOS Slice 5M business rule.
+**Source:** PR #96.
 
 **Work recorded:**
 
-- changed the bathroom option logic so all supported paths terminate at the canonical `1`, `2`, `3`, `4`, `5+` value set;
-- preserved the existing bedroom-dependent narrowing for smaller homes;
-- left bedroom `Other` untouched because Issue #73 only resolves the bathroom vocabulary in this slice; and
-- made no structured handoff, identity, endpoint, security, pricing, photo-storage, or HestivaOS integration changes.
+- replaced the earlier location-photo approach with exactly 3 images for each of the 66 approved location pages, for 198 image assignments total;
+- required all Pexels photo IDs to be unique across the full library and added runtime/build guards for duplicate IDs or invalid per-page counts;
+- constrained the library to people-free residential interiors such as living rooms, bedrooms, bathrooms, kitchens, apartments, and well-kept home spaces;
+- removed geographic-gallery wording and changed the page presentation to residential interior inspiration; and
+- preserved existing SEO copy, routes, location definitions, service content, internal links, and quote flow.
 
-**Scope:** Focused quote-flow catalogue alignment only. No architecture boundary, email infrastructure, deployment configuration, or cross-repository transport contract changed.
+**Verification:** PR #96 merged after replacing PR #95, which was closed intentionally after visual review. The current architecture reflects PR #96, not the rejected PR #95 visual direction.
 
-## 2026-08-11 — Adopted repository documentation governance and backfilled verified history
+## 2026-08-10 — Code-split the quote/contact browser controller
 
-**Purpose:** Make engineering documentation part of the Hestiva website Definition of Done and close the verified historical gap after the original documentation baseline.
-
-**Work recorded:**
-
-- added root `AGENTS.md` with a mandatory documentation update matrix, historical-record rules, operational-action rules, and PR completion checklist;
-- created the append-only ADR system under `docs/decisions/` and accepted ADR-0001 for repository documentation governance;
-- added `scripts/validate_documentation.py`, which rejects meaningful implementation/configuration PRs when no `docs/` companion change exists;
-- integrated the documentation validator into the normal pull-request quality gate; and
-- backfilled the 2026-08-10 to 2026-08-11 implementation history below using merged pull-request records and current repository state rather than reconstructing unsupported details from memory.
-
-**Scope:** Repository process, CI validation, and documentation only. No customer-facing application behaviour, runtime secret, production deployment authority, or infrastructure is changed by this governance work.
-
-## 2026-08-11 — Rebuilt location visuals and reduced global form-controller JavaScript
-
-**Verified sources:** PR #96 and PR #97.
+**Source:** PR #97.
 
 **Work recorded:**
 
-- replaced the earlier geographic location-photo system with 198 unique Pexels residential-interior images: exactly three people-free interior photographs for each of the 66 approved location pages, with a duplicate-ID guard;
-- limited location presentation to one primary and two supporting interior images while preserving location SEO copy, routes, service content, internal links, and quote flow;
-- code-split `LiveFormSubmission` so the quote/contact controller loads only on `/quote` and `/contact` rather than being imported into the global application bundle; and
-- preserved the homepage hero's existing fixed dimensions and high-priority LCP loading strategy.
+- removed the static `LiveFormSubmission` import from the global root bundle;
+- added a dynamic import and route check so the controller loads only on `/quote` and `/contact`;
+- preserved quote/contact form behavior while reducing unnecessary JavaScript on homepage, service, location, and other landing pages; and
+- preserved the existing homepage LCP image prioritization.
 
-**Verification:** PR #96 was visually preview-checked before merge. PR #97 passed the Hestiva PR Check and `/quote`, `/contact`, and the homepage were manually preview-checked before merge.
+**Verification:** PR #97 merged. The current root route still owns this route-gated lazy boundary.
 
-## 2026-08-10 — Established the current geographic SEO and location-page architecture
+## 2026-08-10 — Strengthened internal SEO linking
 
-**Verified sources:** PRs #88, #89, #90, #91, #92, #93, and #94. Later PR #96 superseded the visual-library implementation from #91/#92 but not the geographic or SEO architecture.
-
-**Work recorded:**
-
-- established one authoritative 66-area service-area source across five clusters and removed Riverlea plus legacy Pretoria/Centurion/East Rand targets from generated location data and structured business service areas;
-- generated dedicated location pages and sitemap coverage from the approved geography and linked every approved area from the Areas We Serve hub;
-- replaced cluster-template local copy with unique area-specific hero, overview, FAQ, service-angle, and visual-brief content for all 66 locations;
-- added restrained founder/trust content to the About page without unsupported biography or credibility claims;
-- redesigned location pages into the Hestiva cream/burgundy/gold visual system and iterated the location-gallery sourcing policy before that gallery implementation was later replaced by PR #96;
-- refined homepage and service-page search intent around residential cleaning in Johannesburg and Midrand while retaining canonical and structured-data architecture; and
-- strengthened internal linking by routing primary navigation to canonical pages, linking service pages to approved core geographic hubs and the full areas hub, and converting nearby-location pills into crawlable location-page links.
-
-**Scope:** SEO information architecture, location/service content, internal linking, and location-page visual presentation. The approved 66-area geography remains the authoritative service-area source.
-
-## 2026-08-10 — Hardened and completed the live quote/contact experience and launch UI
-
-**Verified sources:** PRs #68, #71 through #85, and #87. Closed unmerged PR #86 is not recorded as shipped; its intended production logic was later represented by current `main` and the build repair in #87.
+**Source:** PR #94.
 
 **Work recorded:**
 
-- verified the post-#68 production deployment and full live quote submission path through Cloudflare and Resend, including administrative and customer email delivery;
-- corrected stale contact links and responsive navigation behaviour, removed decorative homepage animation JavaScript and unused animation CSS, and added intrinsic navbar/footer logo dimensions to reduce layout-shift risk;
-- updated public contact/legal/business-data surfaces, including live contact-form messaging, final privacy/service policies, structured business data, and removal of the public street address and sensitive-access notices;
-- cleaned redundant CI diagnostic workflows while preserving the read-only Undici remediation watch and normal PR quality gates;
-- implemented quote photo attachments, mobile camera/gallery controls, optional browser geolocation with reverse-geocoded editable address fields, consistent property-layout questions, exact unit floor/access choices, client-side image compression, expanded photo limits, service-dependent frequency options, date rules, required restrictions/allergy choices, and progressively stricter required-field/access flow;
-- repaired the malformed `LiveFormSubmission.tsx` class string that temporarily caused the Cloudflare/Vite production build to fail, restoring a passing production build without discarding the intended quote-flow behaviour.
+- routed primary navigation to canonical About, Contact, and Quote pages instead of stale homepage fragments;
+- replaced stale service-area links with approved core hubs;
+- added a `View All Areas` path from service pages; and
+- converted nearby-location text pills into links to approved neighboring location pages.
 
-**Scope:** Public website UX, quote/contact workflow, legal/contact content, performance hardening, and CI cleanup. No automatic pricing engine or persistent quotation database was introduced.
+## 2026-08-10 — Refined core homepage and service search intent
 
-## 2026-08-09 — Hardened public form submission boundary
-
-**Purpose:** Bound and sanitize the email-generating form path while recording infrastructure required for globally reliable abuse prevention.
+**Source:** PR #93.
 
 **Work recorded:**
 
-- replaced the permissive stub with a server-side, isolate-scoped five-per-15-minute throttle based only on Cloudflare's request identity, without logging raw identity data;
-- removed client-selected references and browser timing, added strict bounded schemas, a honeypot signal, same-origin enforcement, server-generated references, and focused tests;
-- added a ten-second Resend timeout plus stable provider-error sanitization and privacy-safe logs;
-- recorded that Durable Object provisioning is required for globally consistent limiting; and
-- assessed Turnstile as justified but deferred activation until dashboard-owned keys exist.
+- sharpened homepage title, description, keywords, hero copy, and structured-data page title around residential/home cleaning in Johannesburg and Midrand;
+- refined individual service-page metadata and descriptions to match actual cleaning intent and service footprint; and
+- preserved existing canonical and structured-data architecture.
 
-**Scope:** No quotation persistence, security headers, production configuration, database changes, credentials, or deployment were introduced.
+## 2026-08-10 — Added founder trust content
 
-## 2026-08-09 — Accepted temporary Undici tooling risk and added upstream watch
-
-**Purpose:** Record the verified, non-runtime Undici exposure while upstream remediation is blocked, and detect a clean remediation without changing dependencies automatically.
+**Source:** PR #90.
 
 **Work recorded:**
 
-- recorded the five OSV advisories affecting the Nitro tooling path and the fixed Undici floor;
-- recorded that browser, deployed Worker, and emitted Nitro request-runtime output inspection found no affected Undici instance;
-- documented that compatible Miniflare 4, `env-runner`, and Nitro 3 remediation routes were exhausted and accepted **TEMPORARY ACCEPTED TOOLING RISK PENDING UPSTREAM FIX**;
-- added a daily, read-only npm registry metadata watch for a current-Nitro or newer-Nitro-3 clean path, with a 14-day JSON report artifact and an Actions job summary; and
-- required any future dependency change to use a separate reviewed PR and a post-change OSV scan.
+- added the restrained founder section to the About page;
+- identified Smangaliso Nkosi as the then-Hestiva founder without adding unsupported biography, qualifications, experience, awards, or customer counts; and
+- preserved existing About-page metadata and structured data.
 
-**Scope:** No override or dependency change was introduced. No application source, production configuration, secrets, deployment workflow, or deployment authority changed. The vulnerability is not resolved.
+## 2026-08-10 — Made all 66 location pages content-distinct
 
-## 2026-08-09 — Verified Cloudflare production build configuration
-
-**Purpose:** Replace the unresolved clean-checkout build assumption with the operationally verified Cloudflare production sequence.
+**Source:** PR #89.
 
 **Work recorded:**
 
-- confirmed that the native Git integration for `HestivaHQ/hestiva` installs dependencies with `bun install` from the repository root (`/`) on the `main` production branch;
-- recorded the required Build command as `bun run build`, followed by the existing deploy command `npx wrangler deploy` and version command `npx wrangler versions upload`;
-- documented the failed deployment without the Build command, where Wrangler could not find `dist/server/server.js` and Cloudflare reported that the framework build needed to generate the entry point;
-- recorded that manually configuring `bun run build` resolved the failure, the deployment completed successfully, and the production website remained operational; and
-- captured the verified build-environment versions: Bun 1.2.15 and Node.js 24.18.0.
+- added an individual content profile for every approved service area;
+- replaced cluster-level content reuse with area-specific service angles in hero, overview, and FAQ content; and
+- kept all local claims grounded in the actual service workflow.
 
-**Scope:** Documentation only. No application source, behavior, dependencies, Cloudflare configuration, credentials, secrets, or production deployment mechanism changed.
+## 2026-08-10 — Locked the approved 66-area geography
 
-## 2026-08-09 — Architecture, deployment, and environment baseline
-
-**Purpose:** Establish canonical operational documentation before production quotation-system development.
+**Source:** PR #88.
 
 **Work recorded:**
 
-- documented the current TanStack Start/React/TypeScript SSR application and Cloudflare Worker boundary;
-- inventoried active and configured environment-variable names without adding values;
-- recorded Cloudflare native Git integration as the sole production deployment authority and captured the supplied verified dashboard settings;
-- built the repository to verify that Nitro derives ignored `.output/server/wrangler.json` and `.wrangler/deploy/config.json` from the tracked root configuration, while overriding generated entry-point/asset fields;
-- established recovery guidance and a forward-only technical changelog; and
-- explicitly separated the current email-based quote flow from future quotation-system architecture.
+- created one authoritative service-area source for the five approved clusters;
+- removed Riverlea and legacy Pretoria, Centurion, Kempton Park, Boksburg, Benoni, Edenvale, and Germiston targets from generated location data;
+- aligned structured business service areas with the same source; and
+- regenerated location-page/sitemap data from the approved territory.
 
-**Scope:** Documentation only. No application source, behavior, production configuration, dependencies, credentials, database objects, or deployment pipeline changed.
+## 2026-08-10 — Repaired the quote form production build
+
+**Source:** PR #87.
+
+**Work recorded:**
+
+- repaired a malformed `LiveFormSubmission.tsx` class string that caused the Cloudflare/Vite build to fail with an unterminated string literal; and
+- preserved the intended strict quote-flow behavior while restoring a valid formatted production build.
+
+**Historical note:** PR #86 was closed unmerged after its intended quote-flow changes had already reached `main` through a separate formatting workflow; the malformed string was then repaired through PR #87. The current code, not the closed PR, is authoritative.
+
+## 2026-08-10 — Expanded and tightened quote capture
+
+**Sources:** PRs #83, #84, #85 and the current post-PR #87 implementation state.
+
+**Work recorded:**
+
+- made quote photo attachments functional end-to-end;
+- added mobile `Take a photo` and `Choose photos` controls;
+- added optional browser geolocation with server-side reverse geocoding and editable address fields;
+- made property-layout questions conditional and internally consistent;
+- added exact apartment/townhouse floor selection and building access capture;
+- added client image compression for supported JPEG/PNG uploads;
+- expanded the attachment limit to 10 files while retaining the 10 MB per-file limit;
+- added service-dependent frequency choices and tomorrow-or-later visit dates;
+- made product restrictions and allergies explicit required choices with conditional details; and
+- progressively enforced required quote choices while preserving optional notes and photos.
+
+**Current-state correction:** Quote photos are not stored in a website object-storage bucket. They are validated and sent as email attachments.
+
+## 2026-08-10 — Finalized public legal policy content
+
+**Sources:** PRs #78, #81 and #82.
+
+**Work recorded:**
+
+- finalized public Privacy and Terms content and removed unresolved launch placeholders;
+- removed the public street/business address from current website surfaces and central structured-data config;
+- removed customer-facing sensitive-access warnings that were not appropriate for public pages; and
+- preserved service-area references where they describe coverage rather than a business address.
+
+## 2026-08-10 — Aligned public business/contact presentation
+
+**Sources:** PRs #72, #77 and #79, with PR #81 later removing the public address.
+
+**Work recorded:**
+
+- corrected service-detail phone/WhatsApp targets to the then-current contact number;
+- updated the Contact page to reflect that online submission is live; and
+- aligned structured business email/phone details with the live site before the later address-removal decision.
+
+## 2026-08-10 — Improved responsive and runtime performance
+
+**Sources:** PRs #73 through #76.
+
+**Work recorded:**
+
+- moved full desktop navigation from the 768px breakpoint to 1024px to avoid tablet crowding;
+- removed decorative Framer Motion runtime usage from rendered homepage/navigation components;
+- removed the unused `tw-animate-css` stylesheet import; and
+- added intrinsic dimensions to the shared logo images to reduce layout-shift risk.
+
+## 2026-08-10 — Cleaned redundant CI diagnostics
+
+**Source:** PR #80.
+
+**Work recorded:**
+
+- removed two manual Nitro/Miniflare diagnostic workflows that duplicated the scheduled upstream remediation watch; and
+- removed the obsolete `agent/hestiva-rebrand` push trigger while preserving normal PR quality checks.
+
+## 2026-08-10 — Verified Cloudflare production baseline
+
+**Source:** PR #71 and operator-confirmed production smoke evidence recorded there.
+
+**Work recorded:**
+
+- documented the successful Cloudflare native Git production path after the PR #68 hardening merge;
+- recorded a successful live quote submission returning HTTP 200 with administrative and customer email delivery; and
+- recorded the resolved preview/runtime issue where module-load `crypto.randomUUID()` in the rate limiter was replaced by lazy per-isolate initialization.
+
+## 2026-08-09 — Hardened public form submissions
+
+**Source:** merged PR #68 and current implementation.
+
+**Work recorded:**
+
+- centralized public quote/contact server validation;
+- added strict bounded field schemas and service allowlists;
+- added server-generated submission references;
+- enforced same-origin checks and a supplemental honeypot;
+- added a best-effort in-memory five-submissions-per-15-minutes throttle;
+- added a ten-second Resend timeout;
+- sanitized client-visible failures and kept logs free of raw customer content; and
+- added focused form-security tests.
+
+**Deferred by design:** Turnstile was not enabled because no site/secret key pair was provisioned. Durable Object rate limiting was not introduced because the repository had no binding or migration authority for it.
+
+## 2026-08-09 — Established scheduled dependency-remediation monitoring
+
+**Sources:** merged PRs #66 and #67.
+
+**Work recorded:**
+
+- recorded the verified `undici@7.28.0` exposure through the Nitro tooling chain;
+- tested current Nitro, Nitro 3 alpha, overrides, package-manager migration, and `bun update` routes without finding a safe clean remediation path;
+- documented the temporary accepted-risk disposition rather than describing the vulnerability as fixed;
+- added a daily read-only upstream remediation watch using authoritative npm metadata; and
+- kept future dependency changes behind a separate reviewed PR and OSV verification.
+
+## 2026-08-09 — Verified Cloudflare clean-checkout production build/deploy sequence
+
+**Source:** operator-verified Cloudflare build evidence.
+
+**Work recorded:**
+
+- confirmed Cloudflare's native Git integration builds from a clean checkout;
+- confirmed dependency installation alone does not produce the Worker entry point;
+- verified `bun run build` creates `dist/server/server.js`;
+- verified `npx wrangler deploy` succeeds after the build;
+- recorded Bun 1.2.15 and Node.js 24.18.0 from the successful build environment; and
+- documented the final Cloudflare settings and production deployment baseline.
+
+## 2026-08-09 — Established engineering documentation baseline
+
+**Purpose:** Create a durable, evidence-based engineering record for the website repository.
+
+**Work recorded:**
+
+- documented the current TanStack Start/Vite/Cloudflare Worker architecture;
+- documented the verified Cloudflare native Git production deployment path and sole-authority decision;
+- documented environment-variable names and secret-handling rules without storing values;
+- added recovery procedures for local validation, Cloudflare deployment failures, environment configuration, source-control mistakes, and future database migration work; and
+- established this technical work log as a lightweight engineering record.
+
+**Verification basis:** Repository source and operator-verified Cloudflare dashboard/build evidence available during the documentation task.

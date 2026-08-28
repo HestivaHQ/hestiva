@@ -53,6 +53,7 @@ test("quote primary service selector uses the canonical service model", async ({
       "Living Area Cleaning",
       "Interior Window Cleaning",
       "Post-Renovation Cleaning",
+      "Post-Event Cleaning",
       "Not sure",
     ]);
 

@@ -10,7 +10,7 @@ This append-only log records verified engineering and material operational work 
 
 - Added `/data-deletion` using the existing legal-page navigation, footer, breadcrumb, metadata and structured-data conventions.
 - Aligned the responsible party, privacy contact, identity-verification, lawful-retention and deletion-result wording with the canonical Privacy Policy without introducing another contact channel or retention period.
-- Added the route to the indexable public-route policy and sitemap; retained the footer's existing link to the broader Privacy Policy rather than adding a dedicated compliance-endpoint link.
+- Added the route to the indexable public-route policy and sitemap, linked to it from the Privacy Policy's POPIA-rights guidance, and retained the footer's existing link to the broader Privacy Policy rather than adding a dedicated compliance-endpoint link.
 
 **Verification:** TypeScript, targeted lint, relevant unit tests, repository environment validation, production build, development-runtime route and sitemap responses, formatting, diff and tracked-secret checks passed. The runtime SEO script could not start Wrangler under the container's Node.js 20 runtime because the installed Wrangler requires Node.js 22 or newer.
 

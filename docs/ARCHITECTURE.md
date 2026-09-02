@@ -56,7 +56,7 @@ The implemented public route families include:
 
 TanStack Start renders route output on the server and hydrates React in the browser. Route modules define their metadata and structured data. Shared navigation, footer, and page layouts are composed from React components.
 
-`/data-deletion` is the dedicated customer-facing deletion-instructions route for personal information associated with Facebook Messenger, WhatsApp or another Homent customer record. It follows the legal-page layout, links to the canonical Privacy Policy, and participates in the indexable route policy and sitemap. It is intentionally not duplicated in the footer because the footer already links to the broader Privacy Policy and the dedicated route is primarily a stable compliance endpoint.
+`/data-deletion` is the dedicated customer-facing deletion-instructions route for personal information associated with Facebook Messenger, WhatsApp or another Homent customer record. It follows the legal-page layout, links to the canonical Privacy Policy, is linked from the Privacy Policy's POPIA-rights guidance, and participates in the indexable route policy and sitemap. It is intentionally not duplicated in the footer because the footer already links to the broader Privacy Policy and the dedicated route is primarily a stable compliance endpoint.
 
 The current SEO geography is intentionally driven from `src/content/service-areas.ts` so location pages, service-area presentation, and structured business service areas do not maintain competing geographic lists. Service pages link into approved core geographic hubs and the full Areas We Serve hub. Location pages link to approved nearby locations through crawlable links.
 

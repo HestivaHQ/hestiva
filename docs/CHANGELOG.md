@@ -2,6 +2,14 @@
 
 This is the append-only technical change history for implemented repository and material verified operational changes. It begins with the documentation baseline and does not invent undocumented releases.
 
+## 2026-09-02
+
+### Customer-facing data deletion instructions
+
+- Added the indexable `/data-deletion` route as a stable Homent deletion-instructions URL for Messenger, WhatsApp and related customer records.
+- Reused the Privacy Policy's responsible-party identity, `info@homent.co.za` contact, identity-verification allowance, lawful-retention boundary and delete/destroy/de-identify outcome.
+- Included the route in the generated sitemap while keeping the footer focused on the canonical Privacy Policy and Terms of Service links.
+
 ## 2026-08-24
 
 ### Post-Event visual integration and documentation closeout

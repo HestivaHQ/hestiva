@@ -2,6 +2,18 @@
 
 This append-only log records verified engineering and material operational work without reconstructing unsupported history. Add newest entries first. Link pull requests/commits when available and describe validation without including secrets or customer data.
 
+## 2026-09-02 — Added customer-facing data deletion instructions
+
+**Purpose:** Provide a stable public URL for Meta App Review and for customers requesting deletion of Homent-held Messenger, WhatsApp or customer-record personal information.
+
+**Work recorded:**
+
+- Added `/data-deletion` using the existing legal-page navigation, footer, breadcrumb, metadata and structured-data conventions.
+- Aligned the responsible party, privacy contact, identity-verification, lawful-retention and deletion-result wording with the canonical Privacy Policy without introducing another contact channel or retention period.
+- Added the route to the indexable public-route policy and sitemap, linked to it from the Privacy Policy's POPIA-rights guidance, and retained the footer's existing link to the broader Privacy Policy rather than adding a dedicated compliance-endpoint link.
+
+**Verification:** TypeScript, targeted lint, relevant unit tests, repository environment validation, production build, development-runtime route and sitemap responses, formatting, diff and tracked-secret checks passed. The runtime SEO script could not start Wrangler under the container's Node.js 20 runtime because the installed Wrangler requires Node.js 22 or newer.
+
 ## 2026-08-23 — Added Post-Event Cleaning website quote flow and public service
 
 **Purpose:** Extend the Homent website for the approved Post-Event Cleaning service without moving quotation/pricing authority out of HestivaOS or allowing the public website to get ahead of the receiving Website Quote Contract.
